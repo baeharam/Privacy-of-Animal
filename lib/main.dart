@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:privacy_of_animal/screen/intro_screen.dart';
 
 void main() {
   SystemChrome.setEnabledSystemUIOverlays([]);
@@ -11,7 +12,8 @@ class PrivacyOfAnimal extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: '동물의 사생활',
-      home: Test(),
+      home: IntroScreen(),
+      theme: ThemeData(fontFamily: 'NanumGothic'),
       debugShowCheckedModeBanner: false,
     );
   }
