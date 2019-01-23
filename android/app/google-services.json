@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "516250813899",
+    "firebase_url": "https://privacy-of-animal.firebaseio.com",
+    "project_id": "privacy-of-animal",
+    "storage_bucket": "privacy-of-animal.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:516250813899:android:c85c20b84555855e",
+        "android_client_info": {
+          "package_name": "com.handong.privacyofanimal"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "516250813899-5utfhrdip5u349v1f2qam1t6vg0vc59d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD6xXfldJl2hxPot7idi6Gz83kEZfTrusY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
