@@ -7,33 +7,34 @@ class AuthenticationAPI {
 
   static final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  static const String SUCCESS = 'SUCCESS';
-  static const String FAILURE = 'FAILURE';
-
   // 회원가입
-  Future<String> signUpWithFirebase(String email, String password) async {
+  Future<AUTH_RESULT> signUpWithFirebase(String email, String password) async {
     await _auth.createUserWithEmailAndPassword(
       email: email,
       password: password
     ).catchError((exception){
       if(exception is PlatformException){
-        return FAILURE;
+        return AUTH_RESULT.FAILURE;
       }
     });
-    return SUCCESS;
+    return AUTH_RESULT.SUCCESS;
   }
 
   // 로그인
-  Future<String> loginWithFirebase(String email, String password) async {
+  Future<AUTH_RESULT> loginWithFirebase(String email, String password) async {
     await _auth.signInWithEmailAndPassword(
       email: email,
       password: password
     ).catchError((exception){
       if(exception is PlatformException){
-        return FAILURE;
+        return AUTH_RESULT.FAILURE;
       }
     });
-    return SUCCESS;
+    return AUTH_RESULT.SUCCESS;
   }
 }
 
+enum AUTH_RESULT {
+  SUCCESS,
+  FAILURE
+}

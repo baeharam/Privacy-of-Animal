@@ -9,11 +9,20 @@ class AuthenticaionBloc extends BlocEventStateBase<AuthenticationEvent,Authentic
   @override
   Stream<AuthenticationState> eventHandler(AuthenticationEvent event, AuthenticationState currentState) async*{
     
+    yield AuthenticationState.authenticating();
     if(event is AuthenticationEventLogin){
-      FirebaseUser loginResult = 
+      AUTH_RESULT result = 
         await _api.loginWithFirebase(event.email, event.password);
+      if(result == AUTH_RESULT.SUCCESS){
+        yield AuthenticationState.authenticated();
+      }
+      else if(result == AUTH_RESULT.FAILURE){
+        yield AuthenticationState.failed();
+      }
     }
 
-    return null;
+    else if(event is AuthenticationEventLogout){
+      yield AuthenticationState.notAuthenticated();
+    }
   }
 }
