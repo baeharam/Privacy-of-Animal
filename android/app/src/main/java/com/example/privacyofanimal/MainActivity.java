@@ -1,8 +1,10 @@
-package com.example.privacyofanimal;
+package com.handong.privacyofanimal;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;
 import io.flutter.plugins.GeneratedPluginRegistrant;
+import android.view.ViewTreeObserver;
+import android.view.WindowManager;
 
 public class MainActivity extends FlutterActivity {
   @Override
@@ -14,8 +16,8 @@ public class MainActivity extends FlutterActivity {
     vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
       @Override
       public void onGlobalLayout() {
-        getFlutterView().getViewTreeObserver().removeOnGlobalLayoutListener(this);
-        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+//        getFlutterView().getViewTreeObserver().removeOnGlobalLayoutListener(this);
+//        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
       }
     });
   }
