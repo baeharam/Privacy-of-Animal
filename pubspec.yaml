@@ -43,6 +43,8 @@ flutter:
   #  - images/a_dot_burr.jpeg
   #  - images/a_dot_ham.jpeg
   assets:
+    - assets/images/components/splash_logo.png
+
     - assets/images/animals/bison.jpg
     - assets/images/animals/buffalo.jpg
     - assets/images/animals/camel.jpg
