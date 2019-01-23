@@ -35,6 +35,7 @@ class _IntroScreenState extends State<IntroScreen> with SingleTickerProviderStat
   @override
     void dispose() {
       _pageController.dispose();
+      _animationController.dispose();
       super.dispose();
     }
 
