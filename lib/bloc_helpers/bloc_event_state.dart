@@ -1,4 +1,4 @@
-import 'package:blind_chatting_application/bloc_helpers/bloc_provider.dart';
+import 'package:privacy_of_animal/bloc_helpers/bloc_provider.dart';
 import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 
