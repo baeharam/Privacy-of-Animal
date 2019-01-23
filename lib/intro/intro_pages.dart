@@ -2,8 +2,8 @@ import 'package:privacy_of_animal/model/intro_page_model.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
 
-final pages = [
-  IntroPageModel(
+const pages = [
+  const IntroPageModel(
     backgroundColor: introBackgroundColor1,
     image: 'assets/images/animals/lion.jpg',
     aboveMessage: introMessage1Above,

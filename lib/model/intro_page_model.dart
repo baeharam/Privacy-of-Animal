@@ -7,7 +7,7 @@ class IntroPageModel {
   final String aboveMessage;
   final String belowMessage;
 
-  IntroPageModel({
+  const IntroPageModel({
     this.backgroundColor,
     this.image,
     this.aboveMessage,
