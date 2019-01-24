@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:privacy_of_animal/logics/form/login_bloc.dart';
+import 'package:privacy_of_animal/logics/validation/validation_bloc.dart';
 import 'package:privacy_of_animal/resources/constants.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/widgets/dashed_circle.dart';
@@ -16,13 +16,14 @@ class _LoginScreenState extends State<LoginScreen> {
 
     final double width = MediaQuery.of(context).size.width;
     final double height = MediaQuery.of(context).size.height;
-    final LoginBloc bloc = LoginBloc();
 
     return Scaffold(
       backgroundColor: Colors.white,
       body: Column(
         children: <Widget>[
-          Expanded(
+          Container(
+            width: double.infinity,
+            height: height/3,
             child: Stack(
               children: <Widget>[
                 ClipPath(
@@ -33,7 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 Positioned(
                   left: width/2-dashedBackgroundCircleDiameter/2,
-                  top: height/6.2,
+                  top: height/6.6,
                   child: Container(
                     width: dashedBackgroundCircleDiameter,
                     height: dashedBackgroundCircleDiameter,
@@ -63,55 +64,74 @@ class _LoginScreenState extends State<LoginScreen> {
                     dashes: 40,
                     color: loginBackgroundColor,
                   ),
-                ),
+                )
               ],
             ),
           ),
-          Form(
-            child: Column(
-              children: <Widget>[
-                StreamBuilder<String>(
-                  stream: bloc.email,
-                  builder: (BuildContext context, AsyncSnapshot<String> snapshot){
-                    return TextField(
-                      decoration: InputDecoration(
-                        labelText: '이메일',
-                        errorText: snapshot.error
-                      ),
-                      onChanged: bloc.onEmailChanged,
-                      keyboardType: TextInputType.emailAddress,
-                    );
-                  },
-                ),
-                StreamBuilder<String>(
-                  stream: bloc.password,
-                  builder: (BuildContext context, AsyncSnapshot<String> snapshot){
-                    return TextField(
-                      decoration: InputDecoration(
-                        labelText: '비밀번호',
-                        errorText: snapshot.error
-                      ),
-                      onChanged: bloc.onPasswordChanged,
-                      obscureText: true,
-                      keyboardType: TextInputType.emailAddress,
-                    );
-                  },
-                ),
-                StreamBuilder<bool>(
-                  stream: bloc.loginValid,
-                  builder: (BuildContext context, AsyncSnapshot<bool> snapshot){
-                    return InitialButton(
-                      text: '로그인',
-                      color: introLoginButtonColor,
-                      callback: (snapshot.hasData && snapshot.data==true) ? (){} : null,
-                    );
-                  },
-                )
-              ],
+          Expanded(
+            child: Container(
+              height: height/2,
+              width: width/1.3,
+              child: _buildLoginFormColumn(width, height)
             ),
           )
         ],
       ),
+    );
+  }
+
+  Widget _buildLoginFormColumn(double width, double height) {
+    final bloc = LoginBloc();
+
+    return ListView(
+      scrollDirection: Axis.vertical,
+      children: <Widget>[
+        StreamBuilder<String>(
+          stream: bloc.email,
+          builder: (BuildContext context, AsyncSnapshot<String> snapshot){
+            return Container(
+              width: width/1.4,
+              child: TextField(
+                decoration: InputDecoration(
+                  labelText: '이메일',
+                  errorText: snapshot.error,
+                ),
+                onChanged: bloc.onEmailChanged,
+                keyboardType: TextInputType.emailAddress,
+              ),
+            );
+          },
+        ),
+        SizedBox(height: 20.0),
+        StreamBuilder<String>(
+          stream: bloc.password,
+          builder: (BuildContext context, AsyncSnapshot<String> snapshot){
+            return Container(
+              width: width/1.4,
+              child: TextField(
+                decoration: InputDecoration(
+                  labelText: '비밀번호',
+                  errorText: snapshot.error
+                ),
+                onChanged: bloc.onPasswordChanged,
+                obscureText: true,
+                keyboardType: TextInputType.emailAddress,
+              ),
+            );
+          },
+        ),
+        SizedBox(height: 50.0),
+        StreamBuilder<bool>(
+          stream: bloc.loginValid,
+          builder: (BuildContext context, AsyncSnapshot<bool> snapshot){
+            return InitialButton(
+              text: '로그인',
+              color: introLoginButtonColor,
+              callback: (snapshot.hasData && snapshot.data==true) ? (){} : null,
+            );
+          },
+        )
+      ],
     );
   }
 }
@@ -120,9 +140,9 @@ class LoginBackgroundClipper extends CustomClipper<Path>  {
   @override
   Path getClip(Size size) {
     Path path = Path();
-    path.lineTo(.0, size.height/5);
-    final firstControlPoint = Offset(size.width/2, size.height*2/7);
-    final firstEndPoint = Offset(size.width, size.height/5);
+    path.lineTo(.0, size.height/1.7);
+    final firstControlPoint = Offset(size.width/2, size.height*2/2.3);
+    final firstEndPoint = Offset(size.width, size.height/1.7);
     path.quadraticBezierTo(firstControlPoint.dx, firstControlPoint.dy, firstEndPoint.dx, firstEndPoint.dy);
     path.lineTo(size.width,0.0);
     return path;

@@ -98,13 +98,13 @@ class _IntroScreenState extends State<IntroScreen> with SingleTickerProviderStat
                     InitialButton(
                       text: '로그인', 
                       color: introLoginButtonColor,
-                      callback: () => Navigator.of(context).pushNamed('로그인')
+                      callback: () => Navigator.of(context).pushNamed('/login')
                     ),
                     SizedBox(height: 25.0),
                     InitialButton(
                       text: '회원가입', 
                       color: introSignUpButtonColor,
-                      callback: () => Navigator.of(context).pushNamed('회원가입')
+                      callback: () => Navigator.of(context).pushNamed('/signUp')
                     )
                   ],
                 ),

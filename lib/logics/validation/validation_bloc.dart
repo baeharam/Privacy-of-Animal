@@ -1,6 +1,6 @@
 import 'package:privacy_of_animal/bloc_helpers/bloc_provider.dart';
-import 'package:privacy_of_animal/logics/form/email_validator.dart';
-import 'package:privacy_of_animal/logics/form/password_validator.dart';
+import 'package:privacy_of_animal/logics/validation/email_validator.dart';
+import 'package:privacy_of_animal/logics/validation/password_validator.dart';
 import 'package:rxdart/rxdart.dart';
 
 class LoginBloc extends Object with EmailValidator, PasswordValidator implements BlocBase {
