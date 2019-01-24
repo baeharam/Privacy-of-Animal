@@ -16,8 +16,8 @@ public class MainActivity extends FlutterActivity {
     vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
       @Override
       public void onGlobalLayout() {
-//        getFlutterView().getViewTreeObserver().removeOnGlobalLayoutListener(this);
-//        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+       getFlutterView().getViewTreeObserver().removeOnGlobalLayoutListener(this);
+       getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
       }
     });
   }
