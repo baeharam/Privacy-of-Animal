@@ -117,7 +117,7 @@ class _IntroScreenState extends State<IntroScreen> with SingleTickerProviderStat
         height: height*0.07,
         color: color,
         splashColor: Colors.transparent,
-        onPressed: (){},
+        onPressed: () => Navigator.of(context).pushNamed(text.compareTo('로그인')==0 ? '/login' : '/signUp'),
         child: Text(
           text,
           style: TextStyle(

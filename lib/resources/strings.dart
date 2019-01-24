@@ -6,6 +6,10 @@ const String introMessage2Below = '비슷한 취향 상대방 연결!';
 const String introMessage3Above = '가상에서 뿐만 아니라';
 const String introMessage3Below = '실제 친구가 될 수 있는 채팅';
 
+// login_screen 이미지 경로
+const String loginFormImage = 'assets/images/components/login_form.png';
+const String loginBackgroundImage = 'assets/images/components/login_background.png';
+
 // 로컬 DB 이름
 const String userDB = 'user.db';
 

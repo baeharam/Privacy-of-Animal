@@ -13,7 +13,7 @@ class AuthenticaionBloc extends BlocEventStateBase<AuthenticationEvent,Authentic
       AUTH_RESULT result = 
         await _api.loginWithFirebase(event.email, event.password);
       if(result == AUTH_RESULT.SUCCESS){
-        yield AuthenticationState.authenticated();
+        yield AuthenticationState.authenticatedNormal();
       }
       else if(result == AUTH_RESULT.FAILURE){
         yield AuthenticationState.failed();
