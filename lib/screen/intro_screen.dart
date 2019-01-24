@@ -3,6 +3,7 @@ import 'package:privacy_of_animal/collections/intro_pages.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/widgets/back_button_dialog.dart';
 import 'package:privacy_of_animal/widgets/dots_indicator.dart';
+import 'package:privacy_of_animal/widgets/initial_button.dart';
 import 'package:privacy_of_animal/widgets/intro_page.dart';
 
 class IntroScreen extends StatefulWidget {
@@ -94,37 +95,22 @@ class _IntroScreenState extends State<IntroScreen> with SingleTickerProviderStat
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    _buildButton(width, height, '로그인', introLoginButtonColor),
+                    InitialButton(
+                      text: '로그인', 
+                      color: introLoginButtonColor,
+                      callback: () => Navigator.of(context).pushNamed('로그인')
+                    ),
                     SizedBox(height: 25.0),
-                    _buildButton(width, height, '회원가입', introSignUpButtonColor)
+                    InitialButton(
+                      text: '회원가입', 
+                      color: introSignUpButtonColor,
+                      callback: () => Navigator.of(context).pushNamed('회원가입')
+                    )
                   ],
                 ),
               )
             ],
           )
-        ),
-      ),
-    );
-  }
-
-  Widget _buildButton(double width, double height, String text, Color color){
-    return Material(
-      clipBehavior: Clip.antiAlias,
-      borderRadius: BorderRadius.circular(30.0),
-      elevation: 5.0,
-      child: MaterialButton(
-        minWidth: width*0.77,
-        height: height*0.07,
-        color: color,
-        splashColor: Colors.transparent,
-        onPressed: () => Navigator.of(context).pushNamed(text.compareTo('로그인')==0 ? '/login' : '/signUp'),
-        child: Text(
-          text,
-          style: TextStyle(
-            color: introButtonTextColor,
-            fontWeight: FontWeight.bold,
-            fontSize: 15.0
-          ),
         ),
       ),
     );

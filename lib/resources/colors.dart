@@ -7,3 +7,7 @@ const Color introBackgroundColor3 = Color(0xFF3F4FA5);
 const Color introLoginButtonColor = Color(0xFFFFE5A8);
 const Color introSignUpButtonColor = Color(0xFFFBF8F8);
 const Color introButtonTextColor = Color(0xFF3F4FA5);
+
+// LoginScreen
+const Color loginBackgroundColor = Color(0xFF65ADAB);
+const Color loginTextColor = Color(0xFF3F4FA5);
