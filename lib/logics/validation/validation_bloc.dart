@@ -3,7 +3,7 @@ import 'package:privacy_of_animal/logics/validation/email_validator.dart';
 import 'package:privacy_of_animal/logics/validation/password_validator.dart';
 import 'package:rxdart/rxdart.dart';
 
-class LoginBloc extends Object with EmailValidator, PasswordValidator implements BlocBase {
+class ValidationBloc extends Object with EmailValidator, PasswordValidator implements BlocBase {
 
   final BehaviorSubject<String> _emailController = BehaviorSubject<String>();
   final BehaviorSubject<String> _passwordController = BehaviorSubject<String>();

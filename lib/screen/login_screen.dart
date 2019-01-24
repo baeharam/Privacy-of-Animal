@@ -19,119 +19,126 @@ class _LoginScreenState extends State<LoginScreen> {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Column(
-        children: <Widget>[
-          Container(
-            width: double.infinity,
-            height: height/3,
-            child: Stack(
-              children: <Widget>[
-                ClipPath(
-                  child: Container(
-                    color: loginBackgroundColor,
-                  ),
-                  clipper: LoginBackgroundClipper(),
-                ),
-                Positioned(
-                  left: width/2-dashedBackgroundCircleDiameter/2,
-                  top: height/6.6,
-                  child: Container(
-                    width: dashedBackgroundCircleDiameter,
-                    height: dashedBackgroundCircleDiameter,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle
-                    )
-                  ),
-                ),
-                Positioned(
-                  left: width/2-dashedCircleRadius,
-                  top: height/6,
-                  child: DashedCircle(
-                    child: CircleAvatar(
-                      child: Text(
-                        '로그인',
-                        style: TextStyle(
-                          color: loginTextColor,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20.0
-                        )
-                      ),
-                      radius: dashedCircleRadius,
-                      backgroundColor: Colors.white,
+      body: Padding(
+        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+        child: ListView(
+          children: <Widget>[
+            Container(
+              width: double.infinity,
+              height: height/3,
+              child: Stack(
+                children: <Widget>[
+                  ClipPath(
+                    child: Container(
+                      color: loginBackgroundColor,
                     ),
-                    gapSize: 7,
-                    dashes: 40,
-                    color: loginBackgroundColor,
+                    clipper: LoginBackgroundClipper(),
                   ),
-                )
-              ],
+                  Positioned(
+                    left: width/2-dashedBackgroundCircleDiameter/2,
+                    top: height/6.6,
+                    child: Container(
+                      width: dashedBackgroundCircleDiameter,
+                      height: dashedBackgroundCircleDiameter,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle
+                      )
+                    ),
+                  ),
+                  Positioned(
+                    left: width/2-dashedCircleRadius,
+                    top: height/6,
+                    child: DashedCircle(
+                      child: CircleAvatar(
+                        child: Text(
+                          '로그인',
+                          style: TextStyle(
+                            color: loginTextColor,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20.0
+                          )
+                        ),
+                        radius: dashedCircleRadius,
+                        backgroundColor: Colors.white,
+                      ),
+                      gapSize: 7,
+                      dashes: 40,
+                      color: loginBackgroundColor,
+                    ),
+                  )
+                ],
+              ),
             ),
-          ),
-          Expanded(
-            child: Container(
-              height: height/2,
-              width: width/1.3,
-              child: _buildLoginFormColumn(width, height)
-            ),
-          )
-        ],
+            _buildLoginFormColumn(width, height)
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildLoginFormColumn(double width, double height) {
-    final bloc = LoginBloc();
 
-    return ListView(
-      scrollDirection: Axis.vertical,
-      children: <Widget>[
-        StreamBuilder<String>(
-          stream: bloc.email,
-          builder: (BuildContext context, AsyncSnapshot<String> snapshot){
-            return Container(
-              width: width/1.4,
-              child: TextField(
-                decoration: InputDecoration(
-                  labelText: '이메일',
-                  errorText: snapshot.error,
+    final TextEditingController _emailController = TextEditingController();
+    final TextEditingController _passwordController = TextEditingController();
+
+    final validationBloc = ValidationBloc();
+
+    return Container(
+      height: height/2,
+      width: width/1.3,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: <Widget>[
+          StreamBuilder<String>(
+            stream: validationBloc.email,
+            builder: (BuildContext context, AsyncSnapshot<String> snapshot){
+              return Container(
+                width: width/1.4,
+                child: TextField(
+                  decoration: InputDecoration(
+                    labelText: '이메일',
+                    errorText: snapshot.error,
+                  ),
+                  onChanged: validationBloc.onEmailChanged,
+                  keyboardType: TextInputType.emailAddress,
+                  controller: _emailController,
                 ),
-                onChanged: bloc.onEmailChanged,
-                keyboardType: TextInputType.emailAddress,
-              ),
-            );
-          },
-        ),
-        SizedBox(height: 20.0),
-        StreamBuilder<String>(
-          stream: bloc.password,
-          builder: (BuildContext context, AsyncSnapshot<String> snapshot){
-            return Container(
-              width: width/1.4,
-              child: TextField(
-                decoration: InputDecoration(
-                  labelText: '비밀번호',
-                  errorText: snapshot.error
+              );
+            },
+          ),
+          SizedBox(height: 20.0),
+          StreamBuilder<String>(
+            stream: validationBloc.password,
+            builder: (BuildContext context, AsyncSnapshot<String> snapshot){
+              return Container(
+                width: width/1.4,
+                child: TextField(
+                  decoration: InputDecoration(
+                    labelText: '비밀번호',
+                    errorText: snapshot.error
+                  ),
+                  onChanged: validationBloc.onPasswordChanged,
+                  obscureText: true,
+                  keyboardType: TextInputType.emailAddress,
+                  controller: _passwordController,
                 ),
-                onChanged: bloc.onPasswordChanged,
-                obscureText: true,
-                keyboardType: TextInputType.emailAddress,
-              ),
-            );
-          },
-        ),
-        SizedBox(height: 50.0),
-        StreamBuilder<bool>(
-          stream: bloc.loginValid,
-          builder: (BuildContext context, AsyncSnapshot<bool> snapshot){
-            return InitialButton(
-              text: '로그인',
-              color: introLoginButtonColor,
-              callback: (snapshot.hasData && snapshot.data==true) ? (){} : null,
-            );
-          },
-        )
-      ],
+              );
+            },
+          ),
+          SizedBox(height: 50.0),
+          StreamBuilder<bool>(
+            stream: validationBloc.loginValid,
+            builder: (BuildContext context, AsyncSnapshot<bool> snapshot){
+              return InitialButton(
+                text: '로그인',
+                color: introLoginButtonColor,
+                callback: (snapshot.hasData && snapshot.data==true) ? (){} : null,
+              );
+            },
+          )
+        ],
+      ),
     );
   }
 }
