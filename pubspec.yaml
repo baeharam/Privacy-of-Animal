@@ -26,6 +26,9 @@ flutter:
 
   assets:
 
+    - assets/images/components/login_form.png
+    - assets/images/components/login_background.png
+
     - assets/images/animals/bison.jpg
     - assets/images/animals/buffalo.jpg
     - assets/images/animals/camel.jpg
