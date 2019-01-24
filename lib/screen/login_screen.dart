@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:privacy_of_animal/resources/strings.dart';
+import 'package:privacy_of_animal/resources/constants.dart';
 import 'package:privacy_of_animal/widgets/dashed_circle.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -28,11 +28,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   clipper: LoginBackgroundClipper(),
                 ),
                 Positioned(
-                  left: width/2-62,
+                  left: width/2-dashedBackgroundCircleDiameter/2,
                   top: height/6.2,
                   child: Container(
-                    width: 57*2+10.0,
-                    height: 57*2+10.0,
+                    width: dashedBackgroundCircleDiameter,
+                    height: dashedBackgroundCircleDiameter,
                     decoration: BoxDecoration(
                       color: Colors.white,
                       shape: BoxShape.circle
@@ -40,12 +40,12 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 Positioned(
-                  left: width/2-57,
+                  left: width/2-dashedCircleRadius,
                   top: height/6,
                   child: DashedCircle(
                     child: CircleAvatar(
                       child: Text('로그인'),
-                      radius: 57.0,
+                      radius: dashedCircleRadius,
                       backgroundColor: Colors.white,
                     ),
                     color: Colors.green,
