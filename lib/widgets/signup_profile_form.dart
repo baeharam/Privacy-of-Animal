@@ -145,7 +145,12 @@ class _SignUpProfileFormState extends State<SignUpProfileForm> {
               return InitialButton(
                 text: '선택완료',
                 color: introLoginButtonColor,
-                callback: (snapshot.hasData && snapshot.data==true) ? () => streamNavigator(context,'/signUpEmailPassword') : null,
+                callback: (snapshot.hasData && snapshot.data==true) ? 
+                () {
+                  _validationBloc.saveUserProfileInfo(_nameController.text, _ageController.text, _jobController.text);
+                  StreamNavigator.pushNamed(context,'/signUpEmailPassword');
+                }
+                : null,
               );
             },
           )

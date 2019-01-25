@@ -1,41 +1,37 @@
 
 class RealProfileTableModel {
-  String _uid;
-  String _name;
-  String _age;
-  String _gender;
-  String _job;
+  String uid;
+  String name;
+  int age;
+  String gender;
+  String job;
 
-  RealProfileTableModel(
-    this._uid,
-    this._name,
-    this._age,
-    this._gender,
-    this._job
+  RealProfileTableModel();
+
+  RealProfileTableModel.all(
+    this.uid,
+    this.name,
+    this.age,
+    this.gender,
+    this.job
   );
 
-  String get uid => _uid;
-  String get name => _name;
-  String get age => _age;
-  String get gender => _gender;
-  String get job => _job;
-
   RealProfileTableModel.fromMap(Map<String, dynamic> map) {
-    this._uid = map['uid'];
-    this._name = map['name'];
-    this._age = map['age'];
-    this._gender = map['gender'];
-    this._job = map['job'];
+    this.uid = map['uid'];
+    this.name = map['name'];
+    this.age = map['age'];
+    this.gender = map['gender'];
+    this.job = map['job'];
   }
 
 
   Map<String, dynamic> toMap() {
     Map<String, dynamic> map = Map<String, dynamic>();
-    map['uid'] = _uid;
-    map['name'] = _name;
-    map['age'] = _age;
-    map['gender'] = _gender;
-    map['job'] = _job;
+    map['uid'] = uid;
+    map['name'] = name;
+    map['age'] = age;
+    map['gender'] = gender;
+    map['job'] = job;
     return map;
   }
 

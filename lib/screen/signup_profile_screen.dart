@@ -15,14 +15,7 @@ class SignUpProfileScreen extends StatefulWidget {
 class _SignUpProfileScreenState extends State<SignUpProfileScreen> {
 
   @override
-    void initState() {
-      super.initState();
-    }
-
-  @override
   Widget build(BuildContext context) {
-
-    final AuthenticationBloc bloc = BlocProvider.of<AuthenticationBloc>(context);
 
     return Scaffold(
       backgroundColor: Colors.white,

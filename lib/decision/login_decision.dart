@@ -4,12 +4,12 @@ import 'package:privacy_of_animal/logics/authentication/authentication.dart';
 import 'package:privacy_of_animal/screen/login_screen.dart';
 
 
-class AuthenticationDecision extends StatefulWidget {
+class LoginDecision extends StatefulWidget {
   @override
-  _AuthenticationDecisionState createState() => _AuthenticationDecisionState();
+  _LoginDecisionState createState() => _LoginDecisionState();
 }
 
-class _AuthenticationDecisionState extends State<AuthenticationDecision> {
+class _LoginDecisionState extends State<LoginDecision> {
 
   final AuthenticationBloc _authenticationBloc = AuthenticationBloc();
 

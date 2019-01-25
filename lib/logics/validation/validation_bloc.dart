@@ -1,5 +1,6 @@
 import 'package:privacy_of_animal/bloc_helpers/bloc_provider.dart';
 import 'package:privacy_of_animal/logics/validation/validator.dart';
+import 'package:privacy_of_animal/utils/user_repository.dart';
 import 'package:rxdart/rxdart.dart';
 
 class ValidationBloc extends Object 
@@ -26,6 +27,12 @@ class ValidationBloc extends Object
 
   Stream<bool> get loginValid => Observable.combineLatest2(email, password, (e,p) => true);
   Stream<bool> get signUpProfileValid => Observable.combineLatest3(name,age,job, (n,a,j) => true);
+
+  void saveUserProfileInfo(String name, String age, String job) {
+    UserRepository.realProfileTableModel.name = name;
+    UserRepository.realProfileTableModel.age = int.parse(age);
+    UserRepository.realProfileTableModel.job = job;
+  }
 
   @override
   void dispose() {
