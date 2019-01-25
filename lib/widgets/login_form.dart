@@ -24,6 +24,7 @@ class _LoginFormState extends State<LoginForm> with SingleTickerProviderStateMix
       _emailController.dispose();
       _passwordController.dispose();
       _emailFocusNode.dispose();
+      _passwordFocusNode.dispose();
       super.dispose();
     }
 
