@@ -3,34 +3,29 @@ import 'package:privacy_of_animal/logics/validation/validation_bloc.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/resources/constants.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
-import 'package:privacy_of_animal/utils/stream_navigator.dart';
 import 'package:privacy_of_animal/widgets/focus_visible_maker.dart';
 import 'package:privacy_of_animal/widgets/initial_button.dart';
 
-class SignUpProfileForm extends StatefulWidget {
+class SignUpEmailPasswordForm extends StatefulWidget {
   @override
-  _SignUpProfileFormState createState() => _SignUpProfileFormState();
+  _SignUpEmailPasswordFormState createState() => _SignUpEmailPasswordFormState();
 }
 
-class _SignUpProfileFormState extends State<SignUpProfileForm> {
+class _SignUpEmailPasswordFormState extends State<SignUpEmailPasswordForm> {
 
-  final FocusNode _nameFocusNode = FocusNode();
-  final FocusNode _ageFocusNode = FocusNode();
-  final FocusNode _jobFocusNode = FocusNode();
+  final FocusNode _emailFocusNode = FocusNode();
+  final FocusNode _passwordFocusNode = FocusNode();
   final ValidationBloc _validationBloc = ValidationBloc();
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _ageController = TextEditingController();
-  final TextEditingController _jobController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
 
   @override
     void dispose() {
-      _nameController.dispose();
-      _ageController.dispose();
-      _jobController.dispose();
-      _nameFocusNode.dispose();
-      _ageFocusNode.dispose();
-      _jobFocusNode.dispose();
+      _emailController.dispose();
+      _passwordController.dispose();
+      _emailFocusNode.dispose();
+      _passwordFocusNode.dispose();
       super.dispose();
     }
 
@@ -46,7 +41,7 @@ class _SignUpProfileFormState extends State<SignUpProfileForm> {
           Padding(
             padding: EdgeInsets.only(bottom: 5.0),
             child: Text(
-              '이름',
+              '이메일',
               style: TextStyle(
                 color: Colors.black,
                 fontWeight: FontWeight.w600,
@@ -55,11 +50,11 @@ class _SignUpProfileFormState extends State<SignUpProfileForm> {
             ),
           ),
           StreamBuilder<String>(
-            stream: _validationBloc.name,
+            stream: _validationBloc.email,
             initialData: signUpEmptyNameError,
             builder: (BuildContext context, AsyncSnapshot<String> snapshot){
               return EnsureVisibleWhenFocused(
-                focusNode: _nameFocusNode,
+                focusNode: _emailFocusNode,
                 child: TextField(
                   decoration: InputDecoration(
                     errorText: snapshot.error,
@@ -67,8 +62,8 @@ class _SignUpProfileFormState extends State<SignUpProfileForm> {
                   ),
                   onChanged: _validationBloc.onNameChanged,
                   keyboardType: TextInputType.text,
-                  controller: _nameController,
-                  focusNode: _nameFocusNode,
+                  controller: _emailController,
+                  focusNode: _emailFocusNode,
                 ),
               );
             },
@@ -77,7 +72,7 @@ class _SignUpProfileFormState extends State<SignUpProfileForm> {
           Padding(
             padding: EdgeInsets.only(bottom: 5.0),
             child: Text(
-              '나이',
+              '비밀번호',
               style: TextStyle(
                 color: Colors.black,
                 fontWeight: FontWeight.w600,
@@ -86,42 +81,11 @@ class _SignUpProfileFormState extends State<SignUpProfileForm> {
             ),
           ),
           StreamBuilder<String>(
-            stream: _validationBloc.age,
+            stream: _validationBloc.password,
             initialData: signUpEmptyAgeError,
             builder: (BuildContext context, AsyncSnapshot<String> snapshot){
               return EnsureVisibleWhenFocused(
-                focusNode: _ageFocusNode,
-                child: TextField(
-                  decoration: InputDecoration(
-                    errorText: snapshot.error,
-                    hintText: signUpAgeHint
-                  ),
-                  onChanged: _validationBloc.onAgeChanged,
-                  controller: _ageController,
-                  focusNode: _ageFocusNode,
-                  keyboardType: TextInputType.number,
-                ),
-              );
-            },
-          ),
-          SizedBox(height: ScreenUtil.height/25),
-          Padding(
-            padding: EdgeInsets.only(bottom: 5.0),
-            child: Text(
-              '직업',
-              style: TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.w600,
-                fontSize: 18.0
-              ),
-            ),
-          ),
-          StreamBuilder<String>(
-            stream: _validationBloc.job,
-            initialData: signUpEmptyAgeError,
-            builder: (BuildContext context, AsyncSnapshot<String> snapshot){
-              return EnsureVisibleWhenFocused(
-                focusNode: _jobFocusNode,
+                focusNode: _passwordFocusNode,
                 child: TextField(
                   decoration: InputDecoration(
                     errorText: snapshot.error,
@@ -129,20 +93,20 @@ class _SignUpProfileFormState extends State<SignUpProfileForm> {
                   ),
                   onChanged: _validationBloc.onJobChanged,
                   keyboardType: TextInputType.text,
-                  controller: _jobController,
-                  focusNode: _jobFocusNode,
+                  controller: _passwordController,
+                  focusNode: _passwordFocusNode,
                 ),
               );
             },
           ),
           SizedBox(height: ScreenUtil.height/15),
           StreamBuilder<bool>(
-            stream: _validationBloc.signUpProfileValid,
+            stream: _validationBloc.loginValid,
             builder: (BuildContext context, AsyncSnapshot<bool> snapshot){
               return InitialButton(
                 text: '선택완료',
                 color: introLoginButtonColor,
-                callback: (snapshot.hasData && snapshot.data==true) ? () => streamNavigator(context,'/signUpEmailPassword') : null,
+                callback: (snapshot.hasData && snapshot.data==true) ? (){} : null,
               );
             },
           )

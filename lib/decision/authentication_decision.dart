@@ -28,10 +28,4 @@ class _AuthenticationDecisionState extends State<AuthenticationDecision> {
       ),
     );
   }
-
-  void _redirectToPage(BuildContext context, String pageName) {
-    WidgetsBinding.instance.addPostFrameCallback((_){
-      Navigator.of(context).pushNamed(pageName);
-    });
-  }
 }
