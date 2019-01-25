@@ -26,7 +26,6 @@ class _IntroScreenState extends State<IntroScreen> with SingleTickerProviderStat
   @override
     void initState() {
       super.initState();
-      SystemChrome.setEnabledSystemUIOverlays([]);
       _pageController = PageController(initialPage: 0);
       _animationController = AnimationController(
         vsync: this,

@@ -15,12 +15,6 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
 
   @override
-    void initState() {
-      super.initState();
-      SystemChrome.setEnabledSystemUIOverlays([]);
-    }
-
-  @override
   Widget build(BuildContext context) {
 
     final AuthenticationBloc bloc = BlocProvider.of<AuthenticationBloc>(context);

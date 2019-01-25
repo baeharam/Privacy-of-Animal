@@ -4,7 +4,6 @@ import 'package:privacy_of_animal/collections/routes.dart';
 import 'package:privacy_of_animal/screen/intro_screen.dart';
 
 void main() {
-  SystemChrome.setEnabledSystemUIOverlays([]);
   runApp(PrivacyOfAnimal());
 }
 
