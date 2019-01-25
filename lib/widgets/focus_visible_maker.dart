@@ -27,11 +27,18 @@ import 'package:meta/meta.dart';
 /// Extended (see highlighting) to cover the case when the keyboard is dismissed and the
 /// user clicks the TextFormField/TextField which still has the focus.
 /// 
+
+enum FocusType{
+  EMAIL_FOCUS,
+  PASSWORD_FOCUS
+}
+
 class EnsureVisibleWhenFocused extends StatefulWidget {
   const EnsureVisibleWhenFocused({
     Key key,
     @required this.child,
     @required this.focusNode,
+    @required this.focusType,
     this.curve: Curves.ease,
     this.duration: const Duration(milliseconds: 100),
   }) : super(key: key);
@@ -51,6 +58,9 @@ class EnsureVisibleWhenFocused extends StatefulWidget {
   ///
   /// Defaults to 100 milliseconds.
   final Duration duration;
+
+  /// The type of focus, email or password?
+  final FocusType focusType;
 
   @override
   _EnsureVisibleWhenFocusedState createState() => new _EnsureVisibleWhenFocusedState();
@@ -132,13 +142,14 @@ class _EnsureVisibleWhenFocusedState extends State<EnsureVisibleWhenFocused> wit
     // Get its offset
     ScrollPosition position = scrollableState.position;
     double alignment;
+    double alignmentByType = widget.focusType==FocusType.EMAIL_FOCUS ? 0.4 : 0.6;
 
     if (position.pixels > viewport.getOffsetToReveal(object, 0.0).offset) {
       // Move down to the top of the viewport
       alignment = 0.0;
-    } else if (position.pixels < viewport.getOffsetToReveal(object, 1.0).offset){
+    } else if (position.pixels < viewport.getOffsetToReveal(object, alignmentByType).offset){
       // Move up to the bottom of the viewport
-      alignment = 1.0;
+      alignment = alignmentByType;
     } else {
       // No scrolling is necessary to reveal the child
       return;

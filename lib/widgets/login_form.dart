@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/logics/validation/validation_bloc.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/resources/constants.dart';
+import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:privacy_of_animal/widgets/focus_visible_maker.dart';
 import 'package:privacy_of_animal/widgets/initial_button.dart';
 
@@ -10,11 +11,10 @@ class LoginForm extends StatefulWidget {
   _LoginFormState createState() => _LoginFormState();
 }
 
-class _LoginFormState extends State<LoginForm> with SingleTickerProviderStateMixin{
+class _LoginFormState extends State<LoginForm> {
 
   final FocusNode _emailFocusNode = FocusNode();
   final FocusNode _passwordFocusNode = FocusNode();
-
   final ValidationBloc _validationBloc = ValidationBloc();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -38,9 +38,11 @@ class _LoginFormState extends State<LoginForm> with SingleTickerProviderStateMix
         children: <Widget>[
           StreamBuilder<String>(
             stream: _validationBloc.email,
+            initialData: loginEmptyEmailError,
             builder: (BuildContext context, AsyncSnapshot<String> snapshot){
               return EnsureVisibleWhenFocused(
                 focusNode: _emailFocusNode,
+                focusType: FocusType.EMAIL_FOCUS,
                 child: TextField(
                   decoration: InputDecoration(
                     labelText: '이메일',
@@ -57,9 +59,11 @@ class _LoginFormState extends State<LoginForm> with SingleTickerProviderStateMix
           SizedBox(height: 20.0),
           StreamBuilder<String>(
             stream: _validationBloc.password,
+            initialData: loginEmptyPasswordError,
             builder: (BuildContext context, AsyncSnapshot<String> snapshot){
               return EnsureVisibleWhenFocused(
                 focusNode: _passwordFocusNode,
+                focusType: FocusType.PASSWORD_FOCUS,
                 child: TextField(
                   decoration: InputDecoration(
                     labelText: '비밀번호',

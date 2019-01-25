@@ -1,4 +1,4 @@
-// intro_screen 설명글
+// introScreen 설명글
 const String introMessage1Above = '내 얼굴 사진을 바탕으로';
 const String introMessage1Below = '분석되는 \"닮은꼴 동물\"';
 const String introMessage2Above = '내 관심사를 바탕으로';
@@ -6,9 +6,11 @@ const String introMessage2Below = '비슷한 취향 상대방 연결!';
 const String introMessage3Above = '가상에서 뿐만 아니라';
 const String introMessage3Below = '실제 친구가 될 수 있는 채팅';
 
-// login_screen 이미지 경로
-const String loginFormImage = 'assets/images/components/login_form.png';
-const String loginBackgroundImage = 'assets/images/components/login_background.png';
+// loginScreen 에러 메시지
+const String loginEmptyEmailError = '이메일을 입력하세요.';
+const String loginInvalidEmailError = '유효한 이메일이 아닙니다.';
+const String loginEmptyPasswordError = '비밀번호를 입력하세요.';
+const String loginInavlidPasswordError = '비밀번호는 6자리 이상입니다';
 
 // 로컬 DB 이름
 const String userDB = 'user.db';
