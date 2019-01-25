@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:privacy_of_animal/collections/intro_pages.dart';
-import 'package:privacy_of_animal/decision/authentication_decision.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/resources/constants.dart';
 import 'package:privacy_of_animal/widgets/back_button_dialog.dart';
@@ -106,7 +104,7 @@ class _IntroScreenState extends State<IntroScreen> with SingleTickerProviderStat
                     InitialButton(
                       text: '로그인', 
                       color: introLoginButtonColor,
-                      callback: () => AuthenticationDecision()
+                      callback: () => Navigator.of(context).pushNamed('/decision')
                     ),
                     SizedBox(height: 25.0),
                     InitialButton(

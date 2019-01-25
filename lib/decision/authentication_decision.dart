@@ -23,7 +23,7 @@ class _AuthenticationDecisionState extends State<AuthenticationDecision> {
           if(!state.isAuthenticated){
             return LoginScreen();
           }
-          return LoginScreen();
+          return Container();
         },
       ),
     );
