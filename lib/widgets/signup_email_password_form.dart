@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:privacy_of_animal/bloc_helpers/bloc_provider.dart';
 import 'package:privacy_of_animal/logics/validation/validation_bloc.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/resources/constants.dart';
@@ -15,7 +16,6 @@ class _SignUpEmailPasswordFormState extends State<SignUpEmailPasswordForm> {
 
   final FocusNode _emailFocusNode = FocusNode();
   final FocusNode _passwordFocusNode = FocusNode();
-  final ValidationBloc _validationBloc = ValidationBloc();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -31,6 +31,9 @@ class _SignUpEmailPasswordFormState extends State<SignUpEmailPasswordForm> {
 
   @override
   Widget build(BuildContext context) {
+
+    final ValidationBloc _validationBloc = BlocProvider.of<ValidationBloc>(context);
+
     return Container(
       height: ScreenUtil.height/1.7,
       width: ScreenUtil.width/1.3,

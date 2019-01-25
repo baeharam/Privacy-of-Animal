@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:privacy_of_animal/bloc_helpers/bloc_provider.dart';
 import 'package:privacy_of_animal/logics/validation/validation_bloc.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/resources/constants.dart';
@@ -17,7 +18,6 @@ class _SignUpProfileFormState extends State<SignUpProfileForm> {
   final FocusNode _nameFocusNode = FocusNode();
   final FocusNode _ageFocusNode = FocusNode();
   final FocusNode _jobFocusNode = FocusNode();
-  final ValidationBloc _validationBloc = ValidationBloc();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _ageController = TextEditingController();
   final TextEditingController _jobController = TextEditingController();
@@ -36,6 +36,9 @@ class _SignUpProfileFormState extends State<SignUpProfileForm> {
 
   @override
   Widget build(BuildContext context) {
+
+    final ValidationBloc _validationBloc = BlocProvider.of<ValidationBloc>(context);
+
     return Container(
       height: ScreenUtil.height/1.8,
       width: ScreenUtil.width/1.3,
