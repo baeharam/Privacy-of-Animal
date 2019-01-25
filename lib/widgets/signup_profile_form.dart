@@ -98,6 +98,7 @@ class _SignUpProfileFormState extends State<SignUpProfileForm> {
                   onChanged: _validationBloc.onAgeChanged,
                   controller: _ageController,
                   focusNode: _ageFocusNode,
+                  keyboardType: TextInputType.number,
                 ),
               );
             },
