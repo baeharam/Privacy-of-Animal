@@ -6,8 +6,14 @@ import 'package:privacy_of_animal/widgets/dashed_circle.dart';
 class ArcBackground extends StatefulWidget {
 
   final Color backgroundColor;
+  final Color dashColor;
+  final String title;
 
-  ArcBackground({@required this.backgroundColor});
+  ArcBackground({
+    @required this.backgroundColor,
+    @required this.dashColor,
+    @required this.title
+  });
 
   @override
   _ArcBackgroundState createState() => _ArcBackgroundState();
@@ -25,7 +31,7 @@ class _ArcBackgroundState extends State<ArcBackground> {
             child: Container(
               color: widget.backgroundColor,
             ),
-            clipper: LoginBackgroundClipper(),
+            clipper: BackgroundClipper(),
           ),
           Positioned(
             left: ScreenUtil.width/2-dashedBackgroundCircleDiameter/2,
@@ -45,7 +51,7 @@ class _ArcBackgroundState extends State<ArcBackground> {
             child: DashedCircle(
               child: CircleAvatar(
                 child: Text(
-                  '로그인',
+                  widget.title,
                   style: TextStyle(
                     color: loginTextColor,
                     fontWeight: FontWeight.bold,
@@ -57,7 +63,7 @@ class _ArcBackgroundState extends State<ArcBackground> {
               ),
               gapSize: 7,
               dashes: 40,
-              color: loginBackgroundColor,
+              color: widget.dashColor,
             ),
           )
         ],
@@ -66,7 +72,7 @@ class _ArcBackgroundState extends State<ArcBackground> {
   }
 }
 
-class LoginBackgroundClipper extends CustomClipper<Path>  {
+class BackgroundClipper extends CustomClipper<Path>  {
   @override
   Path getClip(Size size) {
     Path path = Path();

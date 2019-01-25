@@ -31,7 +31,11 @@ class _LoginScreenState extends State<LoginScreen> {
         child: SingleChildScrollView(
           child: Column(
             children: <Widget>[
-              ArcBackground(backgroundColor: loginBackgroundColor,),
+              ArcBackground(
+                backgroundColor: loginBackgroundColor,
+                dashColor: loginBackgroundColor,
+                title: '로그인',
+              ),
               SizedBox(height: ScreenUtil.height/10),    
               LoginForm(),
               BlocEventStateBuilder(

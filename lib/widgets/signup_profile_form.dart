@@ -36,56 +36,106 @@ class _SignUpProfileFormState extends State<SignUpProfileForm> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: ScreenUtil.height/2,
+      height: ScreenUtil.height/1.7,
       width: ScreenUtil.width/1.3,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
+          Padding(
+            padding: EdgeInsets.only(bottom: 5.0),
+            child: Text(
+              '이름',
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.w600,
+                fontSize: 18.0
+              ),
+            ),
+          ),
           StreamBuilder<String>(
-            stream: _validationBloc.email,
-            initialData: loginEmptyEmailError,
+            stream: _validationBloc.name,
+            initialData: signUpEmptyNameError,
             builder: (BuildContext context, AsyncSnapshot<String> snapshot){
               return EnsureVisibleWhenFocused(
                 focusNode: _nameFocusNode,
-                focusType: FocusType.EMAIL_FOCUS,
                 child: TextField(
                   decoration: InputDecoration(
-                    labelText: '이메일',
                     errorText: snapshot.error,
+                    hintText: signUpNameHint
                   ),
-                  onChanged: _validationBloc.onEmailChanged,
-                  keyboardType: TextInputType.emailAddress,
+                  onChanged: _validationBloc.onNameChanged,
+                  keyboardType: TextInputType.text,
                   controller: _nameController,
                   focusNode: _nameFocusNode,
                 ),
               );
             },
           ),
-          SizedBox(height: 20.0),
+          SizedBox(height: ScreenUtil.height/25),
+          Padding(
+            padding: EdgeInsets.only(bottom: 5.0),
+            child: Text(
+              '나이',
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.w600,
+                fontSize: 18.0
+              ),
+            ),
+          ),
           StreamBuilder<String>(
-            stream: _validationBloc.password,
-            initialData: loginEmptyPasswordError,
+            stream: _validationBloc.age,
+            initialData: signUpEmptyAgeError,
             builder: (BuildContext context, AsyncSnapshot<String> snapshot){
               return EnsureVisibleWhenFocused(
                 focusNode: _ageFocusNode,
-                focusType: FocusType.PASSWORD_FOCUS,
                 child: TextField(
                   decoration: InputDecoration(
-                    labelText: '비밀번호',
-                    errorText: snapshot.error
+                    errorText: snapshot.error,
+                    hintText: signUpAgeHint
                   ),
-                  onChanged: _validationBloc.onPasswordChanged,
-                  obscureText: true,
-                  keyboardType: TextInputType.emailAddress,
+                  onChanged: _validationBloc.onAgeChanged,
                   controller: _ageController,
                   focusNode: _ageFocusNode,
                 ),
               );
             },
           ),
-          SizedBox(height: ScreenUtil.height/10),
+          SizedBox(height: ScreenUtil.height/25),
+          Padding(
+            padding: EdgeInsets.only(bottom: 5.0),
+            child: Text(
+              '직업',
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.w600,
+                fontSize: 18.0
+              ),
+            ),
+          ),
+          StreamBuilder<String>(
+            stream: _validationBloc.job,
+            initialData: signUpEmptyAgeError,
+            builder: (BuildContext context, AsyncSnapshot<String> snapshot){
+              return EnsureVisibleWhenFocused(
+                focusNode: _jobFocusNode,
+                child: TextField(
+                  decoration: InputDecoration(
+                    errorText: snapshot.error,
+                    hintText: signUpJobHint
+                  ),
+                  onChanged: _validationBloc.onJobChanged,
+                  keyboardType: TextInputType.text,
+                  controller: _jobController,
+                  focusNode: _jobFocusNode,
+                ),
+              );
+            },
+          ),
+          SizedBox(height: ScreenUtil.height/15),
           StreamBuilder<bool>(
-            stream: _validationBloc.loginValid,
+            stream: _validationBloc.signUpProfileValid,
             builder: (BuildContext context, AsyncSnapshot<bool> snapshot){
               return InitialButton(
                 text: '선택완료',

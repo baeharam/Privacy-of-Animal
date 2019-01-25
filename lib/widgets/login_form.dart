@@ -42,7 +42,6 @@ class _LoginFormState extends State<LoginForm> {
             builder: (BuildContext context, AsyncSnapshot<String> snapshot){
               return EnsureVisibleWhenFocused(
                 focusNode: _emailFocusNode,
-                focusType: FocusType.EMAIL_FOCUS,
                 child: TextField(
                   decoration: InputDecoration(
                     labelText: '이메일',
@@ -63,7 +62,6 @@ class _LoginFormState extends State<LoginForm> {
             builder: (BuildContext context, AsyncSnapshot<String> snapshot){
               return EnsureVisibleWhenFocused(
                 focusNode: _passwordFocusNode,
-                focusType: FocusType.PASSWORD_FOCUS,
                 child: TextField(
                   decoration: InputDecoration(
                     labelText: '비밀번호',
