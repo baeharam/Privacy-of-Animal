@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:privacy_of_animal/logics/validation/validation_bloc.dart';
 import 'package:privacy_of_animal/resources/constants.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/widgets/dashed_circle.dart';
-import 'package:privacy_of_animal/widgets/initial_button.dart';
+import 'package:privacy_of_animal/widgets/login_form.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -11,131 +10,71 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+
   @override
   Widget build(BuildContext context) {
 
-    final double width = MediaQuery.of(context).size.width;
-    final double height = MediaQuery.of(context).size.height;
-
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Padding(
-        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-        child: ListView(
-          children: <Widget>[
-            Container(
-              width: double.infinity,
-              height: height/3,
-              child: Stack(
-                children: <Widget>[
-                  ClipPath(
-                    child: Container(
-                      color: loginBackgroundColor,
-                    ),
-                    clipper: LoginBackgroundClipper(),
-                  ),
-                  Positioned(
-                    left: width/2-dashedBackgroundCircleDiameter/2,
-                    top: height/6.6,
-                    child: Container(
-                      width: dashedBackgroundCircleDiameter,
-                      height: dashedBackgroundCircleDiameter,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle
-                      )
-                    ),
-                  ),
-                  Positioned(
-                    left: width/2-dashedCircleRadius,
-                    top: height/6,
-                    child: DashedCircle(
-                      child: CircleAvatar(
-                        child: Text(
-                          '로그인',
-                          style: TextStyle(
-                            color: loginTextColor,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20.0
-                          )
-                        ),
-                        radius: dashedCircleRadius,
-                        backgroundColor: Colors.white,
-                      ),
-                      gapSize: 7,
-                      dashes: 40,
-                      color: loginBackgroundColor,
-                    ),
-                  )
-                ],
-              ),
-            ),
-            _buildLoginFormColumn(width, height)
-          ],
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              _buildLoginBackground(),
+              SizedBox(height: ScreenUtil.height/10),    
+              LoginForm()     
+            ]
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildLoginFormColumn(double width, double height) {
-
-    final TextEditingController _emailController = TextEditingController();
-    final TextEditingController _passwordController = TextEditingController();
-
-    final validationBloc = ValidationBloc();
+  Widget _buildLoginBackground() {
 
     return Container(
-      height: height/2,
-      width: width/1.3,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
+      width: double.infinity,
+      height: ScreenUtil.height/3,
+      child: Stack(
         children: <Widget>[
-          StreamBuilder<String>(
-            stream: validationBloc.email,
-            builder: (BuildContext context, AsyncSnapshot<String> snapshot){
-              return Container(
-                width: width/1.4,
-                child: TextField(
-                  decoration: InputDecoration(
-                    labelText: '이메일',
-                    errorText: snapshot.error,
-                  ),
-                  onChanged: validationBloc.onEmailChanged,
-                  keyboardType: TextInputType.emailAddress,
-                  controller: _emailController,
-                ),
-              );
-            },
+          ClipPath(
+            child: Container(
+              color: loginBackgroundColor,
+            ),
+            clipper: LoginBackgroundClipper(),
           ),
-          SizedBox(height: 20.0),
-          StreamBuilder<String>(
-            stream: validationBloc.password,
-            builder: (BuildContext context, AsyncSnapshot<String> snapshot){
-              return Container(
-                width: width/1.4,
-                child: TextField(
-                  decoration: InputDecoration(
-                    labelText: '비밀번호',
-                    errorText: snapshot.error
-                  ),
-                  onChanged: validationBloc.onPasswordChanged,
-                  obscureText: true,
-                  keyboardType: TextInputType.emailAddress,
-                  controller: _passwordController,
-                ),
-              );
-            },
+          Positioned(
+            left: ScreenUtil.width/2-dashedBackgroundCircleDiameter/2,
+            top: ScreenUtil.height/6.6,
+            child: Container(
+              width: dashedBackgroundCircleDiameter,
+              height: dashedBackgroundCircleDiameter,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle
+              )
+            ),
           ),
-          SizedBox(height: 50.0),
-          StreamBuilder<bool>(
-            stream: validationBloc.loginValid,
-            builder: (BuildContext context, AsyncSnapshot<bool> snapshot){
-              return InitialButton(
-                text: '로그인',
-                color: introLoginButtonColor,
-                callback: (snapshot.hasData && snapshot.data==true) ? (){} : null,
-              );
-            },
+          Positioned(
+            left: ScreenUtil.width/2-dashedCircleRadius,
+            top: ScreenUtil.height/6,
+            child: DashedCircle(
+              child: CircleAvatar(
+                child: Text(
+                  '로그인',
+                  style: TextStyle(
+                    color: loginTextColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20.0
+                  )
+                ),
+                radius: dashedCircleRadius,
+                backgroundColor: Colors.white,
+              ),
+              gapSize: 7,
+              dashes: 40,
+              color: loginBackgroundColor,
+            ),
           )
         ],
       ),

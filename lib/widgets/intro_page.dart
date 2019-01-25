@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/model/intro_page_model.dart';
+import 'package:privacy_of_animal/resources/constants.dart';
 
 class IntroPage extends StatelessWidget {
 
@@ -9,6 +10,10 @@ class IntroPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    ScreenUtil.width = MediaQuery.of(context).size.width;
+    ScreenUtil.height = MediaQuery.of(context).size.height;
+
     return Container(
       width: double.infinity,
       height: MediaQuery.of(context).size.height*0.7,
