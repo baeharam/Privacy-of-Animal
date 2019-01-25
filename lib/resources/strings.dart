@@ -20,6 +20,8 @@ const String signUpEmptyJobError = '직업을 입력하세요.';
 const String signUpNameHint = '본인의 이름을 입력해주세요.';
 const String signUpAgeHint = '나이를 설정해주세요.';
 const String signUpJobHint = '직업을 입력해주세요.';
+const String signUpEmailHint = '이메일을 입력해주세요.';
+const String signUpPasswordHint = '6글자 이상의 비밀번호를 입력해주세요.';
 
 // 로컬 DB 이름
 const String userDB = 'user.db';

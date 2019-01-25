@@ -58,7 +58,7 @@ class _SignUpEmailPasswordFormState extends State<SignUpEmailPasswordForm> {
                 child: TextField(
                   decoration: InputDecoration(
                     errorText: snapshot.error,
-                    hintText: signUpNameHint
+                    hintText: signUpEmailHint
                   ),
                   onChanged: _validationBloc.onNameChanged,
                   keyboardType: TextInputType.text,
@@ -89,7 +89,7 @@ class _SignUpEmailPasswordFormState extends State<SignUpEmailPasswordForm> {
                 child: TextField(
                   decoration: InputDecoration(
                     errorText: snapshot.error,
-                    hintText: signUpJobHint
+                    hintText: signUpPasswordHint
                   ),
                   onChanged: _validationBloc.onJobChanged,
                   keyboardType: TextInputType.text,
@@ -104,7 +104,7 @@ class _SignUpEmailPasswordFormState extends State<SignUpEmailPasswordForm> {
             stream: _validationBloc.loginValid,
             builder: (BuildContext context, AsyncSnapshot<bool> snapshot){
               return InitialButton(
-                text: '선택완료',
+                text: '회원가입',
                 color: introLoginButtonColor,
                 callback: (snapshot.hasData && snapshot.data==true) ? (){} : null,
               );

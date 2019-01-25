@@ -31,5 +31,8 @@ class ValidationBloc extends Object
   void dispose() {
     _emailController.close();
     _passwordController.close();
+    _nameController.close();
+    _ageController.close();
+    _jobController.close();
   }
 }

@@ -37,7 +37,7 @@ class _SignUpProfileFormState extends State<SignUpProfileForm> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: ScreenUtil.height/1.7,
+      height: ScreenUtil.height/1.8,
       width: ScreenUtil.width/1.3,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
