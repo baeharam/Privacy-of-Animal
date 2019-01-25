@@ -1,4 +1,3 @@
-
 import 'package:flutter/foundation.dart';
 
 const double dashedCircleRadius = 57.0;

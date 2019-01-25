@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:privacy_of_animal/collections/intro_pages.dart';
 import 'package:privacy_of_animal/decision/authentication_decision.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
+import 'package:privacy_of_animal/resources/constants.dart';
 import 'package:privacy_of_animal/widgets/back_button_dialog.dart';
 import 'package:privacy_of_animal/widgets/dots_indicator.dart';
 import 'package:privacy_of_animal/widgets/initial_button.dart';
@@ -42,9 +43,16 @@ class _IntroScreenState extends State<IntroScreen> with SingleTickerProviderStat
       super.dispose();
     }
 
+  void initializeConstants(BuildContext context) {
+    ScreenUtil.width = MediaQuery.of(context).size.width;
+    ScreenUtil.height = MediaQuery.of(context).size.height;
+    CurrentPlatform.platform = Theme.of(context).platform;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final double height = MediaQuery.of(context).size.height;
+
+    initializeConstants(context);
 
     return WillPopScope(
       onWillPop: () => onWillPop(context),
@@ -88,7 +96,7 @@ class _IntroScreenState extends State<IntroScreen> with SingleTickerProviderStat
                 ),
               ),
               Container(
-                height: height*0.3,
+                height: ScreenUtil.height*0.3,
                 width: double.infinity,
                 color: Colors.white,
                 padding: const EdgeInsets.only(top: 50.0),
@@ -99,7 +107,7 @@ class _IntroScreenState extends State<IntroScreen> with SingleTickerProviderStat
                     InitialButton(
                       text: '로그인', 
                       color: introLoginButtonColor,
-                      callback: () => Navigator.of(context).pushNamed('/decision')
+                      callback: () => AuthenticationDecision()
                     ),
                     SizedBox(height: 25.0),
                     InitialButton(
