@@ -37,10 +37,10 @@ class IntroPage extends StatelessWidget {
                   fontSize: 20.0
                 ),
               ),
-              SizedBox(height: 30.0),
+              SizedBox(height: ScreenUtil.height/20),
               Container(
-                width: 300.0,
-                height: 300.0,
+                width: CurrentPlatform.platform == TargetPlatform.android ? ScreenUtil.width/1.35 : ScreenUtil.width/1.6,
+                height: CurrentPlatform.platform == TargetPlatform.android ? ScreenUtil.width/1.35 : ScreenUtil.width/1.6,
                 decoration: BoxDecoration(
                   image: DecorationImage(
                     image: AssetImage(introPageModel.image),
