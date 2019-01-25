@@ -3,12 +3,17 @@ import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/resources/constants.dart';
 import 'package:privacy_of_animal/widgets/dashed_circle.dart';
 
-class LoginBackground extends StatefulWidget {
+class ArcBackground extends StatefulWidget {
+
+  final Color backgroundColor;
+
+  ArcBackground({@required this.backgroundColor});
+
   @override
-  _LoginBackgroundState createState() => _LoginBackgroundState();
+  _ArcBackgroundState createState() => _ArcBackgroundState();
 }
 
-class _LoginBackgroundState extends State<LoginBackground> {
+class _ArcBackgroundState extends State<ArcBackground> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -18,7 +23,7 @@ class _LoginBackgroundState extends State<LoginBackground> {
         children: <Widget>[
           ClipPath(
             child: Container(
-              color: loginBackgroundColor,
+              color: widget.backgroundColor,
             ),
             clipper: LoginBackgroundClipper(),
           ),

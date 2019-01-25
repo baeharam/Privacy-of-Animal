@@ -1,9 +1,12 @@
 import 'package:privacy_of_animal/logics/authentication/authentication.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state.dart';
 
-class AuthenticaionBloc extends BlocEventStateBase<AuthenticationEvent,AuthenticationState> {
+class AuthenticationBloc extends BlocEventStateBase<AuthenticationEvent,AuthenticationState> {
 
   static final AuthenticationAPI _api = AuthenticationAPI();
+
+  @override
+    AuthenticationState get initialState => AuthenticationState.notAuthenticated();
 
   @override
   Stream<AuthenticationState> eventHandler(AuthenticationEvent event, AuthenticationState currentState) async*{

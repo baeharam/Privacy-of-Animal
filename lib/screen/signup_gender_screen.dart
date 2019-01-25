@@ -7,12 +7,12 @@ import 'package:privacy_of_animal/resources/constants.dart';
 import 'package:privacy_of_animal/widgets/arc_background.dart';
 import 'package:privacy_of_animal/widgets/login_form.dart';
 
-class LoginScreen extends StatefulWidget {
+class SignUpScreen extends StatefulWidget {
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  _SignUpScreenState createState() => _SignUpScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
     void initState() {
@@ -31,7 +31,7 @@ class _LoginScreenState extends State<LoginScreen> {
         child: SingleChildScrollView(
           child: Column(
             children: <Widget>[
-              ArcBackground(backgroundColor: loginBackgroundColor,),
+              ArcBackground(backgroundColor: signUpBackgroundColor,),
               SizedBox(height: ScreenUtil.height/10),    
               LoginForm(),
               BlocEventStateBuilder(
