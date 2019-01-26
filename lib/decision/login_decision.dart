@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_helpers.dart';
 import 'package:privacy_of_animal/logics/authentication/authentication.dart';
 import 'package:privacy_of_animal/screen/login_screen.dart';
-import 'package:privacy_of_animal/widgets/progress_indicator.dart';
+import 'package:privacy_of_animal/utils/stream_navigator.dart';
 
 
 class LoginDecision extends StatefulWidget {
@@ -16,24 +16,20 @@ class _LoginDecisionState extends State<LoginDecision> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<AuthenticationBloc>(
+    return BlocEventStateBuilder(
       bloc: _bloc,
-      child: BlocEventStateBuilder(
-        bloc: _bloc,
-        builder: (BuildContext context, AuthenticationState state){
-          List<Widget> widgets = [];
-
-          if(!state.isAuthenticated){
-            widgets.add(LoginScreen());
-          }
-          if(state.isAuthenticating){
-            widgets.add(CustomProgressIndicator());
-          }
-
-          widgets.add(Container());
-          return Column(children: widgets);
-        },
-      ),
+      builder: (BuildContext context, AuthenticationState state){
+        if(!state.isAuthenticated){
+          return BlocProvider<AuthenticationBloc>(
+            bloc: _bloc,
+            child: LoginScreen()
+          );
+        }
+        if(state.isAuthenticated){
+          StreamNavigator.pushReplacementNamed(context, '/homeDecision');
+        }
+        return Container();
+      },
     );
   }
 }

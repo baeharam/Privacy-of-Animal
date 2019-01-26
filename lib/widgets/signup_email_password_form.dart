@@ -114,7 +114,7 @@ class _SignUpEmailPasswordFormState extends State<SignUpEmailPasswordForm> {
                 callback: (snapshot.hasData && snapshot.data==true) 
                 ? (){
                   _authenticationBloc.emitEvent(
-                    AuthenticationEventSignUp(
+                    AuthenticationEventLogin(
                       email: _emailController.text, password: _passwordController.text
                     )
                   );

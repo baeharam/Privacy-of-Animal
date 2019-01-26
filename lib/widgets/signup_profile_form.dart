@@ -147,7 +147,7 @@ class _SignUpProfileFormState extends State<SignUpProfileForm> {
                 color: introLoginButtonColor,
                 callback: (snapshot.hasData && snapshot.data==true) ? 
                 () {
-                  _validationBloc.saveUserProfileInfo(_nameController.text, _ageController.text, _jobController.text);
+                  //_validationBloc.saveUserProfileInfo(_nameController.text, _ageController.text, _jobController.text);
                   StreamNavigator.pushNamed(context,'/signUpEmailPassword');
                 }
                 : null,

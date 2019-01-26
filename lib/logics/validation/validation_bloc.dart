@@ -28,12 +28,6 @@ class ValidationBloc extends Object
   Stream<bool> get loginValid => Observable.combineLatest2(email, password, (e,p) => true);
   Stream<bool> get signUpProfileValid => Observable.combineLatest3(name,age,job, (n,a,j) => true);
 
-  void saveUserProfileInfo(String name, String age, String job) {
-    UserRepository.realProfileTableModel.name = name;
-    UserRepository.realProfileTableModel.age = int.parse(age);
-    UserRepository.realProfileTableModel.job = job;
-  }
-
   @override
   void dispose() {
     _emailController.close();

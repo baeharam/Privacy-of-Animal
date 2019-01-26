@@ -8,5 +8,6 @@ Map<String, WidgetBuilder> routes =  {
   '/signUpProfile': (BuildContext context) => SignUpProfileScreen(),
   '/signUpEmailPassword': (BuildContext context) => SignUpEmailPasswordScreen(),
   '/loginDecision': (BuildContext context) => LoginDecision(),
-  '/signUpDecision': (BuildContext context) => SignUpDecision()
+  '/signUpDecision': (BuildContext context) => SignUpDecision(),
+  '/homeDecision': (BuildContext context) => HomeDecision()
 };
