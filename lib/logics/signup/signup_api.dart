@@ -3,13 +3,13 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 
-class AuthenticationAPI {
+class SignUpAPI {
 
   static final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  // 로그인
-  Future<AUTH_RESULT> loginWithFirebase(String email, String password) async {
-    await _auth.signInWithEmailAndPassword(
+  // 회원가입
+  Future<AUTH_RESULT> signUpWithFirebase(String email, String password) async {
+    await _auth.createUserWithEmailAndPassword(
       email: email,
       password: password
     ).catchError((exception){
