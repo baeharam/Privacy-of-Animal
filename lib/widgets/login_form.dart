@@ -72,25 +72,22 @@ class _LoginFormState extends State<LoginForm> {
             stream: _validationBloc.password,
             initialData: loginEmptyPasswordError,
             builder: (BuildContext context, AsyncSnapshot<String> snapshot){
-              return EnsureVisibleWhenFocused(
-                focusNode: _passwordFocusNode,
-                child: StreamBuilder(
-                  stream: authenticationBloc.state,
-                  builder: (BuildContext context, AsyncSnapshot<AuthenticationState> state){
-                    return TextField(
-                      decoration: InputDecoration(
-                        labelText: '비밀번호',
-                        errorText: snapshot.error
-                      ),
-                      onChanged: _validationBloc.onPasswordChanged,
-                      obscureText: true,
-                      keyboardType: TextInputType.emailAddress,
-                      controller: _passwordController,
-                      focusNode: _passwordFocusNode,
-                      enabled: (state.hasData && state.data.isAuthenticating) ? false : true,
-                    );
-                  } 
-                ),
+              return StreamBuilder(
+                stream: authenticationBloc.state,
+                builder: (BuildContext context, AsyncSnapshot<AuthenticationState> state){
+                  return TextField(
+                    decoration: InputDecoration(
+                      labelText: '비밀번호',
+                      errorText: snapshot.error
+                    ),
+                    onChanged: _validationBloc.onPasswordChanged,
+                    obscureText: true,
+                    keyboardType: TextInputType.emailAddress,
+                    controller: _passwordController,
+                    focusNode: _passwordFocusNode,
+                    enabled: (state.hasData && state.data.isAuthenticating) ? false : true,
+                  );
+                } 
               );
             }
           ),

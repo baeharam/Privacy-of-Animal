@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
 import 'package:meta/meta.dart';
 
 ///
@@ -36,7 +35,7 @@ class EnsureVisibleWhenFocused extends StatefulWidget {
     @required this.child,
     @required this.focusNode,
     this.curve: Curves.ease,
-    this.duration: const Duration(milliseconds: 100),
+    this.duration: const Duration(milliseconds: 20),
   }) : super(key: key);
 
   /// The node we will monitor to determine if the child is focused
@@ -139,9 +138,9 @@ class _EnsureVisibleWhenFocusedState extends State<EnsureVisibleWhenFocused> wit
     if (position.pixels > viewport.getOffsetToReveal(object, 0.0).offset) {
       // Move down to the top of the viewport
       alignment = 0.0;
-    } else if (position.pixels < viewport.getOffsetToReveal(object, 0.6).offset){
+    } else if (position.pixels < viewport.getOffsetToReveal(object, 0.2).offset){
       // Move up to the bottom of the viewport
-      alignment = 0.6;
+      alignment = 0.2;
     } else {
       // No scrolling is necessary to reveal the child
       return;
