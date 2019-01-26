@@ -19,6 +19,12 @@ class StreamNavigator {
       Navigator.of(context).pushNamedAndRemoveUntil(pageName, ModalRoute.withName(remainPageName));
     });
   }
+
+  static void pushReplacementNamed(BuildContext context, String pageName) {
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      Navigator.of(context).pushReplacementNamed(pageName);
+    });
+  }
 }
 
 
