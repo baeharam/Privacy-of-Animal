@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_provider.dart';
-import 'package:privacy_of_animal/logics/authentication/authentication_bloc.dart';
-import 'package:privacy_of_animal/logics/authentication/authentication_event.dart';
+import 'package:privacy_of_animal/logics/authentication/authentication.dart';
 import 'package:privacy_of_animal/logics/validation/validation_bloc.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/resources/constants.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:privacy_of_animal/widgets/focus_visible_maker.dart';
 import 'package:privacy_of_animal/widgets/initial_button.dart';
+import 'package:privacy_of_animal/widgets/progress_indicator.dart';
 
 class LoginForm extends StatefulWidget {
   @override
@@ -34,7 +34,7 @@ class _LoginFormState extends State<LoginForm> {
   @override
   Widget build(BuildContext context) {
 
-    final AuthenticationBloc bloc = BlocProvider.of<AuthenticationBloc>(context);
+    final AuthenticationBloc authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
 
     return Container(
       height: ScreenUtil.height/2,
@@ -48,15 +48,21 @@ class _LoginFormState extends State<LoginForm> {
             builder: (BuildContext context, AsyncSnapshot<String> snapshot){
               return EnsureVisibleWhenFocused(
                 focusNode: _emailFocusNode,
-                child: TextField(
-                  decoration: InputDecoration(
-                    labelText: '이메일',
-                    errorText: snapshot.error,
-                  ),
-                  onChanged: _validationBloc.onEmailChanged,
-                  keyboardType: TextInputType.emailAddress,
-                  controller: _emailController,
-                  focusNode: _emailFocusNode,
+                child: StreamBuilder(
+                  stream: authenticationBloc.state,
+                  builder: (BuildContext context, AsyncSnapshot<AuthenticationState> state){
+                    return TextField(
+                      decoration: InputDecoration(
+                        labelText: '이메일',
+                        errorText: snapshot.error,
+                      ),
+                      onChanged: _validationBloc.onEmailChanged,
+                      keyboardType: TextInputType.emailAddress,
+                      controller: _emailController,
+                      focusNode: _emailFocusNode,
+                      enabled: (state.hasData && state.data.isAuthenticating) ? false : true
+                    );
+                  } 
                 ),
               );
             },
@@ -68,19 +74,25 @@ class _LoginFormState extends State<LoginForm> {
             builder: (BuildContext context, AsyncSnapshot<String> snapshot){
               return EnsureVisibleWhenFocused(
                 focusNode: _passwordFocusNode,
-                child: TextField(
-                  decoration: InputDecoration(
-                    labelText: '비밀번호',
-                    errorText: snapshot.error
-                  ),
-                  onChanged: _validationBloc.onPasswordChanged,
-                  obscureText: true,
-                  keyboardType: TextInputType.emailAddress,
-                  controller: _passwordController,
-                  focusNode: _passwordFocusNode,
+                child: StreamBuilder(
+                  stream: authenticationBloc.state,
+                  builder: (BuildContext context, AsyncSnapshot<AuthenticationState> state){
+                    return TextField(
+                      decoration: InputDecoration(
+                        labelText: '비밀번호',
+                        errorText: snapshot.error
+                      ),
+                      onChanged: _validationBloc.onPasswordChanged,
+                      obscureText: true,
+                      keyboardType: TextInputType.emailAddress,
+                      controller: _passwordController,
+                      focusNode: _passwordFocusNode,
+                      enabled: (state.hasData && state.data.isAuthenticating) ? false : true,
+                    );
+                  } 
                 ),
               );
-            },
+            }
           ),
           SizedBox(height: ScreenUtil.height/10),
           StreamBuilder<bool>(
@@ -91,10 +103,20 @@ class _LoginFormState extends State<LoginForm> {
                 color: introLoginButtonColor,
                 callback: (snapshot.hasData && snapshot.data==true) 
                 ? (){
-                  bloc.emitEvent(AuthenticationEventLogin(email: _emailController.text, password: _passwordController.text));
+                  FocusScope.of(context).requestFocus(FocusNode());
+                  authenticationBloc.emitEvent(AuthenticationEventLogin(email: _emailController.text, password: _passwordController.text));
                 } 
                 : null,
               );
+            },
+          ),
+          StreamBuilder<AuthenticationState>(
+            stream: authenticationBloc.state,
+            builder: (BuildContext context, AsyncSnapshot<AuthenticationState> snapshot){
+              if(snapshot.hasData && snapshot.data.isAuthenticating){
+                return CustomProgressIndicator();
+              }
+              return Container();
             },
           )
         ],
