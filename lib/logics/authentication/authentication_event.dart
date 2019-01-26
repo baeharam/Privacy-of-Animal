@@ -13,14 +13,4 @@ class AuthenticationEventLogin extends AuthenticationEvent {
   });
 }
 
-class AuthenticationEventSignUp extends AuthenticationEvent {
-  final String email;
-  final String password;
-
-  AuthenticationEventSignUp({
-    this.email,
-    this.password
-  });
-}
-
 class AuthenticationEventLogout extends AuthenticationEvent {}
