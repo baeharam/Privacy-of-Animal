@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:privacy_of_animal/bloc_helpers/bloc_provider.dart';
+import 'package:privacy_of_animal/bloc_helpers/multiple_bloc_provider.dart';
 import 'package:privacy_of_animal/logics/authentication/authentication.dart';
 import 'package:privacy_of_animal/logics/validation/validation_bloc.dart';
-import 'package:privacy_of_animal/resources/colors.dart';
-import 'package:privacy_of_animal/resources/constants.dart';
-import 'package:privacy_of_animal/resources/strings.dart';
+import 'package:privacy_of_animal/resources/resources.dart';
 import 'package:privacy_of_animal/widgets/focus_visible_maker.dart';
 import 'package:privacy_of_animal/widgets/initial_button.dart';
 import 'package:privacy_of_animal/widgets/progress_indicator.dart';
@@ -18,7 +16,6 @@ class _LoginFormState extends State<LoginForm> {
 
   final FocusNode _emailFocusNode = FocusNode();
   final FocusNode _passwordFocusNode = FocusNode();
-  final ValidationBloc _validationBloc = ValidationBloc();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -34,7 +31,8 @@ class _LoginFormState extends State<LoginForm> {
   @override
   Widget build(BuildContext context) {
 
-    final AuthenticationBloc authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
+    final ValidationBloc validationBloc = MultipleBlocProvider.of<ValidationBloc>(context);
+    final AuthenticationBloc authenticationBloc = MultipleBlocProvider.of<AuthenticationBloc>(context);
 
     return Container(
       height: ScreenUtil.height/2,
@@ -43,7 +41,7 @@ class _LoginFormState extends State<LoginForm> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           StreamBuilder<String>(
-            stream: _validationBloc.email,
+            stream: validationBloc.email,
             initialData: loginEmptyEmailError,
             builder: (BuildContext context, AsyncSnapshot<String> snapshot){
               return EnsureVisibleWhenFocused(
@@ -56,7 +54,7 @@ class _LoginFormState extends State<LoginForm> {
                         labelText: '이메일',
                         errorText: snapshot.error,
                       ),
-                      onChanged: _validationBloc.onEmailChanged,
+                      onChanged: validationBloc.onEmailChanged,
                       keyboardType: TextInputType.emailAddress,
                       controller: _emailController,
                       focusNode: _emailFocusNode,
@@ -69,7 +67,7 @@ class _LoginFormState extends State<LoginForm> {
           ),
           SizedBox(height: 20.0),
           StreamBuilder<String>(
-            stream: _validationBloc.password,
+            stream: validationBloc.password,
             initialData: loginEmptyPasswordError,
             builder: (BuildContext context, AsyncSnapshot<String> snapshot){
               return StreamBuilder(
@@ -80,7 +78,7 @@ class _LoginFormState extends State<LoginForm> {
                       labelText: '비밀번호',
                       errorText: snapshot.error
                     ),
-                    onChanged: _validationBloc.onPasswordChanged,
+                    onChanged: validationBloc.onPasswordChanged,
                     obscureText: true,
                     keyboardType: TextInputType.emailAddress,
                     controller: _passwordController,
@@ -93,7 +91,7 @@ class _LoginFormState extends State<LoginForm> {
           ),
           SizedBox(height: ScreenUtil.height/10),
           StreamBuilder<bool>(
-            stream: _validationBloc.loginValid,
+            stream: validationBloc.loginValid,
             builder: (BuildContext context, AsyncSnapshot<bool> snapshot){
               return InitialButton(
                 text: '로그인',

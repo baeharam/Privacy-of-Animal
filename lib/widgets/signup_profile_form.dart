@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:privacy_of_animal/bloc_helpers/bloc_provider.dart';
+import 'package:privacy_of_animal/bloc_helpers/multiple_bloc_provider.dart';
+import 'package:privacy_of_animal/logics/signup/signup.dart';
 import 'package:privacy_of_animal/logics/validation/validation_bloc.dart';
-import 'package:privacy_of_animal/resources/colors.dart';
-import 'package:privacy_of_animal/resources/constants.dart';
-import 'package:privacy_of_animal/resources/strings.dart';
-import 'package:privacy_of_animal/utils/stream_navigator.dart';
+import 'package:privacy_of_animal/resources/resources.dart';
 import 'package:privacy_of_animal/widgets/focus_visible_maker.dart';
 import 'package:privacy_of_animal/widgets/initial_button.dart';
 
@@ -37,7 +35,8 @@ class _SignUpProfileFormState extends State<SignUpProfileForm> {
   @override
   Widget build(BuildContext context) {
 
-    final ValidationBloc _validationBloc = BlocProvider.of<ValidationBloc>(context);
+    final ValidationBloc validationBloc = MultipleBlocProvider.of<ValidationBloc>(context);
+    final SignUpBloc signUpBloc = MultipleBlocProvider.of<SignUpBloc>(context);
 
     return Container(
       height: ScreenUtil.height/1.8,
@@ -58,7 +57,7 @@ class _SignUpProfileFormState extends State<SignUpProfileForm> {
             ),
           ),
           StreamBuilder<String>(
-            stream: _validationBloc.name,
+            stream: validationBloc.name,
             initialData: signUpEmptyNameError,
             builder: (BuildContext context, AsyncSnapshot<String> snapshot){
               return EnsureVisibleWhenFocused(
@@ -68,7 +67,7 @@ class _SignUpProfileFormState extends State<SignUpProfileForm> {
                     errorText: snapshot.error,
                     hintText: signUpNameHint
                   ),
-                  onChanged: _validationBloc.onNameChanged,
+                  onChanged: validationBloc.onNameChanged,
                   keyboardType: TextInputType.text,
                   controller: _nameController,
                   focusNode: _nameFocusNode,
@@ -89,7 +88,7 @@ class _SignUpProfileFormState extends State<SignUpProfileForm> {
             ),
           ),
           StreamBuilder<String>(
-            stream: _validationBloc.age,
+            stream: validationBloc.age,
             initialData: signUpEmptyAgeError,
             builder: (BuildContext context, AsyncSnapshot<String> snapshot){
               return EnsureVisibleWhenFocused(
@@ -99,7 +98,7 @@ class _SignUpProfileFormState extends State<SignUpProfileForm> {
                     errorText: snapshot.error,
                     hintText: signUpAgeHint
                   ),
-                  onChanged: _validationBloc.onAgeChanged,
+                  onChanged: validationBloc.onAgeChanged,
                   controller: _ageController,
                   focusNode: _ageFocusNode,
                   keyboardType: TextInputType.number,
@@ -120,7 +119,7 @@ class _SignUpProfileFormState extends State<SignUpProfileForm> {
             ),
           ),
           StreamBuilder<String>(
-            stream: _validationBloc.job,
+            stream: validationBloc.job,
             initialData: signUpEmptyAgeError,
             builder: (BuildContext context, AsyncSnapshot<String> snapshot){
               return EnsureVisibleWhenFocused(
@@ -130,7 +129,7 @@ class _SignUpProfileFormState extends State<SignUpProfileForm> {
                     errorText: snapshot.error,
                     hintText: signUpJobHint
                   ),
-                  onChanged: _validationBloc.onJobChanged,
+                  onChanged: validationBloc.onJobChanged,
                   keyboardType: TextInputType.text,
                   controller: _jobController,
                   focusNode: _jobFocusNode,
@@ -140,15 +139,19 @@ class _SignUpProfileFormState extends State<SignUpProfileForm> {
           ),
           SizedBox(height: ScreenUtil.height/15),
           StreamBuilder<bool>(
-            stream: _validationBloc.signUpProfileValid,
+            stream: validationBloc.signUpProfileValid,
             builder: (BuildContext context, AsyncSnapshot<bool> snapshot){
               return InitialButton(
                 text: '선택완료',
                 color: introLoginButtonColor,
                 callback: (snapshot.hasData && snapshot.data==true) ? 
                 () {
-                  //_validationBloc.saveUserProfileInfo(_nameController.text, _ageController.text, _jobController.text);
-                  StreamNavigator.pushNamed(context,'/signUpEmailPassword');
+                  signUpBloc.emitEvent(SignUpEventProfileComplete(
+                    name: _nameController.text,
+                    age: _ageController.text,
+                    job: _jobController.text,
+                    gender: 'm'
+                  ));
                 }
                 : null,
               );

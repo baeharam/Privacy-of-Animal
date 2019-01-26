@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:privacy_of_animal/bloc_helpers/bloc_provider.dart';
-import 'package:privacy_of_animal/logics/authentication/authentication.dart';
+import 'package:privacy_of_animal/bloc_helpers/multiple_bloc_provider.dart';
+import 'package:privacy_of_animal/logics/signup/signup.dart';
 import 'package:privacy_of_animal/logics/validation/validation_bloc.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/resources/constants.dart';
@@ -33,8 +33,8 @@ class _SignUpEmailPasswordFormState extends State<SignUpEmailPasswordForm> {
   @override
   Widget build(BuildContext context) {
 
-    final ValidationBloc _validationBloc = BlocProvider.of<ValidationBloc>(context);
-    final AuthenticationBloc _authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
+    final ValidationBloc validationBloc = MultipleBlocProvider.of<ValidationBloc>(context);
+    final SignUpBloc signUpBloc = MultipleBlocProvider.of<SignUpBloc>(context);
 
     return Container(
       height: ScreenUtil.height/1.7,
@@ -55,7 +55,7 @@ class _SignUpEmailPasswordFormState extends State<SignUpEmailPasswordForm> {
             ),
           ),
           StreamBuilder<String>(
-            stream: _validationBloc.email,
+            stream: validationBloc.email,
             initialData: signUpEmptyNameError,
             builder: (BuildContext context, AsyncSnapshot<String> snapshot){
               return EnsureVisibleWhenFocused(
@@ -65,7 +65,7 @@ class _SignUpEmailPasswordFormState extends State<SignUpEmailPasswordForm> {
                     errorText: snapshot.error,
                     hintText: signUpEmailHint
                   ),
-                  onChanged: _validationBloc.onNameChanged,
+                  onChanged: validationBloc.onNameChanged,
                   keyboardType: TextInputType.text,
                   controller: _emailController,
                   focusNode: _emailFocusNode,
@@ -86,7 +86,7 @@ class _SignUpEmailPasswordFormState extends State<SignUpEmailPasswordForm> {
             ),
           ),
           StreamBuilder<String>(
-            stream: _validationBloc.password,
+            stream: validationBloc.password,
             initialData: signUpEmptyAgeError,
             builder: (BuildContext context, AsyncSnapshot<String> snapshot){
               return EnsureVisibleWhenFocused(
@@ -96,7 +96,7 @@ class _SignUpEmailPasswordFormState extends State<SignUpEmailPasswordForm> {
                     errorText: snapshot.error,
                     hintText: signUpPasswordHint
                   ),
-                  onChanged: _validationBloc.onJobChanged,
+                  onChanged: validationBloc.onJobChanged,
                   keyboardType: TextInputType.text,
                   controller: _passwordController,
                   focusNode: _passwordFocusNode,
@@ -106,15 +106,15 @@ class _SignUpEmailPasswordFormState extends State<SignUpEmailPasswordForm> {
           ),
           SizedBox(height: ScreenUtil.height/15),
           StreamBuilder<bool>(
-            stream: _validationBloc.loginValid,
+            stream: validationBloc.loginValid,
             builder: (BuildContext context, AsyncSnapshot<bool> snapshot){
               return InitialButton(
                 text: '회원가입',
                 color: introLoginButtonColor,
                 callback: (snapshot.hasData && snapshot.data==true) 
                 ? (){
-                  _authenticationBloc.emitEvent(
-                    AuthenticationEventLogin(
+                  signUpBloc.emitEvent(
+                    SignUpEventEmailPasswordComplete(
                       email: _emailController.text, password: _passwordController.text
                     )
                   );

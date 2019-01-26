@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:privacy_of_animal/bloc_helpers/bloc_helpers.dart';
-import 'package:privacy_of_animal/logics/authentication/authentication.dart';
-import 'package:privacy_of_animal/logics/validation/validation_bloc.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/resources/constants.dart';
 import 'package:privacy_of_animal/widgets/arc_background.dart';
@@ -40,10 +37,7 @@ class _SignUpProfileScreenState extends State<SignUpProfileScreen> {
                   ),
                 )
               ),    
-              BlocProvider<ValidationBloc>(
-                bloc: ValidationBloc(),
-                child: SignUpProfileForm()
-              )    
+              SignUpProfileForm()    
             ]
           ),
         ),
