@@ -16,8 +16,6 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
 
-    final AuthenticationBloc bloc = BlocProvider.of<AuthenticationBloc>(context);
-
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -30,13 +28,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 title: '로그인',
               ),
               SizedBox(height: ScreenUtil.height/10),    
-              LoginForm(),
-              BlocEventStateBuilder(
-                bloc: bloc,
-                builder: (context, AuthenticationState state){
-                  return state.isAuthenticating ? CircularProgressIndicator() : Container();
-                },
-              )     
+              LoginForm()    
             ]
           ),
         ),

@@ -12,25 +12,28 @@ class LoginDecision extends StatefulWidget {
 
 class _LoginDecisionState extends State<LoginDecision> {
 
-  final AuthenticationBloc _authenticationBloc = AuthenticationBloc();
+  final AuthenticationBloc _bloc = AuthenticationBloc();
 
   @override
   Widget build(BuildContext context) {
-    return BlocEventStateBuilder(
-      bloc: _authenticationBloc,
-      builder: (BuildContext context, AuthenticationState state){
-        List<Widget> widgets = [];
+    return BlocProvider<AuthenticationBloc>(
+      bloc: _bloc,
+      child: BlocEventStateBuilder(
+        bloc: _bloc,
+        builder: (BuildContext context, AuthenticationState state){
+          List<Widget> widgets = [];
 
-        if(!state.isAuthenticated){
-          widgets.add(LoginScreen());
-        }
-        if(state.isAuthenticating){
-          widgets.add(CustomProgressIndicator());
-        }
+          if(!state.isAuthenticated){
+            widgets.add(LoginScreen());
+          }
+          if(state.isAuthenticating){
+            widgets.add(CustomProgressIndicator());
+          }
 
-        widgets.add(Container());
-        return Column(children: widgets);
-      },
+          widgets.add(Container());
+          return Column(children: widgets);
+        },
+      ),
     );
   }
 }

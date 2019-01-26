@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:privacy_of_animal/bloc_helpers/bloc_provider.dart';
+import 'package:privacy_of_animal/logics/authentication/authentication_bloc.dart';
+import 'package:privacy_of_animal/logics/authentication/authentication_event.dart';
 import 'package:privacy_of_animal/logics/validation/validation_bloc.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/resources/constants.dart';
@@ -30,6 +33,9 @@ class _LoginFormState extends State<LoginForm> {
 
   @override
   Widget build(BuildContext context) {
+
+    final AuthenticationBloc bloc = BlocProvider.of<AuthenticationBloc>(context);
+
     return Container(
       height: ScreenUtil.height/2,
       width: ScreenUtil.width/1.3,
@@ -83,7 +89,11 @@ class _LoginFormState extends State<LoginForm> {
               return InitialButton(
                 text: '로그인',
                 color: introLoginButtonColor,
-                callback: (snapshot.hasData && snapshot.data==true) ? (){} : null,
+                callback: (snapshot.hasData && snapshot.data==true) 
+                ? (){
+                  bloc.emitEvent(AuthenticationEventLogin(email: _emailController.text, password: _passwordController.text));
+                } 
+                : null,
               );
             },
           )

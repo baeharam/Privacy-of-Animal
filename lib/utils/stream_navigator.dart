@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
 
 class StreamNavigator {
+
+  static void pop(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      Navigator.of(context).pop();
+    });
+  }
+
   static void pushNamed(BuildContext context, String pageName) {
     WidgetsBinding.instance.addPostFrameCallback((_){
       Navigator.of(context).pushNamed(pageName);
