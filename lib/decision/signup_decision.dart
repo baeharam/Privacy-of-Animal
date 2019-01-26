@@ -35,6 +35,7 @@ class _SignUpDecisionState extends State<SignUpDecision> {
           if(state.isEmailPasswordRegistered){
             return SignUpProfileScreen();
           }
+
           return Container();
         },
       ),

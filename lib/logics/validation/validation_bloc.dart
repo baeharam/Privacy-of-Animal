@@ -1,6 +1,5 @@
 import 'package:privacy_of_animal/bloc_helpers/bloc_provider.dart';
 import 'package:privacy_of_animal/logics/validation/validator.dart';
-import 'package:privacy_of_animal/utils/user_repository.dart';
 import 'package:rxdart/rxdart.dart';
 
 class ValidationBloc extends Object 

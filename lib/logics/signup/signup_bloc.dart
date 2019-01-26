@@ -10,6 +10,13 @@ class SignUpBloc extends BlocEventStateBase<SignUpEvent,SignUpState> {
 
   @override
   Stream<SignUpState> eventHandler(SignUpEvent event, SignUpState currentState) async*{
+
+    if(event is SignUpEventEmailPasswordInitial){
+      yield SignUpState.notEmailPasswordRegistered();
+    }
+    if(event is SignUpEventProfileInitial){
+      yield SignUpState.emailPasswordRegistered();
+    }
     
     if(event is SignUpEventEmailPasswordComplete){
       yield SignUpState.emailPasswordRgistering();
@@ -27,6 +34,7 @@ class SignUpBloc extends BlocEventStateBase<SignUpEvent,SignUpState> {
         yield SignUpState.profileRegistered();
       } else if(result == SIGNUP_RESULT.FAILURE){
         yield SignUpState.profileFailed();
+        yield SignUpState.emailPasswordRegistered();
       }
     }
   }

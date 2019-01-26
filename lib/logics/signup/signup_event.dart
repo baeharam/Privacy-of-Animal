@@ -4,6 +4,9 @@ import 'package:privacy_of_animal/model/real_profile_table_model.dart';
 
 abstract class SignUpEvent extends BlocEvent{}
 
+class SignUpEventEmailPasswordInitial extends SignUpEvent {}
+class SignUpEventProfileInitial extends SignUpEvent {}
+
 class SignUpEventProfileComplete extends SignUpEvent {
   final RealProfileTableModel data;
 

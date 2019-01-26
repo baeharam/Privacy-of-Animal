@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/bloc_helpers/multiple_bloc_provider.dart';
 import 'package:privacy_of_animal/logics/signup/signup.dart';
@@ -6,6 +7,7 @@ import 'package:privacy_of_animal/model/real_profile_table_model.dart';
 import 'package:privacy_of_animal/resources/resources.dart';
 import 'package:privacy_of_animal/widgets/focus_visible_maker.dart';
 import 'package:privacy_of_animal/widgets/initial_button.dart';
+import 'package:privacy_of_animal/widgets/progress_indicator.dart';
 
 class SignUpProfileForm extends StatefulWidget {
   @override
@@ -40,7 +42,7 @@ class _SignUpProfileFormState extends State<SignUpProfileForm> {
     final SignUpBloc signUpBloc = MultipleBlocProvider.of<SignUpBloc>(context);
 
     return Container(
-      height: ScreenUtil.height/1.8,
+      height: ScreenUtil.height/1.7,
       width: ScreenUtil.width/1.3,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -74,6 +76,7 @@ class _SignUpProfileFormState extends State<SignUpProfileForm> {
                       onChanged: validationBloc.onNameChanged,
                       keyboardType: TextInputType.text,
                       controller: _nameController,
+                      focusNode: _nameFocusNode,
                       enabled: (state.hasData && state.data.isEmailPasswordRegistering)?false:true
                     );
                   }
@@ -148,8 +151,9 @@ class _SignUpProfileFormState extends State<SignUpProfileForm> {
               return InitialButton(
                 text: '선택완료',
                 color: introLoginButtonColor,
-                callback: (snapshot.hasData && snapshot.data==true) ? 
-                () {
+                callback: (snapshot.hasData && snapshot.data==true) 
+                ? () {
+                  FocusScope.of(context).requestFocus(FocusNode());
                   signUpBloc.emitEvent(SignUpEventProfileComplete(
                     data: RealProfileTableModel(
                       name: _nameController.text,
@@ -161,6 +165,16 @@ class _SignUpProfileFormState extends State<SignUpProfileForm> {
                 }
                 : null,
               );
+            },
+          ),
+          SizedBox(height: ScreenUtil.height/10),
+          StreamBuilder<SignUpState>(
+            stream: signUpBloc.state,
+            builder: (BuildContext context, AsyncSnapshot<SignUpState> snapshot){
+              if(snapshot.hasData && snapshot.data.isEmailPasswordRegistering){
+                return CustomProgressIndicator();
+              }
+              return Container();
             },
           )
         ],

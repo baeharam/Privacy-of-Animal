@@ -35,7 +35,7 @@ class _LoginFormState extends State<LoginForm> {
     final AuthenticationBloc authenticationBloc = MultipleBlocProvider.of<AuthenticationBloc>(context);
 
     return Container(
-      height: ScreenUtil.height/2,
+      height: ScreenUtil.height/1.7,
       width: ScreenUtil.width/1.3,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -105,6 +105,7 @@ class _LoginFormState extends State<LoginForm> {
               );
             },
           ),
+          SizedBox(height: ScreenUtil.height/10),
           StreamBuilder<AuthenticationState>(
             stream: authenticationBloc.state,
             builder: (BuildContext context, AsyncSnapshot<AuthenticationState> snapshot){

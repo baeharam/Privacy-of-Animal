@@ -62,6 +62,9 @@ class _SignUpEmailPasswordFormState extends State<SignUpEmailPasswordForm> {
                 child: StreamBuilder(
                   stream: signUpBloc.state,
                   builder: (BuildContext context, AsyncSnapshot<SignUpState> state){
+                    if(state.hasData && state.data.isEmailPasswordFailed){
+                      _emailController.clear();
+                    }
                     return TextField(
                       decoration: InputDecoration(
                         errorText: snapshot.error,
@@ -97,6 +100,9 @@ class _SignUpEmailPasswordFormState extends State<SignUpEmailPasswordForm> {
               return StreamBuilder(
                 stream: signUpBloc.state,
                 builder: (BuildContext context, AsyncSnapshot<SignUpState> state){
+                  if(state.hasData && state.data.isEmailPasswordFailed){
+                    _passwordController.clear();
+                  }
                   return TextField(
                     decoration: InputDecoration(
                       errorText: snapshot.error,
@@ -132,6 +138,7 @@ class _SignUpEmailPasswordFormState extends State<SignUpEmailPasswordForm> {
               );
             },
           ),
+          SizedBox(height: ScreenUtil.height/10),
           StreamBuilder<SignUpState>(
             stream: signUpBloc.state,
             builder: (BuildContext context, AsyncSnapshot<SignUpState> snapshot){
