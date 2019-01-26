@@ -91,18 +91,14 @@ class _SignUpProfileFormState extends State<SignUpProfileForm> {
             stream: validationBloc.age,
             initialData: signUpEmptyAgeError,
             builder: (BuildContext context, AsyncSnapshot<String> snapshot){
-              return EnsureVisibleWhenFocused(
-                focusNode: _ageFocusNode,
-                child: TextField(
-                  decoration: InputDecoration(
-                    errorText: snapshot.error,
-                    hintText: signUpAgeHint
-                  ),
-                  onChanged: validationBloc.onAgeChanged,
-                  controller: _ageController,
-                  focusNode: _ageFocusNode,
-                  keyboardType: TextInputType.number,
+              return TextField(
+                decoration: InputDecoration(
+                  errorText: snapshot.error,
+                  hintText: signUpAgeHint
                 ),
+                onChanged: validationBloc.onAgeChanged,
+                controller: _ageController,
+                keyboardType: TextInputType.number,
               );
             },
           ),
@@ -122,18 +118,14 @@ class _SignUpProfileFormState extends State<SignUpProfileForm> {
             stream: validationBloc.job,
             initialData: signUpEmptyAgeError,
             builder: (BuildContext context, AsyncSnapshot<String> snapshot){
-              return EnsureVisibleWhenFocused(
-                focusNode: _jobFocusNode,
-                child: TextField(
-                  decoration: InputDecoration(
-                    errorText: snapshot.error,
-                    hintText: signUpJobHint
-                  ),
-                  onChanged: validationBloc.onJobChanged,
-                  keyboardType: TextInputType.text,
-                  controller: _jobController,
-                  focusNode: _jobFocusNode,
+              return TextField(
+                decoration: InputDecoration(
+                  errorText: snapshot.error,
+                  hintText: signUpJobHint
                 ),
+                onChanged: validationBloc.onJobChanged,
+                keyboardType: TextInputType.text,
+                controller: _jobController,
               );
             },
           ),

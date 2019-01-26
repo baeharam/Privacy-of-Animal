@@ -7,6 +7,7 @@ import 'package:privacy_of_animal/resources/constants.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:privacy_of_animal/widgets/focus_visible_maker.dart';
 import 'package:privacy_of_animal/widgets/initial_button.dart';
+import 'package:privacy_of_animal/widgets/progress_indicator.dart';
 
 class SignUpEmailPasswordForm extends StatefulWidget {
   @override
@@ -65,8 +66,8 @@ class _SignUpEmailPasswordFormState extends State<SignUpEmailPasswordForm> {
                     errorText: snapshot.error,
                     hintText: signUpEmailHint
                   ),
-                  onChanged: validationBloc.onNameChanged,
-                  keyboardType: TextInputType.text,
+                  onChanged: validationBloc.onEmailChanged,
+                  keyboardType: TextInputType.emailAddress,
                   controller: _emailController,
                   focusNode: _emailFocusNode,
                 ),
@@ -89,18 +90,16 @@ class _SignUpEmailPasswordFormState extends State<SignUpEmailPasswordForm> {
             stream: validationBloc.password,
             initialData: signUpEmptyAgeError,
             builder: (BuildContext context, AsyncSnapshot<String> snapshot){
-              return EnsureVisibleWhenFocused(
-                focusNode: _passwordFocusNode,
-                child: TextField(
-                  decoration: InputDecoration(
-                    errorText: snapshot.error,
-                    hintText: signUpPasswordHint
-                  ),
-                  onChanged: validationBloc.onJobChanged,
-                  keyboardType: TextInputType.text,
-                  controller: _passwordController,
-                  focusNode: _passwordFocusNode,
+              return TextField(
+                decoration: InputDecoration(
+                  errorText: snapshot.error,
+                  hintText: signUpPasswordHint
                 ),
+                onChanged: validationBloc.onPasswordChanged,
+                keyboardType: TextInputType.text,
+                obscureText: true,
+                controller: _passwordController,
+                focusNode: _passwordFocusNode,
               );
             },
           ),
@@ -113,6 +112,7 @@ class _SignUpEmailPasswordFormState extends State<SignUpEmailPasswordForm> {
                 color: introLoginButtonColor,
                 callback: (snapshot.hasData && snapshot.data==true) 
                 ? (){
+                  FocusScope.of(context).requestFocus(FocusNode());
                   signUpBloc.emitEvent(
                     SignUpEventEmailPasswordComplete(
                       email: _emailController.text, password: _passwordController.text
@@ -121,6 +121,15 @@ class _SignUpEmailPasswordFormState extends State<SignUpEmailPasswordForm> {
                 } 
                 : null,
               );
+            },
+          ),
+          StreamBuilder<SignUpState>(
+            stream: signUpBloc.state,
+            builder: (BuildContext context, AsyncSnapshot<SignUpState> snapshot){
+              if(snapshot.hasData && snapshot.data.isRegistering){
+                return CustomProgressIndicator();
+              }
+              return Container();
             },
           )
         ],

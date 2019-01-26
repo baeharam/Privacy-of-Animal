@@ -1,18 +1,18 @@
 
 class RealProfileTableModel {
+  String uid;
   String name;
   int age;
   String gender;
   String job;
 
-  RealProfileTableModel();
-
-  RealProfileTableModel.all(
+  RealProfileTableModel.all({
+    this.uid,
     this.name,
     this.age,
     this.gender,
     this.job
-  );
+  });
 
   RealProfileTableModel.fromMap(Map<String, dynamic> map) {
     this.name = map['name'];

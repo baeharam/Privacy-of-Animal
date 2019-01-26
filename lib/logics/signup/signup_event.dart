@@ -1,19 +1,14 @@
 import 'package:meta/meta.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state.dart';
+import 'package:privacy_of_animal/model/real_profile_table_model.dart';
 
 abstract class SignUpEvent extends BlocEvent{}
 
 class SignUpEventProfileComplete extends SignUpEvent {
-  final String name;
-  final String age;
-  final String job;
-  final String gender;
+  final RealProfileTableModel data;
 
   SignUpEventProfileComplete({
-    @required this.name,
-    @required this.age,
-    @required this.job,
-    @required this.gender
+    @required this.data
   });
 }
 

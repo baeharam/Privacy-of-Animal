@@ -24,16 +24,16 @@ class _SignUpDecisionState extends State<SignUpDecision> {
         bloc: _blocs[1],
         builder: (BuildContext context, SignUpState state){
 
-          if(state.isRegisterd){
-            StreamNavigator.pushNamedAndRemoveUntil(context, '/login', '/intro');
+          if(state.isProfiileRegistered){
+            StreamNavigator.pushNamedAndRemoveUntil(context, '/loginDecision', '/intro');
           }
 
-          if(!state.isProfileCompleted){
-            return SignUpProfileScreen();
-          }
-
-          if(state.isProfileCompleted){
+          if(!state.isEmailPasswordRegistered){
             return SignUpEmailPasswordScreen();
+          }
+
+          if(state.isEmailPasswordRegistered){
+            return SignUpProfileScreen();
           }
           return Container();
         },
