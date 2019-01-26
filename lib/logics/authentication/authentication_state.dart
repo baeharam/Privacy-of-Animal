@@ -5,54 +5,25 @@ class AuthenticationState extends BlocState {
   final bool isAuthenticating;
   final bool isFailed;
 
-  final bool isSelectTags;
-  final bool isAnalyzePhoto;
-
   AuthenticationState({
     this.isAuthenticated: false,
     this.isAuthenticating: false,
-    this.isFailed: false,
-    this.isSelectTags: false,
-    this.isAnalyzePhoto: false
+    this.isFailed: false
   });
 
   factory AuthenticationState.notAuthenticated() {
     return AuthenticationState(
       isAuthenticated: false,
       isAuthenticating: false,
-      isFailed: false,
-      isSelectTags: false,
-      isAnalyzePhoto: false
+      isFailed: false
     );
   }
 
-  factory AuthenticationState.authenticatedNormal() {
+  factory AuthenticationState.authenticated() {
     return AuthenticationState(
       isAuthenticated: true,
       isAuthenticating: false,
-      isFailed: false,
-      isSelectTags: false,
-      isAnalyzePhoto: false
-    );
-  }
-
-  factory AuthenticationState.authenticatedTagged() {
-    return AuthenticationState(
-      isAuthenticated: true,
-      isAuthenticating: false,
-      isFailed: false,
-      isSelectTags: true,
-      isAnalyzePhoto: false
-    );
-  }
-
-  factory AuthenticationState.authenticatedAnalyzed() {
-    return AuthenticationState(
-      isAuthenticated: true,
-      isAuthenticating: false,
-      isFailed: false,
-      isSelectTags: true,
-      isAnalyzePhoto: true
+      isFailed: false
     );
   }
 
@@ -60,9 +31,7 @@ class AuthenticationState extends BlocState {
     return AuthenticationState(
       isAuthenticated: false,
       isAuthenticating: true,
-      isFailed: false,
-      isSelectTags: false,
-      isAnalyzePhoto: false
+      isFailed: false
     );
   }
 
@@ -70,9 +39,7 @@ class AuthenticationState extends BlocState {
     return AuthenticationState(
       isAuthenticated: false,
       isAuthenticating: false,
-      isFailed: true,
-      isSelectTags: false,
-      isAnalyzePhoto: false
+      isFailed: true
     );
   }
 }
