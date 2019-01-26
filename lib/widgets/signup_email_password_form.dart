@@ -17,7 +17,6 @@ class SignUpEmailPasswordForm extends StatefulWidget {
 class _SignUpEmailPasswordFormState extends State<SignUpEmailPasswordForm> {
 
   final FocusNode _emailFocusNode = FocusNode();
-  final FocusNode _passwordFocusNode = FocusNode();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -27,7 +26,6 @@ class _SignUpEmailPasswordFormState extends State<SignUpEmailPasswordForm> {
       _emailController.dispose();
       _passwordController.dispose();
       _emailFocusNode.dispose();
-      _passwordFocusNode.dispose();
       super.dispose();
     }
 
@@ -61,15 +59,21 @@ class _SignUpEmailPasswordFormState extends State<SignUpEmailPasswordForm> {
             builder: (BuildContext context, AsyncSnapshot<String> snapshot){
               return EnsureVisibleWhenFocused(
                 focusNode: _emailFocusNode,
-                child: TextField(
-                  decoration: InputDecoration(
-                    errorText: snapshot.error,
-                    hintText: signUpEmailHint
-                  ),
-                  onChanged: validationBloc.onEmailChanged,
-                  keyboardType: TextInputType.emailAddress,
-                  controller: _emailController,
-                  focusNode: _emailFocusNode,
+                child: StreamBuilder(
+                  stream: signUpBloc.state,
+                  builder: (BuildContext context, AsyncSnapshot<SignUpState> state){
+                    return TextField(
+                      decoration: InputDecoration(
+                        errorText: snapshot.error,
+                        hintText: signUpEmailHint
+                      ),
+                      onChanged: validationBloc.onEmailChanged,
+                      keyboardType: TextInputType.emailAddress,
+                      controller: _emailController,
+                      focusNode: _emailFocusNode,
+                      enabled: (state.hasData && state.data.isEmailPasswordRegistering)?false:true,
+                    );
+                  } 
                 ),
               );
             },
@@ -90,16 +94,21 @@ class _SignUpEmailPasswordFormState extends State<SignUpEmailPasswordForm> {
             stream: validationBloc.password,
             initialData: signUpEmptyAgeError,
             builder: (BuildContext context, AsyncSnapshot<String> snapshot){
-              return TextField(
-                decoration: InputDecoration(
-                  errorText: snapshot.error,
-                  hintText: signUpPasswordHint
-                ),
-                onChanged: validationBloc.onPasswordChanged,
-                keyboardType: TextInputType.text,
-                obscureText: true,
-                controller: _passwordController,
-                focusNode: _passwordFocusNode,
+              return StreamBuilder(
+                stream: signUpBloc.state,
+                builder: (BuildContext context, AsyncSnapshot<SignUpState> state){
+                  return TextField(
+                    decoration: InputDecoration(
+                      errorText: snapshot.error,
+                      hintText: signUpPasswordHint
+                    ),
+                    onChanged: validationBloc.onPasswordChanged,
+                    keyboardType: TextInputType.text,
+                    obscureText: true,
+                    controller: _passwordController,
+                    enabled: (state.hasData && state.data.isEmailPasswordRegistering)?false:true
+                  );
+                },
               );
             },
           ),
@@ -126,7 +135,7 @@ class _SignUpEmailPasswordFormState extends State<SignUpEmailPasswordForm> {
           StreamBuilder<SignUpState>(
             stream: signUpBloc.state,
             builder: (BuildContext context, AsyncSnapshot<SignUpState> snapshot){
-              if(snapshot.hasData && snapshot.data.isRegistering){
+              if(snapshot.hasData && snapshot.data.isEmailPasswordRegistering){
                 return CustomProgressIndicator();
               }
               return Container();
