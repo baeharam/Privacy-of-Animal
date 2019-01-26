@@ -2,11 +2,11 @@
 class RealProfileTableModel {
   String uid;
   String name;
-  int age;
+  String age;
   String gender;
   String job;
 
-  RealProfileTableModel.all({
+  RealProfileTableModel({
     this.uid,
     this.name,
     this.age,

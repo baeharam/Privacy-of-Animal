@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/bloc_helpers/multiple_bloc_provider.dart';
 import 'package:privacy_of_animal/logics/signup/signup.dart';
 import 'package:privacy_of_animal/logics/validation/validation_bloc.dart';
+import 'package:privacy_of_animal/model/real_profile_table_model.dart';
 import 'package:privacy_of_animal/resources/resources.dart';
 import 'package:privacy_of_animal/widgets/focus_visible_maker.dart';
 import 'package:privacy_of_animal/widgets/initial_button.dart';
@@ -62,16 +63,21 @@ class _SignUpProfileFormState extends State<SignUpProfileForm> {
             builder: (BuildContext context, AsyncSnapshot<String> snapshot){
               return EnsureVisibleWhenFocused(
                 focusNode: _nameFocusNode,
-                child: TextField(
-                  decoration: InputDecoration(
-                    errorText: snapshot.error,
-                    hintText: signUpNameHint
-                  ),
-                  onChanged: validationBloc.onNameChanged,
-                  keyboardType: TextInputType.text,
-                  controller: _nameController,
-                  focusNode: _nameFocusNode,
-                ),
+                child: StreamBuilder(
+                  stream: signUpBloc.state,
+                  builder: (BuildContext context, AsyncSnapshot<SignUpState> state){
+                    return TextField(
+                      decoration: InputDecoration(
+                        errorText: snapshot.error,
+                        hintText: signUpNameHint
+                      ),
+                      onChanged: validationBloc.onNameChanged,
+                      keyboardType: TextInputType.text,
+                      controller: _nameController,
+                      enabled: (state.hasData && state.data.isEmailPasswordRegistering)?false:true
+                    );
+                  }
+                )
               );
             },
           ),
@@ -118,14 +124,20 @@ class _SignUpProfileFormState extends State<SignUpProfileForm> {
             stream: validationBloc.job,
             initialData: signUpEmptyAgeError,
             builder: (BuildContext context, AsyncSnapshot<String> snapshot){
-              return TextField(
-                decoration: InputDecoration(
-                  errorText: snapshot.error,
-                  hintText: signUpJobHint
-                ),
-                onChanged: validationBloc.onJobChanged,
-                keyboardType: TextInputType.text,
-                controller: _jobController,
+              return StreamBuilder(
+                stream: signUpBloc.state,
+                builder: (BuildContext context, AsyncSnapshot<SignUpState> state){
+                  return TextField(
+                    decoration: InputDecoration(
+                      errorText: snapshot.error,
+                      hintText: signUpJobHint
+                    ),
+                    onChanged: validationBloc.onJobChanged,
+                    keyboardType: TextInputType.text,
+                    controller: _jobController,
+                    enabled: (state.hasData && state.data.isEmailPasswordRegistering)?false:true
+                  );
+                }
               );
             },
           ),
@@ -139,10 +151,12 @@ class _SignUpProfileFormState extends State<SignUpProfileForm> {
                 callback: (snapshot.hasData && snapshot.data==true) ? 
                 () {
                   signUpBloc.emitEvent(SignUpEventProfileComplete(
-                    name: _nameController.text,
-                    age: _ageController.text,
-                    job: _jobController.text,
-                    gender: 'm'
+                    data: RealProfileTableModel(
+                      name: _nameController.text,
+                      age: _ageController.text,
+                      job: _jobController.text,
+                      gender: 'm'
+                    )
                   ));
                 }
                 : null,
