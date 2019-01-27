@@ -5,10 +5,10 @@ import 'package:privacy_of_animal/logics/login/login.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/resources/constants.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
+import 'package:privacy_of_animal/screen/sub/login_form.dart';
 import 'package:privacy_of_animal/utils/stream_dialog.dart';
 import 'package:privacy_of_animal/utils/stream_snackbar.dart';
 import 'package:privacy_of_animal/widgets/arc_background.dart';
-import 'package:privacy_of_animal/widgets/login_form.dart';
 
 class LoginScreen extends StatefulWidget {
   @override

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/resources/resources.dart';
+import 'package:privacy_of_animal/screen/sub/intro_page.dart';
 import 'package:privacy_of_animal/widgets/back_button_dialog.dart';
 import 'package:privacy_of_animal/widgets/dots_indicator.dart';
 import 'package:privacy_of_animal/widgets/initial_button.dart';
-import 'package:privacy_of_animal/widgets/intro_page.dart';
 
 class IntroScreen extends StatefulWidget {
   @override

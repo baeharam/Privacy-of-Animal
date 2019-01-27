@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:privacy_of_animal/decision/decision.dart';
-import 'package:privacy_of_animal/screen/screen.dart';
+import 'package:privacy_of_animal/screen/main/screen.dart';
 
 Map<String, WidgetBuilder> routes =  {
   '/intro': (BuildContext context) => IntroScreen(),
