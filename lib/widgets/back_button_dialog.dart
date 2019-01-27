@@ -1,23 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:privacy_of_animal/utils/stream_snackbar.dart';
+
+DateTime currentBackPressTime = DateTime.now();
 
 Future<bool> onWillPop(BuildContext context) {
-  return showDialog(
-    context: context,
-    builder: (context){
-      return AlertDialog(
-        content: Text('정말로 종료하시겠습니까?'),
-        actions: <Widget>[
-          FlatButton(
-            onPressed: () => SystemChannels.platform.invokeMethod('SystemNavigator.pop'),
-            child: Text('예'),
-          ),
-          FlatButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text('아니오'),
-          )
-        ],
-      );
-    }
-  ) ?? false;
+  DateTime now = DateTime.now();
+  if(now.difference(currentBackPressTime) > Duration(seconds: 2)){
+    currentBackPressTime = now;
+    Scaffold.of(context).showSnackBar(SnackBar(
+      content: Text('한번 더 누르시면 종료됩니다.'),
+    ));
+    return Future.value(false);
+  }
+  return Future.value(true);
 }

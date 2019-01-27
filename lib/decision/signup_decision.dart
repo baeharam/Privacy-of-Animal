@@ -13,24 +13,22 @@ class SignUpDecision extends StatefulWidget {
 
 class _SignUpDecisionState extends State<SignUpDecision> {
 
-  final List<BlocBase> _blocs = [ValidationBloc(), SignUpBloc()];
+  final ValidationBloc _validationBloc = ValidationBloc();
+  final SignUpBloc _signUpBloc = SignUpBloc();
 
   @override
   Widget build(BuildContext context) {
     return MultipleBlocProvider(
-      blocs: _blocs,
+      blocs: [_validationBloc, _signUpBloc],
       child: BlocEventStateBuilder(
-        bloc: _blocs[1],
+        bloc: _signUpBloc,
         builder: (BuildContext context, SignUpState state){
-
           if(state.isRegistered){
             StreamNavigator.pushReplacementNamed(context, '/loginDecision');
           }
-
           if(!state.isRegistered){
             return SignUpScreen();
           }
-
           return Container();
         },
       ),

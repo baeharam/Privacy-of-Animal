@@ -14,14 +14,16 @@ class LoginDecision extends StatefulWidget {
 
 class _LoginDecisionState extends State<LoginDecision> {
 
-  final List<BlocBase> _blocs = [ValidationBloc(), LoginBloc(), FindPasswordBloc()];
+  final ValidationBloc _validationBloc = ValidationBloc();
+  final LoginBloc _loginBloc   = LoginBloc();
+  final FindPasswordBloc _findPasswordBloc = FindPasswordBloc();
 
   @override
   Widget build(BuildContext context) {
     return MultipleBlocProvider(
-      blocs: _blocs,
+      blocs: [_validationBloc, _loginBloc, _findPasswordBloc],
       child: BlocEventStateBuilder(
-        bloc: _blocs[1],
+        bloc: _loginBloc,
         builder: (BuildContext context, LoginState state){
           if(!state.isAuthenticated){
             return LoginScreen();
