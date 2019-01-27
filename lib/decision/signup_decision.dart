@@ -3,7 +3,6 @@ import 'package:privacy_of_animal/bloc_helpers/bloc_helpers.dart';
 import 'package:privacy_of_animal/logics/signup/signup.dart';
 import 'package:privacy_of_animal/logics/validation/validation_bloc.dart';
 import 'package:privacy_of_animal/screen/signup_email_password_screen.dart';
-import 'package:privacy_of_animal/screen/signup_profile_screen.dart';
 import 'package:privacy_of_animal/utils/stream_navigator.dart';
 
 
@@ -24,16 +23,12 @@ class _SignUpDecisionState extends State<SignUpDecision> {
         bloc: _blocs[1],
         builder: (BuildContext context, SignUpState state){
 
-          if(state.isProfiileRegistered){
-            StreamNavigator.pushNamedAndRemoveUntil(context, '/loginDecision', '/intro');
+          if(state.isRegistered){
+            StreamNavigator.pushReplacementNamed(context, '/loginDecision');
           }
 
-          if(!state.isEmailPasswordRegistered){
+          if(!state.isRegistered){
             return SignUpEmailPasswordScreen();
-          }
-
-          if(state.isEmailPasswordRegistered){
-            return SignUpProfileScreen();
           }
 
           return Container();

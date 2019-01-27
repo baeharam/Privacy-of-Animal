@@ -1,42 +1,42 @@
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state.dart';
 
-class AuthenticationState extends BlocState {
+class LoginState extends BlocState {
   final bool isAuthenticated;
   final bool isAuthenticating;
   final bool isFailed;
 
-  AuthenticationState({
+  LoginState({
     this.isAuthenticated: false,
     this.isAuthenticating: false,
     this.isFailed: false
   });
 
-  factory AuthenticationState.notAuthenticated() {
-    return AuthenticationState(
+  factory LoginState.notAuthenticated() {
+    return LoginState(
       isAuthenticated: false,
       isAuthenticating: false,
       isFailed: false
     );
   }
 
-  factory AuthenticationState.authenticated() {
-    return AuthenticationState(
+  factory LoginState.authenticated() {
+    return LoginState(
       isAuthenticated: true,
       isAuthenticating: false,
       isFailed: false
     );
   }
 
-  factory AuthenticationState.authenticating() {
-    return AuthenticationState(
+  factory LoginState.authenticating() {
+    return LoginState(
       isAuthenticated: false,
       isAuthenticating: true,
       isFailed: false
     );
   }
 
-  factory AuthenticationState.failed() {
-    return AuthenticationState(
+  factory LoginState.failed() {
+    return LoginState(
       isAuthenticated: false,
       isAuthenticating: false,
       isFailed: true

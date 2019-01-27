@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/bloc_helpers/multiple_bloc_provider.dart';
-import 'package:privacy_of_animal/logics/authentication/authentication.dart';
+import 'package:privacy_of_animal/logics/login/login.dart';
 import 'package:privacy_of_animal/logics/validation/validation_bloc.dart';
 import 'package:privacy_of_animal/resources/resources.dart';
 import 'package:privacy_of_animal/widgets/focus_visible_maker.dart';
@@ -32,7 +32,7 @@ class _LoginFormState extends State<LoginForm> {
   Widget build(BuildContext context) {
 
     final ValidationBloc validationBloc = MultipleBlocProvider.of<ValidationBloc>(context);
-    final AuthenticationBloc authenticationBloc = MultipleBlocProvider.of<AuthenticationBloc>(context);
+    final LoginBloc authenticationBloc = MultipleBlocProvider.of<LoginBloc>(context);
 
     return Container(
       height: ScreenUtil.height/1.7,
@@ -48,7 +48,7 @@ class _LoginFormState extends State<LoginForm> {
                 focusNode: _emailFocusNode,
                 child: StreamBuilder(
                   stream: authenticationBloc.state,
-                  builder: (BuildContext context, AsyncSnapshot<AuthenticationState> state){
+                  builder: (BuildContext context, AsyncSnapshot<LoginState> state){
                     return TextField(
                       decoration: InputDecoration(
                         labelText: '이메일',
@@ -72,7 +72,7 @@ class _LoginFormState extends State<LoginForm> {
             builder: (BuildContext context, AsyncSnapshot<String> snapshot){
               return StreamBuilder(
                 stream: authenticationBloc.state,
-                builder: (BuildContext context, AsyncSnapshot<AuthenticationState> state){
+                builder: (BuildContext context, AsyncSnapshot<LoginState> state){
                   return TextField(
                     decoration: InputDecoration(
                       labelText: '비밀번호',
@@ -99,16 +99,16 @@ class _LoginFormState extends State<LoginForm> {
                 callback: (snapshot.hasData && snapshot.data==true) 
                 ? (){
                   FocusScope.of(context).requestFocus(FocusNode());
-                  authenticationBloc.emitEvent(AuthenticationEventLogin(email: _emailController.text, password: _passwordController.text));
+                  authenticationBloc.emitEvent(LoginEventLogin(email: _emailController.text, password: _passwordController.text));
                 } 
                 : null,
               );
             },
           ),
           SizedBox(height: ScreenUtil.height/10),
-          StreamBuilder<AuthenticationState>(
+          StreamBuilder<LoginState>(
             stream: authenticationBloc.state,
-            builder: (BuildContext context, AsyncSnapshot<AuthenticationState> snapshot){
+            builder: (BuildContext context, AsyncSnapshot<LoginState> snapshot){
               if(snapshot.hasData && snapshot.data.isAuthenticating){
                 return CustomProgressIndicator();
               }

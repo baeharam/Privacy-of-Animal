@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_helpers.dart';
-import 'package:privacy_of_animal/logics/authentication/authentication.dart';
+import 'package:privacy_of_animal/logics/login/login.dart';
 import 'package:privacy_of_animal/logics/validation/validation_bloc.dart';
 import 'package:privacy_of_animal/screen/login_screen.dart';
 import 'package:privacy_of_animal/utils/stream_navigator.dart';
@@ -13,7 +13,7 @@ class LoginDecision extends StatefulWidget {
 
 class _LoginDecisionState extends State<LoginDecision> {
 
-  final List<BlocBase> _blocs = [ValidationBloc(), AuthenticationBloc()];
+  final List<BlocBase> _blocs = [ValidationBloc(), LoginBloc()];
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +21,7 @@ class _LoginDecisionState extends State<LoginDecision> {
       blocs: _blocs,
       child: BlocEventStateBuilder(
         bloc: _blocs[1],
-        builder: (BuildContext context, AuthenticationState state){
+        builder: (BuildContext context, LoginState state){
           if(!state.isAuthenticated){
             return LoginScreen();
           }

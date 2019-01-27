@@ -62,7 +62,7 @@ class _SignUpEmailPasswordFormState extends State<SignUpEmailPasswordForm> {
                 child: StreamBuilder(
                   stream: signUpBloc.state,
                   builder: (BuildContext context, AsyncSnapshot<SignUpState> state){
-                    if(state.hasData && state.data.isEmailPasswordFailed){
+                    if(state.hasData && state.data.isFailed){
                       _emailController.clear();
                     }
                     return TextField(
@@ -74,7 +74,7 @@ class _SignUpEmailPasswordFormState extends State<SignUpEmailPasswordForm> {
                       keyboardType: TextInputType.emailAddress,
                       controller: _emailController,
                       focusNode: _emailFocusNode,
-                      enabled: (state.hasData && state.data.isEmailPasswordRegistering)?false:true,
+                      enabled: (state.hasData && state.data.isRegistering)?false:true,
                     );
                   } 
                 ),
@@ -100,7 +100,7 @@ class _SignUpEmailPasswordFormState extends State<SignUpEmailPasswordForm> {
               return StreamBuilder(
                 stream: signUpBloc.state,
                 builder: (BuildContext context, AsyncSnapshot<SignUpState> state){
-                  if(state.hasData && state.data.isEmailPasswordFailed){
+                  if(state.hasData && state.data.isFailed){
                     _passwordController.clear();
                   }
                   return TextField(
@@ -112,7 +112,7 @@ class _SignUpEmailPasswordFormState extends State<SignUpEmailPasswordForm> {
                     keyboardType: TextInputType.text,
                     obscureText: true,
                     controller: _passwordController,
-                    enabled: (state.hasData && state.data.isEmailPasswordRegistering)?false:true
+                    enabled: (state.hasData && state.data.isRegistering)?false:true
                   );
                 },
               );
@@ -129,7 +129,7 @@ class _SignUpEmailPasswordFormState extends State<SignUpEmailPasswordForm> {
                 ? (){
                   FocusScope.of(context).requestFocus(FocusNode());
                   signUpBloc.emitEvent(
-                    SignUpEventEmailPasswordComplete(
+                    SignUpEventComplete(
                       email: _emailController.text, password: _passwordController.text
                     )
                   );
@@ -142,7 +142,7 @@ class _SignUpEmailPasswordFormState extends State<SignUpEmailPasswordForm> {
           StreamBuilder<SignUpState>(
             stream: signUpBloc.state,
             builder: (BuildContext context, AsyncSnapshot<SignUpState> snapshot){
-              if(snapshot.hasData && snapshot.data.isEmailPasswordRegistering){
+              if(snapshot.hasData && snapshot.data.isRegistering){
                 return CustomProgressIndicator();
               }
               return Container();

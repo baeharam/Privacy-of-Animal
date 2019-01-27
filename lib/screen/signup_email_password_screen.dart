@@ -35,9 +35,9 @@ class _SignUpEmailPasswordScreenState extends State<SignUpEmailPasswordScreen> {
               StreamBuilder(
                 stream: signUpBloc.state,
                 builder: (BuildContext context, AsyncSnapshot<SignUpState> snapshot){
-                  if(snapshot.hasData && snapshot.data.isEmailPasswordFailed){
+                  if(snapshot.hasData && snapshot.data.isFailed){
                     streamSnackbar(context, '회원가입에 실패했습니다.');
-                    signUpBloc.emitEvent(SignUpEventEmailPasswordInitial());
+                    signUpBloc.emitEvent(SignUpEventInitial());
                   }
                   return Container();
                 },

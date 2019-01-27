@@ -6,35 +6,22 @@ class SignUpBloc extends BlocEventStateBase<SignUpEvent,SignUpState> {
   static final SignUpAPI _api = SignUpAPI();
 
   @override
-    SignUpState get initialState => SignUpState.notEmailPasswordRegistered();
+    SignUpState get initialState => SignUpState.notRegistered();
 
   @override
   Stream<SignUpState> eventHandler(SignUpEvent event, SignUpState currentState) async*{
 
-    if(event is SignUpEventEmailPasswordInitial){
-      yield SignUpState.notEmailPasswordRegistered();
-    }
-    if(event is SignUpEventProfileInitial){
-      yield SignUpState.emailPasswordRegistered();
+    if(event is SignUpEventInitial){
+      yield SignUpState.notRegistered();
     }
     
-    if(event is SignUpEventEmailPasswordComplete){
-      yield SignUpState.emailPasswordRgistering();
+    if(event is SignUpEventComplete){
+      yield SignUpState.registering();
       SIGNUP_RESULT result = await _api.registerAccount(event.email, event.password);
       if(result == SIGNUP_RESULT.SUCCESS){
-        yield SignUpState.emailPasswordRegistered();
+        yield SignUpState.registered();
       } else if(result == SIGNUP_RESULT.FAILURE){
-        yield SignUpState.emailPasswordFailed();
-      }
-    }
-    if(event is SignUpEventProfileComplete){
-      yield SignUpState.profileRegistering();
-      SIGNUP_RESULT result = await _api.registerProfile(event.data);
-      if(result == SIGNUP_RESULT.SUCCESS){
-        yield SignUpState.profileRegistered();
-      } else if(result == SIGNUP_RESULT.FAILURE){
-        yield SignUpState.profileFailed();
-        yield SignUpState.emailPasswordRegistered();
+        yield SignUpState.failed();
       }
     }
   }

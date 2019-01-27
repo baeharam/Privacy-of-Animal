@@ -1,96 +1,45 @@
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state.dart';
 
 class SignUpState extends BlocState {
-  final bool isEmailPasswordRegistered;
-  final bool isProfiileRegistered;
-  final bool isEmailPasswordRegistering;
-  final bool isProfileRegistering;
-  final bool isEmailPasswordFailed;
-  final bool isProfileFailed;
+  final bool isRegistered;
+  final bool isRegistering;
+  final bool isFailed;
 
   SignUpState({
-    this.isEmailPasswordRegistered: false,
-    this.isProfiileRegistered: false,
-    this.isEmailPasswordRegistering: false,
-    this.isProfileRegistering: false,
-    this.isEmailPasswordFailed: false,
-    this.isProfileFailed: false
+    this.isRegistered: false,
+    this.isRegistering: false,
+    this.isFailed: false,
   });
 
-  factory SignUpState.notEmailPasswordRegistered() {
+  factory SignUpState.notRegistered() {
     return SignUpState(
-      isEmailPasswordRegistered: false,
-      isProfiileRegistered: false,
-      isEmailPasswordRegistering: false,
-      isProfileRegistering: false,
-      isEmailPasswordFailed: false,
-      isProfileFailed: false
+      isRegistered: false,
+      isRegistering: false,
+      isFailed: false,
     );
   }
 
-  factory SignUpState.emailPasswordRegistered() {
+  factory SignUpState.registered() {
     return SignUpState(
-      isEmailPasswordRegistered: true,
-      isProfiileRegistered: false,
-      isEmailPasswordRegistering: false,
-      isProfileRegistering: false,
-      isEmailPasswordFailed: false,
-      isProfileFailed: false
+      isRegistered: true,
+      isRegistering: false,
+      isFailed: false,
     );
   }
 
-  factory SignUpState.profileRegistered() {
+  factory SignUpState.registering() {
     return SignUpState(
-      isEmailPasswordRegistered: true,
-      isProfiileRegistered: true,
-      isEmailPasswordRegistering: false,
-      isProfileRegistering: false,
-      isEmailPasswordFailed: false,
-      isProfileFailed: false
+      isRegistered: false,
+      isRegistering: true,
+      isFailed: false,
     );
   }
 
-  factory SignUpState.emailPasswordRgistering() {
+  factory SignUpState.failed() {
     return SignUpState(
-      isEmailPasswordRegistered: false,
-      isProfiileRegistered: false,
-      isEmailPasswordRegistering: true,
-      isProfileRegistering: false,
-      isEmailPasswordFailed: false,
-      isProfileFailed: false
-    );
-  }
-
-  factory SignUpState.profileRegistering() {
-    return SignUpState(
-      isEmailPasswordRegistered: true,
-      isProfiileRegistered: false,
-      isEmailPasswordRegistering: false,
-      isProfileRegistering: true,
-      isEmailPasswordFailed: false,
-      isProfileFailed: false
-    );
-  }
-
-  factory SignUpState.emailPasswordFailed() {
-    return SignUpState(
-      isEmailPasswordRegistered: false,
-      isProfiileRegistered: false,
-      isEmailPasswordRegistering: false,
-      isProfileRegistering: false,
-      isEmailPasswordFailed: true,
-      isProfileFailed: false
-    );
-  }
-
-  factory SignUpState.profileFailed() {
-    return SignUpState(
-      isEmailPasswordRegistered: false,
-      isProfiileRegistered: false,
-      isEmailPasswordRegistering: false,
-      isProfileRegistering: false,
-      isEmailPasswordFailed: false,
-      isProfileFailed: true
+      isRegistered: false,
+      isRegistering: false,
+      isFailed: true,
     );
   }
 }

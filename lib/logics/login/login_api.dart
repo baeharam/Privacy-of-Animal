@@ -3,25 +3,25 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 
-class AuthenticationAPI {
+class LoginAPI {
 
   static final FirebaseAuth _auth = FirebaseAuth.instance;
 
   // 로그인
-  Future<AUTH_RESULT> loginWithFirebase(String email, String password) async {
+  Future<LOGIN_RESULT> loginWithFirebase(String email, String password) async {
     await _auth.signInWithEmailAndPassword(
       email: email,
       password: password
     ).catchError((exception){
       if(exception is PlatformException){
-        return AUTH_RESULT.FAILURE;
+        return LOGIN_RESULT.FAILURE;
       }
     });
-    return AUTH_RESULT.SUCCESS;
+    return LOGIN_RESULT.SUCCESS;
   }
 }
 
-enum AUTH_RESULT {
+enum LOGIN_RESULT {
   SUCCESS,
   FAILURE
 }
