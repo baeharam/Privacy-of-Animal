@@ -5,14 +5,14 @@ import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/resources/constants.dart';
 import 'package:privacy_of_animal/utils/stream_snackbar.dart';
 import 'package:privacy_of_animal/widgets/arc_background.dart';
-import 'package:privacy_of_animal/widgets/signup_email_password_form.dart';
+import 'package:privacy_of_animal/widgets/signup_form.dart';
 
-class SignUpEmailPasswordScreen extends StatefulWidget {
+class SignUpScreen extends StatefulWidget {
   @override
-  _SignUpEmailPasswordScreenState createState() => _SignUpEmailPasswordScreenState();
+  _SignUpScreenState createState() => _SignUpScreenState();
 }
 
-class _SignUpEmailPasswordScreenState extends State<SignUpEmailPasswordScreen> {
+class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +31,7 @@ class _SignUpEmailPasswordScreenState extends State<SignUpEmailPasswordScreen> {
                 title: '회원가입',
               ),
               SizedBox(height: ScreenUtil.height/10),
-              SignUpEmailPasswordForm(),
+              SignUpForm(),
               StreamBuilder(
                 stream: signUpBloc.state,
                 builder: (BuildContext context, AsyncSnapshot<SignUpState> snapshot){

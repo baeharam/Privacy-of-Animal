@@ -9,12 +9,12 @@ import 'package:privacy_of_animal/widgets/focus_visible_maker.dart';
 import 'package:privacy_of_animal/widgets/initial_button.dart';
 import 'package:privacy_of_animal/widgets/progress_indicator.dart';
 
-class SignUpEmailPasswordForm extends StatefulWidget {
+class SignUpForm extends StatefulWidget {
   @override
-  _SignUpEmailPasswordFormState createState() => _SignUpEmailPasswordFormState();
+  _SignUpFormState createState() => _SignUpFormState();
 }
 
-class _SignUpEmailPasswordFormState extends State<SignUpEmailPasswordForm> {
+class _SignUpFormState extends State<SignUpForm> {
 
   final FocusNode _emailFocusNode = FocusNode();
   final TextEditingController _emailController = TextEditingController();
