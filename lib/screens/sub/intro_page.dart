@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:privacy_of_animal/model/intro_page_model.dart';
+import 'package:privacy_of_animal/models/intro_page_model.dart';
 import 'package:privacy_of_animal/resources/constants.dart';
 
 class IntroPage extends StatelessWidget {

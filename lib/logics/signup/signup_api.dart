@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:privacy_of_animal/model/real_profile_table_model.dart';
+import 'package:privacy_of_animal/models/real_profile_table_model.dart';
 
 class SignUpAPI {
 
