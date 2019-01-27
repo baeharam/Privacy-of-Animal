@@ -15,4 +15,6 @@ class LoginEventLogin extends LoginEvent {
   });
 }
 
+class LoginEventForgotPasswordDialog extends LoginEvent {}
+
 class LoginEventLogout extends LoginEvent {}

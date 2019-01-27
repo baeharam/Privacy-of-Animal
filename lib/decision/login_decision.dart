@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_helpers.dart';
+import 'package:privacy_of_animal/logics/find_password/find_password_bloc.dart';
 import 'package:privacy_of_animal/logics/login/login.dart';
 import 'package:privacy_of_animal/logics/validation/validation_bloc.dart';
 import 'package:privacy_of_animal/screen/login_screen.dart';
@@ -13,7 +14,7 @@ class LoginDecision extends StatefulWidget {
 
 class _LoginDecisionState extends State<LoginDecision> {
 
-  final List<BlocBase> _blocs = [ValidationBloc(), LoginBloc()];
+  final List<BlocBase> _blocs = [ValidationBloc(), LoginBloc(), FindPasswordBloc()];
 
   @override
   Widget build(BuildContext context) {

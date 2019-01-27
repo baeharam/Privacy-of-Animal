@@ -10,6 +10,10 @@ class LoginBloc extends BlocEventStateBase<LoginEvent,LoginState> {
 
   @override
   Stream<LoginState> eventHandler(LoginEvent event, LoginState currentState) async*{
+
+    if(event is LoginEventForgotPasswordDialog){
+      yield LoginState.openDialogForPassword();
+    }
     
     if(event is LoginEventInitial){
       yield LoginState.notAuthenticated();
@@ -23,7 +27,7 @@ class LoginBloc extends BlocEventStateBase<LoginEvent,LoginState> {
         yield LoginState.authenticated();
       }
       else if(result == LOGIN_RESULT.FAILURE){
-        yield LoginState.failed();
+        yield LoginState.authenticationFailed();
       }
     }
 

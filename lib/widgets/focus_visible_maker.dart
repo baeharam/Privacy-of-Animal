@@ -138,9 +138,9 @@ class _EnsureVisibleWhenFocusedState extends State<EnsureVisibleWhenFocused> wit
     if (position.pixels > viewport.getOffsetToReveal(object, 0.0).offset) {
       // Move down to the top of the viewport
       alignment = 0.0;
-    } else if (position.pixels < viewport.getOffsetToReveal(object, 0.5).offset){
+    } else if (position.pixels < viewport.getOffsetToReveal(object, 0.2).offset){
       // Move up to the bottom of the viewport
-      alignment = 0.5;
+      alignment = 0.2;
     } else {
       // No scrolling is necessary to reveal the child
       return;

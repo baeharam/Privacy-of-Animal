@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_helpers.dart';
+import 'package:privacy_of_animal/logics/find_password/find_password.dart';
 import 'package:privacy_of_animal/logics/login/login.dart';
 import 'package:privacy_of_animal/logics/validation/validation_bloc.dart';
 import 'package:privacy_of_animal/resources/resources.dart';
@@ -32,6 +33,7 @@ class _LoginFormState extends State<LoginForm> {
   Widget build(BuildContext context) {
 
     final ValidationBloc validationBloc = MultipleBlocProvider.of<ValidationBloc>(context);
+    final FindPasswordBloc findPasswordBloc = MultipleBlocProvider.of<FindPasswordBloc>(context);
     final LoginBloc loginBloc = MultipleBlocProvider.of<LoginBloc>(context);
 
     return Container(
@@ -39,6 +41,7 @@ class _LoginFormState extends State<LoginForm> {
       width: ScreenUtil.width/1.3,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: <Widget>[
           StreamBuilder<String>(
             stream: validationBloc.email,
@@ -49,7 +52,7 @@ class _LoginFormState extends State<LoginForm> {
                 child: BlocEventStateBuilder(
                   bloc: loginBloc,
                   builder: (BuildContext context, LoginState state){
-                    if(state.isFailed){
+                    if(state.isAuthenticationFailed){
                       _emailController.clear();
                     }
                     return TextField(
@@ -76,7 +79,7 @@ class _LoginFormState extends State<LoginForm> {
               return BlocEventStateBuilder(
                 bloc: loginBloc,
                 builder: (BuildContext context, LoginState state){
-                  if(state.isFailed){
+                  if(state.isAuthenticationFailed){
                     _passwordController.clear();
                   }
                   return TextField(
@@ -95,6 +98,18 @@ class _LoginFormState extends State<LoginForm> {
               );
             }
           ),
+          GestureDetector(
+            child: Container(
+              padding: const EdgeInsets.only(top: 10.0),
+              child: Text(
+                '비밀번호를 잊으셨습니까?',
+                style: TextStyle(
+                  fontSize: 13.0
+                ),
+              ),
+            ),
+            onTap: () => loginBloc.emitEvent(LoginEventForgotPasswordDialog()),
+          ),
           SizedBox(height: ScreenUtil.height/10),
           StreamBuilder<bool>(
             stream: validationBloc.loginValid,
@@ -112,14 +127,23 @@ class _LoginFormState extends State<LoginForm> {
             },
           ),
           SizedBox(height: ScreenUtil.height/10),
-          StreamBuilder<LoginState>(
-            stream: loginBloc.state,
-            builder: (BuildContext context, AsyncSnapshot<LoginState> snapshot){
-              if(snapshot.hasData && snapshot.data.isAuthenticating){
+          BlocEventStateBuilder(
+            bloc: loginBloc,
+            builder: (context, LoginState state){
+              if(state.isAuthenticating){
                 return CustomProgressIndicator();
               }
               return Container();
             },
+          ),
+          BlocEventStateBuilder(
+            bloc: findPasswordBloc,
+            builder: (context, FindPasswordState state){
+              if(state.isEmailSending){
+                return CustomProgressIndicator();
+              }
+              return Container();
+            }
           )
         ],
       ),

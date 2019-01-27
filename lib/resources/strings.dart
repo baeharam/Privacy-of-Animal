@@ -11,6 +11,12 @@ const String loginEmptyEmailError = '이메일을 입력하세요.';
 const String loginInvalidEmailError = '유효한 이메일이 아닙니다.';
 const String loginEmptyPasswordError = '비밀번호를 입력하세요.';
 const String loginInavlidPasswordError = '비밀번호는 6자리 이상입니다';
+const String loginError = '로그인에 실패했습니다.';
+const String loginEmailSendError = '이메일 전송에 실패했습니다.';
+const String loginEmailSendSuccess = '이메일 전송에 성공했습니다.';
+
+// FindPasswordDialog
+const String findPasswordMessage = '등록된 이메일을 입력해주시면\n비밀번호를 재설정 할 수 있는\n이메일을 보내드립니다.';
 
 // SignUpScreen
 const String signUpEmptyNameError = '이름을 입력하세요.';

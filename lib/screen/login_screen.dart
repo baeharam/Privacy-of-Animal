@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_helpers.dart';
+import 'package:privacy_of_animal/logics/find_password/find_password.dart';
 import 'package:privacy_of_animal/logics/login/login.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/resources/constants.dart';
+import 'package:privacy_of_animal/resources/strings.dart';
+import 'package:privacy_of_animal/utils/stream_dialog.dart';
 import 'package:privacy_of_animal/utils/stream_snackbar.dart';
 import 'package:privacy_of_animal/widgets/arc_background.dart';
 import 'package:privacy_of_animal/widgets/login_form.dart';
@@ -17,7 +20,8 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
 
-    final loginBloc = MultipleBlocProvider.of<LoginBloc>(context);
+    final LoginBloc loginBloc = MultipleBlocProvider.of<LoginBloc>(context);
+    final FindPasswordBloc findPasswordBloc = MultipleBlocProvider.of<FindPasswordBloc>(context);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -35,9 +39,27 @@ class _LoginScreenState extends State<LoginScreen> {
               BlocEventStateBuilder(
                 bloc: loginBloc,
                 builder: (context, LoginState state){
-                  if(state.isFailed){
-                    streamSnackbar(context, '회원가입에 실패했습니다.');
+                  if(state.isAuthenticationFailed){
+                    streamSnackbar(context, loginError);
                     loginBloc.emitEvent(LoginEventInitial());
+                  }
+                  if(state.isDialogOpenedForPassword){
+                    streamDialogForgotPassword(context);
+                    loginBloc.emitEvent(LoginEventInitial());
+                  }
+                  return Container();
+                },
+              ),
+              BlocEventStateBuilder(
+                bloc: findPasswordBloc,
+                builder: (context, FindPasswordState state){
+                  if(state.isEmailSendFailed){
+                    streamSnackbar(context, loginEmailSendError);
+                    findPasswordBloc.emitEvent(FindPasswordEventInitial());
+                  }
+                  if(state.isEmailSendSucceeded){
+                    streamSnackbar(context, loginEmailSendSuccess);
+                    findPasswordBloc.emitEvent(FindPasswordEventInitial());
                   }
                   return Container();
                 },

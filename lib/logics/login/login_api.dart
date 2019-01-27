@@ -19,6 +19,15 @@ class LoginAPI {
     }
     return LOGIN_RESULT.SUCCESS;
   }
+
+  Future<LOGIN_RESULT> findPassword(String email) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+    } catch(exception){
+      return LOGIN_RESULT.FAILURE;
+    }
+    return LOGIN_RESULT.SUCCESS;
+  }
 }
 
 enum LOGIN_RESULT {
