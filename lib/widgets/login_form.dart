@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:privacy_of_animal/bloc_helpers/multiple_bloc_provider.dart';
+import 'package:privacy_of_animal/bloc_helpers/bloc_helpers.dart';
 import 'package:privacy_of_animal/logics/login/login.dart';
 import 'package:privacy_of_animal/logics/validation/validation_bloc.dart';
 import 'package:privacy_of_animal/resources/resources.dart';
@@ -32,7 +32,7 @@ class _LoginFormState extends State<LoginForm> {
   Widget build(BuildContext context) {
 
     final ValidationBloc validationBloc = MultipleBlocProvider.of<ValidationBloc>(context);
-    final LoginBloc authenticationBloc = MultipleBlocProvider.of<LoginBloc>(context);
+    final LoginBloc loginBloc = MultipleBlocProvider.of<LoginBloc>(context);
 
     return Container(
       height: ScreenUtil.height/1.7,
@@ -46,9 +46,12 @@ class _LoginFormState extends State<LoginForm> {
             builder: (BuildContext context, AsyncSnapshot<String> snapshot){
               return EnsureVisibleWhenFocused(
                 focusNode: _emailFocusNode,
-                child: StreamBuilder(
-                  stream: authenticationBloc.state,
-                  builder: (BuildContext context, AsyncSnapshot<LoginState> state){
+                child: BlocEventStateBuilder(
+                  bloc: loginBloc,
+                  builder: (BuildContext context, LoginState state){
+                    if(state.isFailed){
+                      _emailController.clear();
+                    }
                     return TextField(
                       decoration: InputDecoration(
                         labelText: '이메일',
@@ -58,7 +61,7 @@ class _LoginFormState extends State<LoginForm> {
                       keyboardType: TextInputType.emailAddress,
                       controller: _emailController,
                       focusNode: _emailFocusNode,
-                      enabled: (state.hasData && state.data.isAuthenticating) ? false : true
+                      enabled: state.isAuthenticating ? false : true
                     );
                   } 
                 ),
@@ -70,9 +73,12 @@ class _LoginFormState extends State<LoginForm> {
             stream: validationBloc.password,
             initialData: loginEmptyPasswordError,
             builder: (BuildContext context, AsyncSnapshot<String> snapshot){
-              return StreamBuilder(
-                stream: authenticationBloc.state,
-                builder: (BuildContext context, AsyncSnapshot<LoginState> state){
+              return BlocEventStateBuilder(
+                bloc: loginBloc,
+                builder: (BuildContext context, LoginState state){
+                  if(state.isFailed){
+                    _passwordController.clear();
+                  }
                   return TextField(
                     decoration: InputDecoration(
                       labelText: '비밀번호',
@@ -83,7 +89,7 @@ class _LoginFormState extends State<LoginForm> {
                     keyboardType: TextInputType.emailAddress,
                     controller: _passwordController,
                     focusNode: _passwordFocusNode,
-                    enabled: (state.hasData && state.data.isAuthenticating) ? false : true,
+                    enabled: state.isAuthenticating ? false : true,
                   );
                 } 
               );
@@ -99,7 +105,7 @@ class _LoginFormState extends State<LoginForm> {
                 callback: (snapshot.hasData && snapshot.data==true) 
                 ? (){
                   FocusScope.of(context).requestFocus(FocusNode());
-                  authenticationBloc.emitEvent(LoginEventLogin(email: _emailController.text, password: _passwordController.text));
+                  loginBloc.emitEvent(LoginEventLogin(email: _emailController.text, password: _passwordController.text));
                 } 
                 : null,
               );
@@ -107,7 +113,7 @@ class _LoginFormState extends State<LoginForm> {
           ),
           SizedBox(height: ScreenUtil.height/10),
           StreamBuilder<LoginState>(
-            stream: authenticationBloc.state,
+            stream: loginBloc.state,
             builder: (BuildContext context, AsyncSnapshot<LoginState> snapshot){
               if(snapshot.hasData && snapshot.data.isAuthenticating){
                 return CustomProgressIndicator();

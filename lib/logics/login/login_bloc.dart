@@ -11,10 +11,14 @@ class LoginBloc extends BlocEventStateBase<LoginEvent,LoginState> {
   @override
   Stream<LoginState> eventHandler(LoginEvent event, LoginState currentState) async*{
     
-    yield LoginState.authenticating();
+    if(event is LoginEventInitial){
+      yield LoginState.notAuthenticated();
+    }
+    
     if(event is LoginEventLogin){
+      yield LoginState.authenticating();
       LOGIN_RESULT result = 
-        await _api.loginWithFirebase(event.email, event.password);
+        await _api.login(event.email, event.password);
       if(result == LOGIN_RESULT.SUCCESS){
         yield LoginState.authenticated();
       }

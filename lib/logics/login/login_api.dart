@@ -8,15 +8,15 @@ class LoginAPI {
   static final FirebaseAuth _auth = FirebaseAuth.instance;
 
   // 로그인
-  Future<LOGIN_RESULT> loginWithFirebase(String email, String password) async {
-    await _auth.signInWithEmailAndPassword(
-      email: email,
-      password: password
-    ).catchError((exception){
-      if(exception is PlatformException){
-        return LOGIN_RESULT.FAILURE;
-      }
-    });
+  Future<LOGIN_RESULT> login(String email, String password) async {
+    try {
+      await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password
+      );
+    } catch(exception){
+      return LOGIN_RESULT.FAILURE;
+    }
     return LOGIN_RESULT.SUCCESS;
   }
 }

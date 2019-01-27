@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:privacy_of_animal/bloc_helpers/multiple_bloc_provider.dart';
+import 'package:privacy_of_animal/bloc_helpers/bloc_helpers.dart';
 import 'package:privacy_of_animal/logics/signup/signup.dart';
 import 'package:privacy_of_animal/logics/validation/validation_bloc.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
@@ -59,10 +59,10 @@ class _SignUpFormState extends State<SignUpForm> {
             builder: (BuildContext context, AsyncSnapshot<String> snapshot){
               return EnsureVisibleWhenFocused(
                 focusNode: _emailFocusNode,
-                child: StreamBuilder(
-                  stream: signUpBloc.state,
-                  builder: (BuildContext context, AsyncSnapshot<SignUpState> state){
-                    if(state.hasData && state.data.isFailed){
+                child: BlocEventStateBuilder(
+                  bloc: signUpBloc,
+                  builder: (BuildContext context, SignUpState state){
+                    if(state.isFailed){
                       _emailController.clear();
                     }
                     return TextField(
@@ -74,7 +74,7 @@ class _SignUpFormState extends State<SignUpForm> {
                       keyboardType: TextInputType.emailAddress,
                       controller: _emailController,
                       focusNode: _emailFocusNode,
-                      enabled: (state.hasData && state.data.isRegistering)?false:true,
+                      enabled: state.isRegistering?false:true,
                     );
                   } 
                 ),
@@ -97,10 +97,10 @@ class _SignUpFormState extends State<SignUpForm> {
             stream: validationBloc.password,
             initialData: signUpEmptyAgeError,
             builder: (BuildContext context, AsyncSnapshot<String> snapshot){
-              return StreamBuilder(
-                stream: signUpBloc.state,
-                builder: (BuildContext context, AsyncSnapshot<SignUpState> state){
-                  if(state.hasData && state.data.isFailed){
+              return BlocEventStateBuilder(
+                bloc: signUpBloc,
+                builder: (BuildContext context, SignUpState state){
+                  if(state.isFailed){
                     _passwordController.clear();
                   }
                   return TextField(
@@ -112,7 +112,7 @@ class _SignUpFormState extends State<SignUpForm> {
                     keyboardType: TextInputType.text,
                     obscureText: true,
                     controller: _passwordController,
-                    enabled: (state.hasData && state.data.isRegistering)?false:true
+                    enabled: state.isRegistering?false:true
                   );
                 },
               );
