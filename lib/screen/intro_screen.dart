@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:privacy_of_animal/resources/intro_pages.dart';
-import 'package:privacy_of_animal/resources/colors.dart';
-import 'package:privacy_of_animal/resources/constants.dart';
+import 'package:privacy_of_animal/resources/resources.dart';
 import 'package:privacy_of_animal/widgets/back_button_dialog.dart';
 import 'package:privacy_of_animal/widgets/dots_indicator.dart';
 import 'package:privacy_of_animal/widgets/initial_button.dart';
