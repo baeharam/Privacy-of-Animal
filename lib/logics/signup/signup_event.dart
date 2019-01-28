@@ -1,21 +1,16 @@
 import 'package:meta/meta.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state.dart';
+import 'package:privacy_of_animal/models/signup_model.dart';
 
 abstract class SignUpEvent extends BlocEvent{}
 
 class SignUpEventInitial extends SignUpEvent {}
 
 class SignUpEventComplete extends SignUpEvent {
-  final String email;
-  final String password;
-  final String name;
-  final int age;
-  final String gender;
-  final 
+  final SignUpModel data;
 
 
   SignUpEventComplete({
-    @required this.email,
-    @required this.password
+    @required this.data
   });
 }

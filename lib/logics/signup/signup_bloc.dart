@@ -17,10 +17,15 @@ class SignUpBloc extends BlocEventStateBase<SignUpEvent,SignUpState> {
     
     if(event is SignUpEventComplete){
       yield SignUpState.registering();
-      SIGNUP_RESULT result = await _api.registerAccount(event.email, event.password);
-      if(result == SIGNUP_RESULT.SUCCESS){
-        yield SignUpState.registered();
-      } else if(result == SIGNUP_RESULT.FAILURE){
+      SIGNUP_RESULT signupResult = await _api.registerAccount(event.data);
+      if(signupResult == SIGNUP_RESULT.SUCCESS){
+        PROFILE_RESULT profileResult = await _api.registerProfile(event.data);
+        if(profileResult == PROFILE_RESULT.SUCCESS){
+          yield SignUpState.registered();
+        } else if(profileResult == PROFILE_RESULT.FAILURE){
+          yield SignUpState.failed();
+        }
+      } else if(signupResult == SIGNUP_RESULT.FAILURE){
         yield SignUpState.failed();
       }
     }
