@@ -22,9 +22,6 @@ class _IntroScreenState extends State<IntroScreen> with SingleTickerProviderStat
   @override
     void initState() {
       super.initState();
-      ScreenUtil.width = MediaQuery.of(context).size.width;
-      ScreenUtil.height = MediaQuery.of(context).size.height;
-      CurrentPlatform.platform = Theme.of(context).platform;
       _pageController = PageController(initialPage: 0);
       _animationController = AnimationController(
         vsync: this,
@@ -41,8 +38,16 @@ class _IntroScreenState extends State<IntroScreen> with SingleTickerProviderStat
       super.dispose();
     }
 
+  void initializeConstants(BuildContext context){
+    ScreenUtil.width = MediaQuery.of(context).size.width;
+    ScreenUtil.height = MediaQuery.of(context).size.height;
+    CurrentPlatform.platform = Theme.of(context).platform;
+  }
+
   @override
   Widget build(BuildContext context) {
+
+    initializeConstants(context);
 
     return FadeTransition(
       opacity: _transitionAnimation, 
