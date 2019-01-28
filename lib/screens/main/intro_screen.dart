@@ -42,6 +42,7 @@ class _IntroScreenState extends State<IntroScreen> with SingleTickerProviderStat
     ScreenUtil.width = MediaQuery.of(context).size.width;
     ScreenUtil.height = MediaQuery.of(context).size.height;
     CurrentPlatform.platform = Theme.of(context).platform;
+    BackButtonAction.currentBackPressTime = DateTime.now();
   }
 
   @override
@@ -54,7 +55,7 @@ class _IntroScreenState extends State<IntroScreen> with SingleTickerProviderStat
       child: Scaffold(
         backgroundColor: Colors.white,
         body: WillPopScope(
-          onWillPop: () => onWillPop(context),
+          onWillPop: () => BackButtonAction.onWillPop(context),
           child: Column(
             children: <Widget>[
               Expanded(
