@@ -6,9 +6,14 @@ abstract class SignUpEvent extends BlocEvent{}
 
 class SignUpEventInitial extends SignUpEvent {}
 
+class SignUpEventAgeSelect extends SignUpEvent {
+  final int age;
+
+  SignUpEventAgeSelect({this.age});
+}
+
 class SignUpEventComplete extends SignUpEvent {
   final SignUpModel data;
-
 
   SignUpEventComplete({
     @required this.data

@@ -14,6 +14,10 @@ class SignUpBloc extends BlocEventStateBase<SignUpEvent,SignUpState> {
     if(event is SignUpEventInitial){
       yield SignUpState.notRegistered();
     }
+
+    if(event is SignUpEventAgeSelect){
+      yield SignUpState.ageSelected(event.age);
+    }
     
     if(event is SignUpEventComplete){
       yield SignUpState.registering();
