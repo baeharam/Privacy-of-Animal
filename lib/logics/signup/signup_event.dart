@@ -12,6 +12,9 @@ class SignUpEventAgeSelect extends SignUpEvent {
   SignUpEventAgeSelect({this.age});
 }
 
+class SignUpEventMaleSelect extends SignUpEvent {}
+class SignUpEventFemaleSelect extends SignUpEvent {}
+
 class SignUpEventComplete extends SignUpEvent {
   final SignUpModel data;
 

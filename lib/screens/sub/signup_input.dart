@@ -33,17 +33,17 @@ class SignUpInput extends StatefulWidget {
 class _SignUpInputState extends State<SignUpInput> {
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<String>(
-      stream: widget.stream,
-      builder: (BuildContext context, AsyncSnapshot<String> snapshot){
-        return EnsureVisibleWhenFocused(
-          focusNode: widget.focusNode,
-          child: BlocEventStateBuilder(
-            bloc: widget.signUpBloc,
-            builder: (BuildContext context, SignUpState state){
-              if(state.isFailed){
-                widget.controller.clear();
-              }
+    return EnsureVisibleWhenFocused(
+      focusNode: widget.focusNode,
+      child: BlocEventStateBuilder(
+        bloc: widget.signUpBloc,
+        builder: (BuildContext context, SignUpState state){
+          if(state.isAccountRegisterFailed || state.isProfileRegisterFailed){
+            widget.controller.clear();
+          }
+          return StreamBuilder<String>(
+            stream: widget.stream,
+            builder: (BuildContext context, AsyncSnapshot<String> snapshot){
               return TextField(
                 decoration: InputDecoration(
                   errorText: snapshot.error,
@@ -56,10 +56,10 @@ class _SignUpInputState extends State<SignUpInput> {
                 enabled: state.isRegistering?false:true,
                 obscureText: widget.obscureText,
               );
-            } 
-          ),
-        );
-      },
+            }
+          );
+        } 
+      ),
     );
   }
 }

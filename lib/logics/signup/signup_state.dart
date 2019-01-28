@@ -3,61 +3,74 @@ import 'package:privacy_of_animal/bloc_helpers/bloc_event_state.dart';
 class SignUpState extends BlocState {
   final bool isRegistered;
   final bool isRegistering;
-  final bool isFailed;
+  final bool isAccountRegisterFailed;
+  final bool isProfileRegisterFailed;
   final bool isAgeSelected;
   final int age;
+  final bool isMaleSelected;
+  final bool isFemaleSelected;
+  final String gender;
 
   SignUpState({
     this.isRegistered: false,
     this.isRegistering: false,
-    this.isFailed: false,
+    this.isAccountRegisterFailed: false,
+    this.isProfileRegisterFailed: false,
     this.isAgeSelected: false,
-    this.age: -1
+    this.age: -1,
+    this.isMaleSelected: false,
+    this.isFemaleSelected: false,
+    this.gender: ''
   });
 
   factory SignUpState.notRegistered() {
     return SignUpState(
-      isRegistered: false,
-      isRegistering: false,
-      isFailed: false,
-      isAgeSelected: false
+      isRegistered: false
     );
   }
 
   factory SignUpState.registered() {
     return SignUpState(
-      isRegistered: true,
-      isRegistering: false,
-      isFailed: false,
-      isAgeSelected: false
+      isRegistered: true
     );
   }
 
   factory SignUpState.registering() {
     return SignUpState(
-      isRegistered: false,
-      isRegistering: true,
-      isFailed: false,
-      isAgeSelected: false
+      isRegistering: true
     );
   }
 
-  factory SignUpState.failed() {
+  factory SignUpState.accountRegisterFailed() {
     return SignUpState(
-      isRegistered: false,
-      isRegistering: false,
-      isFailed: true,
-      isAgeSelected: false
+      isAccountRegisterFailed: true
+    );
+  }
+
+  factory SignUpState.profileRegisterFailed() {
+    return SignUpState(
+      isProfileRegisterFailed: true
     );
   }
 
   factory SignUpState.ageSelected(int age) {
     return SignUpState(
-      isRegistered: false,
-      isRegistering: false,
-      isFailed: false,
       isAgeSelected: true,
       age: age
+    );
+  }
+
+  factory SignUpState.maleSelected() {
+    return SignUpState(
+      isMaleSelected: true,
+      gender: 'm'
+    );
+  }
+
+  factory SignUpState.femaleSelected() {
+    return SignUpState(
+      isFemaleSelected: true,
+      gender: 'f'
     );
   }
 }

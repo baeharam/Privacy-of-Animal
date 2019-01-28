@@ -18,6 +18,7 @@ void showAgePicker(BuildContext context, ValidationBloc validationBloc, SignUpBl
         validationBloc.onAgeSelected(age);
         signUpBloc.emitEvent(SignUpEventAgeSelect(age: age));
         FocusScope.of(context).requestFocus(FocusNode());
-      }
+      },
+    onCancel: () => FocusScope.of(context).requestFocus(FocusNode())
   ).showDialog(context);
 }

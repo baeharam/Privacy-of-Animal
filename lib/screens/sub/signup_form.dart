@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_picker/flutter_picker.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_helpers.dart';
 import 'package:privacy_of_animal/logics/signup/signup.dart';
 import 'package:privacy_of_animal/logics/validation/validation_bloc.dart';
@@ -9,11 +8,10 @@ import 'package:privacy_of_animal/models/signup_model.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/resources/constants.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
+import 'package:privacy_of_animal/screens/sub/signup_gender_select.dart';
 import 'package:privacy_of_animal/screens/sub/signup_input.dart';
 import 'package:privacy_of_animal/utils/age_picker.dart';
-import 'package:privacy_of_animal/widgets/focus_visible_maker.dart';
 import 'package:privacy_of_animal/widgets/initial_button.dart';
-import 'package:privacy_of_animal/widgets/progress_indicator.dart';
 
 class SignUpForm extends StatefulWidget {
   @override
@@ -78,9 +76,11 @@ class _SignUpFormState extends State<SignUpForm> {
 
     final ValidationBloc validationBloc = MultipleBlocProvider.of<ValidationBloc>(context);
     final SignUpBloc signUpBloc = MultipleBlocProvider.of<SignUpBloc>(context);
+    int age;
+    String gender;
 
     return Container(
-      height: ScreenUtil.height,
+      height: ScreenUtil.height*1.3,
       width: ScreenUtil.width/1.3,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -128,6 +128,10 @@ class _SignUpFormState extends State<SignUpForm> {
             builder: (BuildContext context, SignUpState state){
               if(state.isAgeSelected){
                 _ageController.text = state.age.toString() + '살';
+                age = state.age;
+              }
+              if(state.isAccountRegisterFailed || state.isRegistered){
+                _ageController.clear();
               }
               return GestureDetector(
                 child: Container(
@@ -141,7 +145,7 @@ class _SignUpFormState extends State<SignUpForm> {
                     ),
                   ),
                 ),
-                onTap: () => showAgePicker(context, validationBloc, signUpBloc),
+                onTap: () => state.isRegistering ? null : showAgePicker(context, validationBloc, signUpBloc),
               );
             },
           ),
@@ -157,8 +161,24 @@ class _SignUpFormState extends State<SignUpForm> {
             textInputType: TextInputType.text
           ),
           SizedBox(height: ScreenUtil.height/15),
+          _buildTitle('성별'),
+          SizedBox(height: ScreenUtil.height/30),
+          BlocEventStateBuilder(
+            bloc: signUpBloc,
+            builder: (context, SignUpState state){
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  SignUpGenderSelect(genderTitle: '남자',signUpEvent: SignUpEventMaleSelect(),isSelected: state.isMaleSelected),
+                  SizedBox(width: ScreenUtil.width/10),
+                  SignUpGenderSelect(genderTitle: '여자',signUpEvent: SignUpEventFemaleSelect(),isSelected: state.isFemaleSelected)
+                ],
+              );
+            },
+          ),
+          SizedBox(height: ScreenUtil.height/15),
           StreamBuilder<bool>(
-            stream: validationBloc.loginValid,
+            stream: validationBloc.signUpValid,
             builder: (BuildContext context, AsyncSnapshot<bool> snapshot){
               return InitialButton(
                 text: '회원가입',
@@ -171,23 +191,15 @@ class _SignUpFormState extends State<SignUpForm> {
                       data: SignUpModel(
                         email: _emailController.text,
                         password: _passwordController.text,
-
+                        name: _nameController.text,
+                        age: age,
+                        gender: gender
                       )
                     )
                   );
                 } 
                 : null,
               );
-            },
-          ),
-          SizedBox(height: ScreenUtil.height/10),
-          StreamBuilder<SignUpState>(
-            stream: signUpBloc.state,
-            builder: (BuildContext context, AsyncSnapshot<SignUpState> snapshot){
-              if(snapshot.hasData && snapshot.data.isRegistering){
-                return CustomProgressIndicator();
-              }
-              return Container();
             },
           )
         ],

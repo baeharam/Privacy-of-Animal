@@ -18,6 +18,14 @@ class SignUpBloc extends BlocEventStateBase<SignUpEvent,SignUpState> {
     if(event is SignUpEventAgeSelect){
       yield SignUpState.ageSelected(event.age);
     }
+
+    if(event is SignUpEventMaleSelect){
+      yield SignUpState.maleSelected();
+    }
+
+    if(event is SignUpEventFemaleSelect){
+      yield SignUpState.femaleSelected();
+    }
     
     if(event is SignUpEventComplete){
       yield SignUpState.registering();
@@ -27,10 +35,10 @@ class SignUpBloc extends BlocEventStateBase<SignUpEvent,SignUpState> {
         if(profileResult == PROFILE_RESULT.SUCCESS){
           yield SignUpState.registered();
         } else if(profileResult == PROFILE_RESULT.FAILURE){
-          yield SignUpState.failed();
+          yield SignUpState.profileRegisterFailed();
         }
       } else if(signupResult == SIGNUP_RESULT.FAILURE){
-        yield SignUpState.failed();
+        yield SignUpState.accountRegisterFailed();
       }
     }
   }
