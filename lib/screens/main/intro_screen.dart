@@ -12,6 +12,7 @@ class IntroScreen extends StatefulWidget {
 
 class _IntroScreenState extends State<IntroScreen> with SingleTickerProviderStateMixin{
 
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   PageController _pageController;
   AnimationController _animationController;
   Animation _transitionAnimation;
@@ -29,6 +30,7 @@ class _IntroScreenState extends State<IntroScreen> with SingleTickerProviderStat
       );
       _transitionAnimation = Tween(begin: 0.7,end: 1.0).animate(_animationController);
       _animationController.forward();
+      BackButtonAction.currentBackPressTime = DateTime.now();
     }
 
   @override
@@ -42,7 +44,6 @@ class _IntroScreenState extends State<IntroScreen> with SingleTickerProviderStat
     ScreenUtil.width = MediaQuery.of(context).size.width;
     ScreenUtil.height = MediaQuery.of(context).size.height;
     CurrentPlatform.platform = Theme.of(context).platform;
-    BackButtonAction.currentBackPressTime = DateTime.now();
   }
 
   @override
@@ -53,9 +54,10 @@ class _IntroScreenState extends State<IntroScreen> with SingleTickerProviderStat
     return FadeTransition(
       opacity: _transitionAnimation, 
       child: Scaffold(
+        key: _scaffoldKey,
         backgroundColor: Colors.white,
         body: WillPopScope(
-          onWillPop: () => BackButtonAction.onWillPop(context),
+          onWillPop: () => BackButtonAction.onWillPop(context,_scaffoldKey.currentState),
           child: Column(
             children: <Widget>[
               Expanded(
