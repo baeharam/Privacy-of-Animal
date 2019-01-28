@@ -8,6 +8,11 @@ class SignUpEventInitial extends SignUpEvent {}
 class SignUpEventComplete extends SignUpEvent {
   final String email;
   final String password;
+  final String name;
+  final int age;
+  final String gender;
+  final 
+
 
   SignUpEventComplete({
     @required this.email,

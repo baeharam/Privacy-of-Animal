@@ -30,6 +30,21 @@ flutter:
 
   assets:
 
+    - assets/images/tags/art.jpg
+    - assets/images/tags/book.jpg
+    - assets/images/tags/cartoon.jpg
+    - assets/images/tags/celebrity.jpg
+    - assets/images/tags/drama.jpg
+    - assets/images/tags/fashion.jpg
+    - assets/images/tags/food.jpg
+    - assets/images/tags/game.jpg
+    - assets/images/tags/leisure.jpg
+    - assets/images/tags/makeup.jpg
+    - assets/images/tags/movie.jpg
+    - assets/images/tags/photo.jpg
+    - assets/images/tags/single_life.jpg
+    - assets/images/tags/sport.jpg
+
     - assets/images/animals/bison.jpg
     - assets/images/animals/buffalo.jpg
     - assets/images/animals/camel.jpg
