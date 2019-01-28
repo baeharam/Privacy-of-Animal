@@ -25,9 +25,12 @@ class _SignUpFormState extends State<SignUpForm> {
   final FocusNode _emailFocusNode = FocusNode();
   final FocusNode _passwordFocusNode = FocusNode();
   final FocusNode _nameFocusNode = FocusNode();
+  final FocusNode _jobFocusNode = FocusNode();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _ageController = TextEditingController();
+  final TextEditingController _jobController = TextEditingController();
 
 
   @override
@@ -35,9 +38,11 @@ class _SignUpFormState extends State<SignUpForm> {
       _emailController.dispose();
       _passwordController.dispose();
       _nameController.dispose();
+      _ageController.dispose();
       _emailFocusNode.dispose();
       _passwordFocusNode.dispose();
       _nameFocusNode.dispose();
+      _jobFocusNode.dispose();
       super.dispose();
     }
 
@@ -50,6 +55,19 @@ class _SignUpFormState extends State<SignUpForm> {
           color: Colors.black,
           fontWeight: FontWeight.w600,
           fontSize: 18.0
+        ),
+      ),
+    );
+  }
+
+  Widget _buildIntroduction(String introduction, EdgeInsets padding){
+    return Padding(
+      padding: padding,
+      child: Text(
+        introduction,
+        style: TextStyle(
+          color: signUpBackgroundColor,
+          fontWeight: FontWeight.bold
         ),
       ),
     );
@@ -68,6 +86,7 @@ class _SignUpFormState extends State<SignUpForm> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
+          _buildIntroduction('계정을 입력해주세요.', EdgeInsets.only(bottom: 20.0)),
           _buildTitle('이메일'),
           SignUpInput(
             hintText: signUpEmailHint,
@@ -91,6 +110,7 @@ class _SignUpFormState extends State<SignUpForm> {
             obscureText: true,
           ),
           SizedBox(height: ScreenUtil.height/25),
+          _buildIntroduction('프로필을 입력해주세요.', EdgeInsets.symmetric(vertical: 20.0)),
           _buildTitle('이름'),
           SignUpInput(
             hintText: signUpNameHint,
@@ -101,24 +121,40 @@ class _SignUpFormState extends State<SignUpForm> {
             signUpBloc: signUpBloc,
             textInputType: TextInputType.text
           ),
-          SizedBox(height: ScreenUtil.height/15),
+          SizedBox(height: ScreenUtil.height/25),
+          _buildTitle('나이'),
           BlocEventStateBuilder(
             bloc: signUpBloc,
             builder: (BuildContext context, SignUpState state){
+              if(state.isAgeSelected){
+                _ageController.text = state.age.toString() + '살';
+              }
               return GestureDetector(
                 child: Container(
                   color: Colors.transparent,
                   child: IgnorePointer(
-                    child: TextFormField(
+                    child: TextField(
                       decoration: InputDecoration(
                         hintText: signUpAgeHint
-                      )
+                      ),
+                      controller: _ageController,
                     ),
                   ),
                 ),
                 onTap: () => showAgePicker(context, validationBloc, signUpBloc),
               );
             },
+          ),
+          SizedBox(height: ScreenUtil.height/25),
+          _buildTitle('직업'),
+          SignUpInput(
+            hintText: signUpJobHint,
+            stream: validationBloc.job,
+            controller: _jobController,
+            focusNode: _jobFocusNode,
+            onChanged: validationBloc.onJobChanged,
+            signUpBloc: signUpBloc,
+            textInputType: TextInputType.text
           ),
           SizedBox(height: ScreenUtil.height/15),
           StreamBuilder<bool>(

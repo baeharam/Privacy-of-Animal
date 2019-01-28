@@ -30,7 +30,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 dashColor: signUpBackgroundColor,
                 title: '회원가입',
               ),
-              SizedBox(height: ScreenUtil.height/10),
+              SizedBox(height: ScreenUtil.height/20),
               SignUpForm(),
               BlocEventStateBuilder(
                 bloc: signUpBloc,

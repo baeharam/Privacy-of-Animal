@@ -9,20 +9,20 @@ class ValidationBloc extends Object
   final BehaviorSubject<String> _passwordController = BehaviorSubject<String>();
   final BehaviorSubject<String> _nameController = BehaviorSubject<String>();
   final BehaviorSubject<int> _ageController = BehaviorSubject<int>(seedValue: null);
-  final BehaviorSubject<String> _jobController = BehaviorSubject<String>(seedValue: null);  
+  final BehaviorSubject<String> _jobController = BehaviorSubject<String>();  
 
   Function(String) get onEmailChanged => _emailController.sink.add;
   Function(String) get onPasswordChanged => _passwordController.sink.add;
   Function(String) get onNameChanged => _nameController.sink.add;
+  Function(String) get onJobChanged => _jobController.sink.add;
 
   onAgeSelected(int age) => _ageController.sink.add(age);
-  onJobSelected(String job) => _jobController.sink.add(job);
 
   Stream<String> get email => _emailController.stream.transform(validateEmail);
   Stream<String> get password => _passwordController.stream.transform(validatePassword);
   Stream<String> get name => _nameController.stream.transform(validateName);
-  Stream<int> get age => _ageController.stream.transform(validateAge);
   Stream<String> get job => _jobController.stream.transform(validateJob);
+  Stream<int> get age => _ageController.stream.transform(validateAge);
 
 
   Stream<bool> get loginValid => Observable.combineLatest2(email,password, (e,p) => true);
