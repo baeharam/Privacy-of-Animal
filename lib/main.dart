@@ -26,7 +26,7 @@ class PrivacyOfAnimal extends StatelessWidget {
       home: IntroScreen(),
       theme: ThemeData(fontFamily: 'NanumGothic'),
       routes: routes,
-      debugShowCheckedModeBanner: false,
+      debugShowCheckedModeBanner: false
     );
   }
 }

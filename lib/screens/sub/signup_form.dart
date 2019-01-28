@@ -1,10 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_picker/flutter_picker.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_helpers.dart';
 import 'package:privacy_of_animal/logics/signup/signup.dart';
 import 'package:privacy_of_animal/logics/validation/validation_bloc.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/resources/constants.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
+import 'package:privacy_of_animal/utils/age_picker.dart';
 import 'package:privacy_of_animal/widgets/focus_visible_maker.dart';
 import 'package:privacy_of_animal/widgets/initial_button.dart';
 import 'package:privacy_of_animal/widgets/progress_indicator.dart';
@@ -34,6 +38,7 @@ class _SignUpFormState extends State<SignUpForm> {
 
     final ValidationBloc validationBloc = MultipleBlocProvider.of<ValidationBloc>(context);
     final SignUpBloc signUpBloc = MultipleBlocProvider.of<SignUpBloc>(context);
+    int age;
 
     return Container(
       height: ScreenUtil.height/1.7,
@@ -117,6 +122,24 @@ class _SignUpFormState extends State<SignUpForm> {
                 },
               );
             },
+          ),
+          SizedBox(height: ScreenUtil.height/15),
+          FlatButton(
+            child: Text('나이'),
+            onPressed: () => Picker(
+              adapter: PickerDataAdapter<String>(pickerdata: JsonDecoder().convert(AgePickerData)),
+              hideHeader: true,
+              cancelTextStyle: TextStyle(color: Colors.red),
+              confirmTextStyle: TextStyle(color: Colors.red),
+              title: Padding(
+                padding: const EdgeInsets.only(top: 30.0),
+                child: Text('나이를 선택해주세요.',textAlign: TextAlign.center),
+              ),
+              textAlign: TextAlign.center,
+              onConfirm: (Picker picker, List value){
+                age = int.parse(picker.getSelectedValues()[1]);
+              }
+            ).showDialog(context)
           ),
           SizedBox(height: ScreenUtil.height/15),
           StreamBuilder<bool>(
