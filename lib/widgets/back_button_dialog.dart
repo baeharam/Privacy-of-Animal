@@ -7,9 +7,7 @@ Future<bool> onWillPop(BuildContext context) {
   DateTime now = DateTime.now();
   if(now.difference(currentBackPressTime) > Duration(seconds: 2)){
     currentBackPressTime = now;
-    Scaffold.of(context).showSnackBar(SnackBar(
-      content: Text('한번 더 누르시면 종료됩니다.'),
-    ));
+    streamSnackbar(context, '한번 더 누르시면 종료됩니다.');
     return Future.value(false);
   }
   return Future.value(true);

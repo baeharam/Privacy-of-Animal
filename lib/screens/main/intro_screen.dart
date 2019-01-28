@@ -40,17 +40,17 @@ class _IntroScreenState extends State<IntroScreen> with SingleTickerProviderStat
       _animationController.dispose();
       super.dispose();
     }
-    
+
   @override
   Widget build(BuildContext context) {
 
-    return WillPopScope(
-      onWillPop: () => onWillPop(context),
-      child: FadeTransition(
-        opacity: _transitionAnimation, 
-        child: Scaffold(
-          backgroundColor: Colors.white,
-          body: Column(
+    return FadeTransition(
+      opacity: _transitionAnimation, 
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: WillPopScope(
+          onWillPop: () => onWillPop(context),
+          child: Column(
             children: <Widget>[
               Expanded(
                 child: Stack(
@@ -109,8 +109,8 @@ class _IntroScreenState extends State<IntroScreen> with SingleTickerProviderStat
                 ),
               )
             ],
-          )
-        ),
+          ),
+        )
       ),
     );
   }
