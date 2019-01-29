@@ -20,8 +20,10 @@ const String findPasswordMessage = '등록된 이메일을 입력해주시면\n�
 
 // SignUpScreen
 const String signUpEmptyNameError = '이름을 입력하세요.';
+const String signUpInvalidNameError = '이름을 제대로 입력해주세요.';
 const String signUpEmptyAgeError = '나이를 입력하세요.';
 const String signUpEmptyJobError = '직업을 입력하세요.';
+const String signUpInvalidJobError = '직업을 제대로 입력해주세요.';
 const String signUpNameHint = '본인의 이름을 입력해주세요.';
 const String signUpAgeHint = '나이를 설정해주세요.';
 const String signUpJobHint = '직업을 입력해주세요.';
