@@ -1,12 +1,11 @@
-
-import 'package:flutter/painting.dart';
+import 'package:meta/meta.dart';
 
 class Tag {
   final String title;
-  final AssetImage image;
+  final String image;
 
   const Tag({
-    this.title,
-    this.image
+    @required this.title,
+    @required this.image
   });
 }

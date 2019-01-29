@@ -21,10 +21,20 @@ class LoginBloc extends BlocEventStateBase<LoginEvent,LoginState> {
     
     if(event is LoginEventLogin){
       yield LoginState.authenticating();
-      LOGIN_RESULT result = 
-        await _api.login(event.email, event.password);
+      LOGIN_RESULT result = await _api.login(event.email, event.password);
       if(result == LOGIN_RESULT.SUCCESS){
-        yield LoginState.authenticated();
+        USER_CONDITION condition = await _api.checkUserCondition();
+        switch(condition){
+          case USER_CONDITION.NONE:
+            yield LoginState.authenticatedNormal();
+            break;
+          case USER_CONDITION.TAG_SELECTED:
+            yield LoginState.authenticatedTagSelected();
+            break;
+          case USER_CONDITION.FACE_ANALYZED:
+            yield LoginState.authenticatedFaceAnalyzed();
+            break;
+        }
       }
       else if(result == LOGIN_RESULT.FAILURE){
         yield LoginState.authenticationFailed();
