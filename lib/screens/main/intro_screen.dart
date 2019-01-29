@@ -10,6 +10,7 @@ class IntroScreen extends StatefulWidget {
   _IntroScreenState createState() => _IntroScreenState();
 }
 
+// Animation <= SingleTickerProviderStateMinin
 class _IntroScreenState extends State<IntroScreen> with SingleTickerProviderStateMixin{
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
