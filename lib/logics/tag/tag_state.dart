@@ -5,14 +5,14 @@ class TagState extends BlocState {
   final int tagIndex;
   final bool isTagCompleted;
   final bool isImageLoaded;
-  final List<int> compressedImage;
+  final List<int> image;
 
   TagState({
     this.isTagSelected: false,
     this.tagIndex: -1,
     this.isTagCompleted: false,
     this.isImageLoaded: false,
-    this.compressedImage: const []
+    this.image
   });
 
   factory TagState.initial() => TagState();
@@ -24,11 +24,11 @@ class TagState extends BlocState {
     );
   }
 
-  factory TagState.imageLoaded(List<int> compressedImage, int index){
+  factory TagState.imageLoaded(List<int> image, int index){
     return TagState(
       isImageLoaded: true,
-      tagIndex: index,
-      compressedImage: compressedImage
+      image: image,
+      tagIndex: index
     );
   }
 

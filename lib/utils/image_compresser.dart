@@ -5,6 +5,6 @@ Future<List<int>> compressImage(String assetName) async {
     assetName,
     minHeight: 300,
     minWidth: 300,
-    quality: 50,
+    quality: 100,
   );
 }

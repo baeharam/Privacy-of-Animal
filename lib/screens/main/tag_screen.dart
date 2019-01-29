@@ -18,8 +18,6 @@ class _TagScreenState extends State<TagScreen> {
   Widget build(BuildContext context) {
 
     final TagBloc _tagBloc = TagBloc();
-    List<MemoryImage> images = List.generate(tags.length, (_) => MemoryImage(kTransparentImage));
-    _tagBloc.emitEvent(TagEventImageLoad());
 
     return Scaffold(
       body: Column(
@@ -38,9 +36,6 @@ class _TagScreenState extends State<TagScreen> {
           BlocBuilder(
             bloc: _tagBloc,
             builder: (context, TagState state){
-              if(state.isImageLoaded){
-                images[state.tagIndex] = MemoryImage(Uint8List.fromList(state.compressedImage));
-              }
               return GridView.builder(
                 shrinkWrap: true,
                 itemCount: tags.length,
@@ -57,7 +52,7 @@ class _TagScreenState extends State<TagScreen> {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       image: DecorationImage(
-                        image: images[index],
+                        image: tags[index].image,
                         fit: BoxFit.cover
                       )
                     ),

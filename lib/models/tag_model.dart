@@ -1,8 +1,8 @@
-import 'package:meta/meta.dart';
+import 'package:flutter/material.dart';
 
 class Tag {
   final String title;
-  final String image;
+  final AssetImage image;
 
   const Tag({
     @required this.title,

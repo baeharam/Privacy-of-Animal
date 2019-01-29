@@ -5,8 +5,6 @@ import 'package:privacy_of_animal/utils/image_compresser.dart';
 
 class TagBloc extends BlocEventStateBase<TagEvent,TagState> {
 
-  static final TagAPI _api = TagAPI();
-
   @override
     TagState get initialState => TagState.initial();
 
@@ -18,8 +16,8 @@ class TagBloc extends BlocEventStateBase<TagEvent,TagState> {
 
     if(event is TagEventImageLoad){
       for(int i=0; i<tags.length; i++){
-        List<int> compressedImage = await compressImage(tags[i].image);
-        yield TagState.imageLoaded(compressedImage,i);
+        // List<int> compressedImage = await compressImage(tags[i].image);
+        // yield TagState.imageLoaded(compressedImage,i);
       }
     }
   }
