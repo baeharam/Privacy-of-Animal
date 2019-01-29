@@ -128,7 +128,6 @@ class _SignUpFormState extends State<SignUpForm> {
             builder: (BuildContext context, SignUpState state){
               if(state.isAgeSelected){
                 _ageController.text = '${state.age.toString()}살';
-                signUpModel.age = state.age;
               }
               if(state.isAccountRegisterFailed || state.isRegistered){
                 _ageController.clear();
@@ -193,6 +192,8 @@ class _SignUpFormState extends State<SignUpForm> {
                   signUpModel.email = _emailController.text;
                   signUpModel.password = _passwordController.text;
                   signUpModel.name = _nameController.text;
+                  signUpModel.age = _ageController.text;
+                  signUpModel.job = _jobController.text;
                   signUpBloc.emitEvent(SignUpEventComplete(data: signUpModel));
                 } 
                 : null,

@@ -2,7 +2,7 @@ class SignUpModel {
   String email;
   String password;
   String name;
-  int age;
+  String age;
   String gender;
   String job;
 
