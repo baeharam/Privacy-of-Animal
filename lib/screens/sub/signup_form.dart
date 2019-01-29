@@ -76,11 +76,10 @@ class _SignUpFormState extends State<SignUpForm> {
 
     final ValidationBloc validationBloc = MultipleBlocProvider.of<ValidationBloc>(context);
     final SignUpBloc signUpBloc = MultipleBlocProvider.of<SignUpBloc>(context);
-    int age;
-    String gender;
+    SignUpModel signUpModel = SignUpModel();
 
     return Container(
-      height: ScreenUtil.height*1.3,
+      height: ScreenUtil.height*1.2,
       width: ScreenUtil.width/1.3,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -127,8 +126,8 @@ class _SignUpFormState extends State<SignUpForm> {
             bloc: signUpBloc,
             builder: (BuildContext context, SignUpState state){
               if(state.isAgeSelected){
-                _ageController.text = state.age.toString() + '살';
-                age = state.age;
+                _ageController.text = '${state.age.toString()}살';
+                signUpModel.age = state.age;
               }
               if(state.isAccountRegisterFailed || state.isRegistered){
                 _ageController.clear();
@@ -166,6 +165,9 @@ class _SignUpFormState extends State<SignUpForm> {
           BlocEventStateBuilder(
             bloc: signUpBloc,
             builder: (context, SignUpState state){
+              if(state.isMaleSelected || state.isFemaleSelected){
+                signUpModel.gender = state.gender;
+              }
               return Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
@@ -186,17 +188,10 @@ class _SignUpFormState extends State<SignUpForm> {
                 callback: (snapshot.hasData && snapshot.data==true) 
                 ? (){
                   FocusScope.of(context).requestFocus(FocusNode());
-                  signUpBloc.emitEvent(
-                    SignUpEventComplete(
-                      data: SignUpModel(
-                        email: _emailController.text,
-                        password: _passwordController.text,
-                        name: _nameController.text,
-                        age: age,
-                        gender: gender
-                      )
-                    )
-                  );
+                  signUpModel.email = _emailController.text;
+                  signUpModel.password = _passwordController.text;
+                  signUpModel.name = _nameController.text;
+                  signUpBloc.emitEvent(SignUpEventComplete(data: signUpModel));
                 } 
                 : null,
               );

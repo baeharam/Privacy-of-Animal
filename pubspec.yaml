@@ -30,6 +30,9 @@ flutter:
 
   assets:
 
+    - assets/images/components/male.png
+    - assets/images/components/female.png
+
     - assets/images/tags/art.jpg
     - assets/images/tags/book.jpg
     - assets/images/tags/cartoon.jpg

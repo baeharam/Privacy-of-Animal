@@ -41,7 +41,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   if(state.isRegistering){
                     widgets.add(
                       Positioned(
-                        bottom: 20.0,
+                        bottom: ScreenUtil.height/13,
                         child: CustomProgressIndicator(),
                       )
                     );
