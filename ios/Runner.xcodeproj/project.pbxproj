@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0FB33F332200693100AD93FA /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0FB33F322200693000AD93FA /* GoogleService-Info.plist */; };
+		0F51615422007B0F00D10570 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0F51615322007B0F00D10570 /* GoogleService-Info.plist */; };
 		0FB33F372200694600AD93FA /* NanumGothic-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0FB33F342200694500AD93FA /* NanumGothic-Regular.ttf */; };
 		0FB33F382200694600AD93FA /* NanumGothic-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0FB33F352200694600AD93FA /* NanumGothic-Bold.ttf */; };
 		0FB33F392200694600AD93FA /* NanumGothic-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0FB33F362200694600AD93FA /* NanumGothic-ExtraBold.ttf */; };
@@ -43,7 +43,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		0FB33F322200693000AD93FA /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		0F51615322007B0F00D10570 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		0FB33F342200694500AD93FA /* NanumGothic-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "NanumGothic-Regular.ttf"; path = "../assets/fonts/NanumGothic-Regular.ttf"; sourceTree = "<group>"; };
 		0FB33F352200694600AD93FA /* NanumGothic-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "NanumGothic-Bold.ttf"; path = "../assets/fonts/NanumGothic-Bold.ttf"; sourceTree = "<group>"; };
 		0FB33F362200694600AD93FA /* NanumGothic-ExtraBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "NanumGothic-ExtraBold.ttf"; path = "../assets/fonts/NanumGothic-ExtraBold.ttf"; sourceTree = "<group>"; };
@@ -127,7 +127,7 @@
 		97C146F01CF9000F007C117D /* Runner */ = {
 			isa = PBXGroup;
 			children = (
-				0FB33F322200693000AD93FA /* GoogleService-Info.plist */,
+				0F51615322007B0F00D10570 /* GoogleService-Info.plist */,
 				7AFFD8ED1D35381100E5BB4D /* AppDelegate.h */,
 				7AFFD8EE1D35381100E5BB4D /* AppDelegate.m */,
 				97C146FA1CF9000F007C117D /* Main.storyboard */,
@@ -228,7 +228,7 @@
 				97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */,
 				2D5378261FAA1A9400D5DBA9 /* flutter_assets in Resources */,
 				97C146FC1CF9000F007C117D /* Main.storyboard in Resources */,
-				0FB33F332200693100AD93FA /* GoogleService-Info.plist in Resources */,
+				0F51615422007B0F00D10570 /* GoogleService-Info.plist in Resources */,
 				0FB33F372200694600AD93FA /* NanumGothic-Regular.ttf in Resources */,
 				0FB33F382200694600AD93FA /* NanumGothic-Bold.ttf in Resources */,
 			);
