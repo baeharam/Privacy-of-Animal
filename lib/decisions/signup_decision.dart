@@ -20,7 +20,7 @@ class _SignUpDecisionState extends State<SignUpDecision> {
   Widget build(BuildContext context) {
     return MultipleBlocProvider(
       blocs: [_validationBloc, _signUpBloc],
-      child: BlocEventStateBuilder(
+      child: BlocBuilder(
         bloc: _signUpBloc,
         builder: (BuildContext context, SignUpState state){
           if(state.isRegistered){

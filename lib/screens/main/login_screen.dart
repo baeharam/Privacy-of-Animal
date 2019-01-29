@@ -36,7 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               SizedBox(height: ScreenUtil.height/10),    
               LoginForm(),
-              BlocEventStateBuilder(
+              BlocBuilder(
                 bloc: loginBloc,
                 builder: (context, LoginState state){
                   if(state.isAuthenticationFailed){
@@ -50,7 +50,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   return Container();
                 },
               ),
-              BlocEventStateBuilder(
+              BlocBuilder(
                 bloc: findPasswordBloc,
                 builder: (context, FindPasswordState state){
                   if(state.isEmailSendFailed){

@@ -122,7 +122,7 @@ class _SignUpFormState extends State<SignUpForm> {
           ),
           SizedBox(height: ScreenUtil.height/25),
           _buildTitle('나이'),
-          BlocEventStateBuilder(
+          BlocBuilder(
             bloc: signUpBloc,
             builder: (BuildContext context, SignUpState state){
               if(state.isAgeSelected){
@@ -162,7 +162,7 @@ class _SignUpFormState extends State<SignUpForm> {
           SizedBox(height: ScreenUtil.height/15),
           _buildTitle('성별'),
           SizedBox(height: ScreenUtil.height/30),
-          BlocEventStateBuilder(
+          BlocBuilder(
             bloc: signUpBloc,
             builder: (context, SignUpState state){
               if(state.isMaleSelected || state.isFemaleSelected){

@@ -22,7 +22,7 @@ class _LoginDecisionState extends State<LoginDecision> {
   Widget build(BuildContext context) {
     return MultipleBlocProvider(
       blocs: [_validationBloc, _loginBloc, _findPasswordBloc],
-      child: BlocEventStateBuilder(
+      child: BlocBuilder(
         bloc: _loginBloc,
         builder: (BuildContext context, LoginState state){
           if(!state.isAuthenticated){

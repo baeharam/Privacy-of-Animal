@@ -35,7 +35,7 @@ class _SignUpInputState extends State<SignUpInput> {
   Widget build(BuildContext context) {
     return EnsureVisibleWhenFocused(
       focusNode: widget.focusNode,
-      child: BlocEventStateBuilder(
+      child: BlocBuilder(
         bloc: widget.signUpBloc,
         builder: (BuildContext context, SignUpState state){
           if(state.isAccountRegisterFailed || state.isProfileRegisterFailed){

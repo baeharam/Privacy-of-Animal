@@ -49,7 +49,7 @@ class _LoginFormState extends State<LoginForm> {
             builder: (BuildContext context, AsyncSnapshot<String> snapshot){
               return EnsureVisibleWhenFocused(
                 focusNode: _emailFocusNode,
-                child: BlocEventStateBuilder(
+                child: BlocBuilder(
                   bloc: loginBloc,
                   builder: (BuildContext context, LoginState state){
                     if(state.isAuthenticationFailed){
@@ -76,7 +76,7 @@ class _LoginFormState extends State<LoginForm> {
             stream: validationBloc.password,
             initialData: loginEmptyPasswordError,
             builder: (BuildContext context, AsyncSnapshot<String> snapshot){
-              return BlocEventStateBuilder(
+              return BlocBuilder(
                 bloc: loginBloc,
                 builder: (BuildContext context, LoginState state){
                   if(state.isAuthenticationFailed){
@@ -127,7 +127,7 @@ class _LoginFormState extends State<LoginForm> {
             },
           ),
           SizedBox(height: ScreenUtil.height/10),
-          BlocEventStateBuilder(
+          BlocBuilder(
             bloc: loginBloc,
             builder: (context, LoginState state){
               if(state.isAuthenticating){
@@ -136,7 +136,7 @@ class _LoginFormState extends State<LoginForm> {
               return Container();
             },
           ),
-          BlocEventStateBuilder(
+          BlocBuilder(
             bloc: findPasswordBloc,
             builder: (context, FindPasswordState state){
               if(state.isEmailSending){

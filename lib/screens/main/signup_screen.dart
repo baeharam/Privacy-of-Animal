@@ -34,7 +34,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 title: '회원가입',
               ),
               SizedBox(height: ScreenUtil.height/20),
-              BlocEventStateBuilder(
+              BlocBuilder(
                 bloc: signUpBloc,
                 builder: (context, SignUpState state){
                   List<Widget> widgets = [SignUpForm()];
@@ -52,7 +52,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   );
                 }
               ),
-              BlocEventStateBuilder(
+              BlocBuilder(
                 bloc: signUpBloc,
                 builder: (context, SignUpState state){
                   if(state.isAccountRegisterFailed){
