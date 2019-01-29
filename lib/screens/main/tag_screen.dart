@@ -17,7 +17,7 @@ class _TagScreenState extends State<TagScreen> {
   @override
   Widget build(BuildContext context) {
 
-    final TagBloc _tagBloc = BlocProvider.of<TagBloc>(context);
+    final TagBloc _tagBloc = TagBloc();
     List<MemoryImage> images = List.generate(tags.length, (_) => MemoryImage(kTransparentImage));
     _tagBloc.emitEvent(TagEventImageLoad());
 
