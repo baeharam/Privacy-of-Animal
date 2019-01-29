@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/models/signup_model.dart';
 
 class SignUpAPI {
@@ -41,6 +42,10 @@ class SignUpAPI {
       return PROFILE_RESULT.FAILURE;
     }
     return PROFILE_RESULT.SUCCESS;
+  }
+
+  void requestFocusOnRetry(BuildContext context, FocusNode focusNode){
+    FocusScope.of(context).requestFocus(focusNode);
   }
 
 }

@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_helpers.dart';
 import 'package:privacy_of_animal/logics/signup/signup.dart';
@@ -92,9 +90,10 @@ class _SignUpFormState extends State<SignUpForm> {
             stream: validationBloc.email,
             controller: _emailController,
             focusNode: _emailFocusNode,
+            failFocusNode: _emailFocusNode,
             onChanged: validationBloc.onEmailChanged,
-            signUpBloc: signUpBloc,
             textInputType: TextInputType.emailAddress,
+            type: FOCUS_TYPE.ACCOUNT_FOCUS,
           ),
           SizedBox(height: ScreenUtil.height/25),
           _buildTitle('비밀번호'),
@@ -103,9 +102,10 @@ class _SignUpFormState extends State<SignUpForm> {
             stream: validationBloc.password,
             controller: _passwordController,
             focusNode: _passwordFocusNode,
+            failFocusNode: _emailFocusNode,
             onChanged: validationBloc.onPasswordChanged,
-            signUpBloc: signUpBloc,
             textInputType: TextInputType.text,
+            type: FOCUS_TYPE.ACCOUNT_FOCUS,
             obscureText: true,
           ),
           SizedBox(height: ScreenUtil.height/25),
@@ -116,9 +116,10 @@ class _SignUpFormState extends State<SignUpForm> {
             stream: validationBloc.name,
             controller: _nameController,
             focusNode: _nameFocusNode,
+            failFocusNode: _nameFocusNode,
             onChanged: validationBloc.onNameChanged,
-            signUpBloc: signUpBloc,
-            textInputType: TextInputType.text
+            textInputType: TextInputType.text,
+            type: FOCUS_TYPE.PROFILE_FOCUS
           ),
           SizedBox(height: ScreenUtil.height/25),
           _buildTitle('나이'),
@@ -155,9 +156,10 @@ class _SignUpFormState extends State<SignUpForm> {
             stream: validationBloc.job,
             controller: _jobController,
             focusNode: _jobFocusNode,
+            failFocusNode: _nameFocusNode,
             onChanged: validationBloc.onJobChanged,
-            signUpBloc: signUpBloc,
-            textInputType: TextInputType.text
+            textInputType: TextInputType.text,
+            type: FOCUS_TYPE.PROFILE_FOCUS
           ),
           SizedBox(height: ScreenUtil.height/15),
           _buildTitle('성별'),

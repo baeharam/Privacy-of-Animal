@@ -27,6 +27,10 @@ const String signUpAgeHint = '나이를 설정해주세요.';
 const String signUpJobHint = '직업을 입력해주세요.';
 const String signUpEmailHint = '이메일을 입력해주세요.';
 const String signUpPasswordHint = '6글자 이상의 비밀번호를 입력해주세요.';
+const String signUpAccountFailedTitle = '계정생성 실패!';
+const String signUpProfileFailedTitle = '프로필생성 실패!';
+const String signUpAccountFailedMessage = '이메일과 비밀번호를\n다시 입력해주세요.';
+const String signUpProfileFailedMessage = '프로필을 다시 입력해주세요.';
 
 
 // 로컬 DB 이름

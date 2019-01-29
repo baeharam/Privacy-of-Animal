@@ -1,4 +1,4 @@
-import 'package:meta/meta.dart';
+import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state.dart';
 import 'package:privacy_of_animal/models/signup_model.dart';
 
@@ -20,5 +20,15 @@ class SignUpEventComplete extends SignUpEvent {
 
   SignUpEventComplete({
     @required this.data
+  });
+}
+
+class SignUpEventRetry extends SignUpEvent {
+  final BuildContext context;
+  final FocusNode failFocusNode;
+
+  SignUpEventRetry({
+    @required this.context,
+    @required this.failFocusNode
   });
 }
