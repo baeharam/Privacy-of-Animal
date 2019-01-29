@@ -63,14 +63,14 @@ class SignUpState extends BlocState {
   factory SignUpState.maleSelected() {
     return SignUpState(
       isMaleSelected: true,
-      gender: 'm'
+      gender: '남자'
     );
   }
 
   factory SignUpState.femaleSelected() {
     return SignUpState(
       isFemaleSelected: true,
-      gender: 'f'
+      gender: '여자'
     );
   }
 }

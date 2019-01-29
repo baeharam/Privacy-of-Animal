@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_helpers.dart';
 import 'package:privacy_of_animal/logics/find_password/find_password_bloc.dart';
 import 'package:privacy_of_animal/logics/login/login.dart';
+import 'package:privacy_of_animal/logics/tag/tag_bloc.dart';
 import 'package:privacy_of_animal/logics/validation/validation_bloc.dart';
-import 'package:privacy_of_animal/screens/main/login_screen.dart';
+import 'package:privacy_of_animal/screens/main/screen.dart';
 import 'package:privacy_of_animal/utils/stream_navigator.dart';
 
 
@@ -20,20 +21,22 @@ class _LoginDecisionState extends State<LoginDecision> {
 
   @override
   Widget build(BuildContext context) {
-    return MultipleBlocProvider(
-      blocs: [_validationBloc, _loginBloc, _findPasswordBloc],
-      child: BlocEventStateBuilder(
-        bloc: _loginBloc,
-        builder: (BuildContext context, LoginState state){
-          if(!state.isAuthenticated){
-            return LoginScreen();
+    return BlocBuilder(
+      bloc: _loginBloc,
+      builder: (BuildContext context, LoginState state){
+        if(!state.isAuthenticated){
+          return MultipleBlocProvider(
+            blocs: [_validationBloc, _loginBloc, _findPasswordBloc],
+            child: LoginScreen()
+          );
+        }
+        if(state.isAuthenticated){
+          if(!state.isTagSelected){
+            StreamNavigator.pushReplacementNamed(context,'/tag');
           }
-          if(state.isAuthenticated){
-            StreamNavigator.pushReplacementNamed(context, '/homeDecision');
-          }
-          return Container();
-        },
-      ),
+        }
+        return Container();
+      },
     );
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state_builder.dart';
-import 'package:privacy_of_animal/logics/signup/signup_bloc.dart';
-import 'package:privacy_of_animal/logics/signup/signup_state.dart';
+import 'package:privacy_of_animal/bloc_helpers/multiple_bloc_provider.dart';
+import 'package:privacy_of_animal/logics/signup/signup.dart';
 import 'package:privacy_of_animal/widgets/focus_visible_maker.dart';
 
 class SignUpInput extends StatefulWidget {
@@ -10,9 +10,10 @@ class SignUpInput extends StatefulWidget {
   final Stream stream;
   final TextEditingController controller;
   final FocusNode focusNode;
+  final FocusNode failFocusNode;
   final Function onChanged;
-  final SignUpBloc signUpBloc;
   final TextInputType textInputType;
+  final FOCUS_TYPE type;
   final bool obscureText;
 
   SignUpInput({
@@ -20,9 +21,10 @@ class SignUpInput extends StatefulWidget {
     @required this.stream,
     @required this.controller,
     @required this.focusNode,
+    @required this.failFocusNode,
     @required this.onChanged,
-    @required this.signUpBloc,
     @required this.textInputType,
+    @required this.type,
     this.obscureText: false
   });
 
@@ -33,13 +35,20 @@ class SignUpInput extends StatefulWidget {
 class _SignUpInputState extends State<SignUpInput> {
   @override
   Widget build(BuildContext context) {
+
+    final SignUpBloc signUpBloc = MultipleBlocProvider.of<SignUpBloc>(context);
+
     return EnsureVisibleWhenFocused(
       focusNode: widget.focusNode,
-      child: BlocEventStateBuilder(
-        bloc: widget.signUpBloc,
+      child: BlocBuilder(
+        bloc: signUpBloc,
         builder: (BuildContext context, SignUpState state){
           if(state.isAccountRegisterFailed || state.isProfileRegisterFailed){
             widget.controller.clear();
+          }
+          if((state.isAccountRegisterFailed && widget.type==FOCUS_TYPE.ACCOUNT_FOCUS) ||
+             (state.isProfileRegisterFailed && widget.type==FOCUS_TYPE.PROFILE_FOCUS)){
+            signUpBloc.emitEvent(SignUpEventRetry(context: context,failFocusNode: widget.failFocusNode));
           }
           return StreamBuilder<String>(
             stream: widget.stream,
@@ -62,4 +71,9 @@ class _SignUpInputState extends State<SignUpInput> {
       ),
     );
   }
+}
+
+enum FOCUS_TYPE {
+  ACCOUNT_FOCUS,
+  PROFILE_FOCUS
 }

@@ -11,7 +11,18 @@ void showAgePicker(BuildContext context, ValidationBloc validationBloc, SignUpBl
   Picker(
     adapter: PickerDataAdapter<String>(pickerdata: JsonDecoder().convert(agePickerData)),
     hideHeader: true,
-    title: Text('나이를 선택해주세요.'),
+    title: Container(
+      margin: EdgeInsets.only(top: ScreenUtil.height/20),
+      child: Text(
+        '나이를 선택해주세요.',
+        style: TextStyle(
+          color: Colors.black,
+          fontWeight: FontWeight.w600
+        ),
+        textAlign: TextAlign.center,
+      ),
+    ),
+    height: 100.0,
     onConfirm: (Picker picker, List value)
       {
         int age = int.parse(picker.getSelectedValues()[1]);

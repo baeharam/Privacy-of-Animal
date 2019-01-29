@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter/painting.dart';
 import 'package:privacy_of_animal/models/intro_page_model.dart';
 import 'package:privacy_of_animal/models/tag_model.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
@@ -62,58 +61,62 @@ const agePickerData = '''
 const tags = [
   const Tag(
     title: '예술',
-    image: AssetImage('assets/images/tags/art.jpg')
+    image: 'assets/images/tags/art.jpg'
   ),
   const Tag(
     title: '독서',
-    image: AssetImage('assets/images/tags/book.jpg')
+    image: 'assets/images/tags/book.jpg'
   ),
   const Tag(
     title: '만화',
-    image: AssetImage('assets/images/tags/cartoon.jpg')
+    image: 'assets/images/tags/cartoon.jpg'
   ),
   const Tag(
     title: '연예인',
-    image: AssetImage('assets/images/tags/celebrity.jpg')
+    image: 'assets/images/tags/celebrity.jpg'
   ),
   const Tag(
     title: '드라마',
-    image: AssetImage('assets/images/tags/drama.jpg')
+    image: 'assets/images/tags/drama.jpg'
   ),
   const Tag(
     title: '패션',
-    image: AssetImage('assets/images/tags/fashion.jpg')
+    image: 'assets/images/tags/fashion.jpg'
   ),
   const Tag(
     title: '음식',
-    image: AssetImage('assets/images/tags/food.jpg')
+    image: 'assets/images/tags/food.jpg'
   ),
   const Tag(
     title: '게임',
-    image: AssetImage('assets/images/tags/game.jpg')
+    image: 'assets/images/tags/game.jpg'
   ),
   const Tag(
     title: '레저',
-    image: AssetImage('assets/images/tags/leisure.jpg')
+    image: 'assets/images/tags/leisure.jpg'
   ),
   const Tag(
     title: '메이크업',
-    image: AssetImage('assets/images/tags/makeup.jpg')
+    image: 'assets/images/tags/makeup.jpg'
   ),
   const Tag(
     title: '영화',
-    image: AssetImage('assets/images/tags/movie.jpg')
+    image: 'assets/images/tags/movie.jpg'
   ),
   const Tag(
     title: '사진',
-    image: AssetImage('assets/images/tags/photo.jpg')
+    image: 'assets/images/tags/photo.jpg'
   ),
   const Tag(
     title: '자취',
-    image: AssetImage('assets/images/tags/single_life.jpg')
+    image: 'assets/images/tags/single_life.jpg'
   ),
   const Tag(
     title: '운동',
-    image: AssetImage('assets/images/tags/sport.jpg')
+    image: 'assets/images/tags/sport.jpg'
   ),
+  const Tag(
+    title: '음악',
+    image: 'assets/images/tags/music.jpg'
+  )
 ];

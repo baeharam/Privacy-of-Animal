@@ -5,7 +5,7 @@ import 'package:privacy_of_animal/screens/main/screen.dart';
 Map<String, WidgetBuilder> routes =  {
   '/intro': (BuildContext context) => IntroScreen(),
   '/login': (BuildContext context) => LoginScreen(),
-  '/tagSelect': (BuildContext context) => TagSelectScreen(),
+  '/tag': (BuildContext context) => TagScreen(),
   '/loginDecision': (BuildContext context) => LoginDecision(),
   '/signUpDecision': (BuildContext context) => SignUpDecision(),
   '/homeDecision': (BuildContext context) => HomeDecision()

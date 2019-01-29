@@ -19,6 +19,9 @@ dependencies:
   path_provider: ^0.4.1
   flutter_picker: ^1.0.6
   rflutter_alert: ^1.0.2
+  shared_preferences: ^0.5.0
+  flutter_image_compress: ^0.2.4
+  transparent_image: ^0.1.0
 
 dev_dependencies:
   flutter_test:
@@ -44,6 +47,7 @@ flutter:
     - assets/images/tags/photo.jpg
     - assets/images/tags/single_life.jpg
     - assets/images/tags/sport.jpg
+    - assets/images/tags/music.jpg
 
     - assets/images/animals/bison.jpg
     - assets/images/animals/buffalo.jpg

@@ -20,13 +20,31 @@ const String findPasswordMessage = '등록된 이메일을 입력해주시면\n�
 
 // SignUpScreen
 const String signUpEmptyNameError = '이름을 입력하세요.';
+const String signUpInvalidNameError = '이름을 제대로 입력해주세요.';
 const String signUpEmptyAgeError = '나이를 입력하세요.';
 const String signUpEmptyJobError = '직업을 입력하세요.';
+const String signUpInvalidJobError = '직업을 제대로 입력해주세요.';
 const String signUpNameHint = '본인의 이름을 입력해주세요.';
 const String signUpAgeHint = '나이를 설정해주세요.';
 const String signUpJobHint = '직업을 입력해주세요.';
 const String signUpEmailHint = '이메일을 입력해주세요.';
 const String signUpPasswordHint = '6글자 이상의 비밀번호를 입력해주세요.';
+const String signUpAccountFailedTitle = '계정생성 실패!';
+const String signUpProfileFailedTitle = '프로필생성 실패!';
+const String signUpAccountFailedMessage = '이메일과 비밀번호를\n다시 입력해주세요.';
+const String signUpProfileFailedMessage = '프로필을 다시 입력해주세요.';
+
+// Cloud Firestore 컬렉션 이름
+const String firestoreUsersCollection = 'users';
+
+// Cloud Firestore 필드 이름
+const String firestoreRealProfileField = 'real_profile';
+const String firestoreAgeField = 'age';
+const String firestoreGenderField = 'gender';
+const String firestoreJobField = 'job';
+const String firestoreNameField = 'name';
+const String firestoreIsTagSelectedField = 'is_tag_selected';
+const String firestoreIsFaceAnalyzedField = 'is_face_analyzed';
 
 
 // 로컬 DB 이름

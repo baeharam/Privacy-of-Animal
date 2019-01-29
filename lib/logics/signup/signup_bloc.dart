@@ -15,6 +15,11 @@ class SignUpBloc extends BlocEventStateBase<SignUpEvent,SignUpState> {
       yield SignUpState.notRegistered();
     }
 
+    if(event is SignUpEventRetry){
+      _api.requestFocusOnRetry(event.context, event.failFocusNode);
+      yield SignUpState.notRegistered();
+    }
+
     if(event is SignUpEventAgeSelect){
       yield SignUpState.ageSelected(event.age);
     }

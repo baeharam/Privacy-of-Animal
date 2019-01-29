@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_helpers.dart';
 import 'package:privacy_of_animal/logics/signup/signup.dart';
@@ -76,11 +74,10 @@ class _SignUpFormState extends State<SignUpForm> {
 
     final ValidationBloc validationBloc = MultipleBlocProvider.of<ValidationBloc>(context);
     final SignUpBloc signUpBloc = MultipleBlocProvider.of<SignUpBloc>(context);
-    int age;
-    String gender;
+    SignUpModel signUpModel = SignUpModel();
 
     return Container(
-      height: ScreenUtil.height*1.3,
+      height: ScreenUtil.height*1.2,
       width: ScreenUtil.width/1.3,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -93,9 +90,10 @@ class _SignUpFormState extends State<SignUpForm> {
             stream: validationBloc.email,
             controller: _emailController,
             focusNode: _emailFocusNode,
+            failFocusNode: _emailFocusNode,
             onChanged: validationBloc.onEmailChanged,
-            signUpBloc: signUpBloc,
             textInputType: TextInputType.emailAddress,
+            type: FOCUS_TYPE.ACCOUNT_FOCUS,
           ),
           SizedBox(height: ScreenUtil.height/25),
           _buildTitle('비밀번호'),
@@ -104,9 +102,10 @@ class _SignUpFormState extends State<SignUpForm> {
             stream: validationBloc.password,
             controller: _passwordController,
             focusNode: _passwordFocusNode,
+            failFocusNode: _emailFocusNode,
             onChanged: validationBloc.onPasswordChanged,
-            signUpBloc: signUpBloc,
             textInputType: TextInputType.text,
+            type: FOCUS_TYPE.ACCOUNT_FOCUS,
             obscureText: true,
           ),
           SizedBox(height: ScreenUtil.height/25),
@@ -117,18 +116,18 @@ class _SignUpFormState extends State<SignUpForm> {
             stream: validationBloc.name,
             controller: _nameController,
             focusNode: _nameFocusNode,
+            failFocusNode: _nameFocusNode,
             onChanged: validationBloc.onNameChanged,
-            signUpBloc: signUpBloc,
-            textInputType: TextInputType.text
+            textInputType: TextInputType.text,
+            type: FOCUS_TYPE.PROFILE_FOCUS
           ),
           SizedBox(height: ScreenUtil.height/25),
           _buildTitle('나이'),
-          BlocEventStateBuilder(
+          BlocBuilder(
             bloc: signUpBloc,
             builder: (BuildContext context, SignUpState state){
               if(state.isAgeSelected){
-                _ageController.text = state.age.toString() + '살';
-                age = state.age;
+                _ageController.text = '${state.age.toString()}살';
               }
               if(state.isAccountRegisterFailed || state.isRegistered){
                 _ageController.clear();
@@ -156,16 +155,20 @@ class _SignUpFormState extends State<SignUpForm> {
             stream: validationBloc.job,
             controller: _jobController,
             focusNode: _jobFocusNode,
+            failFocusNode: _nameFocusNode,
             onChanged: validationBloc.onJobChanged,
-            signUpBloc: signUpBloc,
-            textInputType: TextInputType.text
+            textInputType: TextInputType.text,
+            type: FOCUS_TYPE.PROFILE_FOCUS
           ),
           SizedBox(height: ScreenUtil.height/15),
           _buildTitle('성별'),
           SizedBox(height: ScreenUtil.height/30),
-          BlocEventStateBuilder(
+          BlocBuilder(
             bloc: signUpBloc,
             builder: (context, SignUpState state){
+              if(state.isMaleSelected || state.isFemaleSelected){
+                signUpModel.gender = state.gender;
+              }
               return Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
@@ -186,17 +189,12 @@ class _SignUpFormState extends State<SignUpForm> {
                 callback: (snapshot.hasData && snapshot.data==true) 
                 ? (){
                   FocusScope.of(context).requestFocus(FocusNode());
-                  signUpBloc.emitEvent(
-                    SignUpEventComplete(
-                      data: SignUpModel(
-                        email: _emailController.text,
-                        password: _passwordController.text,
-                        name: _nameController.text,
-                        age: age,
-                        gender: gender
-                      )
-                    )
-                  );
+                  signUpModel.email = _emailController.text;
+                  signUpModel.password = _passwordController.text;
+                  signUpModel.name = _nameController.text;
+                  signUpModel.age = _ageController.text;
+                  signUpModel.job = _jobController.text;
+                  signUpBloc.emitEvent(SignUpEventComplete(data: signUpModel));
                 } 
                 : null,
               );

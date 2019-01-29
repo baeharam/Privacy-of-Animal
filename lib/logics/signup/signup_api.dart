@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/models/signup_model.dart';
+import 'package:privacy_of_animal/resources/strings.dart';
 
 class SignUpAPI {
 
@@ -24,23 +26,32 @@ class SignUpAPI {
     return SIGNUP_RESULT.SUCCESS;
   }
 
-  // 정보등록
+  // 프로필 등록
   Future<PROFILE_RESULT> registerProfile(SignUpModel data) async {
     try {
       await _firestore.runTransaction((Transaction transaction) async{
-        CollectionReference collectionReference = _firestore.collection('users');
+        CollectionReference collectionReference = _firestore.collection(firestoreUsersCollection);
         DocumentReference reference = collectionReference.document(_uid);
         await reference.setData({
-          'name': data.name,
-          'age': data.age,
-          'job': data.job,
-          'gender': data.gender
+          firestoreRealProfileField: {
+            firestoreNameField: data.name,
+            firestoreAgeField: data.age,
+            firestoreJobField: data.job,
+            firestoreGenderField: data.gender
+          },
+          firestoreIsTagSelectedField: false,
+          firestoreIsFaceAnalyzedField: false
         });
       });
     } catch(exception){
       return PROFILE_RESULT.FAILURE;
     }
     return PROFILE_RESULT.SUCCESS;
+  }
+
+  // 실패한 부분에 포커싱
+  void requestFocusOnRetry(BuildContext context, FocusNode focusNode){
+    FocusScope.of(context).requestFocus(focusNode);
   }
 
 }

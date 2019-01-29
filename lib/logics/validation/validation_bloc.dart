@@ -16,9 +16,20 @@ class ValidationBloc extends Object
   Function(String) get onPasswordChanged => _passwordController.sink.add;
   Function(String) get onNameChanged => _nameController.sink.add;
   Function(String) get onJobChanged => _jobController.sink.add;
-
   onAgeSelected(int age) => _ageController.sink.add(age);
   onGenderSelected(String gender) => _genderController.sink.add(gender);
+
+  onAccountFailed() {
+    onEmailChanged('');
+    onPasswordChanged('');
+  }
+
+  onProfileFailed() {
+    onNameChanged(null);
+    onJobChanged(null);
+    onAgeSelected(-1);
+    onGenderSelected(null);
+  }
 
   Stream<String> get email => _emailController.stream.transform(validateEmail);
   Stream<String> get password => _passwordController.stream.transform(validatePassword);
@@ -28,7 +39,6 @@ class ValidationBloc extends Object
   Stream<String> get gender => _genderController.stream.transform(validateGender);
 
   Stream<bool> get loginValid => Observable.combineLatest2(email,password, (e,p) => true);
-
   Stream<bool> get signUpValid => 
     Observable.combineLatest6(email,password,name,age,job,gender, (e,p,n,a,j,g) => true);
 

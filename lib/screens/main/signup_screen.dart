@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_helpers.dart';
 import 'package:privacy_of_animal/logics/signup/signup.dart';
-import 'package:privacy_of_animal/logics/validation/validation_bloc.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/resources/constants.dart';
+import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:privacy_of_animal/screens/sub/signup_form.dart';
-import 'package:privacy_of_animal/utils/stream_snackbar.dart';
+import 'package:privacy_of_animal/utils/stream_dialog.dart';
 import 'package:privacy_of_animal/widgets/arc_background.dart';
 import 'package:privacy_of_animal/widgets/progress_indicator.dart';
 
@@ -19,7 +19,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
 
-    final ValidationBloc validationBloc = MultipleBlocProvider.of<ValidationBloc>(context);
     final signUpBloc = MultipleBlocProvider.of<SignUpBloc>(context);
 
     return Scaffold(
@@ -34,14 +33,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 title: '회원가입',
               ),
               SizedBox(height: ScreenUtil.height/20),
-              BlocEventStateBuilder(
+              BlocBuilder(
                 bloc: signUpBloc,
                 builder: (context, SignUpState state){
                   List<Widget> widgets = [SignUpForm()];
                   if(state.isRegistering){
                     widgets.add(
                       Positioned(
-                        bottom: 20.0,
+                        bottom: ScreenUtil.height/13,
                         child: CustomProgressIndicator(),
                       )
                     );
@@ -52,18 +51,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   );
                 }
               ),
-              BlocEventStateBuilder(
+              BlocBuilder(
                 bloc: signUpBloc,
                 builder: (context, SignUpState state){
                   if(state.isAccountRegisterFailed){
-                    streamSnackbar(context, '계정 등록에 실패했습니다.');
-                    signUpBloc.emitEvent(SignUpEventInitial());
-                    validationBloc.onEmailChanged('');
+                    streamDialogSignUpFailed(context,signUpAccountFailedTitle,signUpAccountFailedMessage,FAIL_TYPE.ACCOUNT_FAIL);
                   }
                   if(state.isProfileRegisterFailed){
-                    streamSnackbar(context, '프로필 등록에 실패했습니다.');
-                    signUpBloc.emitEvent(SignUpEventInitial());
-                    validationBloc.onNameChanged('');
+                    streamDialogSignUpFailed(context,signUpProfileFailedTitle,signUpProfileFailedMessage,FAIL_TYPE.PROFILE_FAIL);
                   }
                   return Container();
                 },

@@ -7,8 +7,8 @@ import 'package:meta/meta.dart';
 // 타입은 BlocState이다.
 typedef Widget AsyncBlocEventStateBuilder<BlocState>(BuildContext context, BlocState state);
 
-class BlocEventStateBuilder<BlocEvent,BlocState> extends StatelessWidget {
-  const BlocEventStateBuilder({
+class BlocBuilder<BlocEvent,BlocState> extends StatelessWidget {
+  const BlocBuilder({
     Key key,
     @required this.builder,
     @required this.bloc
