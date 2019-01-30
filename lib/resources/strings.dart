@@ -44,6 +44,7 @@ const String signUpProfileFailedMessage = '프로필을 다시 입력해주세�
 
 // TagChatScreen
 // 처음 고정 메시지 3개
+const List<String> tagChatNPCIntro = [tagChatNPCIntro1,tagChatNPCIntro2,tagChatNPCIntro3];
 const String tagChatNPCIntro1 = '안녕! 조금만 더 질문을 할게 ㅎㅎ';
 const String tagChatNPCIntro2 = '너의 관심사 매칭을 도와주기 위해서야!';
 const String tagChatNPCIntro3 = '최대한 정성껏 대답 부탁해~';

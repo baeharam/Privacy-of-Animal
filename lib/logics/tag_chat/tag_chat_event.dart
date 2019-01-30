@@ -41,3 +41,5 @@ class TagChatEventChat5 extends TagChatEvent {
 class TagChatEventComplete extends TagChatEvent {}
 
 class TagChatEventBegin extends TagChatEvent {}
+
+class TagChatEventDone extends TagChatEvent {}

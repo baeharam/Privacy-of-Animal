@@ -23,6 +23,12 @@ class TagChatState extends BlocState {
     this.isDetailStoreFailed: false
   });
 
+  factory TagChatState.done() {
+    return TagChatState(
+      isInitial: false
+    );
+  }
+
   factory TagChatState.initial(int order) {
     return TagChatState(
       isInitial: true,
