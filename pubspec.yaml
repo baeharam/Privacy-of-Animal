@@ -33,21 +33,21 @@ flutter:
 
   assets:
 
-    - assets/images/tags/art.jpg
-    - assets/images/tags/book.jpg
-    - assets/images/tags/cartoon.jpg
-    - assets/images/tags/celebrity.jpg
-    - assets/images/tags/drama.jpg
-    - assets/images/tags/fashion.jpg
-    - assets/images/tags/food.jpg
-    - assets/images/tags/game.jpg
-    - assets/images/tags/leisure.jpg
-    - assets/images/tags/makeup.jpg
-    - assets/images/tags/movie.jpg
-    - assets/images/tags/photo.jpg
-    - assets/images/tags/single_life.jpg
-    - assets/images/tags/sport.jpg
-    - assets/images/tags/music.jpg
+    - assets/images/tags/art.png
+    - assets/images/tags/book.png
+    - assets/images/tags/cartoon.png
+    - assets/images/tags/celebrity.png
+    - assets/images/tags/drama.png
+    - assets/images/tags/fashion.png
+    - assets/images/tags/food.png
+    - assets/images/tags/game.png
+    - assets/images/tags/leisure.png
+    - assets/images/tags/makeup.png
+    - assets/images/tags/movie.png
+    - assets/images/tags/photo.png
+    - assets/images/tags/single_life.png
+    - assets/images/tags/sport.png
+    - assets/images/tags/music.png
 
     - assets/images/animals/bison.jpg
     - assets/images/animals/buffalo.jpg

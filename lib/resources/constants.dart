@@ -62,62 +62,62 @@ const agePickerData = '''
 const tags = [
   const Tag(
     title: '예술',
-    image: AssetImage('assets/images/tags/art.jpg')
+    image: AssetImage('assets/images/tags/art.png')
   ),
   const Tag(
     title: '독서',
-    image: AssetImage('assets/images/tags/book.jpg')
+    image: AssetImage('assets/images/tags/book.png')
   ),
   const Tag(
     title: '만화',
-    image: AssetImage('assets/images/tags/cartoon.jpg')
+    image: AssetImage('assets/images/tags/cartoon.png')
   ),
   const Tag(
     title: '연예인',
-    image: AssetImage('assets/images/tags/celebrity.jpg')
+    image: AssetImage('assets/images/tags/celebrity.png')
   ),
   const Tag(
     title: '드라마',
-    image: AssetImage('assets/images/tags/drama.jpg')
+    image: AssetImage('assets/images/tags/drama.png')
   ),
   const Tag(
     title: '패션',
-    image: AssetImage('assets/images/tags/fashion.jpg')
+    image: AssetImage('assets/images/tags/fashion.png')
   ),
   const Tag(
     title: '음식',
-    image: AssetImage('assets/images/tags/food.jpg')
+    image: AssetImage('assets/images/tags/food.png')
   ),
   const Tag(
     title: '게임',
-    image: AssetImage('assets/images/tags/game.jpg')
+    image: AssetImage('assets/images/tags/game.png')
   ),
   const Tag(
     title: '레저',
-    image: AssetImage('assets/images/tags/leisure.jpg')
+    image: AssetImage('assets/images/tags/leisure.png')
   ),
   const Tag(
     title: '메이크업',
-    image: AssetImage('assets/images/tags/makeup.jpg')
+    image: AssetImage('assets/images/tags/makeup.png')
   ),
   const Tag(
     title: '영화',
-    image: AssetImage('assets/images/tags/movie.jpg')
+    image: AssetImage('assets/images/tags/movie.png')
   ),
   const Tag(
     title: '사진',
-    image: AssetImage('assets/images/tags/photo.jpg')
+    image: AssetImage('assets/images/tags/photo.png')
   ),
   const Tag(
     title: '자취',
-    image: AssetImage('assets/images/tags/single_life.jpg')
+    image: AssetImage('assets/images/tags/single_life.png')
   ),
   const Tag(
     title: '운동',
-    image: AssetImage('assets/images/tags/sport.jpg')
+    image: AssetImage('assets/images/tags/sport.png')
   ),
   const Tag(
     title: '음악',
-    image: AssetImage('assets/images/tags/music.jpg')
+    image: AssetImage('assets/images/tags/music.png')
   )
 ];

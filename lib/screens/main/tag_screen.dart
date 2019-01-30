@@ -20,10 +20,10 @@ class _TagScreenState extends State<TagScreen> {
     final TagBloc _tagBloc = TagBloc();
 
     return Scaffold(
-      body: Column(
-        children: <Widget>[
+      body: SingleChildScrollView(
+        child: Column(children:<Widget>[
           Container(
-            padding: const EdgeInsets.only(top: 40.0,bottom: 20.0,left: 50.0,right: 50.0),
+            padding: const EdgeInsets.only(top: 40.0,left: 50.0,right: 50.0),
             child: Text(
               '관심있는 태그 5개만 선택해주세요!',
               style: TextStyle(
@@ -33,31 +33,39 @@ class _TagScreenState extends State<TagScreen> {
               ),
             ),
           ),
-          BlocBuilder(
-            bloc: _tagBloc,
-            builder: (context, TagState state){
-              return GridView.builder(
-                shrinkWrap: true,
-                itemCount: tags.length,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                  crossAxisSpacing: 10.0,
-                  mainAxisSpacing: 10.0
-                ),
-                scrollDirection: Axis.vertical,
-                padding: const EdgeInsets.all(10.0),
-                itemBuilder: (BuildContext context, int index){
-                  return Container(
-                    padding: const EdgeInsets.only(bottom: 20.0),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                        image: tags[index].image,
-                        fit: BoxFit.cover
-                      )
+          GridView.builder(
+            shrinkWrap: true,
+            itemCount: tags.length,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+            ),
+            scrollDirection: Axis.vertical,
+            padding: EdgeInsets.only(bottom: ScreenUtil.height/6),
+            itemBuilder: (BuildContext context, int index){
+              return  GestureDetector(
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: <Widget>[
+                    Image(
+                      image: tags[index].image,
+                      width: ScreenUtil.width/3,
+                      height: ScreenUtil.width/3
                     ),
-                    child: Align(
-                      alignment: Alignment.bottomCenter,
+                    BlocBuilder(
+                      bloc: _tagBloc,
+                      builder: (context, TagState state){
+                        return Container(
+                          width: ScreenUtil.width/3-10.0,
+                          height: ScreenUtil.width/3-10.0,
+                          decoration: BoxDecoration(
+                            color: state.tagIndex==index ? Colors.black.withOpacity(0.5) : Colors.transparent,
+                            shape: BoxShape.circle
+                          ),
+                        );
+                      }
+                    ),
+                    Positioned(
+                      bottom: 20.0,
                       child: Text(
                         tags[index].title,
                         style: TextStyle(
@@ -65,14 +73,16 @@ class _TagScreenState extends State<TagScreen> {
                           fontWeight: FontWeight.bold
                         ),
                       ),
-                    ),
-                  );
-                }
+                    )
+                  ],
+                ),
+                onTap: () => _tagBloc.emitEvent(TagEventSelect(index: index)),
               );
-            },
+            }
           )
         ]
       )
+    )
     );
   }
 }
