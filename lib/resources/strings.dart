@@ -42,6 +42,29 @@ const String signUpProfileFailedTitle = '프로필생성 실패!';
 const String signUpAccountFailedMessage = '이메일과 비밀번호를\n다시 입력해주세요.';
 const String signUpProfileFailedMessage = '프로필을 다시 입력해주세요.';
 
+// TagChatScreen
+// 처음 고정 메시지 3개
+const String tagChatNPCIntro1 = '안녕! 조금만 더 질문을 할게 ㅎㅎ';
+const String tagChatNPCIntro2 = '너의 관심사 매칭을 도와주기 위해서야!';
+const String tagChatNPCIntro3 = '최대한 정성껏 대답 부탁해~';
+// 태그별 질문 
+const String tagMovieMessage = '인생영화가 뭐야?';
+const String tagTripMessage = '제일 최근에 가고 싶었던 여행지는?';
+const String tagBookMessage = '가장 감명깊게 읽었던 책은?';
+const String tagArtMessage = '제일 좋아하는 예술 작품이 뭐야?';
+const String tagCartoonMessage = '너를 가슴뛰게 한 만화는?';
+const String tagCelebrityMessage = '누구 덕질하고 있어?';
+const String tagDramaMessage = '너에게 있어 인생 드라마는?';
+const String tagFashionMessage = '가장 좋아하는 데일리룩은?';
+const String tagFoodMessage = '가장 좋아하는 음식은?';
+const String tagGameMessage = '진짜 이 게임은 최고다하는거 있어?';
+const String tagLeisureMessage = '가장 하고 싶은 레저스포츠가 뭐야?';
+const String tagMakeupMessage = '가장 좋아하는 화장품 브랜드는?';
+const String tagPhotoMessage = '너의 인생사진은 어디서 찍은 사진이야?';
+const String tagSingleLifeMessage = '자취 꿀팁은?';
+const String tagSportMessage = '가장 즐겨하는 운동은?';
+
+
 // Cloud Firestore 컬렉션 이름
 const String firestoreUsersCollection = 'users';
 
