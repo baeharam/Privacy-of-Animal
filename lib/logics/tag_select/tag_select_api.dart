@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:privacy_of_animal/resources/constants.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class TagSelectAPI {
   static final Firestore _firestore = Firestore.instance;
@@ -20,6 +21,8 @@ class TagSelectAPI {
     _extractTags(isTagSelected);
     FirebaseUser user = await _auth.currentUser();
     try{
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setBool(user.uid+firestoreIsTagSelectedField, true);
       await _firestore.runTransaction((transaction) async{
         CollectionReference collectionReference = _firestore.collection(firestoreUsersCollection);
         DocumentReference reference = collectionReference.document(user.uid);

@@ -34,6 +34,9 @@ class _LoginDecisionState extends State<LoginDecision> {
           if(!state.isTagSelected){
             StreamNavigator.pushNamedAndRemoveAll(context,routeTagSelect);
           }
+          if(state.isTagSelected){
+            StreamNavigator.pushNamedAndRemoveAll(context,routeTagChat);
+          }
         }
         return Container();
       },
