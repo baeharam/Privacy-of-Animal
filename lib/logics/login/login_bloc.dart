@@ -31,6 +31,9 @@ class LoginBloc extends BlocEventStateBase<LoginEvent,LoginState> {
           case USER_CONDITION.TAG_SELECTED:
             yield LoginState.authenticatedTagSelected();
             break;
+          case USER_CONDITION.TAG_CHATTED:
+            yield LoginState.authenticatedTagChatted();
+            break;
           case USER_CONDITION.FACE_ANALYZED:
             yield LoginState.authenticatedFaceAnalyzed();
             break;

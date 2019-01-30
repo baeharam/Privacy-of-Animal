@@ -3,6 +3,7 @@ import 'package:privacy_of_animal/bloc_helpers/bloc_event_state.dart';
 class LoginState extends BlocState {
   final bool isAuthenticated;
   final bool isTagSelected;
+  final bool isTagChatted;
   final bool isFaceAnalyzed;
   final bool isAuthenticating;
   final bool isAuthenticationFailed;
@@ -11,6 +12,7 @@ class LoginState extends BlocState {
   LoginState({
     this.isAuthenticated: false,
     this.isTagSelected: false,
+    this.isTagChatted: false,
     this.isFaceAnalyzed: false,
     this.isAuthenticating: false,
     this.isAuthenticationFailed: false,
@@ -33,6 +35,13 @@ class LoginState extends BlocState {
     return LoginState(
       isAuthenticated: true,
       isTagSelected: true
+    );
+  }
+
+  factory LoginState.authenticatedTagChatted() {
+    return LoginState(
+      isAuthenticated: true,
+      isTagChatted: true
     );
   }
 

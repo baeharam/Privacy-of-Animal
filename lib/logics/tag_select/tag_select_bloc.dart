@@ -24,9 +24,13 @@ class TagSelectBloc extends BlocEventStateBase<TagSelectEvent,TagSelectState> {
 
     if(event is TagSelectEventComplete){
       if(selectedTags==5){
+        yield TagSelectState.loading();
         TAG_STORE_RESULT result = await _tagSelectAPI.storeTags(event.isTagSelected);
         if(result==TAG_STORE_RESULT.SUCCESS){
           yield TagSelectState.complete();
+        }
+        else {
+          yield TagSelectState.failed();
         }
       }
     }

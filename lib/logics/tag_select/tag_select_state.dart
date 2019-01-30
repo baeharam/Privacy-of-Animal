@@ -7,6 +7,7 @@ class TagSelectState extends BlocState {
   final int tagIndex;
   final bool isTagCompleted;
   final bool isTagFailed;
+  final bool isTagLoading;
 
   TagSelectState({
     this.isInitial: false,
@@ -15,6 +16,7 @@ class TagSelectState extends BlocState {
     this.tagIndex: 0,
     this.isTagCompleted: false,
     this.isTagFailed: false,
+    this.isTagLoading: false,
   });
 
   factory TagSelectState.initial() => TagSelectState(isInitial: true);
@@ -42,6 +44,12 @@ class TagSelectState extends BlocState {
   factory TagSelectState.failed(){
     return TagSelectState(
       isTagFailed: true
+    );
+  }
+
+  factory TagSelectState.loading(){
+    return TagSelectState(
+      isTagLoading: true
     );
   }
 }

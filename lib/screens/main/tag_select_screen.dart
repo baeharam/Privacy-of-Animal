@@ -3,7 +3,9 @@ import 'package:privacy_of_animal/bloc_helpers/bloc_helpers.dart';
 import 'package:privacy_of_animal/logics/tag_select/tag_select.dart';
 import 'package:privacy_of_animal/resources/resources.dart';
 import 'package:privacy_of_animal/utils/stream_navigator.dart';
+import 'package:privacy_of_animal/utils/stream_snackbar.dart';
 import 'package:privacy_of_animal/widgets/initial_button.dart';
+import 'package:privacy_of_animal/widgets/progress_indicator.dart';
 
 class TagSelectScreen extends StatefulWidget {
   @override
@@ -99,10 +101,16 @@ class _TagSelectScreenState extends State<TagSelectScreen> {
               if(state.isTagCompleted){
                 StreamNavigator.pushReplacementNamed(context, routeTagChat);
               }
+              if(state.isTagLoading){
+                return CustomProgressIndicator();
+              }
+              if(state.isTagFailed){
+                streamSnackbar(context,'태그등록에 실패했습니다.');
+              }
               return InitialButton(
                 text: '선택 완료',
                 color: primaryBeige,
-                callback: () => _tagBloc.emitEvent(TagSelectEventComplete())
+                callback: () => _tagBloc.emitEvent(TagSelectEventComplete(isTagSelected: isActivateList))
               );
             }
           )

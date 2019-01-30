@@ -40,6 +40,7 @@ class SignUpAPI {
             firestoreGenderField: data.gender
           },
           firestoreIsTagSelectedField: false,
+          firestoreIsTagChattedField: false,
           firestoreIsFaceAnalyzedField: false
         });
       });

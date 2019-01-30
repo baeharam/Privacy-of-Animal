@@ -38,17 +38,22 @@ class LoginAPI {
     String uid = await _auth.currentUser().then((user) => user.uid).catchError((error)=> null);
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool isTagSelected = prefs.getBool(uid+firestoreIsTagSelectedField);
+    bool isTagChatted = prefs.getBool(uid+firestoreIsTagChattedField);
     bool isFaceAnalyzed = prefs.getBool(uid+firestoreIsFaceAnalyzedField);
-    if(isTagSelected==null || isFaceAnalyzed==null){
+    if(isTagSelected==null || isTagChatted==null || isFaceAnalyzed==null){
       isTagSelected = await fetchUserCondition(uid, firestoreIsTagSelectedField);
+      isTagChatted = await fetchUserCondition(uid, firestoreIsTagChattedField);
       isFaceAnalyzed = await fetchUserCondition(uid, firestoreIsFaceAnalyzedField);
       prefs.setBool(uid+firestoreIsTagSelectedField, isTagSelected);
+      prefs.setBool(uid+firestoreIsTagChattedField, isTagChatted);
       prefs.setBool(uid+firestoreIsFaceAnalyzedField, isFaceAnalyzed);
     }
     if(isTagSelected==false){
       return USER_CONDITION.NONE;
-    } else if(isFaceAnalyzed==false){
+    } else if(isTagChatted==false){
       return USER_CONDITION.TAG_SELECTED;
+    } else if(isFaceAnalyzed==false){
+      return USER_CONDITION.TAG_CHATTED;
     } else {
       return USER_CONDITION.FACE_ANALYZED;
     }
@@ -69,5 +74,6 @@ enum LOGIN_RESULT {
 enum USER_CONDITION {
   NONE,
   TAG_SELECTED,
+  TAG_CHATTED,
   FACE_ANALYZED
 }

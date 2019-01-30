@@ -54,6 +54,7 @@ const String firestoreNameField = 'name';
 
 // Cloud Firestore 플래그 필드
 const String firestoreIsTagSelectedField = 'is_tag_selected';
+const String firestoreIsTagChattedField = 'is_tag_chatted';
 const String firestoreIsFaceAnalyzedField = 'is_face_analyzed';
 
 // Cloud Firestore 태그 필드
