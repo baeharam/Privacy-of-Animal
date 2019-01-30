@@ -30,7 +30,7 @@ class _TagScreenState extends State<TagScreen> {
             child: Text(
               '관심있는 태그 5개만 선택해주세요!',
               style: TextStyle(
-                color: signUpBackgroundColor,
+                color: primaryPink,
                 fontWeight: FontWeight.bold,
                 fontSize: 18.0
               ),
@@ -88,7 +88,7 @@ class _TagScreenState extends State<TagScreen> {
             builder: (BuildContext context, AsyncSnapshot<bool> snapshot){
               return InitialButton(
                 text: '선택 완료',
-                color: introLoginButtonColor,
+                color: primaryBeige,
                 callback: (snapshot.hasData && snapshot.data==true) 
                 ? (){
                 } 

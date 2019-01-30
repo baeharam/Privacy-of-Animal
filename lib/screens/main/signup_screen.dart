@@ -28,8 +28,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
           child: Column(
             children: <Widget>[
               ArcBackground(
-                backgroundColor: signUpBackgroundColor,
-                dashColor: signUpBackgroundColor,
+                backgroundColor: primaryPink,
+                dashColor: primaryPink,
                 title: '회원가입',
               ),
               SizedBox(height: ScreenUtil.height/20),

@@ -61,7 +61,7 @@ class _SignUpFormState extends State<SignUpForm> {
       child: Text(
         introduction,
         style: TextStyle(
-          color: signUpBackgroundColor,
+          color: primaryPink,
           fontWeight: FontWeight.bold
         ),
       ),
@@ -184,7 +184,7 @@ class _SignUpFormState extends State<SignUpForm> {
             builder: (BuildContext context, AsyncSnapshot<bool> snapshot){
               return InitialButton(
                 text: '회원가입',
-                color: introLoginButtonColor,
+                color: primaryBeige,
                 callback: (snapshot.hasData && snapshot.data==true) 
                 ? (){
                   FocusScope.of(context).requestFocus(FocusNode());

@@ -53,7 +53,7 @@ class _ArcBackgroundState extends State<ArcBackground> {
                 child: Text(
                   widget.title,
                   style: TextStyle(
-                    color: loginTextColor,
+                    color: primaryBlue,
                     fontWeight: FontWeight.bold,
                     fontSize: 20.0
                   )

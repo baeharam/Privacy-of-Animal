@@ -97,13 +97,13 @@ class _IntroScreenState extends State<IntroScreen> with SingleTickerProviderStat
                   children: <Widget>[
                     InitialButton(
                       text: '로그인', 
-                      color: introLoginButtonColor,
+                      color: primaryBeige,
                       callback: () => Navigator.of(context).pushNamed('/loginDecision')
                     ),
                     SizedBox(height: 25.0),
                     InitialButton(
                       text: '회원가입', 
-                      color: introSignUpButtonColor,
+                      color: primaryGrey,
                       callback: () => Navigator.of(context).pushNamed('/signUpDecision')
                     )
                   ],

@@ -49,7 +49,7 @@ void streamDialogForgotPassword(BuildContext context) {
               color: Colors.white
             ),
           ),
-          color: loginBackgroundColor,
+          color: primaryGreen,
         )
       ]
     ).show();
@@ -80,7 +80,7 @@ void streamDialogSignUpFailed(BuildContext context,String title,String message,F
               color: Colors.white
             ),
           ),
-          color: signUpBackgroundColor,
+          color: primaryPink,
         )
       ]
     ).show();

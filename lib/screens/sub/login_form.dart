@@ -124,7 +124,7 @@ class _LoginFormState extends State<LoginForm> {
             builder: (BuildContext context, AsyncSnapshot<bool> snapshot){
               return InitialButton(
                 text: '로그인',
-                color: introLoginButtonColor,
+                color: primaryBeige,
                 callback: (snapshot.hasData && snapshot.data==true) 
                 ? (){
                   FocusScope.of(context).requestFocus(FocusNode());

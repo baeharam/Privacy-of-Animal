@@ -19,20 +19,20 @@ class CurrentPlatform {
 
 const pages = [
   const IntroPageModel(
-    backgroundColor: introBackgroundColor1,
+    backgroundColor: primaryPink,
     image: 'assets/images/animals/lion.jpg',
     aboveMessage: introMessage1Above,
     belowMessage: introMessage1Below,
   ),
 
   IntroPageModel(
-    backgroundColor: introBackgroundColor2,
+    backgroundColor: primaryGreen,
     image: 'assets/images/animals/bison.jpg',
     aboveMessage: introMessage2Above,
     belowMessage: introMessage2Below,
   ),
   IntroPageModel(
-    backgroundColor: introBackgroundColor3,
+    backgroundColor: primaryBlue,
     image: 'assets/images/animals/tiger.jpg',
     aboveMessage: introMessage3Above,
     belowMessage: introMessage3Below,

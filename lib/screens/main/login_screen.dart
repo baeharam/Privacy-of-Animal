@@ -29,8 +29,8 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Column(
             children: <Widget>[
               ArcBackground(
-                backgroundColor: loginBackgroundColor,
-                dashColor: loginBackgroundColor,
+                backgroundColor: primaryGreen,
+                dashColor: primaryGreen,
                 title: '로그인',
               ),
               SizedBox(height: ScreenUtil.height/10),    
