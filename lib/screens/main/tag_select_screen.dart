@@ -44,7 +44,7 @@ class _TagSelectScreenState extends State<TagSelectScreen> {
             itemBuilder: (BuildContext context, int index){
               return  BlocBuilder(
                 bloc: _tagBloc,
-                builder: (context, TagState state){
+                builder: (context, TagSelectState state){
                   if(state.isTagActivated && state.tagIndex==index){
                     isActivateList[index] = true;
                   }
@@ -95,7 +95,7 @@ class _TagSelectScreenState extends State<TagSelectScreen> {
           ),
           BlocBuilder(
             bloc: _tagBloc,
-            builder: (_, TagState state){
+            builder: (_, TagSelectState state){
               if(state.isTagCompleted){
                 StreamNavigator.pushReplacementNamed(context, routeTagChat);
               }

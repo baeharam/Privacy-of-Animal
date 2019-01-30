@@ -45,14 +45,24 @@ const String signUpProfileFailedMessage = '프로필을 다시 입력해주세�
 // Cloud Firestore 컬렉션 이름
 const String firestoreUsersCollection = 'users';
 
-// Cloud Firestore 필드 이름
+// Cloud Firestore 실제 프로필 필드
 const String firestoreRealProfileField = 'real_profile';
 const String firestoreAgeField = 'age';
 const String firestoreGenderField = 'gender';
 const String firestoreJobField = 'job';
 const String firestoreNameField = 'name';
+
+// Cloud Firestore 플래그 필드
 const String firestoreIsTagSelectedField = 'is_tag_selected';
 const String firestoreIsFaceAnalyzedField = 'is_face_analyzed';
+
+// Cloud Firestore 태그 필드
+const String firestoreTagField = 'tags';
+const String firestoreTagTitle1Field = 'tag_title_1';
+const String firestoreTagTitle2Field = 'tag_title_2';
+const String firestoreTagTitle3Field = 'tag_title_3';
+const String firestoreTagTitle4Field = 'tag_title_4';
+const String firestoreTagTitle5Field = 'tag_title_5';
 
 
 // 로컬 DB 이름

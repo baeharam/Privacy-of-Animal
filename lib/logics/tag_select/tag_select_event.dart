@@ -17,4 +17,9 @@ class TagSelectEventDeactivate extends TagSelectEvent {
   });
 }
 
-class TagSelectEventComplete extends TagSelectEvent {}
+class TagSelectEventComplete extends TagSelectEvent {
+  final List<bool> isTagSelected;
+  TagSelectEventComplete({
+    @required this.isTagSelected
+  });
+}
