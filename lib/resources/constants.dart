@@ -4,7 +4,7 @@ import 'package:privacy_of_animal/models/tag_model.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
 
-const double dashedCircleRadius = 57.0;
+final double dashedCircleRadius = ScreenUtil.height/16;
 final double dashedBackgroundCircleDiameter = dashedCircleRadius*2+30.0;
 
 class ScreenUtil {

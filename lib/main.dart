@@ -6,16 +6,16 @@ import 'package:privacy_of_animal/resources/routes.dart';
 import 'package:privacy_of_animal/screens/main/intro_screen.dart';
 
 Future<void> main() async{
-  final FirebaseApp app = await FirebaseApp.configure(
-    name: appName,
-    options: const FirebaseOptions(
-      googleAppID: iosAppID,
-      apiKey: apiKey,
-      projectID: projectID
-    )
-  );
-  final Firestore firestore = Firestore(app: app);
-  await firestore.settings(timestampsInSnapshotsEnabled: true);
+  // final FirebaseApp app = await FirebaseApp.configure(
+  //   name: appName,
+  //   options: const FirebaseOptions(
+  //     googleAppID: iosAppID,
+  //     apiKey: apiKey,
+  //     projectID: projectID
+  //   )
+  // );
+  // final Firestore firestore = Firestore(app: app);
+  // await firestore.settings(timestampsInSnapshotsEnabled: true);
   runApp(PrivacyOfAnimal());
 }
 
