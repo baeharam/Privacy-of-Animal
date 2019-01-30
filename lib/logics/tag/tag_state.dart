@@ -1,36 +1,37 @@
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state.dart';
 
 class TagState extends BlocState {
-  final bool isTagSelected;
+  final bool isTagActivated;
+  final bool isTagDeactivated;
   final int tagIndex;
   final bool isTagCompleted;
-  final bool isImageLoaded;
-  final List<int> image;
 
   TagState({
-    this.isTagSelected: false,
-    this.tagIndex: -1,
+    this.isTagActivated: false,
+    this.isTagDeactivated: true,
+    this.tagIndex: 0,
     this.isTagCompleted: false,
-    this.isImageLoaded: false,
-    this.image
   });
 
   factory TagState.initial() => TagState();
 
-  factory TagState.selected(int index){
+  factory TagState.activated(int index){
     return TagState(
-      isTagSelected: true,
+      isTagActivated: true,
       tagIndex: index
     );
   }
 
-  factory TagState.imageLoaded(List<int> image, int index){
+  factory TagState.deactivated(int index){
     return TagState(
-      isImageLoaded: true,
-      image: image,
+      isTagDeactivated: true,
       tagIndex: index
     );
   }
 
-
+  factory TagState.complete(bool isTagCompeted){
+    return TagState(
+      isTagCompleted: isTagCompeted
+    );
+  }
 }

@@ -1,4 +1,3 @@
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_helpers.dart';
@@ -6,7 +5,6 @@ import 'package:privacy_of_animal/logics/tag/tag.dart';
 import 'package:privacy_of_animal/logics/validation/validation_bloc.dart';
 import 'package:privacy_of_animal/resources/resources.dart';
 import 'package:privacy_of_animal/widgets/initial_button.dart';
-import 'package:transparent_image/transparent_image.dart';
 
 class TagScreen extends StatefulWidget {
   @override
@@ -21,6 +19,7 @@ class _TagScreenState extends State<TagScreen> {
 
     final TagBloc _tagBloc = TagBloc();
     final ValidationBloc _validationBloc = ValidationBloc();
+    List<bool> isActivateList = List.generate(tags.length, (i) => false);
 
     return Scaffold(
       body: Column(
@@ -45,56 +44,70 @@ class _TagScreenState extends State<TagScreen> {
             scrollDirection: Axis.vertical,
             padding: EdgeInsets.all(20.0),
             itemBuilder: (BuildContext context, int index){
-              return  GestureDetector(
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: <Widget>[
-                    Image(
-                      image: tags[index].image,
-                      width: ScreenUtil.width/3.5,
-                      height: ScreenUtil.width/3.5
-                    ),
-                    BlocBuilder(
-                      bloc: _tagBloc,
-                      builder: (context, TagState state){
-                        return Container(
+              return  BlocBuilder(
+                bloc: _tagBloc,
+                builder: (context, TagState state){
+                  if(state.isTagActivated && state.tagIndex==index){
+                    isActivateList[index] = true;
+                  }
+                  else if(state.isTagDeactivated && state.tagIndex==index){
+                    isActivateList[index] = false;
+                  }
+                  return GestureDetector(
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: <Widget>[
+                        Image(
+                          image: tags[index].image,
+                          width: ScreenUtil.width/3.5,
+                          height: ScreenUtil.width/3.5
+                        ),
+                        Container(
                           width: ScreenUtil.width/3.5-10.0,
                           height: ScreenUtil.width/3.5-10.0,
                           decoration: BoxDecoration(
-                            color: state.tagIndex==index ? Colors.black.withOpacity(0.5) : Colors.transparent,
+                            color: isActivateList[index] ? Colors.black.withOpacity(0.5) : Colors.transparent,
                             shape: BoxShape.circle
                           ),
-                        );
-                      }
-                    ),
-                    Positioned(
-                      bottom: 20.0,
-                      child: Text(
-                        tags[index].title,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold
                         ),
-                      ),
-                    )
-                  ],
-                ),
-                onTap: () => _tagBloc.emitEvent(TagEventSelect(index: index)),
+                        Positioned(
+                          bottom: 20.0,
+                          child: Text(
+                            tags[index].title,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                    onTap: () {
+                      if(isActivateList[index]){
+                        _tagBloc.emitEvent(TagEventSelectDeactivate(index: index));
+                      }
+                      else if(!isActivateList[index]){
+                        _tagBloc.emitEvent(TagEventSelectActivate(index: index));
+                      }
+                    },
+                  );
+                }
               );
             }
           ),
-          StreamBuilder<bool>(
-            stream: _validationBloc.loginValid,
-            builder: (BuildContext context, AsyncSnapshot<bool> snapshot){
+          BlocBuilder(
+            bloc: _tagBloc,
+            builder: (context, TagState state){
               return InitialButton(
                 text: '선택 완료',
                 color: primaryBeige,
-                callback: (snapshot.hasData && snapshot.data==true) 
+                callback: state.isTagCompleted
                 ? (){
+                  
                 } 
                 : null,
               );
-            },
+            }
           )
         ]
       )

@@ -103,7 +103,7 @@ class _SignUpFormState extends State<SignUpForm> {
             focusNode: _passwordFocusNode,
             failFocusNode: _emailFocusNode,
             onChanged: validationBloc.onPasswordChanged,
-            textInputType: TextInputType.text,
+            textInputType: TextInputType.emailAddress,
             type: FOCUS_TYPE.ACCOUNT_FOCUS,
             obscureText: true,
           ),

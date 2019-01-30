@@ -5,9 +5,16 @@ abstract class TagEvent extends BlocEvent{}
 
 class TagEventImageLoad extends TagEvent {}
 
-class TagEventSelect extends TagEvent {
+class TagEventSelectActivate extends TagEvent {
   final int index;
-  TagEventSelect({
+  TagEventSelectActivate({
+    @required this.index
+  });
+}
+
+class TagEventSelectDeactivate extends TagEvent {
+  final int index;
+  TagEventSelectDeactivate({
     @required this.index
   });
 }

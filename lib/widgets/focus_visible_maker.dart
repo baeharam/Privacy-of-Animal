@@ -111,7 +111,6 @@ class _EnsureVisibleWhenFocusedState extends State<EnsureVisibleWhenFocused> wit
 
   @override
   Widget build(BuildContext context) {
-    print("build!!");
     return widget.child;
   }
 }
