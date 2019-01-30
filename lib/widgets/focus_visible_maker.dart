@@ -3,31 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:meta/meta.dart';
 
-///
-/// Helper class that ensures a Widget is visible when it has the focus
-/// For example, for a TextFormField when the keyboard is displayed
-/// 
-/// How to use it:
-/// 
-/// In the class that implements the Form,
-///   Instantiate a FocusNode
-///   FocusNode _focusNode = new FocusNode();
-/// 
-/// In the build(BuildContext context), wrap the TextFormField as follows:
-/// 
-///   new EnsureVisibleWhenFocused(
-///     focusNode: _focusNode,
-///     child: new TextFormField(
-///       ...
-///       focusNode: _focusNode,
-///     ),
-///   ),
-/// 
-/// Initial source code written by Collin Jackson.
-/// Extended (see highlighting) to cover the case when the keyboard is dismissed and the
-/// user clicks the TextFormField/TextField which still has the focus.
-/// 
-
+// 원 코드 출처 =  https://gist.github.com/collinjackson/50172e3547e959cba77e2938f2fe5ff5
 
 class EnsureVisibleWhenFocused extends StatefulWidget {
   const EnsureVisibleWhenFocused({
@@ -38,29 +14,16 @@ class EnsureVisibleWhenFocused extends StatefulWidget {
     this.duration: const Duration(milliseconds: 20),
   }) : super(key: key);
 
-  /// The node we will monitor to determine if the child is focused
   final FocusNode focusNode;
-
-  /// The child widget that we are wrapping
   final Widget child;
-
-  /// The curve we will use to scroll ourselves into view.
-  ///
-  /// Defaults to Curves.ease.
   final Curve curve;
-
-  /// The duration we will use to scroll ourselves into view
-  ///
-  /// Defaults to 100 milliseconds.
   final Duration duration;
 
   @override
   _EnsureVisibleWhenFocusedState createState() => new _EnsureVisibleWhenFocusedState();
 }
 
-///
-/// We implement the WidgetsBindingObserver to be notified of any change to the window metrics
-///
+/// window metrics에 변화가 생기는 것을 감지하기 위해서 WidgetsBindingObserver를 사용한다.
 class _EnsureVisibleWhenFocusedState extends State<EnsureVisibleWhenFocused> with WidgetsBindingObserver  {
 
   @override
@@ -77,13 +40,7 @@ class _EnsureVisibleWhenFocusedState extends State<EnsureVisibleWhenFocused> wit
     super.dispose();
   }
 
-  ///
-  /// This routine is invoked when the window metrics have changed.
-  /// This happens when the keyboard is open or dismissed, among others.
-  /// It is the opportunity to check if the field has the focus
-  /// and to ensure it is fully visible in the viewport when
-  /// the keyboard is displayed
-  /// 
+  /// window metrics 변화감지, 포커스 되어있으면 해당 위젯 보이게 하는 기능
   @override
   void didChangeMetrics(){
     if (widget.focusNode.hasFocus){
@@ -91,13 +48,7 @@ class _EnsureVisibleWhenFocusedState extends State<EnsureVisibleWhenFocused> wit
     }
   }
 
-  ///
-  /// This routine waits for the keyboard to come into view.
-  /// In order to prevent some issues if the Widget is dismissed in the 
-  /// middle of the loop, we need to check the "mounted" property
-  /// 
-  /// This method was suggested by Peter Yuen (see discussion).
-  ///
+  /// 키보드 열렸나 감지
   Future<Null> _keyboardToggled() async {
     if (mounted){
       EdgeInsets edgeInsets = MediaQuery.of(context).viewInsets;
@@ -105,44 +56,48 @@ class _EnsureVisibleWhenFocusedState extends State<EnsureVisibleWhenFocused> wit
         await new Future.delayed(const Duration(milliseconds: 10));
       }
     }
-
     return;
   }
 
   Future<Null> _ensureVisible() async {
-    // Wait for the keyboard to come into view
+    // 키보드 열릴 때까지 기다림
     await Future.any([new Future.delayed(const Duration(milliseconds: 300)), _keyboardToggled()]);
 
-    // No need to go any further if the node has not the focus
+    // 포커스 없으면 중단
     if (!widget.focusNode.hasFocus){
       return;
     }
 
-    // Find the object which has the focus
+    // 포커싱 잡힌 RenderObject 찾아냄
+    // 그 후 RenderObject를 이용해서 viewport 얻어냄
     final RenderObject object = context.findRenderObject();
     final RenderAbstractViewport viewport = RenderAbstractViewport.of(object);
 
-    // If we are not working in a Scrollable, skip this routine
+    // 스크롤이 되는 위젯을 사용하지 않는 경우이므로 중단
     if (viewport == null) {
         return;
     }
 
-    // Get the Scrollable state (in order to retrieve its offset)
+    // 스크롤 상태 획득
     ScrollableState scrollableState = Scrollable.of(context);
     assert(scrollableState != null);
 
-    // Get its offset
+    // 획득한 스크롤 상태를 통해 현재 스크롤 위치 획득
     ScrollPosition position = scrollableState.position;
     double alignment;
 
+    // 현재 스크롤 위치가 타겟이 보일 수 있는 위치보다 큰 경우
+    // 해당 타겟이 보일 수 있게 내림.
     if (position.pixels > viewport.getOffsetToReveal(object, 0.0).offset) {
-      // Move down to the top of the viewport
-      alignment = 0.0;
-    } else if (position.pixels < viewport.getOffsetToReveal(object, 0.2).offset){
-      // Move up to the bottom of the viewport
       alignment = 0.2;
-    } else {
-      // No scrolling is necessary to reveal the child
+    } 
+    // 현재 스크롤 위치가 타겟이 보일 수 있는 위치보다 작은 경우
+    // 해당 타겟이 보일 수 있게 올림.
+    else if (position.pixels < viewport.getOffsetToReveal(object, 0.2).offset){
+      alignment = 0.2;
+    } 
+    // 타겟이 보이면 스크롤 할 필요 없음.
+    else {
       return;
     }
 
@@ -156,6 +111,7 @@ class _EnsureVisibleWhenFocusedState extends State<EnsureVisibleWhenFocused> wit
 
   @override
   Widget build(BuildContext context) {
+    print("build!!");
     return widget.child;
   }
 }

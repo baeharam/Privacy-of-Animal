@@ -9,6 +9,7 @@ import 'package:privacy_of_animal/widgets/initial_button.dart';
 import 'package:privacy_of_animal/widgets/progress_indicator.dart';
 
 class LoginForm extends StatefulWidget {
+
   @override
   _LoginFormState createState() => _LoginFormState();
 }
@@ -47,15 +48,17 @@ class _LoginFormState extends State<LoginForm> {
             stream: validationBloc.email,
             initialData: loginEmptyEmailError,
             builder: (BuildContext context, AsyncSnapshot<String> snapshot){
-              return EnsureVisibleWhenFocused(
-                focusNode: _emailFocusNode,
-                child: BlocBuilder(
-                  bloc: loginBloc,
-                  builder: (BuildContext context, LoginState state){
-                    if(state.isAuthenticationFailed){
-                      _emailController.clear();
-                    }
-                    return TextField(
+              return BlocBuilder(
+                bloc: loginBloc,
+                builder: (BuildContext context, LoginState state){
+                  if(state.isAuthenticationFailed){
+                    _emailController.clear();
+                  }
+                  return EnsureVisibleWhenFocused(
+                    focusNode: _emailFocusNode,
+                    curve: Curves.easeOut,
+                    duration: const Duration(milliseconds: 200),
+                    child: TextField(
                       decoration: InputDecoration(
                         labelText: '이메일',
                         errorText: snapshot.error,
@@ -65,9 +68,9 @@ class _LoginFormState extends State<LoginForm> {
                       controller: _emailController,
                       focusNode: _emailFocusNode,
                       enabled: state.isAuthenticating ? false : true
-                    );
-                  } 
-                ),
+                    ),
+                  );
+                } 
               );
             },
           ),
@@ -82,17 +85,22 @@ class _LoginFormState extends State<LoginForm> {
                   if(state.isAuthenticationFailed){
                     _passwordController.clear();
                   }
-                  return TextField(
-                    decoration: InputDecoration(
-                      labelText: '비밀번호',
-                      errorText: snapshot.error
-                    ),
-                    onChanged: validationBloc.onPasswordChanged,
-                    obscureText: true,
-                    keyboardType: TextInputType.emailAddress,
-                    controller: _passwordController,
+                  return EnsureVisibleWhenFocused(
                     focusNode: _passwordFocusNode,
-                    enabled: state.isAuthenticating ? false : true,
+                    curve: Curves.easeOut,
+                    duration: const Duration(milliseconds: 200),
+                    child: TextField(
+                      decoration: InputDecoration(
+                        labelText: '비밀번호',
+                        errorText: snapshot.error
+                      ),
+                      onChanged: validationBloc.onPasswordChanged,
+                      obscureText: true,
+                      keyboardType: TextInputType.emailAddress,
+                      controller: _passwordController,
+                      focusNode: _passwordFocusNode,
+                      enabled: state.isAuthenticating ? false : true,
+                    ),
                   );
                 } 
               );

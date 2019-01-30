@@ -25,7 +25,10 @@ class PrivacyOfAnimal extends StatelessWidget {
     return MaterialApp(
       title: '동물의 사생활',
       home: IntroScreen(),
-      theme: ThemeData(fontFamily: 'NanumGothic'),
+      theme: ThemeData(
+        splashColor: Colors.transparent,
+        fontFamily: 'NanumGothic'
+      ),
       routes: routes,
       debugShowCheckedModeBanner: false
     );

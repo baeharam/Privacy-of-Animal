@@ -28,7 +28,6 @@ class _SignUpFormState extends State<SignUpForm> {
   final TextEditingController _ageController = TextEditingController();
   final TextEditingController _jobController = TextEditingController();
 
-
   @override
     void dispose() {
       _emailController.dispose();

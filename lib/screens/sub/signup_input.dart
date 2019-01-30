@@ -38,22 +38,24 @@ class _SignUpInputState extends State<SignUpInput> {
 
     final SignUpBloc signUpBloc = MultipleBlocProvider.of<SignUpBloc>(context);
 
-    return EnsureVisibleWhenFocused(
-      focusNode: widget.focusNode,
-      child: BlocBuilder(
-        bloc: signUpBloc,
-        builder: (BuildContext context, SignUpState state){
-          if(state.isAccountRegisterFailed || state.isProfileRegisterFailed){
-            widget.controller.clear();
-          }
-          if((state.isAccountRegisterFailed && widget.type==FOCUS_TYPE.ACCOUNT_FOCUS) ||
-             (state.isProfileRegisterFailed && widget.type==FOCUS_TYPE.PROFILE_FOCUS)){
-            signUpBloc.emitEvent(SignUpEventRetry(context: context,failFocusNode: widget.failFocusNode));
-          }
-          return StreamBuilder<String>(
-            stream: widget.stream,
-            builder: (BuildContext context, AsyncSnapshot<String> snapshot){
-              return TextField(
+    return BlocBuilder(
+      bloc: signUpBloc,
+      builder: (BuildContext context, SignUpState state){
+        if(state.isAccountRegisterFailed || state.isProfileRegisterFailed){
+          widget.controller.clear();
+        }
+        if((state.isAccountRegisterFailed && widget.type==FOCUS_TYPE.ACCOUNT_FOCUS) ||
+           (state.isProfileRegisterFailed && widget.type==FOCUS_TYPE.PROFILE_FOCUS)){
+          signUpBloc.emitEvent(SignUpEventRetry(context: context,failFocusNode: widget.failFocusNode));
+        }
+        return StreamBuilder<String>(
+          stream: widget.stream,
+          builder: (BuildContext context, AsyncSnapshot<String> snapshot){
+            return EnsureVisibleWhenFocused(
+              focusNode: widget.focusNode,
+              curve: Curves.easeOut,
+              duration: const Duration(milliseconds: 200),
+              child: TextField(
                 decoration: InputDecoration(
                   errorText: snapshot.error,
                   hintText: widget.hintText
@@ -64,11 +66,11 @@ class _SignUpInputState extends State<SignUpInput> {
                 focusNode: widget.focusNode,
                 enabled: state.isRegistering?false:true,
                 obscureText: widget.obscureText,
-              );
-            }
-          );
-        } 
-      ),
+              ),
+            );
+          }
+        );
+      } 
     );
   }
 }

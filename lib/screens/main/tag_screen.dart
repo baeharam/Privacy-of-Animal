@@ -3,7 +3,9 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_helpers.dart';
 import 'package:privacy_of_animal/logics/tag/tag.dart';
+import 'package:privacy_of_animal/logics/validation/validation_bloc.dart';
 import 'package:privacy_of_animal/resources/resources.dart';
+import 'package:privacy_of_animal/widgets/initial_button.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 class TagScreen extends StatefulWidget {
@@ -18,10 +20,11 @@ class _TagScreenState extends State<TagScreen> {
   Widget build(BuildContext context) {
 
     final TagBloc _tagBloc = TagBloc();
+    final ValidationBloc _validationBloc = ValidationBloc();
 
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(children:<Widget>[
+      body: Column(
+        children:<Widget>[
           Container(
             padding: const EdgeInsets.only(top: 40.0,left: 50.0,right: 50.0),
             child: Text(
@@ -40,7 +43,7 @@ class _TagScreenState extends State<TagScreen> {
               crossAxisCount: 3,
             ),
             scrollDirection: Axis.vertical,
-            padding: EdgeInsets.only(bottom: ScreenUtil.height/6),
+            padding: EdgeInsets.all(20.0),
             itemBuilder: (BuildContext context, int index){
               return  GestureDetector(
                 child: Stack(
@@ -48,15 +51,15 @@ class _TagScreenState extends State<TagScreen> {
                   children: <Widget>[
                     Image(
                       image: tags[index].image,
-                      width: ScreenUtil.width/3,
-                      height: ScreenUtil.width/3
+                      width: ScreenUtil.width/3.5,
+                      height: ScreenUtil.width/3.5
                     ),
                     BlocBuilder(
                       bloc: _tagBloc,
                       builder: (context, TagState state){
                         return Container(
-                          width: ScreenUtil.width/3-10.0,
-                          height: ScreenUtil.width/3-10.0,
+                          width: ScreenUtil.width/3.5-10.0,
+                          height: ScreenUtil.width/3.5-10.0,
                           decoration: BoxDecoration(
                             color: state.tagIndex==index ? Colors.black.withOpacity(0.5) : Colors.transparent,
                             shape: BoxShape.circle
@@ -79,10 +82,22 @@ class _TagScreenState extends State<TagScreen> {
                 onTap: () => _tagBloc.emitEvent(TagEventSelect(index: index)),
               );
             }
+          ),
+          StreamBuilder<bool>(
+            stream: _validationBloc.loginValid,
+            builder: (BuildContext context, AsyncSnapshot<bool> snapshot){
+              return InitialButton(
+                text: '선택 완료',
+                color: introLoginButtonColor,
+                callback: (snapshot.hasData && snapshot.data==true) 
+                ? (){
+                } 
+                : null,
+              );
+            },
           )
         ]
       )
-    )
     );
   }
 }
