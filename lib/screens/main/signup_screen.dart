@@ -9,8 +9,7 @@ import 'package:privacy_of_animal/utils/stream_dialog.dart';
 import 'package:privacy_of_animal/widgets/arc_background.dart';
 import 'package:privacy_of_animal/widgets/progress_indicator.dart';
 
-// import 'package:privacy_of_animal/widgets/flutter_statusbar_manager.dart';
-import 'package:flutter_statusbar_manager/flutter_statusbar_manager.dart';
+import 'package:privacy_of_animal/widgets/flutter_statusbar_manager.dart';
 class SignUpScreen extends StatefulWidget {
   @override
   _SignUpScreenState createState() => _SignUpScreenState();

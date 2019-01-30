@@ -5,7 +5,6 @@ import 'package:privacy_of_animal/widgets/back_button_dialog.dart';
 import 'package:privacy_of_animal/widgets/dots_indicator.dart';
 import 'package:privacy_of_animal/widgets/initial_button.dart';
 
-// import 'package:flutter_statusbar_manager/flutter_statusbar_manager.dart';
 import 'package:privacy_of_animal/widgets/flutter_statusbar_manager.dart';
 
 class IntroScreen extends StatefulWidget {
