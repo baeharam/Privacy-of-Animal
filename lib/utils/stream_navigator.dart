@@ -20,6 +20,12 @@ class StreamNavigator {
     });
   }
 
+  static void pushNamedAndRemoveAll(BuildContext context, String pageName){
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      Navigator.of(context).pushNamedAndRemoveUntil(pageName, (_)=>false);
+    });
+  }
+
   static void pushReplacementNamed(BuildContext context, String pageName) {
     WidgetsBinding.instance.addPostFrameCallback((_){
       Navigator.of(context).pushReplacementNamed(pageName);

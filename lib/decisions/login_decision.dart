@@ -3,6 +3,7 @@ import 'package:privacy_of_animal/bloc_helpers/bloc_helpers.dart';
 import 'package:privacy_of_animal/logics/find_password/find_password_bloc.dart';
 import 'package:privacy_of_animal/logics/login/login.dart';
 import 'package:privacy_of_animal/logics/validation/validation_bloc.dart';
+import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:privacy_of_animal/screens/main/screen.dart';
 import 'package:privacy_of_animal/utils/stream_navigator.dart';
 
@@ -31,7 +32,7 @@ class _LoginDecisionState extends State<LoginDecision> {
         }
         if(state.isAuthenticated){
           if(!state.isTagSelected){
-            StreamNavigator.pushReplacementNamed(context,'/tag');
+            StreamNavigator.pushNamedAndRemoveAll(context,routeTagSelect);
           }
         }
         return Container();

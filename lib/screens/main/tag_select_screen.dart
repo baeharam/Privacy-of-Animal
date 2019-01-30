@@ -97,7 +97,7 @@ class _TagSelectScreenState extends State<TagSelectScreen> {
             bloc: _tagBloc,
             builder: (_, TagState state){
               if(state.isTagCompleted){
-                StreamNavigator.pushReplacementNamed(context, '/tagChat');
+                StreamNavigator.pushReplacementNamed(context, routeTagChat);
               }
               return InitialButton(
                 text: '선택 완료',

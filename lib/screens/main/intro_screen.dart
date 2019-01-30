@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/resources/resources.dart';
 import 'package:privacy_of_animal/screens/sub/intro_page.dart';
+import 'package:privacy_of_animal/utils/back_button_dialog.dart';
 import 'package:privacy_of_animal/utils/initializer.dart';
-import 'package:privacy_of_animal/widgets/back_button_dialog.dart';
 import 'package:privacy_of_animal/widgets/dots_indicator.dart';
 import 'package:privacy_of_animal/widgets/initial_button.dart';
 
@@ -50,7 +50,7 @@ class _IntroScreenState extends State<IntroScreen> with SingleTickerProviderStat
         key: _scaffoldKey,
         backgroundColor: Colors.white,
         body: WillPopScope(
-          onWillPop: () => BackButtonAction.onWillPop(context,_scaffoldKey.currentState),
+          onWillPop: () => BackButtonAction.oneMorePressToExit(context,_scaffoldKey.currentState),
           child: Column(
             children: <Widget>[
               Expanded(
@@ -98,13 +98,13 @@ class _IntroScreenState extends State<IntroScreen> with SingleTickerProviderStat
                     InitialButton(
                       text: '로그인', 
                       color: primaryBeige,
-                      callback: () => Navigator.of(context).pushNamed('/loginDecision')
+                      callback: () => Navigator.of(context).pushNamed(routeLoginDecision)
                     ),
                     SizedBox(height: 25.0),
                     InitialButton(
                       text: '회원가입', 
                       color: primaryGrey,
-                      callback: () => Navigator.of(context).pushNamed('/signUpDecision')
+                      callback: () => Navigator.of(context).pushNamed(routeSignUpDecision)
                     )
                   ],
                 ),

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class BackButtonAction {
   static DateTime currentBackPressTime;
 
-  static Future<bool> onWillPop(BuildContext context, ScaffoldState state) {
+  static Future<bool> oneMorePressToExit(BuildContext context, ScaffoldState state) {
     DateTime now = DateTime.now();
     if(now.difference(currentBackPressTime) > Duration(seconds: 1)){
       currentBackPressTime = now;
