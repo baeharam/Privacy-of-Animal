@@ -1,13 +1,16 @@
 import 'package:flutter/widgets.dart';
 import 'package:privacy_of_animal/decisions/decision.dart';
+import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:privacy_of_animal/screens/main/screen.dart';
 
 Map<String, WidgetBuilder> routes =  {
-  '/intro': (BuildContext context) => IntroScreen(),
-  '/login': (BuildContext context) => LoginScreen(),
-  '/tagSelect': (BuildContext context) => TagSelectScreen(),
-  '/tagChat': (BuildContext context) => TagChatScreen(),
+  /// Screen
+  routeIntro: (BuildContext context) => IntroScreen(),
+  routeLogin: (BuildContext context) => LoginScreen(),
+  routeTagSelect: (BuildContext context) => TagSelectScreen(),
+  routeTagChat: (BuildContext context) => TagChatScreen(),
 
-  '/loginDecision': (BuildContext context) => LoginDecision(),
-  '/signUpDecision': (BuildContext context) => SignUpDecision(),
+  /// Decision
+  routeLoginDecision: (BuildContext context) => LoginDecision(),
+  routeSignUpDecision: (BuildContext context) => SignUpDecision(),
 };

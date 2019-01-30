@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_helpers.dart';
-import 'package:privacy_of_animal/logics/tag/tag.dart';
+import 'package:privacy_of_animal/logics/tag_select/tag_select.dart';
 import 'package:privacy_of_animal/resources/resources.dart';
 import 'package:privacy_of_animal/utils/stream_navigator.dart';
 import 'package:privacy_of_animal/widgets/initial_button.dart';
@@ -16,7 +16,7 @@ class _TagSelectScreenState extends State<TagSelectScreen> {
   @override
   Widget build(BuildContext context) {
 
-    final TagBloc _tagBloc = TagBloc();
+    final TagSelectBloc _tagBloc = TagSelectBloc();
     List<bool> isActivateList = List.generate(tags.length, (i) => false);
 
     return Scaffold(
@@ -82,10 +82,10 @@ class _TagSelectScreenState extends State<TagSelectScreen> {
                     ),
                     onTap: () {
                       if(isActivateList[index]){
-                        _tagBloc.emitEvent(TagEventSelectDeactivate(index: index));
+                        _tagBloc.emitEvent(TagSelectEventDeactivate(index: index));
                       }
                       else if(!isActivateList[index]){
-                        _tagBloc.emitEvent(TagEventSelectActivate(index: index));
+                        _tagBloc.emitEvent(TagSelectEventActivate(index: index));
                       }
                     },
                   );
@@ -102,7 +102,7 @@ class _TagSelectScreenState extends State<TagSelectScreen> {
               return InitialButton(
                 text: '선택 완료',
                 color: primaryBeige,
-                callback: () => _tagBloc.emitEvent(TagEventComplete())
+                callback: () => _tagBloc.emitEvent(TagSelectEventComplete())
               );
             }
           )
