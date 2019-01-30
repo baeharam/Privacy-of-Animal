@@ -1,24 +1,22 @@
-
 import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_helpers.dart';
 import 'package:privacy_of_animal/logics/tag/tag.dart';
-import 'package:privacy_of_animal/logics/validation/validation_bloc.dart';
 import 'package:privacy_of_animal/resources/resources.dart';
+import 'package:privacy_of_animal/utils/stream_navigator.dart';
 import 'package:privacy_of_animal/widgets/initial_button.dart';
 
-class TagScreen extends StatefulWidget {
+class TagSelectScreen extends StatefulWidget {
   @override
-  _TagScreenState createState() => _TagScreenState();
+  _TagSelectScreenState createState() => _TagSelectScreenState();
 }
 
-class _TagScreenState extends State<TagScreen> {
+class _TagSelectScreenState extends State<TagSelectScreen> {
 
 
   @override
   Widget build(BuildContext context) {
 
     final TagBloc _tagBloc = TagBloc();
-    final ValidationBloc _validationBloc = ValidationBloc();
     List<bool> isActivateList = List.generate(tags.length, (i) => false);
 
     return Scaffold(
@@ -97,15 +95,14 @@ class _TagScreenState extends State<TagScreen> {
           ),
           BlocBuilder(
             bloc: _tagBloc,
-            builder: (context, TagState state){
+            builder: (_, TagState state){
+              if(state.isTagCompleted){
+                StreamNavigator.pushReplacementNamed(context, '/tagChat');
+              }
               return InitialButton(
                 text: '선택 완료',
                 color: primaryBeige,
-                callback: state.isTagCompleted
-                ? (){
-                  
-                } 
-                : null,
+                callback: () => _tagBloc.emitEvent(TagEventComplete())
               );
             }
           )

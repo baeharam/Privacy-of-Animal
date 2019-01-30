@@ -1,19 +1,21 @@
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state.dart';
 
 class TagState extends BlocState {
+  final bool isInitial;
   final bool isTagActivated;
   final bool isTagDeactivated;
   final int tagIndex;
   final bool isTagCompleted;
 
   TagState({
+    this.isInitial: false,
     this.isTagActivated: false,
     this.isTagDeactivated: true,
     this.tagIndex: 0,
     this.isTagCompleted: false,
   });
 
-  factory TagState.initial() => TagState();
+  factory TagState.initial() => TagState(isInitial: true);
 
   factory TagState.activated(int index){
     return TagState(
@@ -29,9 +31,9 @@ class TagState extends BlocState {
     );
   }
 
-  factory TagState.complete(bool isTagCompeted){
+  factory TagState.complete(){
     return TagState(
-      isTagCompleted: isTagCompeted
+      isTagCompleted: true
     );
   }
 }

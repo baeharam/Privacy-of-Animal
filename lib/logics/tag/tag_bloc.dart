@@ -22,7 +22,9 @@ class TagBloc extends BlocEventStateBase<TagEvent,TagState> {
     }
 
     if(event is TagEventComplete){
-      yield TagState.complete(selectedTags==5?true:false);
+      if(selectedTags==5){
+        yield TagState.complete();
+      }
     }
   }
 }
