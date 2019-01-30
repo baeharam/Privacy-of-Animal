@@ -23,7 +23,7 @@ class TagSelectAPI {
       await _firestore.runTransaction((transaction) async{
         CollectionReference collectionReference = _firestore.collection(firestoreUsersCollection);
         DocumentReference reference = collectionReference.document(user.uid);
-        await reference.setData({
+        await reference.updateData({
           firestoreIsTagSelectedField: true,
           firestoreTagField: {
             firestoreTagTitle1Field: _tags[0],
