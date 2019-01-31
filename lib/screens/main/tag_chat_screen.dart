@@ -17,7 +17,6 @@ class _TagChatScreenState extends State<TagChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print("rebuild!!");
     return Scaffold(
       body: Column(
         children: <Widget>[
