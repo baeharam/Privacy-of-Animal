@@ -3,9 +3,6 @@ import 'package:privacy_of_animal/logics/photo/photo.dart';
 import 'package:privacy_of_animal/resources/resources.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_helpers.dart';
 import 'dart:io';
-// import 'package:image_picker/image_picker.dart';
-// import 'package:flutter_native_image/flutter_native_image.dart';
-
 
 class PhotoScreen extends StatefulWidget {
   @override
@@ -23,6 +20,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
       appBar: AppBar(
         title: Text("사진"),
         backgroundColor: appBarColor,
+        automaticallyImplyLeading: false,
       ),
       body: Center(
           child: SafeArea(
@@ -34,13 +32,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
               bloc: _photoBloc,
               builder: (context, PhotoState state){
                 if(state.takedPhoto) {
-                  return Container(
-                    height: ScreenUtil.height/3,
-                    width: ScreenUtil.width/1.4,
-                    child: SafeArea(
-                      child: Image.file(File(state.path))
-                      )
-                    );
+                  return updatedPhoto(context, state);
                   }
                 else
                   {
@@ -55,17 +47,38 @@ class _PhotoScreenState extends State<PhotoScreen> {
                   }
                 },
               ),
+
+          ],
+        ),
+          ),
+      ),
+    );
+  }
+  
+  Widget updatedPhoto (BuildContext context,PhotoState state) {
+    return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            
+            Container(
+              height: ScreenUtil.height/3,
+              width: ScreenUtil.width/1.4,
+              child: SafeArea(
+                child: Image.file(File(state.path))
+                )
+              ),
+              
             RaisedButton(
               child: Text(
                 "사진 다시 찍기",
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 18.0,
-                  fontWeight: FontWeight.bold
+                  fontWeight: FontWeight.w600
                 ),
                 ),
-                onPressed: () => _photoBloc.emitEvent(PhotoEventTaking())
-                
+                onPressed: () => _photoBloc.emitEvent(PhotoEventTaking()),
+                color: appBarColor,
             ),
             RaisedButton(
               child: Text(
@@ -73,18 +86,16 @@ class _PhotoScreenState extends State<PhotoScreen> {
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 18.0,
-                  fontWeight: FontWeight.bold
+                  fontWeight: FontWeight.w600
                 ),
               ),
               onPressed: () async{
                 _photoBloc.emitEvent(PhotoEventGotoAnalysis());
                 // TODO:goto next screen
               },
+              color: appBarColor,
             )
           ],
-        ),
-          ),
-      ),
-    );
+        );
   }
 }

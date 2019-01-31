@@ -1,5 +1,4 @@
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state.dart';
-import 'dart:io';
 
 class PhotoState extends BlocState {
   final bool takedPhoto;
@@ -28,6 +27,7 @@ class PhotoState extends BlocState {
 
   factory PhotoState.analysis(){
     return PhotoState(
+      takedPhoto:true,
       gotoAnalysis: true
     );
   }
