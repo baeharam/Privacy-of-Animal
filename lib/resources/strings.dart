@@ -110,7 +110,13 @@ const String fashion = 'fashion';
 const String cartoon = 'cartoon';
 const String drama = 'drama';
 
+// 테이블 3개 이름
+const String tagTable = 'tag_table';
+const String realProfileTable = 'real_profile_table';
+const String fakeProfileTable = 'fake_profile_table';
+
 // 테이블 3개에 대한 컬럼이름
+const String id = 'id';
 const String uidCol = 'uid';
 const String tagName1Col = 'tag_name_1';
 const String tagDetail1Col = 'tag_detail_1';
@@ -136,8 +142,9 @@ const String ageConfidenceCol = 'age_confidence';
 
 // 태그 테이블 생성하는 SQL
 const String tagTableCreationSQL = 
-  'CREATE TABLE tag_table '
-  '($uidCol TEXT PRIMARY KEY,'
+  'CREATE TABLE $tagTable '
+  '($id INTEGER PRIMARY KEY AUTO INCREMENT,'
+  '$uidCol TEXT,'
   '$tagName1Col TEXT,'
   '$tagDetail1Col TEXT,'
   '$tagName2Col TEXT,'
