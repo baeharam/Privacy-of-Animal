@@ -1,43 +1,39 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:privacy_of_animal/logics/current_user.dart';
+import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/resources/constants.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
-import 'package:privacy_of_animal/utils/database_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:privacy_of_animal/utils/service_locator.dart';
 
 class TagSelectAPI {
-  final Firestore _firestore = Firestore.instance;
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final DatabaseHelper _databaseHelper = DatabaseHelper();
-  final List<String> _tags = List<String>();
-  Database db;
 
   void _extractTags(List<bool> isTagSelected) {
     for(int i=0; i<tags.length; i++){
       if(isTagSelected[i]){
-        _tags.add(tags[i].title);
+        sl.get<CurrentUser>().tagListModel.tagTitleList.add(tags[i].title);
       }
     }
   }
 
   Future<TAG_STORE_RESULT> storeTagsIntoFirestore(List<bool> isTagSelected) async{
     _extractTags(isTagSelected);
-    FirebaseUser user = await _auth.currentUser();
+    FirebaseUser user = await sl.get<FirebaseAPI>().auth.currentUser();
     try{
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setBool(user.uid+firestoreIsTagSelectedField, true);
-      await _firestore.runTransaction((transaction) async{
-        CollectionReference collectionReference = _firestore.collection(firestoreUsersCollection);
+      await sl.get<FirebaseAPI>().firestore.runTransaction((transaction) async{
+        CollectionReference collectionReference = sl.get<FirebaseAPI>().firestore.collection(firestoreUsersCollection);
         DocumentReference reference = collectionReference.document(user.uid);
         await reference.updateData({
           firestoreIsTagSelectedField: true,
           firestoreTagField: {
-            firestoreTagTitle1Field: _tags[0],
-            firestoreTagTitle2Field: _tags[1],
-            firestoreTagTitle3Field: _tags[2],
-            firestoreTagTitle4Field: _tags[3],
-            firestoreTagTitle5Field: _tags[4]
+            firestoreTagTitle1Field: sl.get<CurrentUser>().tagListModel.tagTitleList[0],
+            firestoreTagTitle2Field: sl.get<CurrentUser>().tagListModel.tagTitleList[1],
+            firestoreTagTitle3Field: sl.get<CurrentUser>().tagListModel.tagTitleList[2],
+            firestoreTagTitle4Field: sl.get<CurrentUser>().tagListModel.tagTitleList[3],
+            firestoreTagTitle5Field: sl.get<CurrentUser>().tagListModel.tagTitleList[4]
           }
         });
       });

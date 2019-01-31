@@ -4,7 +4,7 @@ import 'package:privacy_of_animal/logics/login/login.dart';
 class LoginBloc extends BlocEventStateBase<LoginEvent,LoginState> {
 
   static final LoginAPI _api = LoginAPI();
-
+  
   @override
     LoginState get initialState => LoginState.notAuthenticated();
 

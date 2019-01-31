@@ -6,8 +6,9 @@ import 'package:privacy_of_animal/logics/signup/signup_bloc.dart';
 import 'package:privacy_of_animal/logics/signup/signup_event.dart';
 import 'package:privacy_of_animal/logics/validation/validation_bloc.dart';
 import 'package:privacy_of_animal/resources/constants.dart';
+import 'package:privacy_of_animal/utils/service_locator.dart';
 
-void showAgePicker(BuildContext context, ValidationBloc validationBloc, SignUpBloc signUpBloc) {
+void showAgePicker(BuildContext context) {
   Picker(
     adapter: PickerDataAdapter<String>(pickerdata: JsonDecoder().convert(agePickerData)),
     hideHeader: true,
@@ -26,8 +27,8 @@ void showAgePicker(BuildContext context, ValidationBloc validationBloc, SignUpBl
     onConfirm: (Picker picker, List value)
       {
         int age = int.parse(picker.getSelectedValues()[1]);
-        validationBloc.onAgeSelected(age);
-        signUpBloc.emitEvent(SignUpEventAgeSelect(age: age));
+        sl.get<ValidationBloc>().onAgeSelected(age);
+        sl.get<SignUpBloc>().emitEvent(SignUpEventAgeSelect(age: age));
         FocusScope.of(context).requestFocus(FocusNode());
       },
     onCancel: () => FocusScope.of(context).requestFocus(FocusNode())

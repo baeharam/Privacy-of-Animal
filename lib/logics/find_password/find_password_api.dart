@@ -1,14 +1,12 @@
 import 'dart:async';
 
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:privacy_of_animal/logics/firebase_api.dart';
+import 'package:privacy_of_animal/utils/service_locator.dart';
 
 class FindPasswordAPI {
-
-  static final FirebaseAuth _auth = FirebaseAuth.instance;
-
   Future<FIND_PASSWORD_RESULT> findPassword(String email) async {
     try {
-      await _auth.sendPasswordResetEmail(email: email);
+      await sl.get<FirebaseAPI>().auth.sendPasswordResetEmail(email: email);
     } catch(exception){
       return FIND_PASSWORD_RESULT.FAILURE;
     }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_helpers.dart';
 import 'package:privacy_of_animal/logics/signup/signup.dart';
 import 'package:privacy_of_animal/logics/validation/validation_bloc.dart';
+import 'package:privacy_of_animal/models/real_profile_model.dart';
 import 'package:privacy_of_animal/models/signup_model.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/resources/constants.dart';
@@ -144,7 +145,7 @@ class _SignUpFormState extends State<SignUpForm> {
                     ),
                   ),
                 ),
-                onTap: () => state.isRegistering ? null : showAgePicker(context, validationBloc, signUpBloc),
+                onTap: () => state.isRegistering ? null : showAgePicker(context),
               );
             },
           ),
@@ -167,7 +168,7 @@ class _SignUpFormState extends State<SignUpForm> {
             bloc: signUpBloc,
             builder: (context, SignUpState state){
               if(state.isMaleSelected || state.isFemaleSelected){
-                signUpModel.gender = state.gender;
+                signUpModel.realProfileModel = RealProfileModel(gender: state.gender);
               }
               return Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -189,11 +190,14 @@ class _SignUpFormState extends State<SignUpForm> {
                 callback: (snapshot.hasData && snapshot.data==true) 
                 ? (){
                   FocusScope.of(context).requestFocus(FocusNode());
+                  signUpModel.realProfileModel = 
+                  RealProfileModel(
+                    name: _nameController.text,
+                    age: _ageController.text,
+                    job: _jobController.text
+                  );
                   signUpModel.email = _emailController.text;
                   signUpModel.password = _passwordController.text;
-                  signUpModel.name = _nameController.text;
-                  signUpModel.age = _ageController.text;
-                  signUpModel.job = _jobController.text;
                   signUpBloc.emitEvent(SignUpEventComplete(data: signUpModel));
                 } 
                 : null,

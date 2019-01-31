@@ -4,12 +4,13 @@ import 'package:privacy_of_animal/logics/find_password/find_password.dart';
 import 'package:privacy_of_animal/logics/signup/signup.dart';
 import 'package:privacy_of_animal/logics/validation/validation_bloc.dart';
 import 'package:privacy_of_animal/resources/resources.dart';
+import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
 void streamDialogForgotPassword(BuildContext context) {
 
-  final ValidationBloc validationBloc = MultipleBlocProvider.of<ValidationBloc>(context);
-  final FindPasswordBloc findPasswordBloc = MultipleBlocProvider.of<FindPasswordBloc>(context);
+  final ValidationBloc validationBloc = sl.get<ValidationBloc>();
+  final FindPasswordBloc findPasswordBloc = sl.get<FindPasswordBloc>();
   final TextEditingController _emailController = TextEditingController();
 
   WidgetsBinding.instance.addPostFrameCallback((_){
