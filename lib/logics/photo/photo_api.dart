@@ -7,9 +7,9 @@ class PhotoAPI {
   PhotoModel data = PhotoModel();
 
   Future<String> getImage() async {
-    final File image = await ImagePicker.pickImage(source: ImageSource.camera);
+    final File image = await ImagePicker.pickImage(source: ImageSource.gallery);
     final File compressedImage = await FlutterNativeImage.compressImage(image.path, quality: 80);
-    data.path = compressedImage.path;
+    // data.path = compressedImage.path;
     return compressedImage.path;
   }
 

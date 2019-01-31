@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/logics/photo/photo.dart';
 import 'package:privacy_of_animal/resources/resources.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_helpers.dart';
+import 'dart:io';
 // import 'package:image_picker/image_picker.dart';
 // import 'package:flutter_native_image/flutter_native_image.dart';
 
@@ -28,24 +29,32 @@ class _PhotoScreenState extends State<PhotoScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Container(
-            height: ScreenUtil.height/3,
-            child: BlocBuilder(
+            
+            BlocBuilder(
               bloc: _photoBloc,
               builder: (context, PhotoState state){
                 if(state.takedPhoto) {
-                  _photoBloc.emitEvent(PhotoEventTakedPhoto());
-                  
-                  }
-                else{
-                  _photoBloc.emitEvent(PhotoEventNotaked());
-                  return CircularProgressIndicator(
+                  return Container(
+                    height: ScreenUtil.height/3,
+                    width: ScreenUtil.width/1.4,
+                    child: SafeArea(
+                      child: Image.file(File(state.path))
+                      )
                     );
-                }
+                  }
+                else
+                  {
+                    _photoBloc.emitEvent(PhotoEventTaking());
+                    return Container(
+                      child: SafeArea(
+                        child: new CircularProgressIndicator(),
+                      ),
+                      height: 30.0,
+                      width: 30.0,
+                    );
+                  }
                 },
-              )
-            ),
-            
+              ),
             RaisedButton(
               child: Text(
                 "사진 다시 찍기",
@@ -55,9 +64,8 @@ class _PhotoScreenState extends State<PhotoScreen> {
                   fontWeight: FontWeight.bold
                 ),
                 ),
-                onPressed: () async{
-                  _photoBloc.emitEvent(PhotoEventRetaking());
-                }
+                onPressed: () => _photoBloc.emitEvent(PhotoEventTaking())
+                
             ),
             RaisedButton(
               child: Text(
