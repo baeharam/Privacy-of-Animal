@@ -14,3 +14,6 @@ const Color loginTextColor = Color(0xFF3F4FA5);
 
 // SignUpScreen
 const Color signUpBackgroundColor = Color(0xFFff6391);
+
+//AppBarColor
+const Color appBarColor = Color(0xFF3E4FA7);

@@ -8,5 +8,6 @@ Map<String, WidgetBuilder> routes =  {
   '/tag': (BuildContext context) => TagScreen(),
   '/loginDecision': (BuildContext context) => LoginDecision(),
   '/signUpDecision': (BuildContext context) => SignUpDecision(),
-  '/homeDecision': (BuildContext context) => HomeDecision()
+  '/homeDecision': (BuildContext context) => HomeDecision(),
+  '/photo': (BuildContext context) => PhotoScreen()
 };
