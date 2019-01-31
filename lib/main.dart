@@ -7,9 +7,15 @@ import 'package:privacy_of_animal/screens/main/intro_screen.dart';
 
 Future<void> main() async{
   // final FirebaseApp app = await FirebaseApp.configure(
+<<<<<<< HEAD
   //   name: '동물의 사생활',
   //   options: const FirebaseOptions(
   //     googleAppID: androidAppID,
+=======
+  //   name: appName,
+  //   options: const FirebaseOptions(
+  //     googleAppID: iosAppID,
+>>>>>>> ffcddaba92218cd9decac63e7098f6758ec3f2ea
   //     apiKey: apiKey,
   //     projectID: projectID
   //   )

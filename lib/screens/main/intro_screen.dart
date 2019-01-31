@@ -6,6 +6,8 @@ import 'package:privacy_of_animal/utils/initializer.dart';
 import 'package:privacy_of_animal/widgets/dots_indicator.dart';
 import 'package:privacy_of_animal/widgets/initial_button.dart';
 
+import 'package:privacy_of_animal/widgets/flutter_statusbar_manager.dart';
+
 class IntroScreen extends StatefulWidget {
   @override
   _IntroScreenState createState() => _IntroScreenState();
@@ -17,13 +19,14 @@ class _IntroScreenState extends State<IntroScreen> with SingleTickerProviderStat
   PageController _pageController;
   AnimationController _animationController;
   Animation _transitionAnimation;
-
+ 
   static const _kDuration = const Duration(milliseconds: 300);
   static const _kCurve = Curves.ease;
 
   @override
     void initState() {
       super.initState();
+      FlutterStatusbarManager.setHidden(false);
       _pageController = PageController(initialPage: 0);
       _animationController = AnimationController(
         vsync: this,
