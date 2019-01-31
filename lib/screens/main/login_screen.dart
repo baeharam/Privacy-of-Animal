@@ -6,6 +6,7 @@ import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/resources/constants.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:privacy_of_animal/screens/sub/login_form.dart';
+import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:privacy_of_animal/utils/stream_dialog.dart';
 import 'package:privacy_of_animal/utils/stream_snackbar.dart';
 import 'package:privacy_of_animal/widgets/arc_background.dart';
@@ -19,8 +20,8 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
 
-    final LoginBloc loginBloc = MultipleBlocProvider.of<LoginBloc>(context);
-    final FindPasswordBloc findPasswordBloc = MultipleBlocProvider.of<FindPasswordBloc>(context);
+    final LoginBloc loginBloc = sl<LoginBloc>();
+    final FindPasswordBloc findPasswordBloc = sl<FindPasswordBloc>();
 
     return Scaffold(
       backgroundColor: Colors.white,

@@ -9,6 +9,7 @@ import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:privacy_of_animal/screens/sub/signup_gender_select.dart';
 import 'package:privacy_of_animal/screens/sub/signup_input.dart';
 import 'package:privacy_of_animal/utils/age_picker.dart';
+import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:privacy_of_animal/widgets/initial_button.dart';
 
 class SignUpForm extends StatefulWidget {
@@ -71,8 +72,8 @@ class _SignUpFormState extends State<SignUpForm> {
   @override
   Widget build(BuildContext context) {
 
-    final ValidationBloc validationBloc = MultipleBlocProvider.of<ValidationBloc>(context);
-    final SignUpBloc signUpBloc = MultipleBlocProvider.of<SignUpBloc>(context);
+    final ValidationBloc validationBloc = sl.get<ValidationBloc>();
+    final SignUpBloc signUpBloc = sl.get<SignUpBloc>();
     SignUpModel signUpModel = SignUpModel();
 
     return Container(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state_builder.dart';
-import 'package:privacy_of_animal/bloc_helpers/multiple_bloc_provider.dart';
 import 'package:privacy_of_animal/logics/signup/signup.dart';
+import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:privacy_of_animal/widgets/focus_visible_maker.dart';
 
 class SignUpInput extends StatefulWidget {
@@ -36,7 +36,7 @@ class _SignUpInputState extends State<SignUpInput> {
   @override
   Widget build(BuildContext context) {
 
-    final SignUpBloc signUpBloc = MultipleBlocProvider.of<SignUpBloc>(context);
+    final SignUpBloc signUpBloc = sl.get<SignUpBloc>();
 
     return BlocBuilder(
       bloc: signUpBloc,

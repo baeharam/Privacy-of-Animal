@@ -4,6 +4,7 @@ import 'package:privacy_of_animal/logics/tag_chat/tag_chat.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:privacy_of_animal/screens/sub/tag_chat_input.dart';
 import 'package:privacy_of_animal/screens/sub/tag_chat_npc.dart';
+import 'package:privacy_of_animal/utils/service_locator.dart';
 
 class TagChatScreen extends StatefulWidget {
   @override
@@ -12,7 +13,7 @@ class TagChatScreen extends StatefulWidget {
 
 class _TagChatScreenState extends State<TagChatScreen> {
 
-  final TagChatBloc _tagChatBloc = TagChatBloc();
+  final TagChatBloc _tagChatBloc = sl.get<TagChatBloc>();
   List<Widget> widgets = [];
 
   @override

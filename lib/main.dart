@@ -1,21 +1,12 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:privacy_of_animal/resources/config.dart';
+import 'package:privacy_of_animal/logics/initialize_api.dart';
 import 'package:privacy_of_animal/resources/routes.dart';
 import 'package:privacy_of_animal/screens/main/intro_screen.dart';
+import 'package:privacy_of_animal/utils/service_locator.dart';
 
 Future<void> main() async{
-  final FirebaseApp app = await FirebaseApp.configure(
-    name: '동물의 사생활',
-    options: const FirebaseOptions(
-      googleAppID: androidAppID,
-      apiKey: apiKey,
-      projectID: projectID
-    )
-  );
-  final Firestore firestore = Firestore(app: app);
-  await firestore.settings(timestampsInSnapshotsEnabled: true);
+  setup();
+  sl.get<InitializeAPI>().appInitialize();
   runApp(PrivacyOfAnimal());
 }
 

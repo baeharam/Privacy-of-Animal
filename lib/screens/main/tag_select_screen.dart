@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_helpers.dart';
 import 'package:privacy_of_animal/logics/tag_select/tag_select.dart';
 import 'package:privacy_of_animal/resources/resources.dart';
+import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:privacy_of_animal/utils/stream_navigator.dart';
 import 'package:privacy_of_animal/utils/stream_snackbar.dart';
 import 'package:privacy_of_animal/widgets/initial_button.dart';
@@ -18,7 +19,7 @@ class _TagSelectScreenState extends State<TagSelectScreen> {
   @override
   Widget build(BuildContext context) {
 
-    final TagSelectBloc _tagBloc = TagSelectBloc();
+    final TagSelectBloc _tagBloc = sl.get<TagSelectBloc>();
     List<bool> isActivateList = List.generate(tags.length, (i) => false);
 
     return Scaffold(
