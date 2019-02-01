@@ -143,7 +143,7 @@ const String ageConfidenceCol = 'age_confidence';
 // 태그 테이블 생성하는 SQL
 const String tagTableCreationSQL = 
   'CREATE TABLE $tagTable '
-  '($id INTEGER PRIMARY KEY AUTO INCREMENT,'
+  '($id INTEGER PRIMARY KEY AUTOINCREMENT,'
   '$uidCol TEXT,'
   '$tagName1Col TEXT,'
   '$tagDetail1Col TEXT,'
@@ -159,11 +159,14 @@ const String tagTableCreationSQL =
 // 실제 프로필 테이블 생성하는 SQL
 const String realProfileTableCreationSQL = 
   'CREATE TABLE real_profile_table'
-  '($uidCol TEXT PRIMARY KEY, $nameCol TEXT, $genderCol TEXT, $ageCol INTEGER, $jobCol TEXT)';
+  '($id INTEGER PRIMARY KEY AUTOINCREMENT,'
+  '$uidCol TEXT, $nameCol TEXT, $genderCol TEXT, $ageCol INTEGER, $jobCol TEXT)';
 
 
 // 가상 프로필 테이블 생성하는 SQL  
 const String fakeProfileTableCreationSQL = 
   'CREATE TABLE fake_profile_table'
-  '($uidCol TEXT PRIMARY KEY, $nameCol TEXT, $imgCol TEXT, $animalNameCol, $genderCol TEXT, $ageCol INTEGER, $emotionCol TEXT,'
-  '$animalConfidenceCol REAL, $genderConfidenceCol REAL, $emotionConfidenceCol REAL, $ageConfidenceCol REAL';
+  '($id INTEGER PRIMARY KEY AUTOINCREMENT,'
+  '$uidCol TEXT,'
+  '$nameCol TEXT, $imgCol TEXT, $animalNameCol TEXT, $genderCol TEXT, $ageCol INTEGER, $emotionCol TEXT,'
+  '$animalConfidenceCol REAL, $genderConfidenceCol REAL, $emotionConfidenceCol REAL, $ageConfidenceCol REAL)';

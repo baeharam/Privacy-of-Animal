@@ -11,7 +11,7 @@ import 'package:privacy_of_animal/screens/sub/signup_gender_select.dart';
 import 'package:privacy_of_animal/screens/sub/signup_input.dart';
 import 'package:privacy_of_animal/utils/age_picker.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
-import 'package:privacy_of_animal/widgets/initial_button.dart';
+import 'package:privacy_of_animal/widgets/primary_button.dart';
 
 class SignUpForm extends StatefulWidget {
   @override
@@ -184,18 +184,15 @@ class _SignUpFormState extends State<SignUpForm> {
           StreamBuilder<bool>(
             stream: validationBloc.signUpValid,
             builder: (BuildContext context, AsyncSnapshot<bool> snapshot){
-              return InitialButton(
+              return PrimaryButton(
                 text: '회원가입',
                 color: primaryBeige,
                 callback: (snapshot.hasData && snapshot.data==true) 
                 ? (){
                   FocusScope.of(context).requestFocus(FocusNode());
-                  signUpModel.realProfileModel = 
-                  RealProfileModel(
-                    name: _nameController.text,
-                    age: _ageController.text,
-                    job: _jobController.text
-                  );
+                  signUpModel.realProfileModel.name = _nameController.text;
+                  signUpModel.realProfileModel.age = _ageController.text;
+                  signUpModel.realProfileModel.job = _jobController.text;
                   signUpModel.email = _emailController.text;
                   signUpModel.password = _passwordController.text;
                   signUpBloc.emitEvent(SignUpEventComplete(data: signUpModel));

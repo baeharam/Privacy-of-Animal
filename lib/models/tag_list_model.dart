@@ -1,9 +1,11 @@
+import 'package:meta/meta.dart';
+
 class TagListModel {
-  List<String> tagTitleList = List<String>();
-  List<String> tagDetailList = List<String>();
+  List<String> tagTitleList;
+  List<String> tagDetailList;
   
   TagListModel({
-    this.tagTitleList,
-    this.tagDetailList
+    @required this.tagTitleList,
+    @required this.tagDetailList
   });
 }
