@@ -36,7 +36,7 @@ class _ArcBackgroundState extends State<ArcBackground> {
           Positioned(
             left: ScreenUtil.width/2-dashedBackgroundCircleDiameter/2,
             // top: ScreenUtil.height/7,
-            top: ScreenUtil.height/4.4-dashedBackgroundCircleDiameter/2, // look beter in ios
+            top: ScreenUtil.height/4.4-dashedBackgroundCircleDiameter/2, // look better in ios
             child: Container(
               width: dashedBackgroundCircleDiameter,
               height: dashedBackgroundCircleDiameter,
