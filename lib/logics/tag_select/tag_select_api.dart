@@ -57,7 +57,6 @@ class TagSelectAPI {
       'INSERT INTO $tagTable($uidCol,$tagName1Col,$tagName2Col,$tagName3Col,$tagName4Col,$tagName5Col) '
       'VALUES("$uid","${tags[0]}","${tags[1]}","${tags[2]}","${tags[3]}","${tags[4]}")'
     );
-    db.close();
   }
 }
 

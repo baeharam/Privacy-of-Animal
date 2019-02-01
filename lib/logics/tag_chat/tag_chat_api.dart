@@ -42,7 +42,8 @@ class TagChatAPI {
   Future<void> _callFirestoreSetLocalDB() async {
     List<String> tags;
     DocumentSnapshot snapshot = await sl.get<FirebaseAPI>().firestore.collection(firestoreUsersCollection).document(_uid).get();
-    tags = snapshot[firestoreTagField];
+    Map map = snapshot.data[firestoreTagField];
+    map.forEach((key,value) => tags.add(map[key]));
     await _db.rawInsert(
       'INSERT INTO $tagTable($uidCol,$tagName1Col,$tagName2Col,$tagName3Col,$tagName4Col,$tagName5Col) '
       'VALUES("$_uid","${tags[0]}","${tags[1]}","${tags[2]}","${tags[3]}","${tags[4]}")'

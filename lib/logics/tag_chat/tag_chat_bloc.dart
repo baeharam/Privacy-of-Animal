@@ -18,9 +18,9 @@ class TagChatBloc extends BlocEventStateBase<TagChatEvent,TagChatState> {
     if(event is TagChatEventDone){
       order = sl.get<CurrentUser>().tagListModel.tagDetailList.length;
       if(order<5){
-        yield TagChatState.done(showSubmitButton: false,isNPC: event.isNPC,isUser: event.isUser);
+        yield TagChatState.done(event.isNPCDone,event.isUserDone,false);
       } else if(order==5){
-        yield TagChatState.done(showSubmitButton: true,isNPC: event.isNPC,isUser: event.isUser);
+        yield TagChatState.done(event.isNPCDone,event.isUserDone,true);
       }
     }
     if(event is TagChatEventNPC){

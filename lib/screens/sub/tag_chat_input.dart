@@ -46,7 +46,7 @@ class TagChatInputState extends State<TagChatInput> {
                       hintStyle: TextStyle(color: Colors.grey),
                     ),
                     controller: _textEditingController,
-                    enabled: (state.isDone && state.isNPC) ? true : false,
+                    enabled: state.isNPCDone ? true : false
                   );
                 }
               ),

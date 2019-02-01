@@ -10,7 +10,8 @@ class TagChatState extends BlocState {
   final bool isUser;
   final String messageUser;
 
-  final bool isDone;
+  final bool isNPCDone;
+  final bool isUserDone;
   final bool showSubmitButton;
 
   final bool isDetailStoreLoading;
@@ -24,19 +25,19 @@ class TagChatState extends BlocState {
     this.isInitial: false,
     this.isUser: false,
     this.messageUser: '',
-    this.isDone: false,
+    this.isNPCDone: false,
+    this.isUserDone: false,
     this.showSubmitButton: false,
     this.isDetailStoreLoading: false,
     this.isDetailStoreSucceeded: false,
     this.isDetailStoreFailed: false
   });
 
-  factory TagChatState.done({bool isNPC, bool isUser, bool showSubmitButton}) {
+  factory TagChatState.done(bool isNPCDone, bool isUserDone, bool showSubmitButton) {
     return TagChatState(
-      isNPC: isNPC,
-      isUser: isUser,
-      isDone: true,
-      showSubmitButton: showSubmitButton
+      isNPCDone: isNPCDone,
+      isUserDone: isUserDone,
+      showSubmitButton: showSubmitButton ?? false
     );
   }
 

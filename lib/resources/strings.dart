@@ -103,11 +103,11 @@ const String firestoreIsFaceAnalyzedField = 'is_face_analyzed';
 
 // Cloud Firestore 태그 필드
 const String firestoreTagField = 'tags';
-const String firestoreTagTitle1Field = 'tag_title_1';
-const String firestoreTagTitle2Field = 'tag_title_2';
-const String firestoreTagTitle3Field = 'tag_title_3';
-const String firestoreTagTitle4Field = 'tag_title_4';
-const String firestoreTagTitle5Field = 'tag_title_5';
+const String firestoreTagTitle1Field = tagName1Col;
+const String firestoreTagTitle2Field = tagName2Col;
+const String firestoreTagTitle3Field = tagName3Col;
+const String firestoreTagTitle4Field = tagName4Col;
+const String firestoreTagTitle5Field = tagName5Col;
 
 
 // 로컬 DB 이름

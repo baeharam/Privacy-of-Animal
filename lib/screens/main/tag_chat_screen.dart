@@ -27,12 +27,12 @@ class _TagChatScreenState extends State<TagChatScreen> {
         builder: (context, TagChatState state){
           if(state.isNPC){
             widgets.add(TagChatNPC(message: state.messageNPC,isBegin: state.isBegin));
-            _tagChatBloc.emitEvent(TagChatEventDone());
+            _tagChatBloc.emitEvent(TagChatEventDone(isNPCDone: true,isUserDone: false));
             if(state.isInitial) _tagChatBloc.emitEvent(TagChatEventNPC(isInitial: true));
           }
           if(state.isUser){
             widgets.add(TagChatUser(message: state.messageUser));
-            _tagChatBloc.emitEvent(TagChatEventDone());
+            _tagChatBloc.emitEvent(TagChatEventDone(isUserDone: true,isNPCDone: false));
             _tagChatBloc.emitEvent(TagChatEventNPC(isInitial: false));
           }
           return Column(
@@ -49,7 +49,7 @@ class _TagChatScreenState extends State<TagChatScreen> {
               state.showSubmitButton 
               ? Padding(
                   padding: const EdgeInsets.only(bottom: 20.0),
-                  child: PrimaryButton(color: primaryBeige,text: '제출하기',callback: (){})
+                  child: PrimaryButton(color: primaryBeige,text: '?? ??',callback: (){})
                 ) 
               : TagChatInput()
             ],
