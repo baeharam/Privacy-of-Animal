@@ -1,16 +1,13 @@
 import 'dart:async';
 import 'package:image_picker/image_picker.dart';
-import 'package:flutter_native_image/flutter_native_image.dart';
-
 import 'dart:io';
-
+import 'package:flutter_native_image/flutter_native_image.dart';
 class PhotoAPI {
   PhotoModel data = PhotoModel();
 
   Future<String> getImage() async {
     final File image = await ImagePicker.pickImage(source: ImageSource.gallery);
-    final File compressedImage = await FlutterNativeImage.compressImage(image.path, quality: 80);
-    // data.path = compressedImage.path;
+    final File compressedImage = await FlutterNativeImage.compressImage(image.path, quality: 80, percentage: 100);
     return compressedImage.path;
   }
 

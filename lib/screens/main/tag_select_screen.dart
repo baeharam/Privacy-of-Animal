@@ -22,7 +22,7 @@ class _TagSelectScreenState extends State<TagSelectScreen> {
     List<bool> isActivateList = List.generate(tags.length, (i) => false);
 
     return Scaffold(
-      body: Column(
+      body: ListView(
         children:<Widget>[
           Container(
             padding: const EdgeInsets.only(top: 40.0,left: 50.0,right: 50.0),
@@ -38,6 +38,7 @@ class _TagSelectScreenState extends State<TagSelectScreen> {
           GridView.builder(
             shrinkWrap: true,
             itemCount: tags.length,
+            physics: ScrollPhysics(),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 3,
             ),
