@@ -2,11 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_helpers.dart';
 import 'package:privacy_of_animal/logics/tag_chat/tag_chat.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
+import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:privacy_of_animal/screens/sub/tag_chat_input.dart';
 import 'package:privacy_of_animal/screens/sub/tag_chat_npc.dart';
 import 'package:privacy_of_animal/screens/sub/tag_chat_user.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
+import 'package:privacy_of_animal/utils/stream_navigator.dart';
+import 'package:privacy_of_animal/utils/stream_snackbar.dart';
 import 'package:privacy_of_animal/widgets/primary_button.dart';
+import 'package:privacy_of_animal/widgets/progress_indicator.dart';
 
 class TagChatScreen extends StatefulWidget {
   @override
@@ -25,6 +29,12 @@ class _TagChatScreenState extends State<TagChatScreen> {
       body: BlocBuilder(
         bloc: _tagChatBloc,
         builder: (context, TagChatState state){
+          if(state.isDetailStoreSucceeded){
+            StreamNavigator.pushNamedAndRemoveAll(context, routeFaceAnalyze);
+          }
+          if(state.isDetailStoreFailed){
+            streamSnackbar(context,'??? ??????.');
+          }
           if(state.isNPC){
             widgets.add(TagChatNPC(message: state.messageNPC,isBegin: state.isBegin));
             _tagChatBloc.emitEvent(TagChatEventDone(isNPCDone: true,isUserDone: false));
@@ -49,9 +59,19 @@ class _TagChatScreenState extends State<TagChatScreen> {
               state.showSubmitButton 
               ? Padding(
                   padding: const EdgeInsets.only(bottom: 20.0),
-                  child: PrimaryButton(color: primaryBeige,text: '?? ??',callback: (){})
+                  child: PrimaryButton(
+                    color: primaryBeige,
+                    text: '?? ??',
+                    callback: ()=>_tagChatBloc.emitEvent(TagChatEventComplete())
+                  )
                 ) 
-              : TagChatInput()
+              : (state.isDetailStoreLoading 
+                ? Padding(
+                    padding: const EdgeInsets.only(bottom: 20.0),
+                    child: CustomProgressIndicator()
+                  )
+                : TagChatInput()
+              )
             ],
           );
         }

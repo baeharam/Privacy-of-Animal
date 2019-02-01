@@ -3,6 +3,7 @@ const String routeIntro = '/intro';
 const String routeLogin = '/login';
 const String routeTagSelect = '/tagSelect';
 const String routeTagChat = '/tagChat';
+const String routeFaceAnalyze = '/faceAnalyze';
 const String routeLoginDecision = '/loginDecision';
 const String routeSignUpDecision = '/signUpDecision';
 
@@ -108,6 +109,12 @@ const String firestoreTagTitle2Field = tagName2Col;
 const String firestoreTagTitle3Field = tagName3Col;
 const String firestoreTagTitle4Field = tagName4Col;
 const String firestoreTagTitle5Field = tagName5Col;
+
+const String firestoreTagDetail1Field = tagDetail1Col;
+const String firestoreTagDetail2Field = tagDetail2Col;
+const String firestoreTagDetail3Field = tagDetail3Col;
+const String firestoreTagDetail4Field = tagDetail4Col;
+const String firestoreTagDetail5Field = tagDetail5Col;
 
 
 // 로컬 DB 이름

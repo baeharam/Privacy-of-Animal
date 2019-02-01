@@ -9,6 +9,7 @@ Map<String, WidgetBuilder> routes =  {
   routeLogin: (BuildContext context) => LoginScreen(),
   routeTagSelect: (BuildContext context) => TagSelectScreen(),
   routeTagChat: (BuildContext context) => TagChatScreen(),
+  routeFaceAnalyze: (BuildContext context) => FaceAnalyzeScreen(),
 
   /// Decision
   routeLoginDecision: (BuildContext context) => LoginDecision(),
