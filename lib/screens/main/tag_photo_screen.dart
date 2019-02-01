@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/logics/photo/photo.dart';
 import 'package:privacy_of_animal/resources/resources.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_helpers.dart';
+import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'dart:io';
 
 
@@ -11,7 +12,7 @@ class PhotoScreen extends StatefulWidget {
 }
 
 class _PhotoScreenState extends State<PhotoScreen> {
-  final PhotoBloc _photoBloc = PhotoBloc();
+  final PhotoBloc _photoBloc = sl.get<PhotoBloc>();
   
   @override
   Widget build(BuildContext context){
@@ -62,7 +63,6 @@ class _PhotoScreenState extends State<PhotoScreen> {
               ),
               SizedBox(
                 height: MediaQuery.of(context).size.height/18,
-                // height: ScreenUtil.height/18,
               ),
               RaisedButton(
                 child: Text(

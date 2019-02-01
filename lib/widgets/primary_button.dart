@@ -1,24 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
+import 'package:privacy_of_animal/resources/constants.dart';
 
-class InitialButton extends StatefulWidget {
+class PrimaryButton extends StatelessWidget {
   final String text;
   final Color color;
   final Function callback;
 
-  InitialButton({
+  PrimaryButton({
     this.text,
     this.color,
     this.callback
   });
 
-  @override
-  InitialButtonState createState() {
-    return new InitialButtonState();
-  }
-}
-
-class InitialButtonState extends State<InitialButton> {
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -26,13 +20,13 @@ class InitialButtonState extends State<InitialButton> {
       borderRadius: BorderRadius.circular(30.0),
       elevation: 5.0,
       child: MaterialButton(
-        minWidth: MediaQuery.of(context).size.width*0.77,
-        height: MediaQuery.of(context).size.height*0.07,
-        color: widget.color,
+        minWidth: ScreenUtil.width*0.77,
+        height: ScreenUtil.height*0.07,
+        color: color,
         splashColor: Colors.transparent,
-        onPressed: widget.callback,
+        onPressed: callback,
         child: Text(
-          widget.text,
+          text,
           style: TextStyle(
             color: introButtonTextColor,
             fontWeight: FontWeight.bold,

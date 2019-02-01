@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:privacy_of_animal/bloc_helpers/multiple_bloc_provider.dart';
 import 'package:privacy_of_animal/logics/signup/signup.dart';
 import 'package:privacy_of_animal/logics/validation/validation_bloc.dart';
+import 'package:privacy_of_animal/utils/service_locator.dart';
 
 class SignUpGenderSelect extends StatefulWidget {
 
@@ -40,8 +40,8 @@ class _SignUpGenderSelectState extends State<SignUpGenderSelect> {
         ),
       ),
       onTap: () {
-        MultipleBlocProvider.of<SignUpBloc>(context).emitEvent(widget.signUpEvent);
-        MultipleBlocProvider.of<ValidationBloc>(context).onGenderSelected(widget.genderTitle);
+        sl.get<SignUpBloc>().emitEvent(widget.signUpEvent);
+        sl.get<ValidationBloc>().onGenderSelected(widget.genderTitle);
         FocusScope.of(context).requestFocus(FocusNode());
       }
     );

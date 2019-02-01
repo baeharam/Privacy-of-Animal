@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_helpers.dart';
 import 'package:privacy_of_animal/logics/tag_select/tag_select.dart';
 import 'package:privacy_of_animal/resources/resources.dart';
+import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:privacy_of_animal/utils/stream_navigator.dart';
 import 'package:privacy_of_animal/utils/stream_snackbar.dart';
-import 'package:privacy_of_animal/widgets/initial_button.dart';
+import 'package:privacy_of_animal/widgets/primary_button.dart';
 import 'package:privacy_of_animal/widgets/progress_indicator.dart';
 
 class TagSelectScreen extends StatefulWidget {
@@ -14,31 +15,33 @@ class TagSelectScreen extends StatefulWidget {
 
 class _TagSelectScreenState extends State<TagSelectScreen> {
 
-
   @override
   Widget build(BuildContext context) {
 
-    final TagSelectBloc _tagBloc = TagSelectBloc();
+    final TagSelectBloc _tagBloc = sl.get<TagSelectBloc>();
     List<bool> isActivateList = List.generate(tags.length, (i) => false);
 
     return Scaffold(
       body: ListView(
+        scrollDirection: Axis.vertical,
+        physics: const AlwaysScrollableScrollPhysics(),
         children:<Widget>[
           Container(
-            padding: const EdgeInsets.only(top: 40.0,left: 50.0,right: 50.0),
+            padding: EdgeInsets.only(top: ScreenUtil.height/30),
             child: Text(
               '관심있는 태그 5개만 선택해주세요!',
               style: TextStyle(
                 color: primaryPink,
                 fontWeight: FontWeight.bold,
-                fontSize: 18.0
+                fontSize: 18.0,
               ),
+              textAlign: TextAlign.center,
             ),
           ),
           GridView.builder(
             shrinkWrap: true,
             itemCount: tags.length,
-            physics: ScrollPhysics(),
+            physics: const AlwaysScrollableScrollPhysics(),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 3,
             ),
@@ -108,7 +111,7 @@ class _TagSelectScreenState extends State<TagSelectScreen> {
               if(state.isTagFailed){
                 streamSnackbar(context,'태그등록에 실패했습니다.');
               }
-              return InitialButton(
+              return PrimaryButton(
                 text: '선택 완료',
                 color: primaryBeige,
                 callback: () => _tagBloc.emitEvent(TagSelectEventComplete(isTagSelected: isActivateList))

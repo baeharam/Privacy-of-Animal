@@ -5,26 +5,24 @@ import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/resources/constants.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:privacy_of_animal/screens/sub/signup_form.dart';
+import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:privacy_of_animal/utils/stream_dialog.dart';
 import 'package:privacy_of_animal/widgets/arc_background.dart';
 import 'package:privacy_of_animal/widgets/progress_indicator.dart';
 
-import 'package:privacy_of_animal/widgets/flutter_statusbar_manager.dart';
 class SignUpScreen extends StatefulWidget {
   @override
   _SignUpScreenState createState() => _SignUpScreenState();
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  @override
-  void dispose(){
-    FlutterStatusbarManager.setHidden(false);
-  }
+
 
   @override
   Widget build(BuildContext context) {
-    FlutterStatusbarManager.setHidden(true);
-    final signUpBloc = MultipleBlocProvider.of<SignUpBloc>(context);
+
+    final signUpBloc = sl.get<SignUpBloc>();
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(

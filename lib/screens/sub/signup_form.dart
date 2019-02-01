@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_helpers.dart';
 import 'package:privacy_of_animal/logics/signup/signup.dart';
 import 'package:privacy_of_animal/logics/validation/validation_bloc.dart';
+import 'package:privacy_of_animal/models/real_profile_model.dart';
 import 'package:privacy_of_animal/models/signup_model.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/resources/constants.dart';
@@ -9,7 +10,8 @@ import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:privacy_of_animal/screens/sub/signup_gender_select.dart';
 import 'package:privacy_of_animal/screens/sub/signup_input.dart';
 import 'package:privacy_of_animal/utils/age_picker.dart';
-import 'package:privacy_of_animal/widgets/initial_button.dart';
+import 'package:privacy_of_animal/utils/service_locator.dart';
+import 'package:privacy_of_animal/widgets/primary_button.dart';
 
 class SignUpForm extends StatefulWidget {
   @override
@@ -71,8 +73,8 @@ class _SignUpFormState extends State<SignUpForm> {
   @override
   Widget build(BuildContext context) {
 
-    final ValidationBloc validationBloc = MultipleBlocProvider.of<ValidationBloc>(context);
-    final SignUpBloc signUpBloc = MultipleBlocProvider.of<SignUpBloc>(context);
+    final ValidationBloc validationBloc = sl.get<ValidationBloc>();
+    final SignUpBloc signUpBloc = sl.get<SignUpBloc>();
     SignUpModel signUpModel = SignUpModel();
 
     return Container(
@@ -143,7 +145,7 @@ class _SignUpFormState extends State<SignUpForm> {
                     ),
                   ),
                 ),
-                onTap: () => state.isRegistering ? null : showAgePicker(context, validationBloc, signUpBloc),
+                onTap: () => state.isRegistering ? null : showAgePicker(context),
               );
             },
           ),
@@ -166,7 +168,7 @@ class _SignUpFormState extends State<SignUpForm> {
             bloc: signUpBloc,
             builder: (context, SignUpState state){
               if(state.isMaleSelected || state.isFemaleSelected){
-                signUpModel.gender = state.gender;
+                signUpModel.realProfileModel = RealProfileModel(gender: state.gender);
               }
               return Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -182,17 +184,17 @@ class _SignUpFormState extends State<SignUpForm> {
           StreamBuilder<bool>(
             stream: validationBloc.signUpValid,
             builder: (BuildContext context, AsyncSnapshot<bool> snapshot){
-              return InitialButton(
+              return PrimaryButton(
                 text: '회원가입',
                 color: primaryBeige,
                 callback: (snapshot.hasData && snapshot.data==true) 
                 ? (){
                   FocusScope.of(context).requestFocus(FocusNode());
+                  signUpModel.realProfileModel.name = _nameController.text;
+                  signUpModel.realProfileModel.age = _ageController.text;
+                  signUpModel.realProfileModel.job = _jobController.text;
                   signUpModel.email = _emailController.text;
                   signUpModel.password = _passwordController.text;
-                  signUpModel.name = _nameController.text;
-                  signUpModel.age = _ageController.text;
-                  signUpModel.job = _jobController.text;
                   signUpBloc.emitEvent(SignUpEventComplete(data: signUpModel));
                 } 
                 : null,

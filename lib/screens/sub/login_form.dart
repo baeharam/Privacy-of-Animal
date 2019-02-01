@@ -4,8 +4,9 @@ import 'package:privacy_of_animal/logics/find_password/find_password.dart';
 import 'package:privacy_of_animal/logics/login/login.dart';
 import 'package:privacy_of_animal/logics/validation/validation_bloc.dart';
 import 'package:privacy_of_animal/resources/resources.dart';
+import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:privacy_of_animal/widgets/focus_visible_maker.dart';
-import 'package:privacy_of_animal/widgets/initial_button.dart';
+import 'package:privacy_of_animal/widgets/primary_button.dart';
 import 'package:privacy_of_animal/widgets/progress_indicator.dart';
 
 class LoginForm extends StatefulWidget {
@@ -33,9 +34,9 @@ class _LoginFormState extends State<LoginForm> {
   @override
   Widget build(BuildContext context) {
 
-    final ValidationBloc validationBloc = MultipleBlocProvider.of<ValidationBloc>(context);
-    final FindPasswordBloc findPasswordBloc = MultipleBlocProvider.of<FindPasswordBloc>(context);
-    final LoginBloc loginBloc = MultipleBlocProvider.of<LoginBloc>(context);
+    final ValidationBloc validationBloc = sl.get<ValidationBloc>();
+    final FindPasswordBloc findPasswordBloc = sl.get<FindPasswordBloc>();
+    final LoginBloc loginBloc = sl.get<LoginBloc>();
 
     return Container(
       height: ScreenUtil.height/1.7,
@@ -122,7 +123,7 @@ class _LoginFormState extends State<LoginForm> {
           StreamBuilder<bool>(
             stream: validationBloc.loginValid,
             builder: (BuildContext context, AsyncSnapshot<bool> snapshot){
-              return InitialButton(
+              return PrimaryButton(
                 text: '로그인',
                 color: primaryBeige,
                 callback: (snapshot.hasData && snapshot.data==true) 

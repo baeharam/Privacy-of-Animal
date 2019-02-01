@@ -5,6 +5,7 @@ const String routeTagSelect = '/tagSelect';
 const String routeTagChat = '/tagChat';
 const String routeLoginDecision = '/loginDecision';
 const String routeSignUpDecision = '/signUpDecision';
+const String routeTagPhoto = '/signUpPhoto';
 
 // IntroScreen
 const String introMessage1Above = '내 얼굴 사진을 바탕으로';
@@ -48,6 +49,25 @@ const List<String> tagChatNPCIntro = [tagChatNPCIntro1,tagChatNPCIntro2,tagChatN
 const String tagChatNPCIntro1 = '안녕! 조금만 더 질문을 할게 ㅎㅎ';
 const String tagChatNPCIntro2 = '너의 관심사 매칭을 도와주기 위해서야!';
 const String tagChatNPCIntro3 = '최대한 정성껏 대답 부탁해~';
+
+// 태그 이름
+const String movie = '영화';
+const String food = '음식';
+const String photo = '사진';
+const String trip = '여행';
+const String book = '독서';
+const String sport = '운동';
+const String game = '게임';
+const String leisure = '레저';
+const String celebrity = '연예인';
+const String art = '예술';
+const String singleLife = '자취';
+const String makeup = '메이크업';
+const String fashion = '패션';
+const String cartoon = '만화';
+const String drama = '드라마';
+const String music = '음악';
+
 // 태그별 질문 
 const String tagMovieMessage = '인생영화가 뭐야?';
 const String tagTripMessage = '제일 최근에 가고 싶었던 여행지는?';
@@ -64,6 +84,7 @@ const String tagMakeupMessage = '가장 좋아하는 화장품 브랜드는?';
 const String tagPhotoMessage = '너의 인생사진은 어디서 찍은 사진이야?';
 const String tagSingleLifeMessage = '자취 꿀팁은?';
 const String tagSportMessage = '가장 즐겨하는 운동은?';
+const String tagMusicMessage = '음악 하나 추천해줘!';
 
 
 // Cloud Firestore 컬렉션 이름
@@ -83,32 +104,15 @@ const String firestoreIsFaceAnalyzedField = 'is_face_analyzed';
 
 // Cloud Firestore 태그 필드
 const String firestoreTagField = 'tags';
-const String firestoreTagTitle1Field = 'tag_title_1';
-const String firestoreTagTitle2Field = 'tag_title_2';
-const String firestoreTagTitle3Field = 'tag_title_3';
-const String firestoreTagTitle4Field = 'tag_title_4';
-const String firestoreTagTitle5Field = 'tag_title_5';
+const String firestoreTagTitle1Field = tagName1Col;
+const String firestoreTagTitle2Field = tagName2Col;
+const String firestoreTagTitle3Field = tagName3Col;
+const String firestoreTagTitle4Field = tagName4Col;
+const String firestoreTagTitle5Field = tagName5Col;
 
 
 // 로컬 DB 이름
 const String userDB = 'user.db';
-
-// 태그 이름
-const String movie = 'movie';
-const String food = 'food';
-const String photo = 'photo';
-const String trip = 'trip';
-const String book = 'book';
-const String sport = 'sport';
-const String game = 'game';
-const String leisure = 'leisure';
-const String celebrity = 'celebrity';
-const String art = 'art';
-const String singleLif = 'single_life';
-const String makeup = 'make_up';
-const String fashion = 'fashion';
-const String cartoon = 'cartoon';
-const String drama = 'drama';
 
 // 테이블 3개 이름
 const String tagTable = 'tag_table';
@@ -143,7 +147,7 @@ const String ageConfidenceCol = 'age_confidence';
 // 태그 테이블 생성하는 SQL
 const String tagTableCreationSQL = 
   'CREATE TABLE $tagTable '
-  '($id INTEGER PRIMARY KEY AUTO INCREMENT,'
+  '($id INTEGER PRIMARY KEY AUTOINCREMENT,'
   '$uidCol TEXT,'
   '$tagName1Col TEXT,'
   '$tagDetail1Col TEXT,'
@@ -159,11 +163,14 @@ const String tagTableCreationSQL =
 // 실제 프로필 테이블 생성하는 SQL
 const String realProfileTableCreationSQL = 
   'CREATE TABLE real_profile_table'
-  '($uidCol TEXT PRIMARY KEY, $nameCol TEXT, $genderCol TEXT, $ageCol INTEGER, $jobCol TEXT)';
+  '($id INTEGER PRIMARY KEY AUTOINCREMENT,'
+  '$uidCol TEXT, $nameCol TEXT, $genderCol TEXT, $ageCol INTEGER, $jobCol TEXT)';
 
 
 // 가상 프로필 테이블 생성하는 SQL  
 const String fakeProfileTableCreationSQL = 
   'CREATE TABLE fake_profile_table'
-  '($uidCol TEXT PRIMARY KEY, $nameCol TEXT, $imgCol TEXT, $animalNameCol, $genderCol TEXT, $ageCol INTEGER, $emotionCol TEXT,'
-  '$animalConfidenceCol REAL, $genderConfidenceCol REAL, $emotionConfidenceCol REAL, $ageConfidenceCol REAL';
+  '($id INTEGER PRIMARY KEY AUTOINCREMENT,'
+  '$uidCol TEXT,'
+  '$nameCol TEXT, $imgCol TEXT, $animalNameCol TEXT, $genderCol TEXT, $ageCol INTEGER, $emotionCol TEXT,'
+  '$animalConfidenceCol REAL, $genderConfidenceCol REAL, $emotionConfidenceCol REAL, $ageConfidenceCol REAL)';

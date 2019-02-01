@@ -3,11 +3,13 @@ import 'dart:io';
 
 import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
 class DatabaseHelper {
-  static DatabaseHelper _databaseHelper; // Singletone
+  static DatabaseHelper _databaseHelper;
   static Database _database;
+  static SharedPreferences _sharedPreferences;
 
   DatabaseHelper._createInstance();
 
@@ -16,6 +18,13 @@ class DatabaseHelper {
       _databaseHelper = DatabaseHelper._createInstance();
     }
     return _databaseHelper;
+  }
+
+  Future<SharedPreferences> get sharedPreferences async {
+    if(_sharedPreferences == null){
+      _sharedPreferences = await SharedPreferences.getInstance();
+    }
+    return _sharedPreferences;
   }
 
   Future<Database> get database async {
