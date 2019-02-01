@@ -19,12 +19,12 @@ class TagSelectAPI {
     }
   }
 
-  Future<TAG_STORE_RESULT> storeTags(List<bool> isTagSelected) async{
-    _storeTagsIntoCurrentUser(isTagSelected);
+  Future<TAG_STORE_RESULT> storeTags(List<bool> selectedTagList) async{
+    _storeTagsIntoCurrentUser(selectedTagList);
     String uid = await sl.get<FirebaseAPI>().user;
     try{
       SharedPreferences prefs = await sl.get<DatabaseHelper>().sharedPreferences;
-      prefs.setBool(uid+firestoreIsTagSelectedField, true);
+      prefs.setBool(uid+isTagSelected, true);
       await _storeTagsIntoFirestore(uid);
       await _storeTagsIntoLocalDB(uid);
     }catch(exception){

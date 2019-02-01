@@ -92,15 +92,15 @@ const String firestoreUsersCollection = 'users';
 
 // Cloud Firestore 실제 프로필 필드
 const String firestoreRealProfileField = 'real_profile';
-const String firestoreAgeField = 'age';
-const String firestoreGenderField = 'gender';
-const String firestoreJobField = 'job';
-const String firestoreNameField = 'name';
+const String firestoreAgeField = ageCol;
+const String firestoreGenderField = genderCol;
+const String firestoreJobField = jobCol;
+const String firestoreNameField = nameCol;
 
 // Cloud Firestore 플래그 필드
-const String firestoreIsTagSelectedField = 'is_tag_selected';
-const String firestoreIsTagChattedField = 'is_tag_chatted';
-const String firestoreIsFaceAnalyzedField = 'is_face_analyzed';
+const String firestoreIsTagSelectedField = isTagSelected;
+const String firestoreIsTagChattedField = isTagChatted;
+const String firestoreIsFaceAnalyzedField = isFaceAnalyzed;
 
 // Cloud Firestore 태그 필드
 const String firestoreTagField = 'tags';
@@ -116,6 +116,10 @@ const String firestoreTagDetail3Field = tagDetail3Col;
 const String firestoreTagDetail4Field = tagDetail4Col;
 const String firestoreTagDetail5Field = tagDetail5Col;
 
+// SharedPreferences 플래그 key값
+const String isTagSelected = 'is_tag_selected';
+const String isTagChatted = 'is_tag_chatted';
+const String isFaceAnalyzed = 'is_face_analyzed';
 
 // 로컬 DB 이름
 const String userDB = 'user.db';

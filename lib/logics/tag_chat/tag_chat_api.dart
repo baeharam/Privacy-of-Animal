@@ -4,6 +4,7 @@ import 'package:privacy_of_animal/logics/database_helper.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
 class TagChatAPI {
@@ -14,6 +15,8 @@ class TagChatAPI {
 
   Future<TAG_DETAIL_STORE_RESULT> storeTagDetail() async {
     try{
+      SharedPreferences sharedPreferences = await sl.get<DatabaseHelper>().sharedPreferences;
+      sharedPreferences.setBool(isTagChatted, true);
       await _storeTagDetailIntoFirestore();
       await _storeTagDetailIntoLocalDB();
     }catch(exception){
@@ -28,6 +31,7 @@ class TagChatAPI {
     await sl.get<FirebaseAPI>().firestore.collection(firestoreUsersCollection).document(_uid)
     .setData(
       {
+        firestoreIsTagChattedField: true,
         firestoreTagField: {
           firestoreTagDetail1Field: _tagDetails[0],
           firestoreTagDetail2Field: _tagDetails[1],
