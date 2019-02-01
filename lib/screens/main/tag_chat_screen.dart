@@ -20,8 +20,15 @@ class TagChatScreen extends StatefulWidget {
 class _TagChatScreenState extends State<TagChatScreen> {
 
   final TagChatBloc _tagChatBloc = sl.get<TagChatBloc>();
+  final ScrollController _scrollController = ScrollController();
   List<Widget> widgets = [];
   Widget bottomWidget = Container();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,17 +40,16 @@ class _TagChatScreenState extends State<TagChatScreen> {
             StreamNavigator.pushNamedAndRemoveAll(context, routeFaceAnalyze);
           }
           if(state.isDetailStoreFailed){
-            streamSnackbar(context,'??? ??????.');
+            streamSnackbar(context,'제출에 실패했습니다.');
           }
           if(state.isNPC){
+            if(state.isInitial && state.isBegin){
+              _tagChatBloc.emitEvent(TagChatEventNPC(isInitial: true));
+            }
             widgets.add(TagChatNPC(message: state.messageNPC,isBegin: state.isBegin));
-            _tagChatBloc.emitEvent(TagChatEventDone(isNPCDone: true,isUserDone: false));
-            if(state.isInitial) _tagChatBloc.emitEvent(TagChatEventNPC(isInitial: true));
           }
           if(state.isUser){
             widgets.add(TagChatUser(message: state.messageUser));
-            _tagChatBloc.emitEvent(TagChatEventDone(isUserDone: true,isNPCDone: false));
-            _tagChatBloc.emitEvent(TagChatEventNPC(isInitial: false));
           }
           return Column(
             children: <Widget>[
@@ -54,6 +60,7 @@ class _TagChatScreenState extends State<TagChatScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 20.0,vertical: 30.0),
                   itemCount: widgets.length,
                   itemBuilder: (context,index) => widgets[index],
+                  controller: _scrollController,
                 ),
               ),
               state.showSubmitButton 
@@ -61,7 +68,7 @@ class _TagChatScreenState extends State<TagChatScreen> {
                   padding: const EdgeInsets.only(bottom: 20.0),
                   child: PrimaryButton(
                     color: primaryBeige,
-                    text: '?? ??',
+                    text: '제출 하기',
                     callback: ()=>_tagChatBloc.emitEvent(TagChatEventComplete())
                   )
                 ) 

@@ -185,5 +185,5 @@ const String fakeProfileTableCreationSQL =
   'CREATE TABLE fake_profile_table'
   '($id INTEGER PRIMARY KEY AUTOINCREMENT,'
   '$uidCol TEXT,'
-  '$nameCol TEXT, $imgCol TEXT, $animalNameCol TEXT, $genderCol TEXT, $ageCol INTEGER, $emotionCol TEXT,'
+  '$nameCol TEXT, $imagePathCol TEXT, $animalNameCol TEXT, $genderCol TEXT, $ageCol INTEGER, $emotionCol TEXT,'
   '$animalConfidenceCol REAL, $genderConfidenceCol REAL, $emotionConfidenceCol REAL, $ageConfidenceCol REAL)';

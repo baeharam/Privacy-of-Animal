@@ -33,20 +33,14 @@ class TagChatState extends BlocState {
     this.isDetailStoreFailed: false
   });
 
-  factory TagChatState.done(bool isNPCDone, bool isUserDone, bool showSubmitButton) {
-    return TagChatState(
-      isNPCDone: isNPCDone,
-      isUserDone: isUserDone,
-      showSubmitButton: showSubmitButton ?? false
-    );
-  }
-
-  factory TagChatState.npcMessage(String message, bool isBegin, bool isInitial) {
+  factory TagChatState.npcMessage({String message, bool isBegin, bool isInitial, bool isNPCDone, bool showSubmitButton}) {
     return TagChatState(
       isNPC: true,
-      messageNPC: message,
-      isBegin: isBegin,
-      isInitial: isInitial
+      messageNPC: message??'',
+      isBegin: isBegin??false,
+      isInitial: isInitial??false,
+      isNPCDone: isNPCDone??false,
+      showSubmitButton: showSubmitButton??false
     );
   }
 
