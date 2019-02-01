@@ -16,7 +16,7 @@ class TagChatAPI {
   Future<TAG_DETAIL_STORE_RESULT> storeTagDetail() async {
     try{
       SharedPreferences sharedPreferences = await sl.get<DatabaseHelper>().sharedPreferences;
-      sharedPreferences.setBool(isTagChatted, true);
+      sharedPreferences.setBool(_uid+isTagChatted, true);
       await _storeTagDetailIntoFirestore();
       await _storeTagDetailIntoLocalDB();
     }catch(exception){

@@ -96,6 +96,7 @@ const String firestoreAgeField = ageCol;
 const String firestoreGenderField = genderCol;
 const String firestoreJobField = jobCol;
 const String firestoreNameField = nameCol;
+const String firestoreImagePathField = imagePathCol;
 
 // Cloud Firestore 플래그 필드
 const String firestoreIsTagSelectedField = isTagSelected;
@@ -142,11 +143,13 @@ const String tagName4Col = 'tag_name_4';
 const String tagDetail4Col = 'tag_detail_4';
 const String tagName5Col = 'tag_name_5';
 const String tagDetail5Col = 'tag_detail_5';
+
 const String nameCol = 'name';
 const String genderCol = 'gender';
 const String ageCol = 'age';
 const String jobCol = 'job';
-const String imgCol = 'image';
+const String imagePathCol = 'image_path';
+
 const String animalNameCol = 'animal_name';
 const String emotionCol = 'emotion';
 const String animalConfidenceCol = 'animal_confidence';
