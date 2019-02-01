@@ -1,37 +1,53 @@
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state.dart';
+import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/tag_chat/tag_chat.dart';
+import 'package:privacy_of_animal/resources/resources.dart';
+import 'package:privacy_of_animal/utils/service_locator.dart';
 
 class TagChatBloc extends BlocEventStateBase<TagChatEvent,TagChatState> {
 
+  final TagChatAPI _tagChatAPI = TagChatAPI();
   static const int _chatDuration = 1000;
+  int order = 0;
 
   @override
-    TagChatState get initialState => TagChatState.initial(1);
+    TagChatState get initialState => TagChatState.npcMessage(tagChatNPCIntro[0],true,true);
 
   @override
   Stream<TagChatState> eventHandler(TagChatEvent event, TagChatState currentState) async*{
-    if(event is TagChatEventBegin){
-      await Future.delayed(const Duration(milliseconds: _chatDuration));
-      yield TagChatState.initial(2);
-      await Future.delayed(const Duration(milliseconds: _chatDuration));
-      yield TagChatState.initial(3);
-      await Future.delayed(const Duration(milliseconds: _chatDuration));
-      yield TagChatState.initial(4);
+    if(event is TagChatEventDone){
+      order = sl.get<CurrentUser>().tagListModel.tagDetailList.length;
+      if(order<5){
+        yield TagChatState.done(showSubmitButton: false,isNPC: event.isNPC,isUser: event.isUser);
+      } else if(order==5){
+        yield TagChatState.done(showSubmitButton: true,isNPC: event.isNPC,isUser: event.isUser);
+      }
     }
-    if(event is TagChatEventChat1){
-      yield TagChatState.chatFinished(1,event.message);
+    if(event is TagChatEventNPC){
+      if(event.isInitial){
+        await Future.delayed(const Duration(milliseconds: _chatDuration));
+        yield TagChatState.npcMessage(tagChatNPCIntro[1],false,false);
+        await Future.delayed(const Duration(milliseconds: _chatDuration));
+        yield TagChatState.npcMessage(tagChatNPCIntro[2],false,false);
+        TAG_CHECK_RESULT checkResult = await _tagChatAPI.checkLoaclDB();
+        if(checkResult==TAG_CHECK_RESULT.SUCCESS){
+          await Future.delayed(const Duration(milliseconds: _chatDuration));
+          yield TagChatState.npcMessage(tagToMessage[sl.get<CurrentUser>().tagListModel.tagTitleList[order]],false,false);
+        } else if(checkResult == TAG_CHECK_RESULT.FAILURE){
+          yield TagChatState.failed();
+        }
+      }
+      else{
+        order = sl.get<CurrentUser>().tagListModel.tagDetailList.length;
+        if(order<5){
+          await Future.delayed(const Duration(milliseconds: _chatDuration));
+          yield TagChatState.npcMessage(tagToMessage[sl.get<CurrentUser>().tagListModel.tagTitleList[order]],true,false);
+        }
+      }
     }
-    if(event is TagChatEventChat2){
-      yield TagChatState.chatFinished(2,event.message);
-    }
-    if(event is TagChatEventChat3){
-      yield TagChatState.chatFinished(3,event.message);
-    }
-    if(event is TagChatEventChat4){
-      yield TagChatState.chatFinished(4,event.message);
-    }
-    if(event is TagChatEventChat5){
-      yield TagChatState.chatFinished(5,event.message);
+    if(event is TagChatEventUser){
+      sl.get<CurrentUser>().tagListModel.tagDetailList.add(event.message);
+      yield TagChatState.userMessage(event.message);
     }
   }
 }

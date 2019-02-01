@@ -39,6 +39,24 @@ const pages = [
   )
 ];
 
+Map<String,String> tagToMessage = {
+  art: tagArtMessage,
+  book: tagBookMessage,
+  cartoon: tagCartoonMessage,
+  celebrity: tagCelebrityMessage,
+  drama: tagDramaMessage,
+  fashion: tagFashionMessage,
+  food: tagFoodMessage,
+  game: tagGameMessage,
+  leisure: tagLeisureMessage,
+  makeup: tagMakeupMessage,
+  movie: tagMovieMessage,
+  photo: tagPhotoMessage,
+  singleLife: tagSingleLifeMessage,
+  sport: tagSportMessage,
+  music: tagMusicMessage
+};
+
 const agePickerData = '''
 [
   {
@@ -61,63 +79,63 @@ const agePickerData = '''
 
 const tags = [
   const Tag(
-    title: '예술',
+    title: art,
     image: AssetImage('assets/images/tags/art.png')
   ),
   const Tag(
-    title: '독서',
+    title: book,
     image: AssetImage('assets/images/tags/book.png')
   ),
   const Tag(
-    title: '만화',
+    title: cartoon,
     image: AssetImage('assets/images/tags/cartoon.png')
   ),
   const Tag(
-    title: '연예인',
+    title: celebrity,
     image: AssetImage('assets/images/tags/celebrity.png')
   ),
   const Tag(
-    title: '드라마',
+    title: drama,
     image: AssetImage('assets/images/tags/drama.png')
   ),
   const Tag(
-    title: '패션',
+    title: fashion,
     image: AssetImage('assets/images/tags/fashion.png')
   ),
   const Tag(
-    title: '음식',
+    title: food,
     image: AssetImage('assets/images/tags/food.png')
   ),
   const Tag(
-    title: '게임',
+    title: game,
     image: AssetImage('assets/images/tags/game.png')
   ),
   const Tag(
-    title: '레저',
+    title: leisure,
     image: AssetImage('assets/images/tags/leisure.png')
   ),
   const Tag(
-    title: '메이크업',
+    title: makeup,
     image: AssetImage('assets/images/tags/makeup.png')
   ),
   const Tag(
-    title: '영화',
+    title: movie,
     image: AssetImage('assets/images/tags/movie.png')
   ),
   const Tag(
-    title: '사진',
+    title: photo,
     image: AssetImage('assets/images/tags/photo.png')
   ),
   const Tag(
-    title: '자취',
+    title: singleLife,
     image: AssetImage('assets/images/tags/single_life.png')
   ),
   const Tag(
-    title: '운동',
+    title: sport,
     image: AssetImage('assets/images/tags/sport.png')
   ),
   const Tag(
-    title: '음악',
+    title: music,
     image: AssetImage('assets/images/tags/music.png')
   )
 ];

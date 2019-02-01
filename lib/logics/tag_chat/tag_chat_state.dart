@@ -1,46 +1,58 @@
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state.dart';
 
 class TagChatState extends BlocState {
-  final bool isInitial;
-  final int initialOrder;
 
-  final bool isChatFinished;
-  final int chatOrder;
-  final String tagDetail;
+  final bool isNPC;
+  final String messageNPC;
+  final bool isBegin;
+  final bool isInitial;
+
+  final bool isUser;
+  final String messageUser;
+
+  final bool isDone;
+  final bool showSubmitButton;
 
   final bool isDetailStoreLoading;
   final bool isDetailStoreSucceeded;
   final bool isDetailStoreFailed;
 
   TagChatState({
+    this.isNPC: false,
+    this.messageNPC: '',
+    this.isBegin: false,
     this.isInitial: false,
-    this.initialOrder: 0,
-    this.isChatFinished: false,
-    this.chatOrder: 0,
-    this.tagDetail:'',
+    this.isUser: false,
+    this.messageUser: '',
+    this.isDone: false,
+    this.showSubmitButton: false,
     this.isDetailStoreLoading: false,
     this.isDetailStoreSucceeded: false,
     this.isDetailStoreFailed: false
   });
 
-  factory TagChatState.done() {
+  factory TagChatState.done({bool isNPC, bool isUser, bool showSubmitButton}) {
     return TagChatState(
-      isInitial: false
+      isNPC: isNPC,
+      isUser: isUser,
+      isDone: true,
+      showSubmitButton: showSubmitButton
     );
   }
 
-  factory TagChatState.initial(int order) {
+  factory TagChatState.npcMessage(String message, bool isBegin, bool isInitial) {
     return TagChatState(
-      isInitial: true,
-      initialOrder: order
+      isNPC: true,
+      messageNPC: message,
+      isBegin: isBegin,
+      isInitial: isInitial
     );
   }
 
-  factory TagChatState.chatFinished(int order, String detail) {
+  factory TagChatState.userMessage(String message) {
     return TagChatState(
-      isChatFinished: true,
-      chatOrder: order,
-      tagDetail: detail
+      isUser: true,
+      messageUser: message
     );
   }
 
