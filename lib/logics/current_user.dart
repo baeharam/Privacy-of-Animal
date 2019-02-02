@@ -1,3 +1,4 @@
+import 'package:privacy_of_animal/models/animal_model.dart';
 import 'package:privacy_of_animal/models/kakao_ml_model.dart';
 import 'package:privacy_of_animal/models/real_profile_model.dart';
 import 'package:privacy_of_animal/models/tag_list_model.dart';
@@ -7,6 +8,7 @@ class CurrentUser {
   RealProfileModel realProfile;
   TagListModel tagListModel;
   KakaoMLModel kakaoMLModel;
+  Animal animal;
 
   bool isTagSelected;
   bool isTagChatted;

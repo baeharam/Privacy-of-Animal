@@ -1,5 +1,7 @@
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state.dart';
+import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/photo/photo.dart';
+import 'package:privacy_of_animal/utils/service_locator.dart';
 
 class PhotoBloc extends BlocEventStateBase<PhotoEvent,PhotoState>
 {
@@ -19,6 +21,7 @@ class PhotoBloc extends BlocEventStateBase<PhotoEvent,PhotoState>
       yield PhotoState.loading();
       ANALYZE_RESULT analyzeResult = await _api.analyzeFace(event.photoPath);
       if(analyzeResult == ANALYZE_RESULT.SUCCESS){
+        await _api.detectAnimal(sl.get<CurrentUser>().kakaoMLModel);
         yield PhotoState.succeeded();
       }
       else if(analyzeResult == ANALYZE_RESULT.FAILURE){
