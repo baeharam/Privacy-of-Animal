@@ -5,8 +5,6 @@ import 'package:privacy_of_animal/bloc_helpers/bloc_helpers.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'dart:io';
 
-import 'package:privacy_of_animal/widgets/primary_button.dart';
-
 
 class PhotoScreen extends StatefulWidget {
   @override
@@ -29,7 +27,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
                   child: BlocBuilder(
                     bloc: _photoBloc,
                     builder: (context, PhotoState state){
-                      if(state.takedPhoto) {
+                      if(state.isPhotoDone) {
                         return Container(
                           height: ScreenUtil.height/1.2,
                           width: ScreenUtil.width/1.2,
@@ -64,7 +62,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
                   builder: (context, PhotoState state){
                     return RaisedButton(
                       padding: EdgeInsets.symmetric(horizontal: ScreenUtil.width/3, vertical: ScreenUtil.height/40),
-                      color: state.takedPhoto ? primaryPink : Colors.grey,
+                      color: state.isPhotoDone ? primaryPink : Colors.grey,
                       child: Text(
                         '분석 하기',
                         style: TextStyle(
@@ -73,7 +71,9 @@ class _PhotoScreenState extends State<PhotoScreen> {
                           fontSize: 17.0
                         ),
                       ),
-                      onPressed: () => state.takedPhoto ? _photoBloc.emitEvent(PhotoEventTaking()) : null
+                      onPressed: () => state.isPhotoDone 
+                      ? _photoBloc.emitEvent(PhotoEventGotoAnalysis(photoPath: state.path)) 
+                      : null
                     );
                   }
                 ),

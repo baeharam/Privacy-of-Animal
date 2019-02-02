@@ -3,9 +3,11 @@ const String routeIntro = '/intro';
 const String routeLogin = '/login';
 const String routeTagSelect = '/tagSelect';
 const String routeTagChat = '/tagChat';
+const String routePhoto = '/signUpPhoto';
+
 const String routeLoginDecision = '/loginDecision';
 const String routeSignUpDecision = '/signUpDecision';
-const String routePhoto = '/signUpPhoto';
+const String routePhotoDecision = '/photoDecision';
 
 // IntroScreen
 const String introMessage1Above = '내 얼굴 사진을 바탕으로';
@@ -89,6 +91,9 @@ const String tagMusicMessage = '음악 하나 추천해줘!';
 // PhotoScreen
 const String photoWarningMessage1 = '※ 정면 사진이 아닐시 분석이 안될 수 있습니다.';
 const String photoWarningMessage2 = '※ 분석한 후 3일이 지나야 재분석이 가능합니다.';
+
+// 머신러닝 API
+const String kakaoAPIurl = 'https://kapi.kakao.com/v1/vision/face/detect';
 
 
 // Cloud Firestore 컬렉션 이름

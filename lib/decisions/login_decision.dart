@@ -24,7 +24,7 @@ class _LoginDecisionState extends State<LoginDecision> {
         }
         if(state.isAuthenticated){
           if(state.isTagChatted){
-            StreamNavigator.pushNamedAndRemoveAll(context,routePhoto);
+            StreamNavigator.pushNamedAndRemoveAll(context,routePhotoDecision);
           }
           else if(state.isTagSelected){
             StreamNavigator.pushNamedAndRemoveAll(context,routeTagChat);

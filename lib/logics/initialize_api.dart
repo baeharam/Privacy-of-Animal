@@ -12,7 +12,7 @@ class InitializeAPI {
       name: 'Privacy of Animal',
       options: const FirebaseOptions(
         googleAppID: iosAppID,
-        apiKey: apiKey,
+        apiKey: appAPIKey,
         projectID: projectID
       )
     );

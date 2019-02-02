@@ -14,4 +14,5 @@ Map<String, WidgetBuilder> routes =  {
   /// Decision
   routeLoginDecision: (BuildContext context) => LoginDecision(),
   routeSignUpDecision: (BuildContext context) => SignUpDecision(),
+  routePhotoDecision: (BuildContext context) => PhotoDecision()
 };

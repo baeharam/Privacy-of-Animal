@@ -1,34 +1,49 @@
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state.dart';
 
 class PhotoState extends BlocState {
-  final bool takedPhoto;
-  final bool gotoAnalysis;
-  String path;
+  final bool isPhotoDone;
+  final bool isAnalyzeSucceeded;
+  final bool isAnalyzeFailed;
+  final bool isLoading;
+  final String path;
   
   PhotoState({
-    this.takedPhoto = false,
-    this.gotoAnalysis = false,
-    this.path
+    this.isPhotoDone: false,
+    this.isAnalyzeSucceeded: false,
+    this.isAnalyzeFailed: false,
+    this.isLoading: false,
+    this.path: '',
   });
 
   factory PhotoState.noTake() {
     return PhotoState(
-    takedPhoto : false,
-    gotoAnalysis : false,
+    isPhotoDone : false,
+    isAnalyzeSucceeded : false,
     );
   }
   
   factory PhotoState.take(String path) {
     return PhotoState(
-      takedPhoto:true,
+      isPhotoDone:true,
       path: path
     );
   }
 
-  factory PhotoState.analysis(){
+  factory PhotoState.loading(){
     return PhotoState(
-      takedPhoto:true,
-      gotoAnalysis: true
+      isLoading: true
+    );
+  }
+
+  factory PhotoState.succeeded(){
+    return PhotoState(
+      isAnalyzeSucceeded: true,
+    );
+  }
+
+  factory PhotoState.failed(){
+    return PhotoState(
+      isAnalyzeFailed: true,
     );
   }
 }

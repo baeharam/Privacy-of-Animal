@@ -16,7 +16,14 @@ class PhotoBloc extends BlocEventStateBase<PhotoEvent,PhotoState>
       yield PhotoState.take(path);
     }
     if (event is PhotoEventGotoAnalysis){
-      yield PhotoState.analysis();
+      yield PhotoState.loading();
+      ANALYZE_RESULT analyzeResult = await _api.analyzeFace(event.photoPath);
+      if(analyzeResult == ANALYZE_RESULT.SUCCESS){
+        yield PhotoState.succeeded();
+      }
+      else if(analyzeResult == ANALYZE_RESULT.FAILURE){
+        yield PhotoState.failed();
+      }
     }
   }
 }
