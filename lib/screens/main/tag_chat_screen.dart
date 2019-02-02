@@ -6,6 +6,7 @@ import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:privacy_of_animal/screens/sub/tag_chat_input.dart';
 import 'package:privacy_of_animal/screens/sub/tag_chat_npc.dart';
 import 'package:privacy_of_animal/screens/sub/tag_chat_user.dart';
+import 'package:privacy_of_animal/utils/back_button_dialog.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:privacy_of_animal/utils/stream_navigator.dart';
 import 'package:privacy_of_animal/utils/stream_snackbar.dart';
@@ -33,61 +34,64 @@ class _TagChatScreenState extends State<TagChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BlocBuilder(
-        bloc: _tagChatBloc,
-        builder: (context, TagChatState state){
-          if(state.isDetailStoreSucceeded){
-            StreamNavigator.pushNamedAndRemoveAll(context, routePhotoDecision);
-          }
-          if(state.isDetailStoreFailed){
-            streamSnackbar(context,'제출에 실패했습니다.');
-          }
-          if(state.isNPC){
-            if(state.isInitial && state.isBegin){
-              _tagChatBloc.emitEvent(TagChatEventNPC(isInitial: true));
+      body: WillPopScope(
+        onWillPop: () => BackButtonAction.stopInMiddle(context),
+        child: BlocBuilder(
+          bloc: _tagChatBloc,
+          builder: (context, TagChatState state){
+            if(state.isDetailStoreSucceeded){
+              StreamNavigator.pushNamedAndRemoveAll(context, routePhotoDecision);
             }
-            widgets.add(TagChatNPC(message: state.messageNPC,isBegin: state.isBegin));
-            _tagChatBloc.emitEvent(TagChatEventNothing(isNPCDone: false));
-          }
-          if(state.isUser){
-            widgets.add(TagChatUser(message: state.messageUser));
-            _tagChatBloc.emitEvent(TagChatEventNothing(isNPCDone: false));
-            _tagChatBloc.emitEvent(TagChatEventNPC(isInitial: false));
-          }
-          return Column(
-            children: <Widget>[
-              Flexible(
-                child: ScrollConfiguration(
-                  behavior: NoScrollGlow(),
-                  child: ListView.builder(
-                    scrollDirection: Axis.vertical,
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    padding: const EdgeInsets.symmetric(horizontal: 20.0,vertical: 30.0),
-                    itemCount: widgets.length,
-                    itemBuilder: (context,index) => widgets[index],
-                    controller: _scrollController,
+            if(state.isDetailStoreFailed){
+              streamSnackbar(context,'제출에 실패했습니다.');
+            }
+            if(state.isNPC){
+              if(state.isInitial && state.isBegin){
+                _tagChatBloc.emitEvent(TagChatEventNPC(isInitial: true));
+              }
+              widgets.add(TagChatNPC(message: state.messageNPC,isBegin: state.isBegin));
+              _tagChatBloc.emitEvent(TagChatEventNothing(isNPCDone: false));
+            }
+            if(state.isUser){
+              widgets.add(TagChatUser(message: state.messageUser));
+              _tagChatBloc.emitEvent(TagChatEventNothing(isNPCDone: false));
+              _tagChatBloc.emitEvent(TagChatEventNPC(isInitial: false));
+            }
+            return Column(
+              children: <Widget>[
+                Flexible(
+                  child: ScrollConfiguration(
+                    behavior: NoScrollGlow(),
+                    child: ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0,vertical: 30.0),
+                      itemCount: widgets.length,
+                      itemBuilder: (context,index) => widgets[index],
+                      controller: _scrollController,
+                    ),
                   ),
                 ),
-              ),
-              state.showSubmitButton 
-              ? Padding(
-                  padding: const EdgeInsets.only(bottom: 20.0),
-                  child: PrimaryButton(
-                    color: primaryBeige,
-                    text: '제출 하기',
-                    callback: ()=>_tagChatBloc.emitEvent(TagChatEventComplete())
-                  )
-                ) 
-              : (state.isDetailStoreLoading 
+                state.showSubmitButton 
                 ? Padding(
                     padding: const EdgeInsets.only(bottom: 20.0),
-                    child: CustomProgressIndicator()
-                  )
-                : TagChatInput(scrollController: _scrollController)
-              )
-            ],
-          );
-        }
+                    child: PrimaryButton(
+                      color: primaryBeige,
+                      text: '제출 하기',
+                      callback: ()=>_tagChatBloc.emitEvent(TagChatEventComplete())
+                    )
+                  ) 
+                : (state.isDetailStoreLoading 
+                  ? Padding(
+                      padding: const EdgeInsets.only(bottom: 20.0),
+                      child: CustomProgressIndicator()
+                    )
+                  : TagChatInput(scrollController: _scrollController)
+                )
+              ],
+            );
+          }
+        ),
       ),
     );
   }
