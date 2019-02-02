@@ -16,7 +16,6 @@ class _PhotoScreenState extends State<PhotoScreen> {
   
   @override
   Widget build(BuildContext context){
-    double height = MediaQuery.of(context).size.height/ 3.0;
     return Scaffold(
       appBar: AppBar(
         title: Text("사진"),
@@ -28,13 +27,12 @@ class _PhotoScreenState extends State<PhotoScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-  
             BlocBuilder(
               bloc: _photoBloc,
               builder: (context, PhotoState state){
                 if(state.takedPhoto) {
                   return Container(
-                    height: height/1,
+                    height: ScreenUtil.height/3,
                     // width: ScreenUtil.width/1.4,
                     child: FittedBox(
                       // child: Text(state.path),
@@ -55,14 +53,14 @@ class _PhotoScreenState extends State<PhotoScreen> {
                       child: SafeArea(
                         child: new CircularProgressIndicator(),
                       ),
-                      height: 30.0,
-                      width: 30.0,
+                      height: ScreenUtil.height/10,
+                      width: ScreenUtil.height/10,
                     );
                   }
                 },
               ),
               SizedBox(
-                height: MediaQuery.of(context).size.height/18,
+                height: ScreenUtil.height/17
               ),
               RaisedButton(
                 child: Text(

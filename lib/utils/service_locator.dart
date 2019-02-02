@@ -10,6 +10,7 @@ import 'package:privacy_of_animal/logics/tag_chat/tag_chat_bloc.dart';
 import 'package:privacy_of_animal/logics/tag_select/tag_select_bloc.dart';
 import 'package:privacy_of_animal/logics/validation/validation_bloc.dart';
 import 'package:privacy_of_animal/logics/photo/photo_bloc.dart';
+import 'package:privacy_of_animal/logics/face_analyze/face_analyze_bloc.dart';
 
 GetIt sl = GetIt();
 
@@ -26,4 +27,5 @@ void setup() {
   sl.registerLazySingleton<TagSelectBloc>(()=> TagSelectBloc());
   sl.registerLazySingleton<TagChatBloc>(()=> TagChatBloc());
   sl.registerLazySingleton<PhotoBloc>(()=>PhotoBloc());
+  sl.registerLazySingleton<FaceAnalyzeBloc>(()=>FaceAnalyzeBloc());
 }
