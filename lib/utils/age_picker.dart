@@ -24,6 +24,8 @@ void showAgePicker(BuildContext context) {
       ),
     ),
     height: 100.0,
+    cancelText: '취소',
+    confirmText: '확인',
     onConfirm: (Picker picker, List value)
       {
         int age = int.parse(picker.getSelectedValues()[1]);
