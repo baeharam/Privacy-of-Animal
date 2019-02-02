@@ -40,7 +40,7 @@ class TagChatInputState extends State<TagChatInput> {
               child: BlocBuilder(
                 bloc: sl.get<TagChatBloc>(),
                 builder: (context, TagChatState state){
-                  if(state.isNPCDone) sl.get<TagChatBloc>().emitEvent(TagChatEvnetNothing());
+                  if(state.isNPCDone) sl.get<TagChatBloc>().emitEvent(TagChatEventNothing(isNPCDone: true));
                   return TextField(
                     decoration: InputDecoration.collapsed(
                       hintText: '답변을 입력하세요.',

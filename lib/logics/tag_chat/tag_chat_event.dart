@@ -20,4 +20,10 @@ class TagChatEventNPC extends TagChatEvent {
   });
 }
 
-class TagChatEvnetNothing extends TagChatEvent {}
+class TagChatEventNothing extends TagChatEvent {
+  final isNPCDone;
+
+  TagChatEventNothing({
+    this.isNPCDone
+  });
+}

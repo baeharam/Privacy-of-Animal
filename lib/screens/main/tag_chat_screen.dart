@@ -50,6 +50,8 @@ class _TagChatScreenState extends State<TagChatScreen> {
           }
           if(state.isUser){
             widgets.add(TagChatUser(message: state.messageUser));
+            _tagChatBloc.emitEvent(TagChatEventNothing(isNPCDone: false));
+            _tagChatBloc.emitEvent(TagChatEventNPC(isInitial: false));
           }
           return Column(
             children: <Widget>[

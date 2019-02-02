@@ -8,6 +8,7 @@ class TagChatBloc extends BlocEventStateBase<TagChatEvent,TagChatState> {
 
   final TagChatAPI _tagChatAPI = TagChatAPI();
   static const int _chatDuration = 1000;
+  static const int _maxTagNum = 5;
   int order = 0;
 
   @override
@@ -17,8 +18,8 @@ class TagChatBloc extends BlocEventStateBase<TagChatEvent,TagChatState> {
   @override
   Stream<TagChatState> eventHandler(TagChatEvent event, TagChatState currentState) async*{
 
-    if(event is TagChatEvnetNothing){
-      yield TagChatState.nothing();
+    if(event is TagChatEventNothing){
+      yield TagChatState.nothing(event.isNPCDone);
     }
 
     // NPC가 채팅을 보낸 경우
@@ -48,7 +49,7 @@ class TagChatBloc extends BlocEventStateBase<TagChatEvent,TagChatState> {
       // 제일 처음이 아닌 경우는 그냥 보내도 된다.
       else{
         order = sl.get<CurrentUser>().tagListModel.tagDetailList.length;
-        if(order<5){
+        if(order<_maxTagNum){
           await Future.delayed(const Duration(milliseconds: _chatDuration-500));
           yield TagChatState.npcMessage(
             message: tagToMessage[sl.get<CurrentUser>().tagListModel.tagTitleList[order]],
@@ -56,6 +57,8 @@ class TagChatBloc extends BlocEventStateBase<TagChatEvent,TagChatState> {
             isInitial: false,
             isNPCDone: true
           );
+        } else if(order==_maxTagNum){
+          yield TagChatState.showButton();
         }
       }
     }
