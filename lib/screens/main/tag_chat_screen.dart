@@ -47,6 +47,7 @@ class _TagChatScreenState extends State<TagChatScreen> {
               _tagChatBloc.emitEvent(TagChatEventNPC(isInitial: true));
             }
             widgets.add(TagChatNPC(message: state.messageNPC,isBegin: state.isBegin));
+            _tagChatBloc.emitEvent(TagChatEventNothing(isNPCDone: false));
           }
           if(state.isUser){
             widgets.add(TagChatUser(message: state.messageUser));
@@ -56,13 +57,16 @@ class _TagChatScreenState extends State<TagChatScreen> {
           return Column(
             children: <Widget>[
               Flexible(
-                child: ListView.builder(
-                  scrollDirection: Axis.vertical,
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0,vertical: 30.0),
-                  itemCount: widgets.length,
-                  itemBuilder: (context,index) => widgets[index],
-                  controller: _scrollController,
+                child: ScrollConfiguration(
+                  behavior: NoScrollGlow(),
+                  child: ListView.builder(
+                    scrollDirection: Axis.vertical,
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0,vertical: 30.0),
+                    itemCount: widgets.length,
+                    itemBuilder: (context,index) => widgets[index],
+                    controller: _scrollController,
+                  ),
                 ),
               ),
               state.showSubmitButton 
@@ -79,12 +83,19 @@ class _TagChatScreenState extends State<TagChatScreen> {
                     padding: const EdgeInsets.only(bottom: 20.0),
                     child: CustomProgressIndicator()
                   )
-                : TagChatInput()
+                : TagChatInput(scrollController: _scrollController)
               )
             ],
           );
         }
       ),
     );
+  }
+}
+
+class NoScrollGlow extends ScrollBehavior {
+  @override
+  Widget buildViewportChrome(BuildContext context, Widget child, AxisDirection axisDirection) {
+    return child;
   }
 }
