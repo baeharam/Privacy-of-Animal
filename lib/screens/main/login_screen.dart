@@ -24,9 +24,9 @@ class _LoginScreenState extends State<LoginScreen> {
     final FindPasswordBloc findPasswordBloc = sl<FindPasswordBloc>();
 
     return Scaffold(
+      
       backgroundColor: Colors.white,
-      body: SafeArea(
-        child: SingleChildScrollView(
+      body: SingleChildScrollView(
           child: Column(
             children: <Widget>[
               ArcBackground(
@@ -67,7 +67,6 @@ class _LoginScreenState extends State<LoginScreen> {
             ]
           ),
         ),
-      ),
     );
   }
 }

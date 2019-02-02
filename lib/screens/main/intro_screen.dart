@@ -18,7 +18,7 @@ class _IntroScreenState extends State<IntroScreen> with SingleTickerProviderStat
   PageController _pageController;
   AnimationController _animationController;
   Animation _transitionAnimation;
-
+ 
   static const _kDuration = const Duration(milliseconds: 300);
   static const _kCurve = Curves.ease;
 
@@ -108,6 +108,11 @@ class _IntroScreenState extends State<IntroScreen> with SingleTickerProviderStat
                       color: primaryGrey,
                       callback: () => Navigator.of(context).pushNamed(routeSignUpDecision)
                     )
+                    // InitialButton(
+                    //   text: 'photo', 
+                    //   color: introSignUpButtonColor,
+                    //   callback: () => Navigator.of(context).pushNamed('/photo')
+                    // )
                   ],
                 ),
               )
