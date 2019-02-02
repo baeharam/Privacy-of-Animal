@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:privacy_of_animal/logics/firebase_api.dart';
+import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
 class BackButtonAction {
@@ -31,7 +33,10 @@ class BackButtonAction {
               color: Colors.white
             ),
           ),
-          onPressed: () => SystemChannels.platform.invokeMethod('SystemNavigator.pop'),
+          onPressed: () async {
+            await sl.get<FirebaseAPI>().auth.signOut();
+            SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+          },
         ),
         DialogButton(
           child: Text(

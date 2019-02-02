@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:privacy_of_animal/models/animal_model.dart';
 import 'package:privacy_of_animal/models/intro_page_model.dart';
 import 'package:privacy_of_animal/models/tag_model.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
