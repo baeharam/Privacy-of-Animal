@@ -3,10 +3,9 @@ const String routeIntro = '/intro';
 const String routeLogin = '/login';
 const String routeTagSelect = '/tagSelect';
 const String routeTagChat = '/tagChat';
-const String routeFaceAnalyze = '/faceAnalyze';
 const String routeLoginDecision = '/loginDecision';
 const String routeSignUpDecision = '/signUpDecision';
-const String routeTagPhoto = '/signUpPhoto';
+const String routePhoto = '/signUpPhoto';
 
 // IntroScreen
 const String introMessage1Above = '내 얼굴 사진을 바탕으로';

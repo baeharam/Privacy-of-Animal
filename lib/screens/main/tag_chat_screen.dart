@@ -37,7 +37,7 @@ class _TagChatScreenState extends State<TagChatScreen> {
         bloc: _tagChatBloc,
         builder: (context, TagChatState state){
           if(state.isDetailStoreSucceeded){
-            StreamNavigator.pushNamedAndRemoveAll(context, routeFaceAnalyze);
+            StreamNavigator.pushNamedAndRemoveAll(context, routePhoto);
           }
           if(state.isDetailStoreFailed){
             streamSnackbar(context,'제출에 실패했습니다.');
