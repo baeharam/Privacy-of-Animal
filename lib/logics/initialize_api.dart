@@ -9,7 +9,7 @@ class InitializeAPI {
   // 앱 시작 초기화
   Future<void> appInitialize() async {
     final FirebaseApp app = await FirebaseApp.configure(
-      name: 'PrivacyOfAnimal',
+      name: 'Privacy of Animal',
       options: const FirebaseOptions(
         googleAppID: iosAppID,
         apiKey: apiKey,
