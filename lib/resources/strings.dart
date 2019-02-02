@@ -86,6 +86,10 @@ const String tagSingleLifeMessage = '자취 꿀팁은?';
 const String tagSportMessage = '가장 즐겨하는 운동은?';
 const String tagMusicMessage = '음악 하나 추천해줘!';
 
+// PhotoScreen
+const String photoWarningMessage1 = '※ 정면 사진이 아닐시 분석이 안될 수 있습니다.';
+const String photoWarningMessage2 = '※ 분석한 후 3일이 지나야 재분석이 가능합니다.';
+
 
 // Cloud Firestore 컬렉션 이름
 const String firestoreUsersCollection = 'users';
