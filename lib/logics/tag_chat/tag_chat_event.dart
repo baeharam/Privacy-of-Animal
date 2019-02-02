@@ -19,12 +19,5 @@ class TagChatEventNPC extends TagChatEvent {
     @required this.isInitial,
   });
 }
-class TagChatEventDone extends TagChatEvent {
-  final bool isNPCDone;
-  final bool isUserDone;
 
-  TagChatEventDone({
-    @required this.isNPCDone,
-    @required this.isUserDone
-  });
-}
+class TagChatEvnetNothing extends TagChatEvent {}
