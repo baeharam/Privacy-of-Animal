@@ -1,3 +1,40 @@
+List<Animal> animalList = [
+  Animal.bison(),
+  Animal.buffalo(),
+  Animal.camel(),
+  Animal.cat(),
+  Animal.cheetah(),
+  Animal.crocodile(),
+  Animal.deer(),
+  Animal.dolphin(),
+  Animal.duck(),
+  Animal.duck(),
+  Animal.eagle(),
+  Animal.elephant(),
+  Animal.fox(),
+  Animal.goat(),
+  Animal.gorilla(),
+  Animal.hippo(),
+  Animal.horse(),
+  Animal.iguana(),
+  Animal.koala(),
+  Animal.lama(),
+  Animal.lion(),
+  Animal.monkey(),
+  Animal.owl(),
+  Animal.parrot(),
+  Animal.penguin(),
+  Animal.pig(),
+  Animal.rabbit(),
+  Animal.rhinoceros(),
+  Animal.seal(),
+  Animal.shark(),
+  Animal.sheep(),
+  Animal.tiger(),
+  Animal.turtle(),
+  Animal.whale(),
+  Animal.zebra()
+];
 
 class Animal {
   final String image;
@@ -8,7 +45,7 @@ class Animal {
   final WIDTH lipWidth;
   final LENGTH lipLength; 
 
-  Animal({
+  const Animal({
     this.image,
     this.faceWidth,
     this.faceLength,
@@ -19,7 +56,7 @@ class Animal {
   });
 
   factory Animal.dog() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/dog.jpg',
       faceWidth: WIDTH.NORMAL,
       faceLength: LENGTH.NORMAL,
@@ -31,7 +68,7 @@ class Animal {
   }
 
   factory Animal.turtle() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/turtle.jpg',
       faceWidth: WIDTH.WIDE,
       faceLength: LENGTH.NORMAL,
@@ -43,7 +80,7 @@ class Animal {
   }
 
   factory Animal.gorilla() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/gorilla.jpg',
       faceWidth: WIDTH.WIDE,
       faceLength: LENGTH.LONG,
@@ -55,7 +92,7 @@ class Animal {
   }
 
   factory Animal.dolphin() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/dolphin.jpg',
       faceWidth: WIDTH.WIDE,
       faceLength: LENGTH.NORMAL,
@@ -67,7 +104,7 @@ class Animal {
   }
 
   factory Animal.bison() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/bison.jpg',
       faceWidth: WIDTH.WIDE,
       faceLength: LENGTH.LONG,
@@ -79,7 +116,7 @@ class Animal {
   }
 
   factory Animal.owl() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/owl.jpg',
       faceWidth: WIDTH.WIDE,
       faceLength: LENGTH.SHORT,
@@ -91,7 +128,7 @@ class Animal {
   }
 
   factory Animal.lion() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/lion.jpg',
       faceWidth: WIDTH.WIDE,
       faceLength: LENGTH.NORMAL,
@@ -103,7 +140,7 @@ class Animal {
   }
 
   factory Animal.shark() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/shark.jpg',
       faceWidth: WIDTH.WIDE,
       faceLength: LENGTH.SHORT,
@@ -115,7 +152,7 @@ class Animal {
   }
 
   factory Animal.buffalo() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/buffalo.jpg',
       faceWidth: WIDTH.WIDE,
       faceLength: LENGTH.LONG,
@@ -127,7 +164,7 @@ class Animal {
   }
 
   factory Animal.crocodile() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/crocodile.jpg',
       faceWidth: WIDTH.WIDE,
       faceLength: LENGTH.SHORT,
@@ -139,7 +176,7 @@ class Animal {
   }
 
   factory Animal.sheep() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/sheep.jpg',
       faceWidth: WIDTH.WIDE,
       faceLength: LENGTH.LONG,
@@ -151,7 +188,7 @@ class Animal {
   }
 
   factory Animal.elephant() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/elephant.jpg',
       faceWidth: WIDTH.WIDE,
       faceLength: LENGTH.LONG,
@@ -163,7 +200,7 @@ class Animal {
   }
 
   factory Animal.rhinoceros() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/rhinoceros.jpg',
       faceWidth: WIDTH.WIDE,
       faceLength: LENGTH.NORMAL,
@@ -175,7 +212,7 @@ class Animal {
   }
 
   factory Animal.hippo() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/hippo.jpg',
       faceWidth: WIDTH.WIDE,
       faceLength: LENGTH.NORMAL,
@@ -187,7 +224,7 @@ class Animal {
   }
 
   factory Animal.pig() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/pig.jpg',
       faceWidth: WIDTH.NORMAL,
       faceLength: LENGTH.LONG,
@@ -199,7 +236,7 @@ class Animal {
   }
 
   factory Animal.lama() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/shark.jpg',
       faceWidth: WIDTH.NORMAL,
       faceLength: LENGTH.LONG,
@@ -211,7 +248,7 @@ class Animal {
   }
 
   factory Animal.seal() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/seal.jpg',
       faceWidth: WIDTH.NORMAL,
       faceLength: LENGTH.NORMAL,
@@ -223,7 +260,7 @@ class Animal {
   }
 
   factory Animal.deer() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/deer.jpg',
       faceWidth: WIDTH.NORMAL,
       faceLength: LENGTH.NORMAL,
@@ -235,7 +272,7 @@ class Animal {
   }
 
   factory Animal.fox() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/fox.jpg',
       faceWidth: WIDTH.NORMAL,
       faceLength: LENGTH.NORMAL,
@@ -247,7 +284,7 @@ class Animal {
   }
 
   factory Animal.goat() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/goat.jpg',
       faceWidth: WIDTH.NORMAL,
       faceLength: LENGTH.LONG,
@@ -259,7 +296,7 @@ class Animal {
   }
 
   factory Animal.cheetah() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/cheetah.jpg',
       faceWidth: WIDTH.NORMAL,
       faceLength: LENGTH.NORMAL,
@@ -271,7 +308,7 @@ class Animal {
   }
 
   factory Animal.koala() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/koala.jpg',
       faceWidth: WIDTH.NORMAL,
       faceLength: LENGTH.SHORT,
@@ -283,7 +320,7 @@ class Animal {
   }
 
   factory Animal.rabbit() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/rabbit.jpg',
       faceWidth: WIDTH.NORMAL,
       faceLength: LENGTH.SHORT,
@@ -295,7 +332,7 @@ class Animal {
   }
 
   factory Animal.tiger() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/tiger.jpg',
       faceWidth: WIDTH.NORMAL,
       faceLength: LENGTH.LONG,
@@ -307,7 +344,7 @@ class Animal {
   }
 
   factory Animal.cat() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/cat.jpg',
       faceWidth: WIDTH.NARROW,
       faceLength: LENGTH.SHORT,
@@ -319,7 +356,7 @@ class Animal {
   }
 
   factory Animal.camel() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/camel.jpg',
       faceWidth: WIDTH.NARROW,
       faceLength: LENGTH.LONG,
@@ -331,7 +368,7 @@ class Animal {
   }
 
   factory Animal.eagle() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/eagle.jpg',
       faceWidth: WIDTH.NARROW,
       faceLength: LENGTH.NORMAL,
@@ -343,7 +380,7 @@ class Animal {
   }
 
   factory Animal.horse() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/horse.jpg',
       faceWidth: WIDTH.NARROW,
       faceLength: LENGTH.LONG,
@@ -355,7 +392,7 @@ class Animal {
   }
 
   factory Animal.snake() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/snake.jpg',
       faceWidth: WIDTH.NARROW,
       faceLength: LENGTH.SHORT,
@@ -367,7 +404,7 @@ class Animal {
   }
 
   factory Animal.parrot() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/parrot.jpg',
       faceWidth: WIDTH.NARROW,
       faceLength: LENGTH.SHORT,
@@ -379,7 +416,7 @@ class Animal {
   }
 
   factory Animal.zebra() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/zebra.jpg',
       faceWidth: WIDTH.NARROW,
       faceLength: LENGTH.LONG,
@@ -391,7 +428,7 @@ class Animal {
   }
 
   factory Animal.duck() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/duck.jpg',
       faceWidth: WIDTH.NARROW,
       faceLength: LENGTH.SHORT,
@@ -403,7 +440,7 @@ class Animal {
   }
 
   factory Animal.monkey() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/monkey.jpg',
       faceWidth: WIDTH.NARROW,
       faceLength: LENGTH.SHORT,
@@ -415,7 +452,7 @@ class Animal {
   }
 
   factory Animal.iguana() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/iguana.jpg',
       faceWidth: WIDTH.NARROW,
       faceLength: LENGTH.SHORT,
@@ -427,7 +464,7 @@ class Animal {
   }
 
   factory Animal.penguin() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/penguin.jpg',
       faceWidth: WIDTH.NARROW,
       faceLength: LENGTH.SHORT,
@@ -435,6 +472,18 @@ class Animal {
       noseLength: LENGTH.SHORT,
       lipWidth: WIDTH.WIDE,
       lipLength: LENGTH.SHORT
+    );
+  }
+
+  factory Animal.whale() {
+    return const Animal(
+      image: 'assets/images/animals/whale.jpg',
+      faceWidth: WIDTH.WIDE,
+      faceLength: LENGTH.LONG,
+      noseWidth: WIDTH.WIDE,
+      noseLength: LENGTH.NORMAL,
+      lipWidth: WIDTH.WIDE,
+      lipLength: LENGTH.LONG
     );
   }
 }

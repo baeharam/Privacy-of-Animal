@@ -95,6 +95,41 @@ const String photoWarningMessage2 = '※ 분석한 후 3일이 지나야 재분�
 // 머신러닝 API
 const String kakaoAPIurl = 'https://kapi.kakao.com/v1/vision/face/detect';
 
+// 동물 이름
+const String bisonAnimal = 'bison';
+const String buffaloAnimal = 'buffalo';
+const String camelAnimal = 'camel';
+const String catAnimial = 'cat';
+const String cheetahAnimal = 'cheetah';
+const String crocodileAnimal = 'crocodile';
+const String deerAnimal = 'deer';
+const String dolphinAnimal = 'dolphin';
+const String duckAnimal = 'duck';
+const String eagleAnimal = 'eagle';
+const String elephantAnimal = 'elephant';
+const String foxAnimal = 'fox';
+const String goatAnimal = 'goat';
+const String gorillaAnimal = 'gorilla';
+const String hippoAnimal = 'hippo';
+const String horseAnimal = 'horse';
+const String iguanaAnimal = 'iguana';
+const String koalaAnimal = 'koala';
+const String lamaAnimal = 'lama';
+const String lionAnimal = 'lion';
+const String monkeyAnimal = 'monkey';
+const String owlAnimal = 'owl';
+const String parrotAnimal = 'parrot';
+const String penguinAnimal = 'penguin';
+const String rabbitAnimal = 'rabbit';
+const String rhinocerosAnimal = 'rhinoceros';
+const String sealAnimal = 'seal';
+const String sharkAnimal = 'shark';
+const String sheepAnimal = 'sheep';
+const String snakeAnimal = 'snake';
+const String tigerAnimal = 'tiger';
+const String whaleAnimal = 'whale';
+const String zebraAnimal = 'zebra';
+
 
 // Cloud Firestore 컬렉션 이름
 const String firestoreUsersCollection = 'users';
