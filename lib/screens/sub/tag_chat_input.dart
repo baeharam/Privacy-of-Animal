@@ -40,13 +40,14 @@ class TagChatInputState extends State<TagChatInput> {
               child: BlocBuilder(
                 bloc: sl.get<TagChatBloc>(),
                 builder: (context, TagChatState state){
+                  if(state.isNPCDone) sl.get<TagChatBloc>().emitEvent(TagChatEvnetNothing());
                   return TextField(
                     decoration: InputDecoration.collapsed(
                       hintText: '답변을 입력하세요.',
                       hintStyle: TextStyle(color: Colors.grey),
                     ),
                     controller: _textEditingController,
-                    enabled: state.isNPCDone ? true : false
+                    enabled: state.isNPCDone ? true : false,
                   );
                 }
               ),

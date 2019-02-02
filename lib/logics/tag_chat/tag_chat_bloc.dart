@@ -16,6 +16,11 @@ class TagChatBloc extends BlocEventStateBase<TagChatEvent,TagChatState> {
 
   @override
   Stream<TagChatState> eventHandler(TagChatEvent event, TagChatState currentState) async*{
+
+    if(event is TagChatEvnetNothing){
+      yield TagChatState.nothing();
+    }
+
     // NPC가 채팅을 보낸 경우
     if(event is TagChatEventNPC){
       // 제일 처음인 경우, 일정 시간간격을 두고 보내야함.

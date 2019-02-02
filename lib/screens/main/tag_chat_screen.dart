@@ -40,7 +40,7 @@ class _TagChatScreenState extends State<TagChatScreen> {
             StreamNavigator.pushNamedAndRemoveAll(context, routeFaceAnalyze);
           }
           if(state.isDetailStoreFailed){
-            streamSnackbar(context,'Á¦Ãâ¿¡ ½ÇÆĞÇß½À´Ï´Ù.');
+            streamSnackbar(context,'ì œì¶œì— ì‹¤íŒ¨í–ˆìŠµë‹ˆë‹¤.');
           }
           if(state.isNPC){
             if(state.isInitial && state.isBegin){
@@ -68,7 +68,7 @@ class _TagChatScreenState extends State<TagChatScreen> {
                   padding: const EdgeInsets.only(bottom: 20.0),
                   child: PrimaryButton(
                     color: primaryBeige,
-                    text: 'Á¦Ãâ ÇÏ±â',
+                    text: 'ì œì¶œ í•˜ê¸°',
                     callback: ()=>_tagChatBloc.emitEvent(TagChatEventComplete())
                   )
                 ) 

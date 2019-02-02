@@ -11,7 +11,6 @@ class TagChatState extends BlocState {
   final String messageUser;
 
   final bool isNPCDone;
-  final bool isUserDone;
   final bool showSubmitButton;
 
   final bool isDetailStoreLoading;
@@ -26,7 +25,6 @@ class TagChatState extends BlocState {
     this.isUser: false,
     this.messageUser: '',
     this.isNPCDone: false,
-    this.isUserDone: false,
     this.showSubmitButton: false,
     this.isDetailStoreLoading: false,
     this.isDetailStoreSucceeded: false,
@@ -48,6 +46,11 @@ class TagChatState extends BlocState {
     return TagChatState(
       isUser: true,
       messageUser: message
+    );
+  }
+
+  factory TagChatState.nothing() {
+    return TagChatState(
     );
   }
 
