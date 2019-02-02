@@ -23,10 +23,10 @@ class _LoginDecisionState extends State<LoginDecision> {
           return LoginScreen();
         }
         if(state.isAuthenticated){
-          if(!state.isTagSelected){
+          if(state.isTagSelected){
             StreamNavigator.pushNamedAndRemoveAll(context,routeTagSelect);
           }
-          if(state.isTagSelected){
+          if(state.isTagChatted){
             StreamNavigator.pushNamedAndRemoveAll(context,routeTagChat);
           }
         }

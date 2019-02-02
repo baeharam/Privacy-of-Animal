@@ -44,7 +44,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
                       }
                     else
                       {
-                        _photoBloc.emitEvent(PhotoEventTaking());
+                        //_photoBloc.emitEvent(PhotoEventTaking());
                         return Container(
                           child: SafeArea(
                             child: new CircularProgressIndicator(),
