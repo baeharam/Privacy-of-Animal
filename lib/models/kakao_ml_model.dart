@@ -20,15 +20,29 @@ class KakaoMLModel {
   });
 
   factory KakaoMLModel.fromJson(Map<String,dynamic> json) {
-    print(json['jaw']);
+    Map<String,List<List<double>>> ans =  Map<String,List<List<double>>>();
+    json.forEach((key,value){
+      List<dynamic> firstList = json[key] as List;
+      List<List<double>> realList = List<List<double>>();
+      firstList.forEach((item){
+        List<dynamic> secondList = item as List;
+        List<double> realItem = List<double>();
+        secondList.forEach((item2){
+          realItem.add(item2 as double);
+        });
+        realList.add(realItem);
+      });
+      ans[key] = realList;
+    });
+
     return KakaoMLModel(
-      jaw: json['jaw'],
-      rightEyebrow: json['rightEyebrow'],
-      leftEyebrow: json['leftEyebrow'],
-      nose: json['nose'],
-      rightEye: json['rightEye'],
-      leftEye: json['leftEye'],
-      lip: json['lip']
+      jaw: ans['jaw'],
+      rightEyebrow: ans['right_eyebrow'],
+      leftEyebrow: ans['left_eyebrow'],
+      nose: ans['nose'],
+      rightEye: ans['right_eye'],
+      leftEye: ans['left_eye'],
+      lip: ans['lip']
     );
   }
 }
