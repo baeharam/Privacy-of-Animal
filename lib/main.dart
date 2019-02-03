@@ -3,7 +3,6 @@ import 'package:privacy_of_animal/logics/initialize_api.dart';
 import 'package:privacy_of_animal/resources/routes.dart';
 import 'package:privacy_of_animal/screens/main/intro_screen.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
-import 'package:privacy_of_animal/screens/main/face_analyze_screen.dart';
 
 Future<void> main() async{
   setup();
@@ -17,7 +16,7 @@ class PrivacyOfAnimal extends StatelessWidget {
   {
     return MaterialApp(
       title: '동물의 사생활',
-      home: FaceAnalyze(),
+      home: IntroScreen(),
       theme: ThemeData(
         splashColor: Colors.transparent,
         fontFamily: 'NanumGothic'
