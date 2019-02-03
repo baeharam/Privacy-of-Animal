@@ -3,9 +3,11 @@ const String routeIntro = '/intro';
 const String routeLogin = '/login';
 const String routeTagSelect = '/tagSelect';
 const String routeTagChat = '/tagChat';
+const String routeFaceAnalyze = '/faceAnalyze';
 const String routeLoginDecision = '/loginDecision';
 const String routeSignUpDecision = '/signUpDecision';
 const String routeTagPhoto = '/signUpPhoto';
+const String routeFaceAnaylze = '/FaceAnalyzeScreen';
 
 // IntroScreen
 const String introMessage1Above = '내 얼굴 사진을 바탕으로';
@@ -92,15 +94,16 @@ const String firestoreUsersCollection = 'users';
 
 // Cloud Firestore 실제 프로필 필드
 const String firestoreRealProfileField = 'real_profile';
-const String firestoreAgeField = 'age';
-const String firestoreGenderField = 'gender';
-const String firestoreJobField = 'job';
-const String firestoreNameField = 'name';
+const String firestoreAgeField = ageCol;
+const String firestoreGenderField = genderCol;
+const String firestoreJobField = jobCol;
+const String firestoreNameField = nameCol;
+const String firestoreImagePathField = imagePathCol;
 
 // Cloud Firestore 플래그 필드
-const String firestoreIsTagSelectedField = 'is_tag_selected';
-const String firestoreIsTagChattedField = 'is_tag_chatted';
-const String firestoreIsFaceAnalyzedField = 'is_face_analyzed';
+const String firestoreIsTagSelectedField = isTagSelected;
+const String firestoreIsTagChattedField = isTagChatted;
+const String firestoreIsFaceAnalyzedField = isFaceAnalyzed;
 
 // Cloud Firestore 태그 필드
 const String firestoreTagField = 'tags';
@@ -110,6 +113,16 @@ const String firestoreTagTitle3Field = tagName3Col;
 const String firestoreTagTitle4Field = tagName4Col;
 const String firestoreTagTitle5Field = tagName5Col;
 
+const String firestoreTagDetail1Field = tagDetail1Col;
+const String firestoreTagDetail2Field = tagDetail2Col;
+const String firestoreTagDetail3Field = tagDetail3Col;
+const String firestoreTagDetail4Field = tagDetail4Col;
+const String firestoreTagDetail5Field = tagDetail5Col;
+
+// SharedPreferences 플래그 key값
+const String isTagSelected = 'is_tag_selected';
+const String isTagChatted = 'is_tag_chatted';
+const String isFaceAnalyzed = 'is_face_analyzed';
 
 // 로컬 DB 이름
 const String userDB = 'user.db';
@@ -132,11 +145,13 @@ const String tagName4Col = 'tag_name_4';
 const String tagDetail4Col = 'tag_detail_4';
 const String tagName5Col = 'tag_name_5';
 const String tagDetail5Col = 'tag_detail_5';
+
 const String nameCol = 'name';
 const String genderCol = 'gender';
 const String ageCol = 'age';
 const String jobCol = 'job';
-const String imgCol = 'image';
+const String imagePathCol = 'image_path';
+
 const String animalNameCol = 'animal_name';
 const String emotionCol = 'emotion';
 const String animalConfidenceCol = 'animal_confidence';
@@ -172,5 +187,5 @@ const String fakeProfileTableCreationSQL =
   'CREATE TABLE fake_profile_table'
   '($id INTEGER PRIMARY KEY AUTOINCREMENT,'
   '$uidCol TEXT,'
-  '$nameCol TEXT, $imgCol TEXT, $animalNameCol TEXT, $genderCol TEXT, $ageCol INTEGER, $emotionCol TEXT,'
+  '$nameCol TEXT, $imagePathCol TEXT, $animalNameCol TEXT, $genderCol TEXT, $ageCol INTEGER, $emotionCol TEXT,'
   '$animalConfidenceCol REAL, $genderConfidenceCol REAL, $emotionConfidenceCol REAL, $ageConfidenceCol REAL)';

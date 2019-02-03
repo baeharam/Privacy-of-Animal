@@ -11,7 +11,6 @@ class TagChatState extends BlocState {
   final String messageUser;
 
   final bool isNPCDone;
-  final bool isUserDone;
   final bool showSubmitButton;
 
   final bool isDetailStoreLoading;
@@ -26,27 +25,20 @@ class TagChatState extends BlocState {
     this.isUser: false,
     this.messageUser: '',
     this.isNPCDone: false,
-    this.isUserDone: false,
     this.showSubmitButton: false,
     this.isDetailStoreLoading: false,
     this.isDetailStoreSucceeded: false,
     this.isDetailStoreFailed: false
   });
 
-  factory TagChatState.done(bool isNPCDone, bool isUserDone, bool showSubmitButton) {
-    return TagChatState(
-      isNPCDone: isNPCDone,
-      isUserDone: isUserDone,
-      showSubmitButton: showSubmitButton ?? false
-    );
-  }
-
-  factory TagChatState.npcMessage(String message, bool isBegin, bool isInitial) {
+  factory TagChatState.npcMessage({String message, bool isBegin, bool isInitial, bool isNPCDone, bool showSubmitButton}) {
     return TagChatState(
       isNPC: true,
-      messageNPC: message,
-      isBegin: isBegin,
-      isInitial: isInitial
+      messageNPC: message??'',
+      isBegin: isBegin??false,
+      isInitial: isInitial??false,
+      isNPCDone: isNPCDone??false,
+      showSubmitButton: showSubmitButton??false
     );
   }
 
@@ -54,6 +46,11 @@ class TagChatState extends BlocState {
     return TagChatState(
       isUser: true,
       messageUser: message
+    );
+  }
+
+  factory TagChatState.nothing() {
+    return TagChatState(
     );
   }
 

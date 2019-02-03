@@ -17,7 +17,7 @@ void setup() {
   sl.registerLazySingleton<InitializeAPI>(()=> InitializeAPI());
   sl.registerLazySingleton<DatabaseHelper>(() => DatabaseHelper());
   sl.registerLazySingleton<FirebaseAPI>(() => FirebaseAPI());
-  sl.registerLazySingleton<CurrentUser>(() => CurrentUser());
+  sl.registerSingleton(CurrentUser());
   
   sl.registerLazySingleton<LoginBloc>(()=> LoginBloc());
   sl.registerLazySingleton<SignUpBloc>(()=> SignUpBloc());
