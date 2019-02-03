@@ -14,9 +14,15 @@ class _AnalyzeResultScreenState extends State<AnalyzeResultScreen> {
       body: Container(
         width: double.infinity,
         alignment: Alignment.center,
-        child: FittedBox(
-          child: Image.asset(sl.get<CurrentUser>().animal.image),
-          fit: BoxFit.contain,
+        child: Column(
+          children: <Widget>[
+            FittedBox(
+              child: Image.asset(sl.get<CurrentUser>().fakeProfileModel.animalImage),
+              fit: BoxFit.contain,
+            ),
+            Text(sl.get<CurrentUser>().fakeProfileModel.animalName),
+            Text(sl.get<CurrentUser>().fakeProfileModel.animalConfidence.toString())
+          ],
         ),
       ),
     );

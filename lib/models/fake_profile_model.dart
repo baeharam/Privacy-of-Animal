@@ -1,13 +1,12 @@
-import 'package:meta/meta.dart';
 
 class FakeProfileModel {
-  final String image;
-  final String animalName;
-  final double animalConfidence;
+  String animalImage;
+  String animalName;
+  double animalConfidence;
 
   FakeProfileModel({
-    @required this.image,
-    @required this.animalName,
-    @required this.animalConfidence
+    this.animalImage,
+    this.animalName,
+    this.animalConfidence
   });
 }

@@ -98,12 +98,16 @@ class PhotoAPI {
     });
 
     Random random = Random();
-    for(int i=candidate.length-1; i>=0; i--){
-      int len = candidate[i].length;
-      if(len==0) continue;
-      sl.get<CurrentUser>().animal = candidate[i][random.nextInt(candidate[i].length)];
-      break;
+    int len = 0,index=0;
+    while(len==0){
+      index = random.nextInt(7);
+      len = candidate[index].length;
     }
+    Animal animal = candidate[index][random.nextInt(candidate[index].length)];
+    sl.get<CurrentUser>().fakeProfileModel.animalImage = animal.image;
+    sl.get<CurrentUser>().fakeProfileModel.animalName = animal.name;
+    sl.get<CurrentUser>().fakeProfileModel.animalConfidence 
+      = 100.0-(candidate[index].length/(animalList.length)*(7-index));
   }
 }
 
