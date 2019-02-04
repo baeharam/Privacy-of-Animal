@@ -4,6 +4,7 @@ const String routeLogin = '/login';
 const String routeTagSelect = '/tagSelect';
 const String routeTagChat = '/tagChat';
 const String routePhoto = '/signUpPhoto';
+const String routeHome = '/home';
 
 const String routeLoginDecision = '/loginDecision';
 const String routeSignUpDecision = '/signUpDecision';

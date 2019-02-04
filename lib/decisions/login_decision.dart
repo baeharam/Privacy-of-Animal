@@ -23,7 +23,10 @@ class _LoginDecisionState extends State<LoginDecision> {
           return LoginScreen();
         }
         if(state.isAuthenticated){
-          if(state.isTagChatted){
+          if(state.isFaceAnalyzed){
+            StreamNavigator.pushNamedAndRemoveAll(context, routeHome);
+          } 
+          else if(state.isTagChatted){
             StreamNavigator.pushNamedAndRemoveAll(context,routePhotoDecision);
           }
           else if(state.isTagSelected){
