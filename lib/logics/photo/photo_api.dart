@@ -8,6 +8,7 @@ import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/database_helper.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/models/animal_model.dart';
+import 'package:privacy_of_animal/models/fake_profile_model.dart';
 import 'package:privacy_of_animal/models/kakao_ml_model.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:http/http.dart' as http;
@@ -17,6 +18,7 @@ import 'package:privacy_of_animal/resources/config.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sqflite/sqflite.dart';
 
 class PhotoAPI {
 
@@ -26,22 +28,61 @@ class PhotoAPI {
     return compressedImage.path;
   }
 
-  Future<ANALYZE_RESULT> setFlag() async {
+  Future<ANALYZE_RESULT> storeProfile() async {
     try{
       String uid = sl.get<CurrentUser>().uid;
       SharedPreferences prefs = await sl.get<DatabaseHelper>().sharedPreferences;
       prefs.setBool(uid+isFaceAnalyzed,true);
-      await sl.get<FirebaseAPI>().firestore.runTransaction((transaction) async{
-        CollectionReference collectionReference = sl.get<FirebaseAPI>().firestore.collection(firestoreUsersCollection);
-        DocumentReference reference = collectionReference.document(uid);
-        await reference.updateData({
-          firestoreIsFaceAnalyzedField: true
-        });
-      });
+      await _storeProfileIntoFirestore();
+      await _storeProfileIntoLocalDB();
+      
     } catch(exception){
       return ANALYZE_RESULT.FAILURE;
     } 
     return ANALYZE_RESULT.SUCCESS;
+  }
+
+  Future<void> _storeProfileIntoFirestore() async {
+    await sl.get<FirebaseAPI>().firestore.runTransaction((transaction) async{
+      CollectionReference collectionReference = sl.get<FirebaseAPI>().firestore.collection(firestoreUsersCollection);
+      DocumentReference reference = collectionReference.document(sl.get<CurrentUser>().uid);
+      FakeProfileModel fakeProfileModel = sl.get<CurrentUser>().fakeProfileModel;
+      await reference.updateData({
+        firestoreIsFaceAnalyzedField: true,
+        firestoreFakeProfileField: {
+          firestoreFakeGenderField: fakeProfileModel.gender,
+          firestoreFakeGenderConfidenceField: fakeProfileModel.genderConfidence,
+          firestoreFakeAgeField: fakeProfileModel.age,
+          firestoreFakeAgeConfidenceField: fakeProfileModel.ageConfidence,
+          firestoreFakeEmotionField: fakeProfileModel.emotion,
+          firestoreFakeEmotionConfidenceField: fakeProfileModel.emotionConfidence,
+          firestoreAnimalNameField: fakeProfileModel.animalName,
+          firestoreAnimalImageField: fakeProfileModel.animalImage,
+          firestoreAnimalConfidenceField: fakeProfileModel.animalConfidence
+        }
+      });
+    });
+  }
+
+  Future<void> _storeProfileIntoLocalDB() async {
+    Database db = await sl.get<DatabaseHelper>().database;
+    FakeProfileModel fakeProfileModel = sl.get<CurrentUser>().fakeProfileModel;
+    await db.rawInsert(
+      'INSERT INTO $fakeProfileTable'
+      '($uidCol,$fakeGenderCol,$fakeGenderConfidenceCol,'
+      '$fakeAgeCol,$fakeAgeConfidenceCol,$fakeEmotionCol,$fakeEmotionConfidenceCol,'
+      '$animalNameCol,$animalImageCol,$animalConfidenceCol) '
+      'VALUES("${sl.get<CurrentUser>().uid}",'
+      '"${fakeProfileModel.gender}",'
+      '"${fakeProfileModel.genderConfidence}",'
+      '"${fakeProfileModel.age}",'
+      '"${fakeProfileModel.ageConfidence}",'
+      '"${fakeProfileModel.emotion}",'
+      '"${fakeProfileModel.emotionConfidence}",'
+      '"${fakeProfileModel.animalName}",'
+      '"${fakeProfileModel.animalImage}",'
+      '"${fakeProfileModel.animalConfidence}")'
+    );
   }
 
   Future<ANALYZE_RESULT> analyzeFaceKakao(String photoPath) async {
