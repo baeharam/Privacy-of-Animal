@@ -40,6 +40,10 @@ flutter:
 
   assets:
     - assets/images/components/tag_chat_npc.png
+    - assets/images/components/chat.png
+    - assets/images/components/friend.png
+    - assets/images/components/match.png
+    - assets/images/components/profile.png
 
     - assets/images/tags/art.png
     - assets/images/tags/book.png
