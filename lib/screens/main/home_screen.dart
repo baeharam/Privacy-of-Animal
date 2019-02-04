@@ -14,15 +14,19 @@ class _HomeScreenState extends State<HomeScreen> {
         currentIndex: 0,
         items: [
           BottomNavigationBarItem(
+            title: Text(''),
             icon: Image.asset('assets/images/components/match.png')
           ),
           BottomNavigationBarItem(
+            title: Text(''),
             icon: Image.asset('assets/images/components/chat.png')
           ),
           BottomNavigationBarItem(
+            title: Text(''),
             icon: Image.asset('assets/images/components/friend.png')
           ),
           BottomNavigationBarItem(
+            title: Text(''),
             icon: Image.asset('assets/images/components/profile.png')
           )
         ],

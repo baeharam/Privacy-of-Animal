@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/resources/constants.dart';
+import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:privacy_of_animal/utils/stream_navigator.dart';
 import 'package:privacy_of_animal/widgets/arc_background2.dart';
 import 'package:privacy_of_animal/widgets/primary_button.dart';
 
@@ -63,7 +65,7 @@ class _AnalyzeResultScreenState extends State<AnalyzeResultScreen> {
                 children: <Widget>[
                   CircularPercentIndicator(
                     radius: ScreenUtil.width/1.9,
-                    percent: sl.get<CurrentUser>().fakeProfileModel.animalConfidence/100.0,
+                    percent: sl.get<CurrentUser>().fakeProfileModel.animalConfidence,
                     lineWidth: 10.0,
                   ),
                   CircleAvatar(
@@ -79,7 +81,7 @@ class _AnalyzeResultScreenState extends State<AnalyzeResultScreen> {
                   ResultText(
                     title: '추정동물',
                     value: sl.get<CurrentUser>().fakeProfileModel.animalName,
-                    confidence: (sl.get<CurrentUser>().fakeProfileModel.animalConfidence).toStringAsFixed(1),
+                    confidence: (sl.get<CurrentUser>().fakeProfileModel.animalConfidence*100).toStringAsFixed(1),
                   ),
                   SizedBox(height: 10.0),
                   ResultText(
@@ -103,6 +105,7 @@ class _AnalyzeResultScreenState extends State<AnalyzeResultScreen> {
                   PrimaryButton(
                     text: '프로필 확인',
                     color: primaryBeige,
+                    callback: () => StreamNavigator.pushNamedAndRemoveAll(context, routeHome),
                   )
                 ],
               )
