@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/resources/constants.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeDecision extends StatefulWidget {
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  _HomeDecisionState createState() => _HomeDecisionState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeDecisionState extends State<HomeDecision> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -4,11 +4,11 @@ const String routeLogin = '/login';
 const String routeTagSelect = '/tagSelect';
 const String routeTagChat = '/tagChat';
 const String routePhoto = '/signUpPhoto';
-const String routeHome = '/home';
 
 const String routeLoginDecision = '/loginDecision';
 const String routeSignUpDecision = '/signUpDecision';
 const String routePhotoDecision = '/photoDecision';
+const String routeHomeDecision = '/homeDecision';
 
 // IntroScreen
 const String introMessage1Above = '내 얼굴 사진을 바탕으로';

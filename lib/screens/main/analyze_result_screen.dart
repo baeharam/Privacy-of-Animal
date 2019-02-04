@@ -105,7 +105,7 @@ class _AnalyzeResultScreenState extends State<AnalyzeResultScreen> {
                   PrimaryButton(
                     text: '프로필 확인',
                     color: primaryBeige,
-                    callback: () => StreamNavigator.pushNamedAndRemoveAll(context, routeHome),
+                    callback: () => StreamNavigator.pushNamedAndRemoveAll(context, routeHomeDecision),
                   )
                 ],
               )

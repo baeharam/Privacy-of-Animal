@@ -24,7 +24,7 @@ class _LoginDecisionState extends State<LoginDecision> {
         }
         if(state.isAuthenticated){
           if(state.isFaceAnalyzed){
-            StreamNavigator.pushNamedAndRemoveAll(context, routeHome);
+            StreamNavigator.pushNamedAndRemoveAll(context, routeHomeDecision);
           } 
           else if(state.isTagChatted){
             StreamNavigator.pushNamedAndRemoveAll(context,routePhotoDecision);
