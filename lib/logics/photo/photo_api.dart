@@ -9,6 +9,7 @@ import 'package:privacy_of_animal/models/kakao_ml_model.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:privacy_of_animal/models/naver_ml_model.dart';
 import 'package:privacy_of_animal/resources/config.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
@@ -21,7 +22,7 @@ class PhotoAPI {
     return compressedImage.path;
   }
 
-  Future<ANALYZE_RESULT> analyzeFace(String photoPath) async {
+  Future<ANALYZE_RESULT> analyzeFaceKakao(String photoPath) async {
     final Uri uri = Uri.parse(kakaoAPIurl);
     final http.MultipartRequest request = http.MultipartRequest('POST',uri);
     request.headers['Authorization'] = 'KakaoAK $kakaoAPIKey';
@@ -37,6 +38,46 @@ class PhotoAPI {
 
     Map<String,dynamic> realJson = firstJson['result']['faces'][0]['facial_points'];
     sl.get<CurrentUser>().kakaoMLModel = KakaoMLModel.fromJson(realJson);
+    return ANALYZE_RESULT.SUCCESS;
+  }
+
+  Future<ANALYZE_RESULT> analyzeFaceNaver(String photoPath) async {
+    final Uri uri = Uri.parse(naverAPIurl);
+    final http.MultipartRequest request = http.MultipartRequest('POST',uri);
+    request.headers['X-Naver-Client-Id'] = naverClientID;
+    request.headers['X-Naver-Client-Secret'] = naverClientSecret;
+    request.files.add(await http.MultipartFile.fromPath('image', photoPath));
+
+    http.StreamedResponse streamedResponse = await request.send();
+    final http.Response response = await http.Response.fromStream(streamedResponse);
+    Map<String,dynamic> resultJson = json.decode(response.body);
+
+    if(resultJson['faces']==null){
+      return ANALYZE_RESULT.FAILURE;
+    }
+
+    NaverMLModel naverMLModel = NaverMLModel.fromJson(resultJson['faces'][0]);
+    sl.get<CurrentUser>().fakeProfileModel.age = naverMLModel.age;
+    sl.get<CurrentUser>().fakeProfileModel.ageConfidence = naverMLModel.ageConfidence;
+
+    sl.get<CurrentUser>().fakeProfileModel.gender 
+      = naverMLModel.gender.compareTo('male')==0 ? '남자' : '여자';
+    sl.get<CurrentUser>().fakeProfileModel.genderConfidence = naverMLModel.genderConfidence;
+
+    String emotion = '';
+    switch(naverMLModel.emotion){
+      case 'angry': emotion='화남'; break;
+      case 'disgust': emotion='역겨움'; break;
+      case 'fear': emotion='두려움'; break;
+      case 'laugh': emotion='웃음'; break;
+      case 'neutral': emotion='중립'; break;
+      case 'sad': emotion='슬픔'; break;
+      case 'surprise': emotion='놀람'; break;
+      case 'smile': emotion='미소지음'; break;
+      case 'talking': emotion='말하는 중'; break;
+    }
+    sl.get<CurrentUser>().fakeProfileModel.emotion = emotion;
+    sl.get<CurrentUser>().fakeProfileModel.emotionConfidence = naverMLModel.emotionConfidence;
     return ANALYZE_RESULT.SUCCESS;
   }
 
@@ -107,7 +148,7 @@ class PhotoAPI {
     sl.get<CurrentUser>().fakeProfileModel.animalImage = animal.image;
     sl.get<CurrentUser>().fakeProfileModel.animalName = animal.name;
     sl.get<CurrentUser>().fakeProfileModel.animalConfidence 
-      = 100.0-(candidate[index].length/(animalList.length)*(7-index));
+      = (candidate[index].length/animalList.length)*(7-index)*100.0;
   }
 }
 

@@ -94,6 +94,7 @@ const String photoWarningMessage2 = '※ 분석한 후 3일이 지나야 재분�
 
 // 머신러닝 API
 const String kakaoAPIurl = 'https://kapi.kakao.com/v1/vision/face/detect';
+const String naverAPIurl = 'https://openapi.naver.com/v1/vision/face';
 
 // 동물 이름
 const String bisonAnimal = 'bison';
