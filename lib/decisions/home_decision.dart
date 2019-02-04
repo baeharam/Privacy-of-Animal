@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state_builder.dart';
 import 'package:privacy_of_animal/logics/home/home.dart';
 import 'package:privacy_of_animal/resources/constants.dart';
+import 'package:privacy_of_animal/screens/main/screen.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 
 class HomeDecision extends StatefulWidget {
@@ -12,6 +13,7 @@ class HomeDecision extends StatefulWidget {
 class _HomeDecisionState extends State<HomeDecision> {
 
   final HomeBloc homeBloc = sl.get<HomeBloc>();
+  final List<Widget> homePage = [MatchScreen(),ChatScreen(),FriendScreen(),ProfileScreen()];
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +21,7 @@ class _HomeDecisionState extends State<HomeDecision> {
       bloc: homeBloc,
       builder: (context, HomeState state){
         return Scaffold(
-          body: Container(),
+          body: homePage[state.activeIndex],
           bottomNavigationBar: BottomNavigationBar(
             currentIndex: state.activeIndex,
             onTap: (index) => homeBloc.emitEvent(HomeEvent(index: index)),
