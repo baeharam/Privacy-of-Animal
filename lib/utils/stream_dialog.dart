@@ -59,8 +59,8 @@ void streamDialogForgotPassword(BuildContext context) {
 
 void streamDialogSignUpFailed(BuildContext context,String title,String message,FAIL_TYPE type) {
 
-  final ValidationBloc validationBloc = MultipleBlocProvider.of<ValidationBloc>(context);
-  final SignUpBloc signUpBloc = MultipleBlocProvider.of<SignUpBloc>(context);
+  final ValidationBloc validationBloc = sl.get<ValidationBloc>();
+  final SignUpBloc signUpBloc = sl.get<SignUpBloc>();
   
   WidgetsBinding.instance.addPostFrameCallback((_){
     Alert(
