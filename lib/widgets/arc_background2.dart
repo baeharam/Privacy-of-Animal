@@ -30,7 +30,7 @@ import 'package:privacy_of_animal/resources/constants.dart';
     path.lineTo(.0, size.height);
     path.lineTo(size.width, size.height);
     path.lineTo(size.width, size.height*4/9);
-    final firstControlPoint = Offset(size.width*0.5,size.height*1/7);
+    final firstControlPoint = Offset(size.width*0.5,size.height/5);
     final firstEndPoint = Offset(.0,size.height*4/9);
     path.quadraticBezierTo(firstControlPoint.dx, firstControlPoint.dy, firstEndPoint.dx, firstEndPoint.dy);
     path.close();
