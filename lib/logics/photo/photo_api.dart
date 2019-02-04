@@ -3,7 +3,10 @@ import 'dart:convert';
 import 'dart:math';
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
+import 'package:privacy_of_animal/logics/database_helper.dart';
+import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/models/animal_model.dart';
 import 'package:privacy_of_animal/models/kakao_ml_model.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
@@ -13,6 +16,7 @@ import 'package:privacy_of_animal/models/naver_ml_model.dart';
 import 'package:privacy_of_animal/resources/config.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PhotoAPI {
 
@@ -20,6 +24,24 @@ class PhotoAPI {
     final File image = await ImagePicker.pickImage(source: ImageSource.camera);
     final File compressedImage = await FlutterNativeImage.compressImage(image.path, quality: 80, percentage: 100);
     return compressedImage.path;
+  }
+
+  Future<ANALYZE_RESULT> setFlag() async {
+    try{
+      String uid = sl.get<CurrentUser>().uid;
+      SharedPreferences prefs = await sl.get<DatabaseHelper>().sharedPreferences;
+      prefs.setBool(uid+isFaceAnalyzed,true);
+      await sl.get<FirebaseAPI>().firestore.runTransaction((transaction) async{
+        CollectionReference collectionReference = sl.get<FirebaseAPI>().firestore.collection(firestoreUsersCollection);
+        DocumentReference reference = collectionReference.document(uid);
+        await reference.updateData({
+          firestoreIsFaceAnalyzedField: true
+        });
+      });
+    } catch(exception){
+      return ANALYZE_RESULT.FAILURE;
+    } 
+    return ANALYZE_RESULT.SUCCESS;
   }
 
   Future<ANALYZE_RESULT> analyzeFaceKakao(String photoPath) async {
