@@ -5,6 +5,12 @@ import 'package:privacy_of_animal/utils/service_locator.dart';
 
 class TagChatInput extends StatefulWidget {
 
+  final ScrollController scrollController;
+
+  TagChatInput({
+    @required this.scrollController
+  });
+
   @override
   TagChatInputState createState() {
     return new TagChatInputState();
@@ -18,6 +24,14 @@ class TagChatInputState extends State<TagChatInput> {
   void dispose() {
     _textEditingController.dispose();
     super.dispose();
+  }
+
+  void _moveUpScroll() {
+    widget.scrollController.animateTo(
+      widget.scrollController.position.maxScrollExtent+100.0,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeOut
+    );
   }
 
   @override
@@ -40,14 +54,14 @@ class TagChatInputState extends State<TagChatInput> {
               child: BlocBuilder(
                 bloc: sl.get<TagChatBloc>(),
                 builder: (context, TagChatState state){
-                  if(state.isNPCDone) sl.get<TagChatBloc>().emitEvent(TagChatEvnetNothing());
+                  if(state.isNPC && !state.isInitial) _moveUpScroll();
+                  if(state.isNPCDone) sl.get<TagChatBloc>().emitEvent(TagChatEventNothing(isNPCDone: true));
                   return TextField(
                     decoration: InputDecoration.collapsed(
                       hintText: '답변을 입력하세요.',
                       hintStyle: TextStyle(color: Colors.grey),
                     ),
-                    controller: _textEditingController,
-                    enabled: state.isNPCDone ? true : false,
+                    controller: _textEditingController
                   );
                 }
               ),
@@ -58,11 +72,17 @@ class TagChatInputState extends State<TagChatInput> {
           Material(
             child: Container(
               margin: EdgeInsets.symmetric(horizontal: 8.0),
-              child: IconButton(
-                icon: Icon(Icons.send),
-                onPressed: () {
-                  sl.get<TagChatBloc>().emitEvent(TagChatEventUser(message: _textEditingController.text));
-                  _textEditingController.clear();
+              child: BlocBuilder(
+                bloc: sl.get<TagChatBloc>(),
+                builder: (context, TagChatState state){
+                  return IconButton(
+                    icon: Icon(Icons.send),
+                    onPressed: state.isNPCDone ? () {
+                      sl.get<TagChatBloc>().emitEvent(TagChatEventUser(message: _textEditingController.text));
+                      _textEditingController.clear();
+                      _moveUpScroll();
+                    } : null
+                  );
                 }
               ),
             ),

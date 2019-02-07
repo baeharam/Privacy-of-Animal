@@ -3,11 +3,17 @@ const String routeIntro = '/intro';
 const String routeLogin = '/login';
 const String routeTagSelect = '/tagSelect';
 const String routeTagChat = '/tagChat';
-const String routeFaceAnalyze = '/faceAnalyze';
+const String routePhoto = '/signUpPhoto';
+
 const String routeLoginDecision = '/loginDecision';
 const String routeSignUpDecision = '/signUpDecision';
+<<<<<<< HEAD
 const String routeTagPhoto = '/signUpPhoto';
 const String routeFaceAnaylze = '/FaceAnalyzeScreen';
+=======
+const String routePhotoDecision = '/photoDecision';
+const String routeHomeDecision = '/homeDecision';
+>>>>>>> upstream/master
 
 // IntroScreen
 const String introMessage1Above = '내 얼굴 사진을 바탕으로';
@@ -88,17 +94,71 @@ const String tagSingleLifeMessage = '자취 꿀팁은?';
 const String tagSportMessage = '가장 즐겨하는 운동은?';
 const String tagMusicMessage = '음악 하나 추천해줘!';
 
+// PhotoScreen
+const String photoWarningMessage1 = '※ 정면 사진이 아닐시 분석이 안될 수 있습니다.';
+const String photoWarningMessage2 = '※ 분석한 후 3일이 지나야 재분석이 가능합니다.';
+
+// 머신러닝 API
+const String kakaoAPIurl = 'https://kapi.kakao.com/v1/vision/face/detect';
+const String naverAPIurl = 'https://openapi.naver.com/v1/vision/face';
+
+// 동물 이름
+const String bisonAnimal = 'bison';
+const String buffaloAnimal = 'buffalo';
+const String camelAnimal = 'camel';
+const String catAnimial = 'cat';
+const String cheetahAnimal = 'cheetah';
+const String crocodileAnimal = 'crocodile';
+const String deerAnimal = 'deer';
+const String dolphinAnimal = 'dolphin';
+const String duckAnimal = 'duck';
+const String eagleAnimal = 'eagle';
+const String elephantAnimal = 'elephant';
+const String foxAnimal = 'fox';
+const String goatAnimal = 'goat';
+const String gorillaAnimal = 'gorilla';
+const String hippoAnimal = 'hippo';
+const String horseAnimal = 'horse';
+const String iguanaAnimal = 'iguana';
+const String koalaAnimal = 'koala';
+const String lamaAnimal = 'lama';
+const String lionAnimal = 'lion';
+const String monkeyAnimal = 'monkey';
+const String owlAnimal = 'owl';
+const String parrotAnimal = 'parrot';
+const String penguinAnimal = 'penguin';
+const String rabbitAnimal = 'rabbit';
+const String rhinocerosAnimal = 'rhinoceros';
+const String sealAnimal = 'seal';
+const String sharkAnimal = 'shark';
+const String sheepAnimal = 'sheep';
+const String snakeAnimal = 'snake';
+const String tigerAnimal = 'tiger';
+const String whaleAnimal = 'whale';
+const String zebraAnimal = 'zebra';
+
 
 // Cloud Firestore 컬렉션 이름
 const String firestoreUsersCollection = 'users';
 
 // Cloud Firestore 실제 프로필 필드
-const String firestoreRealProfileField = 'real_profile';
+const String firestoreRealProfileField = realProfileTable;
 const String firestoreAgeField = ageCol;
 const String firestoreGenderField = genderCol;
 const String firestoreJobField = jobCol;
 const String firestoreNameField = nameCol;
-const String firestoreImagePathField = imagePathCol;
+
+// Cloud Firestore 가상 프로필 필드
+const String firestoreFakeProfileField = fakeProfileTable;
+const String firestoreFakeGenderField = fakeGenderCol;
+const String firestoreFakeGenderConfidenceField = fakeGenderConfidenceCol;
+const String firestoreFakeAgeField = fakeAgeCol;
+const String firestoreFakeAgeConfidenceField = fakeAgeConfidenceCol;
+const String firestoreFakeEmotionField = fakeEmotionCol;
+const String firestoreFakeEmotionConfidenceField = fakeEmotionConfidenceCol;
+const String firestoreAnimalNameField = animalNameCol;
+const String firestoreAnimalImageField = animalImageCol;
+const String firestoreAnimalConfidenceField = animalConfidenceCol;
 
 // Cloud Firestore 플래그 필드
 const String firestoreIsTagSelectedField = isTagSelected;
@@ -106,7 +166,7 @@ const String firestoreIsTagChattedField = isTagChatted;
 const String firestoreIsFaceAnalyzedField = isFaceAnalyzed;
 
 // Cloud Firestore 태그 필드
-const String firestoreTagField = 'tags';
+const String firestoreTagField = tagTable;
 const String firestoreTagTitle1Field = tagName1Col;
 const String firestoreTagTitle2Field = tagName2Col;
 const String firestoreTagTitle3Field = tagName3Col;
@@ -128,13 +188,16 @@ const String isFaceAnalyzed = 'is_face_analyzed';
 const String userDB = 'user.db';
 
 // 테이블 3개 이름
-const String tagTable = 'tag_table';
-const String realProfileTable = 'real_profile_table';
-const String fakeProfileTable = 'fake_profile_table';
+const String tagTable = 'tags';
+const String realProfileTable = 'real_profile';
+const String fakeProfileTable = 'fake_profile';
 
-// 테이블 3개에 대한 컬럼이름
+// 테이블 3개의 각 컬럼 이름
+// 공통 컬럼
 const String id = 'id';
 const String uidCol = 'uid';
+
+// 태그 테이블
 const String tagName1Col = 'tag_name_1';
 const String tagDetail1Col = 'tag_detail_1';
 const String tagName2Col = 'tag_name_2';
@@ -146,18 +209,22 @@ const String tagDetail4Col = 'tag_detail_4';
 const String tagName5Col = 'tag_name_5';
 const String tagDetail5Col = 'tag_detail_5';
 
+// 실제 프로필 테이블
 const String nameCol = 'name';
 const String genderCol = 'gender';
 const String ageCol = 'age';
 const String jobCol = 'job';
-const String imagePathCol = 'image_path';
 
+// 가상 프로필 테이블
+const String fakeGenderCol = 'fake_gender';
+const String fakeGenderConfidenceCol = 'fake_gender_confidence';
+const String fakeAgeCol = 'fake_age';
+const String fakeAgeConfidenceCol = 'fake_age_confidence';
+const String fakeEmotionCol = 'fake_emotion';
+const String fakeEmotionConfidenceCol = 'fake_emotion_confidence';
 const String animalNameCol = 'animal_name';
-const String emotionCol = 'emotion';
+const String animalImageCol = 'animal_image';
 const String animalConfidenceCol = 'animal_confidence';
-const String genderConfidenceCol = 'gender_confidence';
-const String emotionConfidenceCol = 'emotion_confidence';
-const String ageConfidenceCol = 'age_confidence';
 
 // 태그 테이블 생성하는 SQL
 const String tagTableCreationSQL = 
@@ -177,15 +244,16 @@ const String tagTableCreationSQL =
 
 // 실제 프로필 테이블 생성하는 SQL
 const String realProfileTableCreationSQL = 
-  'CREATE TABLE real_profile_table'
+  'CREATE TABLE $realProfileTable'
   '($id INTEGER PRIMARY KEY AUTOINCREMENT,'
   '$uidCol TEXT, $nameCol TEXT, $genderCol TEXT, $ageCol INTEGER, $jobCol TEXT)';
 
 
 // 가상 프로필 테이블 생성하는 SQL  
 const String fakeProfileTableCreationSQL = 
-  'CREATE TABLE fake_profile_table'
+  'CREATE TABLE $fakeProfileTable'
   '($id INTEGER PRIMARY KEY AUTOINCREMENT,'
-  '$uidCol TEXT,'
-  '$nameCol TEXT, $imagePathCol TEXT, $animalNameCol TEXT, $genderCol TEXT, $ageCol INTEGER, $emotionCol TEXT,'
-  '$animalConfidenceCol REAL, $genderConfidenceCol REAL, $emotionConfidenceCol REAL, $ageConfidenceCol REAL)';
+  '$uidCol TEXT, $fakeGenderCol TEXT, $fakeGenderConfidenceCol REAL, '
+  '$fakeAgeCol TEXT, $fakeAgeConfidenceCol REAL, '
+  '$fakeEmotionCol TEXT, $firestoreFakeEmotionConfidenceField REAL, '
+  '$animalNameCol TEXT, $animalImageCol TEXT, $animalConfidenceCol REAL)';

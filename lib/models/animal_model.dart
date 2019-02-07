@@ -1,6 +1,44 @@
+List<Animal> animalList = [
+  Animal.bison(),
+  Animal.buffalo(),
+  Animal.camel(),
+  Animal.cat(),
+  Animal.cheetah(),
+  Animal.crocodile(),
+  Animal.deer(),
+  Animal.dolphin(),
+  Animal.duck(),
+  Animal.duck(),
+  Animal.eagle(),
+  Animal.elephant(),
+  Animal.fox(),
+  Animal.goat(),
+  Animal.gorilla(),
+  Animal.hippo(),
+  Animal.horse(),
+  Animal.iguana(),
+  Animal.koala(),
+  Animal.lama(),
+  Animal.lion(),
+  Animal.monkey(),
+  Animal.owl(),
+  Animal.parrot(),
+  Animal.penguin(),
+  Animal.pig(),
+  Animal.rabbit(),
+  Animal.rhinoceros(),
+  Animal.seal(),
+  Animal.shark(),
+  Animal.sheep(),
+  Animal.tiger(),
+  Animal.turtle(),
+  Animal.whale(),
+  Animal.zebra()
+];
 
 class Animal {
   final String image;
+  final String name;
   final WIDTH faceWidth;
   final LENGTH faceLength;
   final WIDTH noseWidth;
@@ -8,8 +46,9 @@ class Animal {
   final WIDTH lipWidth;
   final LENGTH lipLength; 
 
-  Animal({
+  const Animal({
     this.image,
+    this.name,
     this.faceWidth,
     this.faceLength,
     this.noseWidth,
@@ -19,8 +58,9 @@ class Animal {
   });
 
   factory Animal.dog() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/dog.jpg',
+      name: '개',
       faceWidth: WIDTH.NORMAL,
       faceLength: LENGTH.NORMAL,
       noseWidth: WIDTH.NORMAL,
@@ -31,8 +71,9 @@ class Animal {
   }
 
   factory Animal.turtle() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/turtle.jpg',
+      name: '거북이',
       faceWidth: WIDTH.WIDE,
       faceLength: LENGTH.NORMAL,
       noseWidth: WIDTH.NARROW,
@@ -43,8 +84,9 @@ class Animal {
   }
 
   factory Animal.gorilla() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/gorilla.jpg',
+      name: '고릴라',
       faceWidth: WIDTH.WIDE,
       faceLength: LENGTH.LONG,
       noseWidth: WIDTH.WIDE,
@@ -55,8 +97,9 @@ class Animal {
   }
 
   factory Animal.dolphin() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/dolphin.jpg',
+      name: '돌고래',
       faceWidth: WIDTH.WIDE,
       faceLength: LENGTH.NORMAL,
       noseWidth: WIDTH.NARROW,
@@ -67,8 +110,9 @@ class Animal {
   }
 
   factory Animal.bison() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/bison.jpg',
+      name: '들소',
       faceWidth: WIDTH.WIDE,
       faceLength: LENGTH.LONG,
       noseWidth: WIDTH.NORMAL,
@@ -79,8 +123,9 @@ class Animal {
   }
 
   factory Animal.owl() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/owl.jpg',
+      name: '부엉이',
       faceWidth: WIDTH.WIDE,
       faceLength: LENGTH.SHORT,
       noseWidth: WIDTH.NARROW,
@@ -91,8 +136,9 @@ class Animal {
   }
 
   factory Animal.lion() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/lion.jpg',
+      name: '사자',
       faceWidth: WIDTH.WIDE,
       faceLength: LENGTH.NORMAL,
       noseWidth: WIDTH.NORMAL,
@@ -103,8 +149,9 @@ class Animal {
   }
 
   factory Animal.shark() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/shark.jpg',
+      name: '상어',
       faceWidth: WIDTH.WIDE,
       faceLength: LENGTH.SHORT,
       noseWidth: WIDTH.WIDE,
@@ -115,8 +162,9 @@ class Animal {
   }
 
   factory Animal.buffalo() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/buffalo.jpg',
+      name: '버팔로',
       faceWidth: WIDTH.WIDE,
       faceLength: LENGTH.LONG,
       noseWidth: WIDTH.NORMAL,
@@ -127,8 +175,9 @@ class Animal {
   }
 
   factory Animal.crocodile() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/crocodile.jpg',
+      name: '악어',
       faceWidth: WIDTH.WIDE,
       faceLength: LENGTH.SHORT,
       noseWidth: WIDTH.NARROW,
@@ -139,8 +188,9 @@ class Animal {
   }
 
   factory Animal.sheep() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/sheep.jpg',
+      name: '양',
       faceWidth: WIDTH.WIDE,
       faceLength: LENGTH.LONG,
       noseWidth: WIDTH.NORMAL,
@@ -151,8 +201,9 @@ class Animal {
   }
 
   factory Animal.elephant() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/elephant.jpg',
+      name: '코끼리',
       faceWidth: WIDTH.WIDE,
       faceLength: LENGTH.LONG,
       noseWidth: WIDTH.WIDE,
@@ -163,8 +214,9 @@ class Animal {
   }
 
   factory Animal.rhinoceros() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/rhinoceros.jpg',
+      name: '코뿔소',
       faceWidth: WIDTH.WIDE,
       faceLength: LENGTH.NORMAL,
       noseWidth: WIDTH.WIDE,
@@ -175,8 +227,9 @@ class Animal {
   }
 
   factory Animal.hippo() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/hippo.jpg',
+      name: '하마',
       faceWidth: WIDTH.WIDE,
       faceLength: LENGTH.NORMAL,
       noseWidth: WIDTH.WIDE,
@@ -187,8 +240,9 @@ class Animal {
   }
 
   factory Animal.pig() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/pig.jpg',
+      name: '돼지',
       faceWidth: WIDTH.NORMAL,
       faceLength: LENGTH.LONG,
       noseWidth: WIDTH.WIDE,
@@ -199,8 +253,9 @@ class Animal {
   }
 
   factory Animal.lama() {
-    return Animal(
-      image: 'assets/images/animals/shark.jpg',
+    return const Animal(
+      image: 'assets/images/animals/lama.jpg',
+      name: '라마',
       faceWidth: WIDTH.NORMAL,
       faceLength: LENGTH.LONG,
       noseWidth: WIDTH.NORMAL,
@@ -211,8 +266,9 @@ class Animal {
   }
 
   factory Animal.seal() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/seal.jpg',
+      name: '물개',
       faceWidth: WIDTH.NORMAL,
       faceLength: LENGTH.NORMAL,
       noseWidth: WIDTH.NORMAL,
@@ -223,8 +279,9 @@ class Animal {
   }
 
   factory Animal.deer() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/deer.jpg',
+      name: '사슴',
       faceWidth: WIDTH.NORMAL,
       faceLength: LENGTH.NORMAL,
       noseWidth: WIDTH.NORMAL,
@@ -235,8 +292,9 @@ class Animal {
   }
 
   factory Animal.fox() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/fox.jpg',
+      name: '여우',
       faceWidth: WIDTH.NORMAL,
       faceLength: LENGTH.NORMAL,
       noseWidth: WIDTH.NORMAL,
@@ -247,8 +305,9 @@ class Animal {
   }
 
   factory Animal.goat() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/goat.jpg',
+      name: '염소',
       faceWidth: WIDTH.NORMAL,
       faceLength: LENGTH.LONG,
       noseWidth: WIDTH.NORMAL,
@@ -259,8 +318,9 @@ class Animal {
   }
 
   factory Animal.cheetah() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/cheetah.jpg',
+      name: '치타',
       faceWidth: WIDTH.NORMAL,
       faceLength: LENGTH.NORMAL,
       noseWidth: WIDTH.NORMAL,
@@ -271,8 +331,9 @@ class Animal {
   }
 
   factory Animal.koala() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/koala.jpg',
+      name: '코알라',
       faceWidth: WIDTH.NORMAL,
       faceLength: LENGTH.SHORT,
       noseWidth: WIDTH.WIDE,
@@ -283,8 +344,9 @@ class Animal {
   }
 
   factory Animal.rabbit() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/rabbit.jpg',
+      name: '토끼',
       faceWidth: WIDTH.NORMAL,
       faceLength: LENGTH.SHORT,
       noseWidth: WIDTH.NORMAL,
@@ -295,8 +357,9 @@ class Animal {
   }
 
   factory Animal.tiger() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/tiger.jpg',
+      name: '호랑이',
       faceWidth: WIDTH.NORMAL,
       faceLength: LENGTH.LONG,
       noseWidth: WIDTH.NORMAL,
@@ -307,8 +370,9 @@ class Animal {
   }
 
   factory Animal.cat() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/cat.jpg',
+      name: '고양이',
       faceWidth: WIDTH.NARROW,
       faceLength: LENGTH.SHORT,
       noseWidth: WIDTH.NARROW,
@@ -319,8 +383,9 @@ class Animal {
   }
 
   factory Animal.camel() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/camel.jpg',
+      name: '낙타',
       faceWidth: WIDTH.NARROW,
       faceLength: LENGTH.LONG,
       noseWidth: WIDTH.WIDE,
@@ -331,8 +396,9 @@ class Animal {
   }
 
   factory Animal.eagle() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/eagle.jpg',
+      name: '독수리',
       faceWidth: WIDTH.NARROW,
       faceLength: LENGTH.NORMAL,
       noseWidth: WIDTH.WIDE,
@@ -343,8 +409,9 @@ class Animal {
   }
 
   factory Animal.horse() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/horse.jpg',
+      name: '말',
       faceWidth: WIDTH.NARROW,
       faceLength: LENGTH.LONG,
       noseWidth: WIDTH.WIDE,
@@ -355,8 +422,9 @@ class Animal {
   }
 
   factory Animal.snake() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/snake.jpg',
+      name: '뱀',
       faceWidth: WIDTH.NARROW,
       faceLength: LENGTH.SHORT,
       noseWidth: WIDTH.NARROW,
@@ -367,8 +435,9 @@ class Animal {
   }
 
   factory Animal.parrot() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/parrot.jpg',
+      name: '앵무새',
       faceWidth: WIDTH.NARROW,
       faceLength: LENGTH.SHORT,
       noseWidth: WIDTH.NORMAL,
@@ -379,8 +448,9 @@ class Animal {
   }
 
   factory Animal.zebra() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/zebra.jpg',
+      name: '얼룩말',
       faceWidth: WIDTH.NARROW,
       faceLength: LENGTH.LONG,
       noseWidth: WIDTH.NORMAL,
@@ -391,8 +461,9 @@ class Animal {
   }
 
   factory Animal.duck() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/duck.jpg',
+      name: '오리',
       faceWidth: WIDTH.NARROW,
       faceLength: LENGTH.SHORT,
       noseWidth: WIDTH.WIDE,
@@ -403,8 +474,9 @@ class Animal {
   }
 
   factory Animal.monkey() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/monkey.jpg',
+      name: '원숭이',
       faceWidth: WIDTH.NARROW,
       faceLength: LENGTH.SHORT,
       noseWidth: WIDTH.NARROW,
@@ -415,8 +487,9 @@ class Animal {
   }
 
   factory Animal.iguana() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/iguana.jpg',
+      name: '이구아나',
       faceWidth: WIDTH.NARROW,
       faceLength: LENGTH.SHORT,
       noseWidth: WIDTH.NARROW,
@@ -427,14 +500,28 @@ class Animal {
   }
 
   factory Animal.penguin() {
-    return Animal(
+    return const Animal(
       image: 'assets/images/animals/penguin.jpg',
+      name: '펭귄',
       faceWidth: WIDTH.NARROW,
       faceLength: LENGTH.SHORT,
       noseWidth: WIDTH.NARROW,
       noseLength: LENGTH.SHORT,
       lipWidth: WIDTH.WIDE,
       lipLength: LENGTH.SHORT
+    );
+  }
+
+  factory Animal.whale() {
+    return const Animal(
+      image: 'assets/images/animals/whale.jpg',
+      name: '고래',
+      faceWidth: WIDTH.WIDE,
+      faceLength: LENGTH.LONG,
+      noseWidth: WIDTH.WIDE,
+      noseLength: LENGTH.NORMAL,
+      lipWidth: WIDTH.WIDE,
+      lipLength: LENGTH.LONG
     );
   }
 }

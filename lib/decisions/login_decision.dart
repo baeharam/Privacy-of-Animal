@@ -23,11 +23,17 @@ class _LoginDecisionState extends State<LoginDecision> {
           return LoginScreen();
         }
         if(state.isAuthenticated){
-          if(!state.isTagSelected){
-            StreamNavigator.pushNamedAndRemoveAll(context,routeTagSelect);
+          if(state.isFaceAnalyzed){
+            StreamNavigator.pushNamedAndRemoveAll(context, routeHomeDecision);
+          } 
+          else if(state.isTagChatted){
+            StreamNavigator.pushNamedAndRemoveAll(context,routePhotoDecision);
           }
-          if(state.isTagSelected){
+          else if(state.isTagSelected){
             StreamNavigator.pushNamedAndRemoveAll(context,routeTagChat);
+          }
+          else {
+            StreamNavigator.pushNamedAndRemoveAll(context,routeTagSelect);
           }
         }
         return Container();

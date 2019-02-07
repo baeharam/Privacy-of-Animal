@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:privacy_of_animal/logics/firebase_api.dart';
+import 'package:privacy_of_animal/utils/service_locator.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 class BackButtonAction {
   static DateTime currentBackPressTime;
@@ -11,5 +15,40 @@ class BackButtonAction {
       return Future.value(false);
     }
     return Future.value(true);
+  }
+
+  static Future<bool> stopInMiddle(BuildContext context) async{
+    Alert(
+      title: '중단하시겠습니까?',
+      type: AlertType.warning,
+      context: context,
+      content: Text(
+        '자동으로 로그아웃 됩니다.'
+      ),
+      buttons: [
+        DialogButton(
+          child: Text(
+            '예',
+            style: TextStyle(
+              color: Colors.white
+            ),
+          ),
+          onPressed: () async {
+            await sl.get<FirebaseAPI>().auth.signOut();
+            SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+          },
+        ),
+        DialogButton(
+          child: Text(
+            '아니오',
+            style: TextStyle(
+              color: Colors.white
+            ),
+          ),
+          onPressed: () => Navigator.of(context).pop()
+        )
+      ]
+    ).show();
+    return Future.value(false);
   }
 }

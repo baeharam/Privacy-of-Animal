@@ -10,10 +10,11 @@ Map<String, WidgetBuilder> routes =  {
   routeLogin: (BuildContext context) => LoginScreen(),
   routeTagSelect: (BuildContext context) => TagSelectScreen(),
   routeTagChat: (BuildContext context) => TagChatScreen(),
-  routeFaceAnalyze: (BuildContext context) => FaceAnalyzeScreen(),
-  routeTagPhoto: (BuildContext context) => PhotoScreen(),
+  routePhoto: (BuildContext context) => PhotoScreen(),
 
   /// Decision
   routeLoginDecision: (BuildContext context) => LoginDecision(),
   routeSignUpDecision: (BuildContext context) => SignUpDecision(),
+  routePhotoDecision: (BuildContext context) => PhotoDecision(),
+  routeHomeDecision: (BuildContext context) => HomeDecision()
 };
