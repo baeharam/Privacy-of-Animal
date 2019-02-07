@@ -14,12 +14,8 @@ class PhotoBloc extends BlocEventStateBase<PhotoEvent,PhotoState>
   Stream<PhotoState> eventHandler(PhotoEvent event, PhotoState currentState) async*{
     
     if (event is PhotoEventTaking) {
-<<<<<<< HEAD
-      yield PhotoState.take(await _api.getImage());
-=======
       String path = await _api.getImage();
       yield PhotoState.take(path);
->>>>>>> upstream/master
     }
     if (event is PhotoEventGotoAnalysis){
       yield PhotoState.loading();

@@ -13,6 +13,7 @@ class PhotoScreen extends StatefulWidget {
 
 class _PhotoScreenState extends State<PhotoScreen> {
   final PhotoBloc _photoBloc = sl.get<PhotoBloc>();
+  String photoPath;
   
   @override
   Widget build(BuildContext context){
@@ -30,7 +31,8 @@ class _PhotoScreenState extends State<PhotoScreen> {
             BlocBuilder(
               bloc: _photoBloc,
               builder: (context, PhotoState state){
-                if(state.takedPhoto) {
+                if(state.isPhotoDone) {
+                  photoPath = state.path;
                   return Container(
                     height: ScreenUtil.height/3,
                     // width: ScreenUtil.width/1.4,
@@ -84,7 +86,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
                 ),
               ),
               onPressed: () async{
-                _photoBloc.emitEvent(PhotoEventGotoAnalysis());
+                _photoBloc.emitEvent(PhotoEventGotoAnalysis(photoPath: photoPath));
                 // TODO:goto next screen
               },
               color: primaryBeige,

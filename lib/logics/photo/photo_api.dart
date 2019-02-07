@@ -21,18 +21,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
 class PhotoAPI {
-<<<<<<< HEAD
-=======
-
->>>>>>> upstream/master
   Future<String> getImage() async {
     final File image = await ImagePicker.pickImage(source: ImageSource.camera);
     final File compressedImage = await FlutterNativeImage.compressImage(image.path, quality: 80, percentage: 100);
     return compressedImage.path;
   }
 
-<<<<<<< HEAD
-=======
   Future<ANALYZE_RESULT> storeProfile() async {
     try{
       String uid = sl.get<CurrentUser>().uid;
@@ -223,5 +217,4 @@ class PhotoAPI {
 enum ANALYZE_RESULT {
   SUCCESS,
   FAILURE
->>>>>>> upstream/master
 }

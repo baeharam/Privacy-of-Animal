@@ -7,13 +7,8 @@ const String routePhoto = '/signUpPhoto';
 
 const String routeLoginDecision = '/loginDecision';
 const String routeSignUpDecision = '/signUpDecision';
-<<<<<<< HEAD
-const String routeTagPhoto = '/signUpPhoto';
-const String routeFaceAnaylze = '/FaceAnalyzeScreen';
-=======
 const String routePhotoDecision = '/photoDecision';
 const String routeHomeDecision = '/homeDecision';
->>>>>>> upstream/master
 
 // IntroScreen
 const String introMessage1Above = '내 얼굴 사진을 바탕으로';
