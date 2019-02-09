@@ -10,9 +10,10 @@ class CurrentUser {
   KakaoMLModel kakaoMLModel;
   FakeProfileModel fakeProfileModel;
 
-  bool isTagSelected;
-  bool isTagChatted;
-  bool isFaceAnalyzed;
+  bool isTagSelected = false;
+  bool isTagChatted = false;
+  bool isFaceAnalyzed = false;
+  bool isDataFetched = false;
 
   CurrentUser() : 
     realProfile = RealProfileModel(), 
