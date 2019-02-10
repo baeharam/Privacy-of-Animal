@@ -23,16 +23,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
         child: Column(
           children: <Widget>[
             Container(
-              padding: EdgeInsets.only(left: 10.0,right: 10.0,bottom: ScreenUtil.height/20),
+              padding: EdgeInsets.only(left: ScreenUtil.width/20,right: ScreenUtil.width/20,bottom: ScreenUtil.height/20),
               width: double.infinity,
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Padding(
-                    padding: EdgeInsets.only(right: ScreenUtil.width/1.6,top: ScreenUtil.height/20),
-                    child: Text(
-                      '가상프로필',
-                      style: primaryTextStyle,
-                    ),
+                    padding: EdgeInsets.only(top: ScreenUtil.height/20),
+                    child: Row(
+                      children: <Widget>[
+                        Text(
+                          '가상프로필',
+                          style: primaryTextStyle,
+                        ),
+                        Image(
+                          image: AssetImage('assets/images/components/modify.png'),
+                          width: 50.0,
+                          height: 50.0,
+                        )
+                      ],
+                    )
                   ),
                   SizedBox(height: 10.0),
                   Card(
@@ -98,7 +108,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Padding(
-                    padding: EdgeInsets.only(right: ScreenUtil.width/1.6,bottom: 10.0),
+                    padding: EdgeInsets.only(bottom: 10.0),
                     child: Text(
                       '실제프로필',
                       style: primaryTextStyle,
@@ -132,11 +142,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Padding(
-                    padding: EdgeInsets.only(right: ScreenUtil.width/1.6,bottom: 10.0),
-                    child: Text(
-                      '관심사 태그',
-                      style: primaryTextStyle,
-                    ),
+                    padding: EdgeInsets.only(bottom: 10.0),
+                    child: Row(
+                      children: <Widget>[
+                        Text(
+                          '관심사 태그',
+                          style: primaryTextStyle,
+                        ),
+                        Image(
+                          image: AssetImage('assets/images/components/modify.png'),
+                          width: 50.0,
+                          height: 50.0,
+                        )
+                      ],
+                    )
                   ),
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
