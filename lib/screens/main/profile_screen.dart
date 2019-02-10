@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
+import 'package:privacy_of_animal/logics/photo/photo.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/resources/constants.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
@@ -44,7 +45,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             width: 50.0,
                             height: 50.0,
                           ),
-                          onTap: () => Navigator.pushNamed(context, routePhotoDecision),
+                          onTap: (){
+                            sl.get<PhotoBloc>().emitEvent(PhotoEventReset());
+                            Navigator.pushNamed(context, routePhotoDecision);
+                          }
                         )
                       ],
                     )
