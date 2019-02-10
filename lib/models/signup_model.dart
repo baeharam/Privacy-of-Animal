@@ -4,10 +4,12 @@ class SignUpModel {
   String email;
   String password;
   RealProfileModel realProfileModel;
+  String nickName;
 
   SignUpModel({
     this.email,
     this.password,
-    this.realProfileModel
+    this.realProfileModel,
+    this.nickName
   });
 }

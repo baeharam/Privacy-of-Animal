@@ -36,9 +36,11 @@ const String signUpInvalidNameError = '이름을 제대로 입력해주세요.';
 const String signUpEmptyAgeError = '나이를 입력하세요.';
 const String signUpEmptyJobError = '직업을 입력하세요.';
 const String signUpInvalidJobError = '직업을 제대로 입력해주세요.';
+const String signUpEmptyNickNameError = '닉네임을 입력하세요.';
 const String signUpNameHint = '본인의 이름을 입력해주세요.';
 const String signUpAgeHint = '나이를 설정해주세요.';
 const String signUpJobHint = '직업을 입력해주세요.';
+const String signUpNickNameHint = '닉네임을 입력해주세요.';
 const String signUpEmailHint = '이메일을 입력해주세요.';
 const String signUpPasswordHint = '6글자 이상의 비밀번호를 입력해주세요.';
 const String signUpAccountFailedTitle = '계정생성 실패!';
@@ -154,6 +156,7 @@ const String firestoreFakeEmotionConfidenceField = fakeEmotionConfidenceCol;
 const String firestoreAnimalNameField = animalNameCol;
 const String firestoreAnimalImageField = animalImageCol;
 const String firestoreAnimalConfidenceField = animalConfidenceCol;
+const String firestoreNickNameField = nickNameCol;
 
 // Cloud Firestore 플래그 필드
 const String firestoreIsTagSelectedField = isTagSelected;
@@ -220,6 +223,7 @@ const String fakeEmotionConfidenceCol = 'fake_emotion_confidence';
 const String animalNameCol = 'animal_name';
 const String animalImageCol = 'animal_image';
 const String animalConfidenceCol = 'animal_confidence';
+const String nickNameCol = 'nick_name';
 
 // 태그 테이블 생성하는 SQL
 const String tagTableCreationSQL = 
@@ -248,7 +252,7 @@ const String realProfileTableCreationSQL =
 const String fakeProfileTableCreationSQL = 
   'CREATE TABLE $fakeProfileTable'
   '($id INTEGER PRIMARY KEY AUTOINCREMENT,'
-  '$uidCol TEXT, $fakeGenderCol TEXT, $fakeGenderConfidenceCol REAL, '
+  '$uidCol TEXT, $nickNameCol TEXT, $fakeGenderCol TEXT, $fakeGenderConfidenceCol REAL, '
   '$fakeAgeCol TEXT, $fakeAgeConfidenceCol REAL, '
   '$fakeEmotionCol TEXT, $firestoreFakeEmotionConfidenceField REAL, '
   '$animalNameCol TEXT, $animalImageCol TEXT, $animalConfidenceCol REAL)';

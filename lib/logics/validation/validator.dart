@@ -4,3 +4,4 @@ export './name_validator.dart';
 export './age_validator.dart';
 export './job_validator.dart';
 export './gender_validator.dart';
+export './nickname_validator.dart';

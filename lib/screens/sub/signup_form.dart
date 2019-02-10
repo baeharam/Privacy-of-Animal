@@ -24,11 +24,13 @@ class _SignUpFormState extends State<SignUpForm> {
   final FocusNode _passwordFocusNode = FocusNode();
   final FocusNode _nameFocusNode = FocusNode();
   final FocusNode _jobFocusNode = FocusNode();
+  final FocusNode _nickNameFocusNode = FocusNode();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _ageController = TextEditingController();
   final TextEditingController _jobController = TextEditingController();
+  final TextEditingController _nickNameController = TextEditingController();
 
   @override
     void dispose() {
@@ -36,10 +38,12 @@ class _SignUpFormState extends State<SignUpForm> {
       _passwordController.dispose();
       _nameController.dispose();
       _ageController.dispose();
+      _nickNameController.dispose();
       _emailFocusNode.dispose();
       _passwordFocusNode.dispose();
       _nameFocusNode.dispose();
       _jobFocusNode.dispose();
+      _nickNameFocusNode.dispose();
       super.dispose();
     }
 
@@ -78,7 +82,7 @@ class _SignUpFormState extends State<SignUpForm> {
     SignUpModel signUpModel = SignUpModel();
 
     return Container(
-      height: ScreenUtil.height*1.2,
+      height: ScreenUtil.height*1.3,
       width: ScreenUtil.width/1.3,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -161,6 +165,18 @@ class _SignUpFormState extends State<SignUpForm> {
             textInputType: TextInputType.text,
             type: FOCUS_TYPE.PROFILE_FOCUS
           ),
+          SizedBox(height: ScreenUtil.height/25),
+          _buildTitle('닉네임'),
+          SignUpInput(
+            hintText: signUpNickNameHint,
+            stream: validationBloc.nickName,
+            controller: _nickNameController,
+            focusNode: _nickNameFocusNode,
+            failFocusNode: _nameFocusNode,
+            onChanged: validationBloc.onNickNameChanged,
+            textInputType: TextInputType.text,
+            type: FOCUS_TYPE.PROFILE_FOCUS
+          ),
           SizedBox(height: ScreenUtil.height/15),
           _buildTitle('성별'),
           SizedBox(height: ScreenUtil.height/30),
@@ -195,6 +211,7 @@ class _SignUpFormState extends State<SignUpForm> {
                   signUpModel.realProfileModel.job = _jobController.text;
                   signUpModel.email = _emailController.text;
                   signUpModel.password = _passwordController.text;
+                  signUpModel.nickName = _nickNameController.text;
                   signUpBloc.emitEvent(SignUpEventComplete(data: signUpModel));
                 } 
                 : null,

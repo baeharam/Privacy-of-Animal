@@ -104,6 +104,7 @@ class LoginAPI {
       // 가상 프로필 정보 가져오기
       List<Map<String,dynamic>> fakeProfile = 
       await db.rawQuery('SELECT * FROM $fakeProfileTable WHERE $uidCol="$uid"');
+      sl.get<CurrentUser>().fakeProfileModel.nickName = fakeProfile[0][nickNameCol];
       sl.get<CurrentUser>().fakeProfileModel.age = fakeProfile[0][fakeAgeCol];
       sl.get<CurrentUser>().fakeProfileModel.gender = fakeProfile[0][fakeGenderCol];
       sl.get<CurrentUser>().fakeProfileModel.emotion = fakeProfile[0][fakeEmotionCol];

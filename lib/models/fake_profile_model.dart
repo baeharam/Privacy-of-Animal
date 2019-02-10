@@ -4,6 +4,7 @@ class FakeProfileModel {
   String animalName;
   double animalConfidence;
 
+  String nickName;
   String gender;
   double genderConfidence;
   String age;
@@ -16,6 +17,7 @@ class FakeProfileModel {
     this.animalName,
     this.animalConfidence,
     
+    this.nickName,
     this.gender,
     this.genderConfidence,
     this.age,

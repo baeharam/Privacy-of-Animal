@@ -47,6 +47,9 @@ class SignUpAPI {
             firestoreJobField: data.realProfileModel.job,
             firestoreGenderField: data.realProfileModel.gender
           },
+          firestoreFakeProfileField: {
+            firestoreNickNameField: data.nickName
+          },
           firestoreIsTagSelectedField: false,
           firestoreIsTagChattedField: false,
           firestoreIsFaceAnalyzedField: false
@@ -62,6 +65,10 @@ class SignUpAPI {
       'VALUES("${sl.get<CurrentUser>().uid}",'
       '"${data.realProfileModel.name}","${data.realProfileModel.age}",'
       '"${data.realProfileModel.job}","${data.realProfileModel.gender}")');
+    db.rawInsert(
+      'INSERT INTO $fakeProfileTable($uidCol,$nickNameCol) '
+      'VALUES("${sl.get<CurrentUser>().uid}","${data.nickName}")'
+    );
   }
 
   // 실패한 부분에 포커싱
