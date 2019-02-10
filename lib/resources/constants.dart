@@ -13,6 +13,13 @@ class ScreenUtil {
   static double height;
 }
 
+const TextStyle primaryTextStyle = 
+TextStyle(
+  color: Colors.black,
+  fontWeight: FontWeight.bold,
+  fontSize: 20.0
+);
+
 class CurrentPlatform {
   static TargetPlatform platform;
 }
