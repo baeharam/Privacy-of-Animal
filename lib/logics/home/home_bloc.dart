@@ -2,12 +2,16 @@ import 'package:privacy_of_animal/bloc_helpers/bloc_event_state.dart';
 import 'package:privacy_of_animal/logics/home/home.dart';
 
 class HomeBloc extends BlocEventStateBase<HomeEvent,HomeState> {
+
+  final HomeAPI _api = HomeAPI();
+
   @override
     HomeState get initialState => HomeState.profile(3);
 
   @override
   Stream<HomeState> eventHandler(HomeEvent event, HomeState currentState) async*{
     if(event.index==0){
+      await _api.fetchUserData();
       yield HomeState.match(event.index);
     }
     else if(event.index==1){
