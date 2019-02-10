@@ -36,7 +36,7 @@ class LoginAPI {
 
   // 사용자 상태 확인
   Future<USER_CONDITION> checkUserCondition() async {
-    await _setSharedPreferences();
+    await _setLoginFlags();
     if(sl.get<CurrentUser>().isTagSelected==false){
       return USER_CONDITION.NONE;
     } else if(sl.get<CurrentUser>().isTagChatted==false){
@@ -49,7 +49,7 @@ class LoginAPI {
   }
 
   // 상태에 따라 보여지는 화면이 다르기 때문에 SharedPreferences 값 설정해주어야 함
-  Future<void> _setSharedPreferences() async {
+  Future<void> _setLoginFlags() async {
     String uid = await sl.get<FirebaseAPI>().user;
     SharedPreferences prefs = await sl.get<DatabaseHelper>().sharedPreferences;
 
