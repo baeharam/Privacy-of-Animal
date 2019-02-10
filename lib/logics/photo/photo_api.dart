@@ -212,6 +212,8 @@ class PhotoAPI {
     sl.get<CurrentUser>().fakeProfileModel.animalName = animal.name;
     sl.get<CurrentUser>().fakeProfileModel.animalConfidence 
       = (candidate[index].length/animalList.length)*(7-index);
+    if(sl.get<CurrentUser>().fakeProfileModel.animalConfidence>1.0)
+      sl.get<CurrentUser>().fakeProfileModel.animalConfidence = 1.0;
   }
 }
 

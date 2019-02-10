@@ -63,10 +63,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
               alignment: Alignment.center,
               child: Text(
                 '실제프로필 : '+
-                user.realProfile.age+' / '+
-                user.realProfile.gender+' / '+
-                user.realProfile.job+' / '+
-                user.realProfile.name,
+                user.realProfileModel.age+' / '+
+                user.realProfileModel.gender+' / '+
+                user.realProfileModel.job+' / '+
+                user.realProfileModel.name,
                 style: TextStyle(
                   color: Colors.black,
                   fontSize: 15.0,

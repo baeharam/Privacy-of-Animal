@@ -10,6 +10,10 @@ import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:sqflite/sqflite.dart';
 
 class LoginAPI {
+
+  SharedPreferences prefs;
+  String uid;
+
   // 로그인
   Future<LOGIN_RESULT> login(String email, String password) async {
     try {
@@ -37,11 +41,11 @@ class LoginAPI {
   // 사용자 상태 확인
   Future<USER_CONDITION> checkUserCondition() async {
     await _setLoginFlags();
-    if(sl.get<CurrentUser>().isTagSelected==false){
+    if(prefs.getBool(uid+isTagSelected)==false){
       return USER_CONDITION.NONE;
-    } else if(sl.get<CurrentUser>().isTagChatted==false){
+    } else if(prefs.getBool(uid+isTagChatted)==false){
       return USER_CONDITION.TAG_SELECTED;
-    } else if(sl.get<CurrentUser>().isFaceAnalyzed==false){
+    } else if(prefs.getBool(uid+isFaceAnalyzed)==false){
       return USER_CONDITION.TAG_CHATTED;
     } else {
       return USER_CONDITION.FACE_ANALYZED;
@@ -50,26 +54,18 @@ class LoginAPI {
 
   // 상태에 따라 보여지는 화면이 다르기 때문에 SharedPreferences 값 설정해주어야 함
   Future<void> _setLoginFlags() async {
-    String uid = await sl.get<FirebaseAPI>().user;
-    SharedPreferences prefs = await sl.get<DatabaseHelper>().sharedPreferences;
+    uid = await sl.get<FirebaseAPI>().user;
+    prefs = await sl.get<DatabaseHelper>().sharedPreferences;
 
-    sl.get<CurrentUser>().isTagSelected = prefs.getBool(uid+firestoreIsTagSelectedField);
-    sl.get<CurrentUser>().isTagChatted = prefs.getBool(uid+firestoreIsTagChattedField);
-    sl.get<CurrentUser>().isFaceAnalyzed = prefs.getBool(uid+firestoreIsFaceAnalyzedField);
-    if(sl.get<CurrentUser>().isTagSelected==null || sl.get<CurrentUser>().isTagChatted==null || sl.get<CurrentUser>().isFaceAnalyzed==null){
-      sl.get<CurrentUser>().isTagSelected = await fetchUserCondition(uid, firestoreIsTagSelectedField);
-      sl.get<CurrentUser>().isTagChatted = await fetchUserCondition(uid, firestoreIsTagChattedField);
-      sl.get<CurrentUser>().isFaceAnalyzed = await fetchUserCondition(uid, firestoreIsFaceAnalyzedField);
-      prefs.setBool(uid+firestoreIsTagSelectedField, sl.get<CurrentUser>().isTagSelected);
-      prefs.setBool(uid+firestoreIsTagChattedField, sl.get<CurrentUser>().isTagChatted);
-      prefs.setBool(uid+firestoreIsFaceAnalyzedField, sl.get<CurrentUser>().isFaceAnalyzed);
+    bool tagSelectFlag = prefs.getBool(uid+isTagSelected);
+    bool tagChatFlag = prefs.getBool(uid+isTagChatted);
+    bool faceAnalyzeFlag = prefs.getBool(uid+isFaceAnalyzed);
+    if(tagSelectFlag==null || tagChatFlag==null || faceAnalyzeFlag==null){
+      DocumentSnapshot document = await sl.get<FirebaseAPI>().firestore.collection(firestoreUsersCollection).document(uid).get();
+      prefs.setBool(uid+isTagSelected, document[firestoreIsTagSelectedField]);
+      prefs.setBool(uid+firestoreIsTagChattedField, document[firestoreIsTagChattedField]);
+      prefs.setBool(uid+firestoreIsFaceAnalyzedField, document[firestoreIsFaceAnalyzedField]);
     }
-  }
-
-  // Firestore에서 사용자 상태 가져오기
-  Future<bool> fetchUserCondition(String uid, String field) async {
-    DocumentSnapshot document = await sl.get<FirebaseAPI>().firestore.collection(firestoreUsersCollection).document(uid).get();
-    return document[field];
   }
 
   // 바로 홈 화면으로 갈 경우 그에 해당하는 데이터를 가져옴
@@ -96,10 +92,10 @@ class LoginAPI {
       // 실제 프로필 정보 가져오기
       List<Map<String,dynamic>> realProfile = 
       await db.rawQuery('SELECT * FROM $realProfileTable WHERE $uidCol="$uid"');
-      sl.get<CurrentUser>().realProfile.name = realProfile[0][nameCol];
-      sl.get<CurrentUser>().realProfile.age = realProfile[0][ageCol];
-      sl.get<CurrentUser>().realProfile.gender = realProfile[0][genderCol];
-      sl.get<CurrentUser>().realProfile.job = realProfile[0][jobCol];
+      sl.get<CurrentUser>().realProfileModel.name = realProfile[0][nameCol];
+      sl.get<CurrentUser>().realProfileModel.age = realProfile[0][ageCol];
+      sl.get<CurrentUser>().realProfileModel.gender = realProfile[0][genderCol];
+      sl.get<CurrentUser>().realProfileModel.job = realProfile[0][jobCol];
 
       // 가상 프로필 정보 가져오기
       List<Map<String,dynamic>> fakeProfile = 
