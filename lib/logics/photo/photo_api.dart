@@ -115,7 +115,7 @@ class PhotoAPI {
     final http.Response response = await http.Response.fromStream(streamedResponse);
     Map<String,dynamic> resultJson = json.decode(response.body);
 
-    if(resultJson['faces']==null){
+    if((resultJson['faces'] as List).length==0){
       return ANALYZE_RESULT.FAILURE;
     }
 

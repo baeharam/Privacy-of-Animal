@@ -48,6 +48,7 @@ class LoginAPI {
     }
   }
 
+  // 상태에 따라 보여지는 화면이 다르기 때문에 SharedPreferences 값 설정해주어야 함
   Future<void> _setSharedPreferences() async {
     String uid = await sl.get<FirebaseAPI>().user;
     SharedPreferences prefs = await sl.get<DatabaseHelper>().sharedPreferences;
@@ -71,7 +72,8 @@ class LoginAPI {
     return document[field];
   }
 
-  Future<FETCH_RESULT> fetchData() async {
+  // 바로 홈 화면으로 갈 경우 그에 해당하는 데이터를 가져옴
+  Future<FETCH_RESULT> fetchUserData() async {
     if(sl.get<CurrentUser>().isDataFetched) return FETCH_RESULT.SUCCESS;
     try {
       String uid = sl.get<CurrentUser>().uid;
