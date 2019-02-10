@@ -28,7 +28,12 @@ class PhotoBloc extends BlocEventStateBase<PhotoEvent,PhotoState>
           yield PhotoState.failed();
         }else{
           await _api.detectAnimal(sl.get<CurrentUser>().kakaoMLModel);
-          yield PhotoState.succeeded();
+          ANALYZE_RESULT storeResult = await _api.storeProfile();
+          if(storeResult==ANALYZE_RESULT.FAILURE){
+            yield PhotoState.failed();
+          }else{
+            yield PhotoState.succeeded();
+          }
         }
       }
     }
