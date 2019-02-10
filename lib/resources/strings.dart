@@ -241,7 +241,7 @@ const String tagTableCreationSQL =
 const String realProfileTableCreationSQL = 
   'CREATE TABLE $realProfileTable'
   '($id INTEGER PRIMARY KEY AUTOINCREMENT,'
-  '$uidCol TEXT, $nameCol TEXT, $genderCol TEXT, $ageCol INTEGER, $jobCol TEXT)';
+  '$uidCol TEXT, $nameCol TEXT, $genderCol TEXT, $ageCol TEXT, $jobCol TEXT)';
 
 
 // 가상 프로필 테이블 생성하는 SQL  

@@ -58,8 +58,10 @@ class SignUpAPI {
   Future<void> registerProfileIntoLocalDB(SignUpModel data) async {
     Database db = await sl.get<DatabaseHelper>().database;
     db.rawInsert(
-      'INSERT INTO $realProfileTable($nameCol,$ageCol,$jobCol,$genderCol) '
-      'VALUES(${data.realProfileModel.name},${data.realProfileModel.age},${data.realProfileModel.job},${data.realProfileModel.gender})');
+      'INSERT INTO $realProfileTable($uidCol,$nameCol,$ageCol,$jobCol,$genderCol) '
+      'VALUES("${sl.get<CurrentUser>().uid}",'
+      '"${data.realProfileModel.name}","${data.realProfileModel.age}",'
+      '"${data.realProfileModel.job}","${data.realProfileModel.gender}")');
   }
 
   // 실패한 부분에 포커싱
