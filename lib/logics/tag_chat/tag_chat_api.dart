@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/database_helper.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
@@ -26,6 +25,7 @@ class TagChatAPI {
     return TAG_DETAIL_STORE_RESULT.SUCCESS;
   }
 
+  // Cloud Firestore에 태그 상세 저장
   Future<void> _storeTagDetailIntoFirestore() async {
     _tagDetails = sl.get<CurrentUser>().tagListModel.tagDetailList;
     await sl.get<FirebaseAPI>().firestore.collection(firestoreUsersCollection).document(_uid)
@@ -44,6 +44,7 @@ class TagChatAPI {
     );
   }
 
+  // 로컬 DB에 태그 상세 저장
   Future<void> _storeTagDetailIntoLocalDB() async {
     await _db.rawInsert(
       'INSERT INTO $tagTable($uidCol,$tagDetail1Col,$tagDetail2Col,$tagDetail3Col,$tagDetail4Col,$tagDetail5Col) '
@@ -51,27 +52,24 @@ class TagChatAPI {
     );
   }
 
+  // 현재 사용자가 태그 이름 정보를 가지고 있는지 체크한 후 없으면
+  // 로컬 DB에서 가져와서 세팅.
   Future<TAG_CHECK_RESULT> checkLoaclDB() async {
+    if(sl.get<CurrentUser>().tagListModel.tagTitleList.length!=0)
+      return TAG_CHECK_RESULT.SUCCESS;
     try {
       _db = await sl.get<DatabaseHelper>().database;
       _uid = await sl.get<FirebaseAPI>().user;
 
       List<Map<String,dynamic>> queryResult = 
       await _db.rawQuery('SELECT * FROM $tagTable WHERE $uidCol="$_uid"');
-      print(queryResult);
-
-      if(queryResult.length==0){
-        _callFirestoreSetLocalDB();
-      }
-      else{
-        _setCurrentUserTagTitle([
-          queryResult[0][tagName1Col],
-          queryResult[0][tagName2Col],
-          queryResult[0][tagName3Col],
-          queryResult[0][tagName4Col],
-          queryResult[0][tagName5Col]
-        ]);
-      }
+      _setCurrentUserTagTitle([
+        queryResult[0][tagName1Col],
+        queryResult[0][tagName2Col],
+        queryResult[0][tagName3Col],
+        queryResult[0][tagName4Col],
+        queryResult[0][tagName5Col]
+      ]);
     } catch(exception){
       print(exception);
       return TAG_CHECK_RESULT.FAILURE;
@@ -79,18 +77,7 @@ class TagChatAPI {
     return TAG_CHECK_RESULT.SUCCESS;
   }
 
-  Future<void> _callFirestoreSetLocalDB() async {
-    List<String> tags;
-    DocumentSnapshot snapshot = await sl.get<FirebaseAPI>().firestore.collection(firestoreUsersCollection).document(_uid).get();
-    Map map = snapshot.data[firestoreTagField];
-    map.forEach((key,value) => tags.add(map[key]));
-    await _db.rawInsert(
-      'INSERT INTO $tagTable($uidCol,$tagName1Col,$tagName2Col,$tagName3Col,$tagName4Col,$tagName5Col) '
-      'VALUES("$_uid","${tags[0]}","${tags[1]}","${tags[2]}","${tags[3]}","${tags[4]}")'
-    );
-    _setCurrentUserTagTitle(tags);
-  }
-
+  // 현재 사용자에 태그 상세 저장
   void _setCurrentUserTagTitle(List<String> tags){
     sl.get<CurrentUser>().tagListModel.tagTitleList.addAll(tags);
   }
