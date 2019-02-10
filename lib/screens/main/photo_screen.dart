@@ -32,6 +32,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
               }
               if(state.isAnalyzeFailed){
                 streamSnackbar(context,'분석에 실패했습니다.');
+                image = Center(child: Text('사진을 찍지 않았습니다.'));
               }
               if(state.isPhotoDone){
                 image = Container(
@@ -70,7 +71,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
                         builder: (context, PhotoState state){
                           return RaisedButton(
                             padding: EdgeInsets.symmetric(horizontal: ScreenUtil.width/3, vertical: ScreenUtil.height/40),
-                            color: (state.isPhotoDone || state.isAnalyzeFailed) ? primaryPink : Colors.grey,
+                            color: (state.isPhotoDone) ? primaryPink : Colors.grey,
                             child: Text(
                               '분석 하기',
                               style: TextStyle(
@@ -79,7 +80,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
                                 fontSize: 17.0
                               ),
                             ),
-                            onPressed: () => (state.isPhotoDone || state.isAnalyzeFailed)
+                            onPressed: () => (state.isPhotoDone)
                             ? _photoBloc.emitEvent(PhotoEventGotoAnalysis(photoPath: state.path)) 
                             : null
                           );

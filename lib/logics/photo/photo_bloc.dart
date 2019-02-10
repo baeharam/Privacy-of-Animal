@@ -20,16 +20,16 @@ class PhotoBloc extends BlocEventStateBase<PhotoEvent,PhotoState>
     if (event is PhotoEventGotoAnalysis){
       yield PhotoState.loading();
       ANALYZE_RESULT analyzeResultKakao = await _api.analyzeFaceKakao(event.photoPath);
-      ANALYZE_RESULT analyzeResultNaver = await _api.analyzeFaceNaver(event.photoPath);
-      await _api.detectAnimal(sl.get<CurrentUser>().kakaoMLModel);
-      ANALYZE_RESULT analyzeResultFlag = await _api.storeProfile();
-      if(analyzeResultKakao == ANALYZE_RESULT.SUCCESS 
-        && analyzeResultNaver == ANALYZE_RESULT.SUCCESS
-        && analyzeResultFlag == ANALYZE_RESULT.SUCCESS){
-        yield PhotoState.succeeded();
-      }
-      else {
+      if(analyzeResultKakao==ANALYZE_RESULT.FAILURE){
         yield PhotoState.failed();
+      }else{
+        ANALYZE_RESULT analyzeResultNaver = await _api.analyzeFaceNaver(event.photoPath);
+        if(analyzeResultNaver==ANALYZE_RESULT.FAILURE){
+          yield PhotoState.failed();
+        }else{
+          await _api.detectAnimal(sl.get<CurrentUser>().kakaoMLModel);
+          yield PhotoState.succeeded();
+        }
       }
     }
   }
