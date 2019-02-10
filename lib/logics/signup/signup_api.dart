@@ -3,10 +3,12 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
+import 'package:privacy_of_animal/logics/database_helper.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/models/signup_model.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
+import 'package:sqflite/sqflite.dart';
 
 class SignUpAPI {
   // 회원가입
@@ -25,7 +27,17 @@ class SignUpAPI {
   // 프로필 등록
   Future<PROFILE_RESULT> registerProfile(SignUpModel data) async {
     try {
-      await sl.get<FirebaseAPI>().firestore.runTransaction((Transaction transaction) async{
+      await registerProfileIntoFirestore(data);
+      await registerProfileIntoLocalDB(data);
+    } catch(exception){
+      return PROFILE_RESULT.FAILURE;
+    }
+    return PROFILE_RESULT.SUCCESS;
+  }
+
+  // Cloud Firestore에 저장
+  Future<void> registerProfileIntoFirestore(SignUpModel data) async {
+    await sl.get<FirebaseAPI>().firestore.runTransaction((transaction) async{
         CollectionReference collectionReference = sl.get<FirebaseAPI>().firestore.collection(firestoreUsersCollection);
         DocumentReference reference = collectionReference.document(sl.get<CurrentUser>().uid);
         await reference.setData({
@@ -40,10 +52,14 @@ class SignUpAPI {
           firestoreIsFaceAnalyzedField: false
         });
       });
-    } catch(exception){
-      return PROFILE_RESULT.FAILURE;
-    }
-    return PROFILE_RESULT.SUCCESS;
+  }
+
+  // 로컬에 저장
+  Future<void> registerProfileIntoLocalDB(SignUpModel data) async {
+    Database db = await sl.get<DatabaseHelper>().database;
+    db.rawInsert(
+      'INSERT INTO $realProfileTable($nameCol,$ageCol,$jobCol,$genderCol) '
+      'VALUES(${data.realProfileModel.name},${data.realProfileModel.age},${data.realProfileModel.job},${data.realProfileModel.gender})');
   }
 
   // 실패한 부분에 포커싱
