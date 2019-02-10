@@ -33,7 +33,7 @@ class PhotoAPI {
       String uid = sl.get<CurrentUser>().uid;
       SharedPreferences prefs = await sl.get<DatabaseHelper>().sharedPreferences;
       prefs.setBool(uid+isFaceAnalyzed,true);
-      print(sl.get<CurrentUser>().fakeProfileModel.toString());
+      print(sl.get<CurrentUser>().fakeProfileModel.emotion);
       await _storeProfileIntoFirestore();
       await _storeProfileIntoLocalDB();
       
@@ -66,14 +66,18 @@ class PhotoAPI {
   }
 
   Future<void> _storeProfileIntoLocalDB() async {
+    DocumentSnapshot doc = 
+    await sl.get<FirebaseAPI>().firestore.collection(firestoreUsersCollection).document(sl.get<CurrentUser>().uid).get();
+    String nickName = doc[firestoreFakeProfileField][firestoreNickNameField];
     Database db = await sl.get<DatabaseHelper>().database;
     FakeProfileModel fakeProfileModel = sl.get<CurrentUser>().fakeProfileModel;
-    await db.rawInsert(
+    int result = await db.rawInsert(
       'INSERT INTO $fakeProfileTable'
-      '($uidCol,$fakeGenderCol,$fakeGenderConfidenceCol,'
+      '($uidCol,$nickNameCol,$fakeGenderCol,$fakeGenderConfidenceCol,'
       '$fakeAgeCol,$fakeAgeConfidenceCol,$fakeEmotionCol,$fakeEmotionConfidenceCol,'
       '$animalNameCol,$animalImageCol,$animalConfidenceCol) '
       'VALUES("${sl.get<CurrentUser>().uid}",'
+      '"$nickName",'
       '"${fakeProfileModel.gender}",'
       '"${fakeProfileModel.genderConfidence}",'
       '"${fakeProfileModel.age}",'
@@ -84,6 +88,7 @@ class PhotoAPI {
       '"${fakeProfileModel.animalImage}",'
       '"${fakeProfileModel.animalConfidence}")'
     );
+    print(result);
   }
 
   Future<ANALYZE_RESULT> analyzeFaceKakao(String photoPath) async {

@@ -8,7 +8,6 @@ import 'package:sqflite/sqflite.dart';
 class HomeAPI {
   // 바로 홈 화면으로 갈 경우 그에 해당하는 데이터를 가져옴
   Future<FETCH_RESULT> fetchUserData() async {
-    if(sl.get<CurrentUser>().isDataFetched) return FETCH_RESULT.SUCCESS;
     try {
       String uid = sl.get<CurrentUser>().uid;
       Database db = await sl.get<DatabaseHelper>().database;
@@ -38,6 +37,7 @@ class HomeAPI {
       // 가상 프로필 정보 가져오기
       List<Map<String,dynamic>> fakeProfile = 
       await db.rawQuery('SELECT * FROM $fakeProfileTable WHERE $uidCol="$uid"');
+      print(fakeProfile[0][fakeAgeCol]);
       sl.get<CurrentUser>().fakeProfileModel.nickName = fakeProfile[0][nickNameCol];
       sl.get<CurrentUser>().fakeProfileModel.age = fakeProfile[0][fakeAgeCol];
       sl.get<CurrentUser>().fakeProfileModel.gender = fakeProfile[0][fakeGenderCol];

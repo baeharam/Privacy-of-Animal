@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state_builder.dart';
+import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/home/home.dart';
 import 'package:privacy_of_animal/resources/constants.dart';
 import 'package:privacy_of_animal/screens/main/screen.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
+import 'package:privacy_of_animal/widgets/progress_indicator.dart';
 
 class HomeDecision extends StatefulWidget {
   @override
@@ -17,11 +19,16 @@ class _HomeDecisionState extends State<HomeDecision> {
 
   @override
   Widget build(BuildContext context) {
+
+    if(sl.get<CurrentUser>().isDataFetched==false){
+      homeBloc.emitEvent(HomeEvent(index: 3));
+    }
+
     return BlocBuilder(
       bloc: homeBloc,
       builder: (context, HomeState state){
         return Scaffold(
-          body: homePage[state.activeIndex],
+          body: state.isLoading ? CustomProgressIndicator() : homePage[state.activeIndex],
           bottomNavigationBar: BottomNavigationBar(
             currentIndex: state.activeIndex,
             onTap: (index) => homeBloc.emitEvent(HomeEvent(index: index)),

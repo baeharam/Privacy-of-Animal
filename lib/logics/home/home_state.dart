@@ -6,6 +6,7 @@ class HomeState extends BlocState {
   final bool isChatClicked;
   final bool isFriendClicked;
   final bool isProfileClicked;
+  final bool isLoading;
   final int activeIndex;
 
   HomeState({
@@ -13,6 +14,7 @@ class HomeState extends BlocState {
     this.isChatClicked: false,
     this.isFriendClicked: false,
     this.isProfileClicked: false,
+    this.isLoading: false,
     this.activeIndex: 0
   });
 
@@ -40,6 +42,13 @@ class HomeState extends BlocState {
   factory HomeState.profile(int index) {
     return HomeState(
       isProfileClicked: true,
+      activeIndex: index
+    );
+  }
+
+  factory HomeState.loading(int index) {
+    return HomeState(
+      isLoading: true,
       activeIndex: index
     );
   }
