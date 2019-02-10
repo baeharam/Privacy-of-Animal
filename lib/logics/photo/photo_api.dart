@@ -33,6 +33,7 @@ class PhotoAPI {
       String uid = sl.get<CurrentUser>().uid;
       SharedPreferences prefs = await sl.get<DatabaseHelper>().sharedPreferences;
       prefs.setBool(uid+isFaceAnalyzed,true);
+      print(sl.get<CurrentUser>().fakeProfileModel.toString());
       await _storeProfileIntoFirestore();
       await _storeProfileIntoLocalDB();
       

@@ -9,13 +9,12 @@ import 'package:sqflite/sqflite.dart';
 class TagChatAPI {
 
   Database _db;
-  String _uid;
   List<String> _tagDetails;
 
   Future<TAG_DETAIL_STORE_RESULT> storeTagDetail() async {
     try{
       SharedPreferences sharedPreferences = await sl.get<DatabaseHelper>().sharedPreferences;
-      sharedPreferences.setBool(_uid+isTagChatted, true);
+      sharedPreferences.setBool(sl.get<CurrentUser>().uid+isTagChatted, true);
       await _storeTagDetailIntoFirestore();
       await _storeTagDetailIntoLocalDB();
     }catch(exception){
@@ -28,7 +27,7 @@ class TagChatAPI {
   // Cloud Firestore에 태그 상세 저장
   Future<void> _storeTagDetailIntoFirestore() async {
     _tagDetails = sl.get<CurrentUser>().tagListModel.tagDetailList;
-    await sl.get<FirebaseAPI>().firestore.collection(firestoreUsersCollection).document(_uid)
+    await sl.get<FirebaseAPI>().firestore.collection(firestoreUsersCollection).document(sl.get<CurrentUser>().uid)
     .setData(
       {
         firestoreIsTagChattedField: true,
@@ -59,10 +58,9 @@ class TagChatAPI {
       return TAG_CHECK_RESULT.SUCCESS;
     try {
       _db = await sl.get<DatabaseHelper>().database;
-      _uid = await sl.get<FirebaseAPI>().user;
 
       List<Map<String,dynamic>> queryResult = 
-      await _db.rawQuery('SELECT * FROM $tagTable WHERE $uidCol="$_uid"');
+      await _db.rawQuery('SELECT * FROM $tagTable WHERE $uidCol="${sl.get<CurrentUser>().uid}"');
       _setCurrentUserTagTitle([
         queryResult[0][tagName1Col],
         queryResult[0][tagName2Col],

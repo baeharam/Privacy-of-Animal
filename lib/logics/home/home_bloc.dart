@@ -11,7 +11,6 @@ class HomeBloc extends BlocEventStateBase<HomeEvent,HomeState> {
   @override
   Stream<HomeState> eventHandler(HomeEvent event, HomeState currentState) async*{
     if(event.index==0){
-      await _api.fetchUserData();
       yield HomeState.match(event.index);
     }
     else if(event.index==1){
@@ -21,6 +20,7 @@ class HomeBloc extends BlocEventStateBase<HomeEvent,HomeState> {
       yield HomeState.friend(event.index);
     }
     else if(event.index==3){
+      await _api.fetchUserData();
       yield HomeState.profile(event.index);
     }
   }
