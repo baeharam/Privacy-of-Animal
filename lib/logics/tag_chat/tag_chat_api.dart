@@ -46,8 +46,8 @@ class TagChatAPI {
 
   Future<void> _storeTagDetailIntoLocalDB() async {
     await _db.rawInsert(
-      'INSERT INTO $tagTable($tagDetail1Col,$tagDetail2Col,$tagDetail3Col,$tagDetail4Col,$tagDetail5Col) '
-      'VALUES("${_tagDetails[0]}","${_tagDetails[1]}","${_tagDetails[2]}","${_tagDetails[3]}","${_tagDetails[4]}")'
+      'INSERT INTO $tagTable($uidCol,$tagDetail1Col,$tagDetail2Col,$tagDetail3Col,$tagDetail4Col,$tagDetail5Col) '
+      'VALUES("${sl.get<CurrentUser>().uid}","${_tagDetails[0]}","${_tagDetails[1]}","${_tagDetails[2]}","${_tagDetails[3]}","${_tagDetails[4]}")'
     );
   }
 
