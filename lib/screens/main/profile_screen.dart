@@ -3,7 +3,9 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/resources/constants.dart';
+import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
+import 'package:privacy_of_animal/utils/stream_navigator.dart';
 
 class ProfileScreen extends StatefulWidget {
   @override
@@ -36,10 +38,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           '가상프로필',
                           style: primaryTextStyle,
                         ),
-                        Image(
-                          image: AssetImage('assets/images/components/modify.png'),
-                          width: 50.0,
-                          height: 50.0,
+                        GestureDetector(
+                          child: Image(
+                            image: AssetImage('assets/images/components/modify.png'),
+                            width: 50.0,
+                            height: 50.0,
+                          ),
+                          onTap: () => Navigator.pushNamed(context, routePhotoDecision),
                         )
                       ],
                     )

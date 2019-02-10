@@ -45,9 +45,10 @@ class TagChatAPI {
   // 로컬 DB에 태그 상세 저장
   Future<void> _storeTagDetailIntoLocalDB() async {
     Database db = await sl.get<DatabaseHelper>().database;
-    await db.rawInsert(
-      'INSERT INTO $tagTable($uidCol,$tagDetail1Col,$tagDetail2Col,$tagDetail3Col,$tagDetail4Col,$tagDetail5Col) '
-      'VALUES("${sl.get<CurrentUser>().uid}","${_tagDetails[0]}","${_tagDetails[1]}","${_tagDetails[2]}","${_tagDetails[3]}","${_tagDetails[4]}")'
+    await db.rawUpdate(
+      'UPDATE $tagTable SET $tagDetail1Col=?,$tagDetail2Col=?,$tagDetail3Col=?,$tagDetail4Col=?,$tagDetail5Col=? '
+      'WHERE $uidCol="${sl.get<CurrentUser>().uid}"',
+      ['${_tagDetails[0]}','${_tagDetails[1]}','${_tagDetails[2]}','${_tagDetails[3]}','${_tagDetails[4]}']
     );
   }
 

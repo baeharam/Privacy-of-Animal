@@ -15,6 +15,7 @@ class HomeAPI {
       // 태그 정보 가져오기
       List<Map<String,dynamic>> tags = 
       await db.rawQuery('SELECT * FROM $tagTable WHERE $uidCol="$uid"');
+      print(tags.toString());
       sl.get<CurrentUser>().tagListModel.tagTitleList.add(tags[0][tagName1Col]);
       sl.get<CurrentUser>().tagListModel.tagTitleList.add(tags[0][tagName2Col]);
       sl.get<CurrentUser>().tagListModel.tagTitleList.add(tags[0][tagName3Col]);
@@ -37,7 +38,6 @@ class HomeAPI {
       // 가상 프로필 정보 가져오기
       List<Map<String,dynamic>> fakeProfile = 
       await db.rawQuery('SELECT * FROM $fakeProfileTable WHERE $uidCol="$uid"');
-      print(fakeProfile[0][fakeAgeCol]);
       sl.get<CurrentUser>().fakeProfileModel.nickName = fakeProfile[0][nickNameCol];
       sl.get<CurrentUser>().fakeProfileModel.age = fakeProfile[0][fakeAgeCol];
       sl.get<CurrentUser>().fakeProfileModel.gender = fakeProfile[0][fakeGenderCol];
