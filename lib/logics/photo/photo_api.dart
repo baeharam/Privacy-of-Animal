@@ -47,7 +47,7 @@ class PhotoAPI {
       CollectionReference collectionReference = sl.get<FirebaseAPI>().firestore.collection(firestoreUsersCollection);
       DocumentReference reference = collectionReference.document(sl.get<CurrentUser>().uid);
       FakeProfileModel fakeProfileModel = sl.get<CurrentUser>().fakeProfileModel;
-      await reference.updateData({
+      await reference.setData({
         firestoreIsFaceAnalyzedField: true,
         firestoreFakeProfileField: {
           firestoreFakeGenderField: fakeProfileModel.gender,
@@ -59,8 +59,8 @@ class PhotoAPI {
           firestoreAnimalNameField: fakeProfileModel.animalName,
           firestoreAnimalImageField: fakeProfileModel.animalImage,
           firestoreAnimalConfidenceField: fakeProfileModel.animalConfidence
-        }
-      });
+        },
+      }, merge: true);
     });
   }
 
