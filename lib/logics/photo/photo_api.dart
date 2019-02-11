@@ -7,6 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/database_helper.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
+import 'package:privacy_of_animal/logics/photo/photo.dart';
 import 'package:privacy_of_animal/models/animal_model.dart';
 import 'package:privacy_of_animal/models/fake_profile_model.dart';
 import 'package:privacy_of_animal/models/kakao_ml_model.dart';
@@ -42,9 +43,13 @@ class PhotoAPI {
   Future<ANALYZE_RESULT> storeProfile() async {
     try{
       await _storeProfileIntoFirestore();
+      sl.get<PhotoBloc>().emitEvent(PhotoEventEmitLoading(percentage: 0.82));
       await _storeProfileIntoLocalDB();
+      sl.get<PhotoBloc>().emitEvent(PhotoEventEmitLoading(percentage: 0.84));
       await _storeCelebrityUrlsIntoFirestore();
+      sl.get<PhotoBloc>().emitEvent(PhotoEventEmitLoading(percentage: 0.86));
       await _storeCelebrityUrlsIntoLocalDB();
+      sl.get<PhotoBloc>().emitEvent(PhotoEventEmitLoading(percentage: 0.9));
       
     } catch(exception){
       return ANALYZE_RESULT.FAILURE;
@@ -144,10 +149,12 @@ class PhotoAPI {
     final http.MultipartRequest request = http.MultipartRequest('POST',uri);
     request.headers['Authorization'] = 'KakaoAK $kakaoAPIKey';
     request.files.add(await http.MultipartFile.fromPath('file', photoPath));
+    sl.get<PhotoBloc>().emitEvent(PhotoEventEmitLoading(percentage: 0.1));
 
     http.StreamedResponse streamedResponse = await request.send();
     final http.Response response = await http.Response.fromStream(streamedResponse);
     Map<String,dynamic> firstJson = json.decode(response.body);
+    sl.get<PhotoBloc>().emitEvent(PhotoEventEmitLoading(percentage: 0.2));
 
     if(firstJson['result']['faces']==null){
       return ANALYZE_RESULT.FAILURE;
@@ -165,10 +172,12 @@ class PhotoAPI {
     request.headers['X-Naver-Client-Id'] = naverClientID;
     request.headers['X-Naver-Client-Secret'] = naverClientSecret;
     request.files.add(await http.MultipartFile.fromPath('image', photoPath));
+    sl.get<PhotoBloc>().emitEvent(PhotoEventEmitLoading(percentage: 0.3));
 
     http.StreamedResponse streamedResponse = await request.send();
     final http.Response response = await http.Response.fromStream(streamedResponse);
     Map<String,dynamic> resultJson = json.decode(response.body);
+    sl.get<PhotoBloc>().emitEvent(PhotoEventEmitLoading(percentage: 0.4));
 
     if((resultJson['faces'] as List).length==0){
       return ANALYZE_RESULT.FAILURE;
@@ -206,10 +215,12 @@ class PhotoAPI {
     request.headers['X-Naver-Client-Id'] = naverClientID;
     request.headers['X-Naver-Client-Secret'] = naverClientSecret;
     request.files.add(await http.MultipartFile.fromPath('image', photoPath));
+    sl.get<PhotoBloc>().emitEvent(PhotoEventEmitLoading(percentage: 0.5));
 
     http.StreamedResponse streamedResponse = await request.send();
     final http.Response response = await http.Response.fromStream(streamedResponse);
     Map<String,dynamic> resultJson = json.decode(response.body);
+    sl.get<PhotoBloc>().emitEvent(PhotoEventEmitLoading(percentage: 0.6));
 
     if((resultJson['faces'] as List).length==0){
       return ANALYZE_RESULT.FAILURE;
@@ -231,10 +242,12 @@ class PhotoAPI {
       request.headers['X-Naver-Client-Id'] = naverClientID;
       request.headers['X-Naver-Client-Secret'] = naverClientSecret;
       http.StreamedResponse streamedResponse = await request.send();
+      sl.get<PhotoBloc>().emitEvent(PhotoEventEmitLoading(percentage: 0.7));
 
       final response = await http.Response.fromStream(streamedResponse);
       final Map jsonData = json.decode(response.body);
       sl.get<CurrentUser>().celebrityUrls = _getImageUrl(jsonData);
+      sl.get<PhotoBloc>().emitEvent(PhotoEventEmitLoading(percentage: 0.8));
     } catch(exception){
       print(exception);
       return GET_IMAGE_RESULT.FAILURE;

@@ -54,11 +54,11 @@ class HomeAPI {
       List<Map<String,dynamic>> celebrityUrls = 
       await db.rawQuery('SELECT * FROM $celebrityUrlTable WHERE $uidCol="$uid"');
       sl.get<CurrentUser>().celebrityUrls.add(celebrityUrls[0][celebrityUrl1Col]);
-      sl.get<CurrentUser>().celebrityUrls.add(celebrityUrls[1][celebrityUrl1Col]);
-      sl.get<CurrentUser>().celebrityUrls.add(celebrityUrls[2][celebrityUrl1Col]);
-      sl.get<CurrentUser>().celebrityUrls.add(celebrityUrls[3][celebrityUrl1Col]);
-      sl.get<CurrentUser>().celebrityUrls.add(celebrityUrls[4][celebrityUrl1Col]);
-      sl.get<CurrentUser>().celebrityUrls.add(celebrityUrls[5][celebrityUrl1Col]);
+      sl.get<CurrentUser>().celebrityUrls.add(celebrityUrls[0][celebrityUrl2Col]);
+      sl.get<CurrentUser>().celebrityUrls.add(celebrityUrls[0][celebrityUrl3Col]);
+      sl.get<CurrentUser>().celebrityUrls.add(celebrityUrls[0][celebrityUrl4Col]);
+      sl.get<CurrentUser>().celebrityUrls.add(celebrityUrls[0][celebrityUrl5Col]);
+      sl.get<CurrentUser>().celebrityUrls.add(celebrityUrls[0][celebrityUrl6Col]);
 
       sl.get<CurrentUser>().isDataFetched = true;
     

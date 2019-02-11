@@ -8,6 +8,8 @@ class CelebrityScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('네이버 검색 결과'),
+        leading: Container(),
+        backgroundColor: Colors.green,
       ),
       body: GridView.count(
         crossAxisCount: 2,

@@ -13,6 +13,10 @@ class PhotoBloc extends BlocEventStateBase<PhotoEvent,PhotoState>
   @override
   Stream<PhotoState> eventHandler(PhotoEvent event, PhotoState currentState) async*{
 
+    if(event is PhotoEventEmitLoading){
+      yield PhotoState.loading(event.percentage);
+    }
+
     if(event is PhotoEventReset) {
       yield PhotoState.noTake();
     }
@@ -27,21 +31,19 @@ class PhotoBloc extends BlocEventStateBase<PhotoEvent,PhotoState>
       if(analyzeResultKakao==ANALYZE_RESULT.FAILURE){
         yield PhotoState.failed();
       }else{
-        yield PhotoState.loading(0.33);
         ANALYZE_RESULT analyzeResultNaver = await _api.analyzeFaceNaver(event.photoPath);
         analyzeResultNaver = await _api.analyzeCelebrityNaver(event.photoPath);
         GET_IMAGE_RESULT getImageResult = await _api.getImageFromInternet();
         if(analyzeResultNaver==ANALYZE_RESULT.FAILURE || getImageResult==GET_IMAGE_RESULT.FAILURE){
           yield PhotoState.failed();
         }else{
-          yield PhotoState.loading(0.66);
           await _api.detectAnimal(sl.get<CurrentUser>().kakaoMLModel);
           ANALYZE_RESULT storeResult = await _api.storeProfile();
           if(storeResult==ANALYZE_RESULT.FAILURE){
             yield PhotoState.failed();
           }else{
-            await _api.setFlags();
             yield PhotoState.loading(1.0);
+            await _api.setFlags();
             yield PhotoState.succeeded();
           }
         }

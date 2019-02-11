@@ -30,10 +30,23 @@ class _PhotoScreenState extends State<PhotoScreen> {
             builder: (context, PhotoState state){
               if(state.isLoading){
                 return Center(
-                  child: CircularPercentIndicator(
-                    radius: ScreenUtil.width/4,
-                    percent: state.percentage,
-                    center: Text('분석중입니다...')
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      CircularPercentIndicator(
+                        radius: ScreenUtil.width/2.5,
+                        percent: state.percentage,
+                      ),
+                      SizedBox(height: 10.0),
+                      Text(
+                        '분석중입니다...',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20.0
+                        ),
+                      )
+                    ],
                   ),
                 );
               }
