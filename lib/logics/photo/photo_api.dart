@@ -59,7 +59,9 @@ class PhotoAPI {
           firestoreFakeEmotionConfidenceField: fakeProfileModel.emotionConfidence,
           firestoreAnimalNameField: fakeProfileModel.animalName,
           firestoreAnimalImageField: fakeProfileModel.animalImage,
-          firestoreAnimalConfidenceField: fakeProfileModel.animalConfidence
+          firestoreAnimalConfidenceField: fakeProfileModel.animalConfidence,
+          firestoreCelebrityField: fakeProfileModel.celebrity,
+          firestoreCelebrityConfidenceField: fakeProfileModel.celebrityConfidence
         },
       }, merge: true);
     });
@@ -75,7 +77,7 @@ class PhotoAPI {
       'INSERT INTO $fakeProfileTable'
       '($uidCol,$nickNameCol,$fakeGenderCol,$fakeGenderConfidenceCol,'
       '$fakeAgeCol,$fakeAgeConfidenceCol,$fakeEmotionCol,$fakeEmotionConfidenceCol,'
-      '$animalNameCol,$animalImageCol,$animalConfidenceCol) '
+      '$animalNameCol,$animalImageCol,$animalConfidenceCol,$celebrityCol,$celebrityConfidenceCol) '
       'VALUES("${sl.get<CurrentUser>().uid}",'
       '"$nickName",'
       '"${fakeProfileModel.gender}",'
@@ -86,11 +88,14 @@ class PhotoAPI {
       '"${fakeProfileModel.emotionConfidence}",'
       '"${fakeProfileModel.animalName}",'
       '"${fakeProfileModel.animalImage}",'
-      '"${fakeProfileModel.animalConfidence}")'
+      '"${fakeProfileModel.animalConfidence}",'
+      '"${fakeProfileModel.celebrity}",'
+      '"${fakeProfileModel.celebrityConfidence}")'
     );
     print(result);
   }
 
+  // 카카오 얼굴인식
   Future<ANALYZE_RESULT> analyzeFaceKakao(String photoPath) async {
     final Uri uri = Uri.parse(kakaoAPIurl);
     final http.MultipartRequest request = http.MultipartRequest('POST',uri);
@@ -110,8 +115,9 @@ class PhotoAPI {
     return ANALYZE_RESULT.SUCCESS;
   }
 
+  // 네이버 얼굴인식
   Future<ANALYZE_RESULT> analyzeFaceNaver(String photoPath) async {
-    final Uri uri = Uri.parse(naverAPIurl);
+    final Uri uri = Uri.parse(naverFaceAPIurl);
     final http.MultipartRequest request = http.MultipartRequest('POST',uri);
     request.headers['X-Naver-Client-Id'] = naverClientID;
     request.headers['X-Naver-Client-Secret'] = naverClientSecret;
@@ -147,6 +153,28 @@ class PhotoAPI {
     }
     sl.get<CurrentUser>().fakeProfileModel.emotion = emotion;
     sl.get<CurrentUser>().fakeProfileModel.emotionConfidence = naverMLModel.emotionConfidence;
+    return ANALYZE_RESULT.SUCCESS;
+  }
+
+  // 네이버 유명인 인식
+  Future<ANALYZE_RESULT> analyzeCelebrityNaver(String photoPath) async {
+    final Uri uri = Uri.parse(naverCelebrityAPIurl);
+    final http.MultipartRequest request = http.MultipartRequest('POST',uri);
+    request.headers['X-Naver-Client-Id'] = naverClientID;
+    request.headers['X-Naver-Client-Secret'] = naverClientSecret;
+    request.files.add(await http.MultipartFile.fromPath('image', photoPath));
+
+    http.StreamedResponse streamedResponse = await request.send();
+    final http.Response response = await http.Response.fromStream(streamedResponse);
+    Map<String,dynamic> resultJson = json.decode(response.body);
+
+    if((resultJson['faces'] as List).length==0){
+      return ANALYZE_RESULT.FAILURE;
+    }
+
+    sl.get<CurrentUser>().fakeProfileModel.celebrity = resultJson['faces'][0]['celebrity']['value'];
+    sl.get<CurrentUser>().fakeProfileModel.celebrityConfidence = resultJson['faces'][0]['celebrity']['confidence'];
+
     return ANALYZE_RESULT.SUCCESS;
   }
 

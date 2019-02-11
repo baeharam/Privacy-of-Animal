@@ -12,6 +12,9 @@ class FakeProfileModel {
   String emotion;
   double emotionConfidence;
 
+  String celebrity;
+  double celebrityConfidence;
+
   FakeProfileModel({
     this.animalImage,
     this.animalName,
@@ -23,6 +26,9 @@ class FakeProfileModel {
     this.age,
     this.ageConfidence,
     this.emotion,
-    this.emotionConfidence
+    this.emotionConfidence,
+
+    this.celebrity,
+    this.celebrityConfidence
   });
 }

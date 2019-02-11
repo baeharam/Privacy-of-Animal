@@ -100,7 +100,8 @@ const String photoWarningMessage2 = '※ 분석한 후 3일이 지나야 재분�
 
 // 머신러닝 API
 const String kakaoAPIurl = 'https://kapi.kakao.com/v1/vision/face/detect';
-const String naverAPIurl = 'https://openapi.naver.com/v1/vision/face';
+const String naverFaceAPIurl = 'https://openapi.naver.com/v1/vision/face';
+const String naverCelebrityAPIurl = 'https://openapi.naver.com/v1/vision/celebrity';
 
 // 동물 이름
 const String bisonAnimal = 'bison';
@@ -160,6 +161,8 @@ const String firestoreAnimalNameField = animalNameCol;
 const String firestoreAnimalImageField = animalImageCol;
 const String firestoreAnimalConfidenceField = animalConfidenceCol;
 const String firestoreNickNameField = nickNameCol;
+const String firestoreCelebrityField = celebrityCol;
+const String firestoreCelebrityConfidenceField = celebrityConfidenceCol;
 
 // Cloud Firestore 플래그 필드
 const String firestoreIsTagSelectedField = isTagSelected;
@@ -231,6 +234,8 @@ const String animalNameCol = 'animal_name';
 const String animalImageCol = 'animal_image';
 const String animalConfidenceCol = 'animal_confidence';
 const String nickNameCol = 'nick_name';
+const String celebrityCol = 'celebrity';
+const String celebrityConfidenceCol = 'celebrity_confidence';
 
 // 태그 테이블 생성하는 SQL
 const String tagTableCreationSQL = 
@@ -262,4 +267,5 @@ const String fakeProfileTableCreationSQL =
   '$uidCol TEXT, $nickNameCol TEXT, $fakeGenderCol TEXT, $fakeGenderConfidenceCol REAL, '
   '$fakeAgeCol TEXT, $fakeAgeConfidenceCol REAL, '
   '$fakeEmotionCol TEXT, $firestoreFakeEmotionConfidenceField REAL, '
-  '$animalNameCol TEXT, $animalImageCol TEXT, $animalConfidenceCol REAL)';
+  '$animalNameCol TEXT, $animalImageCol TEXT, $animalConfidenceCol REAL, '
+  '$celebrityCol TEXT, $celebrityConfidenceCol REAL)';
