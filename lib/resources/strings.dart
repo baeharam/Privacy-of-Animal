@@ -173,12 +173,14 @@ const String firestoreTagTitle2Field = tagName2Col;
 const String firestoreTagTitle3Field = tagName3Col;
 const String firestoreTagTitle4Field = tagName4Col;
 const String firestoreTagTitle5Field = tagName5Col;
+const List<String> firestoreTagTitleList = tagTitleList;
 
 const String firestoreTagDetail1Field = tagDetail1Col;
 const String firestoreTagDetail2Field = tagDetail2Col;
 const String firestoreTagDetail3Field = tagDetail3Col;
 const String firestoreTagDetail4Field = tagDetail4Col;
 const String firestoreTagDetail5Field = tagDetail5Col;
+const List<String> firestoreTagDetailList = tagDetailList;
 
 // SharedPreferences 플래그 key값
 const String isTagSelected = 'is_tag_selected';
@@ -209,6 +211,8 @@ const String tagName4Col = 'tag_name_4';
 const String tagDetail4Col = 'tag_detail_4';
 const String tagName5Col = 'tag_name_5';
 const String tagDetail5Col = 'tag_detail_5';
+const List<String> tagTitleList = [tagName1Col,tagName2Col,tagName3Col,tagName4Col,tagName5Col];
+const List<String> tagDetailList = [tagDetail1Col,tagDetail2Col,tagDetail3Col,tagDetail4Col,tagDetail5Col];
 
 // 실제 프로필 테이블
 const String nameCol = 'name';

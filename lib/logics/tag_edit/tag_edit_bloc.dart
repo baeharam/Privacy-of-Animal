@@ -18,5 +18,11 @@ class TagEditBloc extends BlocEventStateBase<TagEditEvent,TagEditState> {
     if(event is TagEditEventMenuChange){
       yield TagEditState.tagChanged(event.changedTag);
     }
+
+    if(event is TagEditEventSubmit) {
+      yield TagEditState.loading();
+      TAG_EDIT_RESULT result = await _tagEditAPI.editTag(event.tagTitle, event.tagDetail, event.tagIndex);
+      yield result==TAG_EDIT_RESULT.FAILURE ? TagEditState.failed() : TagEditState.succeeded();
+    }
   }
 }

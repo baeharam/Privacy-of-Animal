@@ -229,19 +229,34 @@ class _TagPartState extends State<TagPart> {
                       onTap: () => _tagEditBloc.emitEvent(TagEditEventClick(tagIndex: 2))
                     ),
                     SizedBox(width: 10.0),
-                    TagForm(content: _user.tagListModel.tagDetailList[2],isTitle: false),
+                    GestureDetector(
+                      child: TagForm(content: _user.tagListModel.tagDetailList[2],isTitle: false),
+                      onTap: () => _tagEditBloc.emitEvent(TagEditEventClick(tagIndex: 2))
+                    ),
                     SizedBox(width: 10.0),
-                    TagForm(content: _user.tagListModel.tagTitleList[3],isTitle: true),
+                    GestureDetector(
+                      child: TagForm(content: _user.tagListModel.tagTitleList[3],isTitle: true),
+                      onTap: () => _tagEditBloc.emitEvent(TagEditEventClick(tagIndex: 3))
+                    ),
                     SizedBox(width: 10.0),
-                    TagForm(content: _user.tagListModel.tagDetailList[3],isTitle: false)
+                    GestureDetector(
+                      child: TagForm(content: _user.tagListModel.tagDetailList[3],isTitle: false),
+                      onTap: () => _tagEditBloc.emitEvent(TagEditEventClick(tagIndex: 3))
+                    )
                   ],
                 ),
                 SizedBox(height: 10.0),
                 Row(
                   children: <Widget>[
-                    TagForm(content: _user.tagListModel.tagTitleList[4],isTitle: true),
+                    GestureDetector(
+                      child: TagForm(content: _user.tagListModel.tagTitleList[4],isTitle: true),
+                      onTap: () => _tagEditBloc.emitEvent(TagEditEventClick(tagIndex: 4))
+                    ),
                     SizedBox(width: 10.0),
-                    TagForm(content: _user.tagListModel.tagDetailList[4],isTitle: false)
+                    GestureDetector(
+                      child: TagForm(content: _user.tagListModel.tagDetailList[4],isTitle: false),
+                      onTap: () => _tagEditBloc.emitEvent(TagEditEventClick(tagIndex: 4))
+                    )
                   ],
                 )
               ],

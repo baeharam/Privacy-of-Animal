@@ -7,6 +7,7 @@ import 'package:privacy_of_animal/logics/tag_edit/tag_edit.dart';
 import 'package:privacy_of_animal/logics/validation/validation_bloc.dart';
 import 'package:privacy_of_animal/resources/resources.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
+import 'package:privacy_of_animal/widgets/progress_indicator.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
 void streamDialogEditTag(BuildContext context, int tagIndex, List<String> dropDownItems) {
@@ -25,6 +26,9 @@ void streamDialogEditTag(BuildContext context, int tagIndex, List<String> dropDo
         builder: (context,TagEditState state){
           if(state.isTagChanged){
             selectedTag = state.currentTag;
+          }
+          if(state.isLoading){
+            return CustomProgressIndicator();
           }
           return Column(
             children: <Widget>[
@@ -58,8 +62,11 @@ void streamDialogEditTag(BuildContext context, int tagIndex, List<String> dropDo
       ),
       buttons: [
         DialogButton(
-          onPressed: (){
-
+          onPressed: () {tagEditBloc.emitEvent(
+            TagEditEventSubmit(tagTitle: selectedTag, tagDetail: tagController.text, tagIndex: tagIndex)
+          );
+          FocusScope.of(context).requestFocus(FocusNode());
+          Navigator.pop(context);
           },
           child: Text(
             '수정',

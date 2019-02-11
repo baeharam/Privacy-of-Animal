@@ -1,9 +1,57 @@
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
-import 'package:privacy_of_animal/resources/constants.dart';
+import 'package:privacy_of_animal/logics/database_helper.dart';
+import 'package:privacy_of_animal/logics/firebase_api.dart';
+import 'package:privacy_of_animal/resources/resources.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
+import 'package:sqflite/sqflite.dart';
 
 class TagEditAPI {
+
+
+  Future<TAG_EDIT_RESULT> editTag(String tagTitle, String tagDetail, int index) async
+  {
+    try{
+      editTagOfCurrentUser(tagTitle, tagDetail, index);
+      await editTagOfFirestore(tagTitle, tagDetail, index);
+      await editTagOfLocalDB(tagTitle, tagDetail, index);
+    }catch(exception){
+      print(exception);
+      return TAG_EDIT_RESULT.FAILURE;
+    }
+    return TAG_EDIT_RESULT.SUCCESS;
+  }
+
+  // 현재 사용자 정보 수정
+  void editTagOfCurrentUser(String tagTitle, String tagDetail, int index) {
+    sl.get<CurrentUser>().tagListModel.tagTitleList[index] = tagTitle;
+    sl.get<CurrentUser>().tagListModel.tagDetailList[index] = tagDetail;
+  }
+
+  // Cloud Firestore 값 수정
+  Future<void> editTagOfFirestore(String tagTitle, String tagDetail, int index) async{
+    DocumentReference doc = 
+      sl.get<FirebaseAPI>().firestore.collection(firestoreUsersCollection).document(sl.get<CurrentUser>().uid);
+    await doc.setData({
+      firestoreTagField: {
+        firestoreTagTitleList[index]: tagTitle,
+        firestoreTagDetailList[index]: tagDetail
+      }
+    }, merge: true);
+  }
+
+  // 로컬 DB 값 수정
+  Future<void> editTagOfLocalDB(String tagTitle, String tagDetail, int index) async {
+    Database db = await sl.get<DatabaseHelper>().database;
+    await db.rawUpdate(
+      'UPDATE $tagTable SET ${tagTitleList[index]}=?, ${tagDetailList[index]}=? '
+      'WHERE $uidCol="${sl.get<CurrentUser>().uid}"',
+      [tagTitle,tagDetail]
+    );
+  }
+
+
   List<String> filterTags(int tagIndex) {
     List<String> dropDownItems = List<String>();
     List<String> userTagList = sl.get<CurrentUser>().tagListModel.tagTitleList;
@@ -25,4 +73,9 @@ class TagEditAPI {
     });
     return dropDownItems;
   }
+}
+
+enum TAG_EDIT_RESULT {
+  SUCCESS,
+  FAILURE
 }

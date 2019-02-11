@@ -12,3 +12,15 @@ class TagEditEventMenuChange extends TagEditEvent {
   final String changedTag;
   TagEditEventMenuChange({@required this.changedTag});
 }
+
+class TagEditEventSubmit extends TagEditEvent {
+  final String tagTitle;
+  final String tagDetail;
+  final int tagIndex;
+
+  TagEditEventSubmit({
+    @required this.tagTitle,
+    @required this.tagDetail,
+    @required this.tagIndex
+  });
+}
