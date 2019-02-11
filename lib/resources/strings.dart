@@ -103,6 +103,7 @@ const String photoWarningMessage2 = '※ 분석한 후 3일이 지나야 재분�
 const String kakaoAPIurl = 'https://kapi.kakao.com/v1/vision/face/detect';
 const String naverFaceAPIurl = 'https://openapi.naver.com/v1/vision/face';
 const String naverCelebrityAPIurl = 'https://openapi.naver.com/v1/vision/celebrity';
+const String naverSearchAPIurl = 'https://openapi.naver.com/v1/search/image?query=';
 
 // 동물 이름
 const String bisonAnimal = 'bison';

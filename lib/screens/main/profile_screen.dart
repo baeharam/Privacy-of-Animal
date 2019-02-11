@@ -51,6 +51,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             sl.get<PhotoBloc>().emitEvent(PhotoEventReset());
                             Navigator.pushNamed(context, routePhotoDecision);
                           }
+                        ),
+                        Spacer(),
+                        Text(
+                          '닮은 연예인 보기',
+                          style: TextStyle(
+                            color: Colors.blue,
+                            fontWeight: FontWeight.bold
+                          ),
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.search),
+                          onPressed: (){},
                         )
                       ],
                     )
