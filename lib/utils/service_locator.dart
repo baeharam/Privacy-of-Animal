@@ -8,6 +8,7 @@ import 'package:privacy_of_animal/logics/initialize_api.dart';
 import 'package:privacy_of_animal/logics/login/login_bloc.dart';
 import 'package:privacy_of_animal/logics/signup/signup_bloc.dart';
 import 'package:privacy_of_animal/logics/tag_chat/tag_chat_bloc.dart';
+import 'package:privacy_of_animal/logics/tag_edit/tag_edit_bloc.dart';
 import 'package:privacy_of_animal/logics/tag_select/tag_select_bloc.dart';
 import 'package:privacy_of_animal/logics/validation/validation_bloc.dart';
 import 'package:privacy_of_animal/logics/photo/photo_bloc.dart';
@@ -28,4 +29,5 @@ void setup() {
   sl.registerLazySingleton<TagChatBloc>(()=> TagChatBloc());
   sl.registerLazySingleton<PhotoBloc>(()=>PhotoBloc());
   sl.registerLazySingleton<HomeBloc>(() => HomeBloc());
+  sl.registerLazySingleton<TagEditBloc>(() => TagEditBloc());
 }

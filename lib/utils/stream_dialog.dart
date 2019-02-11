@@ -1,10 +1,69 @@
 import 'package:flutter/material.dart';
+import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/find_password/find_password.dart';
 import 'package:privacy_of_animal/logics/signup/signup.dart';
 import 'package:privacy_of_animal/logics/validation/validation_bloc.dart';
 import 'package:privacy_of_animal/resources/resources.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
+
+void streamDialogEditTag(BuildContext context, int tagIndex) {
+
+  final ValidationBloc validationBloc = sl.get<ValidationBloc>();
+  final TextEditingController _emailController = TextEditingController();
+
+  WidgetsBinding.instance.addPostFrameCallback((_){
+    List<String> dropDownItems = List<String>();
+    List<String> userTagList = sl.get<CurrentUser>().tagListModel.tagTitleList;
+    bool isAlreadyExist = false;
+    tags.forEach((tag){
+      for(final String userTag in userTagList){
+        if(tag.title.compareTo(userTag)==0){
+          isAlreadyExist = true;
+          break;
+        }
+      }
+      if(!isAlreadyExist){
+        dropDownItems.add(tag.title);
+      }
+      else{
+        isAlreadyExist = false;
+      }
+    });
+
+    Alert(
+      context: context,
+      title: '태그 수정하기',
+      content: Column(
+        children: <Widget>[
+          DropdownButton(
+            items: dropDownItems.map((String value){
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
+            onChanged: (_) {},
+          )
+        ],
+      ),
+      buttons: [
+        DialogButton(
+          onPressed: (){
+
+          },
+          child: Text(
+            '수정',
+            style: TextStyle(
+              color: Colors.white
+            ),
+          ),
+          color: primaryGreen,
+        )
+      ]
+    ).show();
+  });
+}
 
 void streamDialogForgotPassword(BuildContext context) {
 

@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:privacy_of_animal/bloc_helpers/bloc_event_state_builder.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/photo/photo.dart';
+import 'package:privacy_of_animal/logics/tag_edit/tag_edit.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/resources/constants.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
-import 'package:privacy_of_animal/utils/stream_navigator.dart';
+import 'package:privacy_of_animal/utils/stream_dialog.dart';
 
 class ProfileScreen extends StatefulWidget {
   @override
@@ -15,7 +17,7 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
 
-  CurrentUser user = sl.get<CurrentUser>();
+  final CurrentUser _user = sl.get<CurrentUser>();
 
   @override
   Widget build(BuildContext context) {
@@ -69,18 +71,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 children: <Widget>[
                                   CircularPercentIndicator(
                                     radius: ScreenUtil.width/2.8,
-                                    percent: user.fakeProfileModel.animalConfidence,
+                                    percent: _user.fakeProfileModel.animalConfidence,
                                     lineWidth: 10.0,
                                   ),
                                   CircleAvatar(
-                                    backgroundImage: AssetImage(user.fakeProfileModel.animalImage),
+                                    backgroundImage: AssetImage(_user.fakeProfileModel.animalImage),
                                     radius: ScreenUtil.width/6.2,
                                   )
                                 ],
                               ),
                               SizedBox(height: 10.0),
                               Text(
-                                user.fakeProfileModel.nickName,
+                                _user.fakeProfileModel.nickName,
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold
@@ -92,10 +94,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              FakeProfileForm(title: '추정동물',detail: user.fakeProfileModel.animalName),
-                              FakeProfileForm(title: '추정성별',detail: user.fakeProfileModel.gender),
-                              FakeProfileForm(title: '추정나이',detail: user.fakeProfileModel.age),
-                              FakeProfileForm(title: '추정기분',detail: user.fakeProfileModel.emotion)
+                              FakeProfileForm(title: '추정동물',detail: _user.fakeProfileModel.animalName),
+                              FakeProfileForm(title: '추정성별',detail: _user.fakeProfileModel.gender),
+                              FakeProfileForm(title: '추정나이',detail: _user.fakeProfileModel.age),
+                              FakeProfileForm(title: '추정기분',detail: _user.fakeProfileModel.emotion)
                             ],
                           )
                         ],
@@ -132,10 +134,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   ),
                   SizedBox(height: 10.0),
-                  RealProfileForm(title: '실제이름',detail: user.realProfileModel.name),
-                  RealProfileForm(title: '실제성별',detail: user.realProfileModel.gender),
-                  RealProfileForm(title: '실제나이',detail: user.realProfileModel.age),
-                  RealProfileForm(title: '실제직업',detail: user.realProfileModel.job)
+                  RealProfileForm(title: '실제이름',detail: _user.realProfileModel.name),
+                  RealProfileForm(title: '실제성별',detail: _user.realProfileModel.gender),
+                  RealProfileForm(title: '실제나이',detail: _user.realProfileModel.age),
+                  RealProfileForm(title: '실제직업',detail: _user.realProfileModel.job)
                 ],
               )
             ),
@@ -152,62 +154,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 children: <Widget>[
                   Padding(
                     padding: EdgeInsets.only(bottom: 10.0),
-                    child: Row(
-                      children: <Widget>[
-                        Text(
-                          '관심사 태그',
-                          style: primaryTextStyle,
-                        ),
-                        Image(
-                          image: AssetImage('assets/images/components/modify.png'),
-                          width: 50.0,
-                          height: 50.0,
-                        )
-                      ],
+                    child: Text(
+                      '관심사 태그',
+                      style: primaryTextStyle,
                     )
                   ),
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Padding(
-                      padding: EdgeInsets.only(left: ScreenUtil.width/20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Row(
-                            children: <Widget>[
-                              TagForm(content: user.tagListModel.tagTitleList[0],isTitle: true),
-                              SizedBox(width: 10.0),
-                              TagForm(content: user.tagListModel.tagDetailList[0],isTitle: false),
-                              SizedBox(width: 10.0),
-                              TagForm(content: user.tagListModel.tagTitleList[1],isTitle: true),
-                              SizedBox(width: 10.0),
-                              TagForm(content: user.tagListModel.tagDetailList[1],isTitle: false)
-                            ],
-                          ),
-                          SizedBox(height: 10.0),
-                          Row(
-                            children: <Widget>[
-                              TagForm(content: user.tagListModel.tagTitleList[2],isTitle: true),
-                              SizedBox(width: 10.0),
-                              TagForm(content: user.tagListModel.tagDetailList[2],isTitle: false),
-                              SizedBox(width: 10.0),
-                              TagForm(content: user.tagListModel.tagTitleList[3],isTitle: true),
-                              SizedBox(width: 10.0),
-                              TagForm(content: user.tagListModel.tagDetailList[3],isTitle: false)
-                            ],
-                          ),
-                          SizedBox(height: 10.0),
-                          Row(
-                            children: <Widget>[
-                              TagForm(content: user.tagListModel.tagTitleList[4],isTitle: true),
-                              SizedBox(width: 10.0),
-                              TagForm(content: user.tagListModel.tagDetailList[4],isTitle: false)
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                  )
+                  SizedBox(height: 10.0),
+                  TagPart()
                 ],
               )
             ),
@@ -215,6 +168,84 @@ class _ProfileScreenState extends State<ProfileScreen> {
         )
       )
     );  
+  }
+}
+
+
+class TagPart extends StatefulWidget {
+  @override
+  _TagPartState createState() => _TagPartState();
+}
+
+class _TagPartState extends State<TagPart> {
+  @override
+  Widget build(BuildContext context) {
+
+    final CurrentUser _user = sl.get<CurrentUser>();
+    final TagEditBloc _tagEditBloc = sl.get<TagEditBloc>();
+
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Padding(
+        padding: EdgeInsets.only(left: ScreenUtil.width/20),
+        child: BlocBuilder(
+          bloc: _tagEditBloc,
+          builder: (context, TagEditState state){
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    GestureDetector(
+                      child: TagForm(content: _user.tagListModel.tagTitleList[0],isTitle: true),
+                      onTap: () => streamDialogEditTag(context,0)
+                    ),
+                    SizedBox(width: 10.0),
+                    GestureDetector(
+                      child: TagForm(content: _user.tagListModel.tagDetailList[0],isTitle: false),
+                      onTap: () => streamDialogEditTag(context,0)
+                    ),
+                    SizedBox(width: 10.0),
+                    GestureDetector(
+                      child: TagForm(content: _user.tagListModel.tagTitleList[1],isTitle: true),
+                      onTap: () => streamDialogEditTag(context,1)
+                    ),
+                    SizedBox(width: 10.0),
+                    GestureDetector(
+                      child: TagForm(content: _user.tagListModel.tagDetailList[1],isTitle: false),
+                      onTap: () => streamDialogEditTag(context,1)
+                    )
+                  ],
+                ),
+                SizedBox(height: 10.0),
+                Row(
+                  children: <Widget>[
+                    GestureDetector(
+                      child: TagForm(content: _user.tagListModel.tagTitleList[2],isTitle: true),
+                      onTap: () => streamDialogEditTag(context,2)
+                    ),
+                    SizedBox(width: 10.0),
+                    TagForm(content: _user.tagListModel.tagDetailList[2],isTitle: false),
+                    SizedBox(width: 10.0),
+                    TagForm(content: _user.tagListModel.tagTitleList[3],isTitle: true),
+                    SizedBox(width: 10.0),
+                    TagForm(content: _user.tagListModel.tagDetailList[3],isTitle: false)
+                  ],
+                ),
+                SizedBox(height: 10.0),
+                Row(
+                  children: <Widget>[
+                    TagForm(content: _user.tagListModel.tagTitleList[4],isTitle: true),
+                    SizedBox(width: 10.0),
+                    TagForm(content: _user.tagListModel.tagDetailList[4],isTitle: false)
+                  ],
+                )
+              ],
+            );
+          }
+        )
+      ),
+    );
   }
 }
 
