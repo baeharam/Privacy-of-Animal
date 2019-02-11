@@ -28,11 +28,19 @@ class PhotoAPI {
     return compressedImage.path;
   }
 
+  Future<void> setFlags() async {
+    String uid = sl.get<CurrentUser>().uid;
+    SharedPreferences prefs = await sl.get<DatabaseHelper>().sharedPreferences;
+    prefs.setBool(uid+isFaceAnalyzed,true);
+    CollectionReference collectionReference = sl.get<FirebaseAPI>().firestore.collection(firestoreUsersCollection);
+    DocumentReference reference = collectionReference.document(sl.get<CurrentUser>().uid);
+    await reference.updateData({
+      firestoreIsFaceAnalyzedField: true
+    });
+  }
+
   Future<ANALYZE_RESULT> storeProfile() async {
     try{
-      String uid = sl.get<CurrentUser>().uid;
-      SharedPreferences prefs = await sl.get<DatabaseHelper>().sharedPreferences;
-      prefs.setBool(uid+isFaceAnalyzed,true);
       await _storeProfileIntoFirestore();
       await _storeProfileIntoLocalDB();
       await _storeCelebrityUrlsIntoFirestore();
@@ -50,7 +58,6 @@ class PhotoAPI {
       DocumentReference reference = collectionReference.document(sl.get<CurrentUser>().uid);
       FakeProfileModel fakeProfileModel = sl.get<CurrentUser>().fakeProfileModel;
       await reference.setData({
-        firestoreIsFaceAnalyzedField: true,
         firestoreFakeProfileField: {
           firestoreFakeGenderField: fakeProfileModel.gender,
           firestoreFakeGenderConfidenceField: fakeProfileModel.genderConfidence,
@@ -227,7 +234,7 @@ class PhotoAPI {
 
       final response = await http.Response.fromStream(streamedResponse);
       final Map jsonData = json.decode(response.body);
-      sl.get<CurrentUser>().celebrityUrls = getImageUrl(jsonData);
+      sl.get<CurrentUser>().celebrityUrls = _getImageUrl(jsonData);
     } catch(exception){
       print(exception);
       return GET_IMAGE_RESULT.FAILURE;
@@ -236,7 +243,7 @@ class PhotoAPI {
   }
 
   // Json 데이터를 이미지 url 리스트로 변환
-  List<String> getImageUrl(Map json) {
+  List<String> _getImageUrl(Map json) {
     List<String> imageUrls = List<String>();
     (json['items'] as List).forEach((imageMap){
       String imageLink = imageMap['thumbnail'];

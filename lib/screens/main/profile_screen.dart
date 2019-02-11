@@ -62,7 +62,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         IconButton(
                           icon: Icon(Icons.search),
-                          onPressed: (){},
+                          onPressed: () => Navigator.pushNamed(context, routeCelebrity),
                         )
                       ],
                     )

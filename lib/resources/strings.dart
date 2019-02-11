@@ -5,6 +5,7 @@ const String routeTagSelect = '/tagSelect';
 const String routeTagChat = '/tagChat';
 const String routePhoto = '/signUpPhoto';
 const String routeAnalyzeIntro = '/analyzeIntro';
+const String routeCelebrity = '/analyzeCelebrity';
 
 const String routeLoginDecision = '/loginDecision';
 const String routeSignUpDecision = '/signUpDecision';
@@ -295,5 +296,5 @@ const String celebrityUrlTableCreationSQL =
   'CREATE TABLE $celebrityUrlTable'
   '($id INTEGER PRIMARY KEY AUTOINCREMENT,'
   '$uidCol TEXT, $celebrityUrl1Col TEXT, '
-  '$celebrityUrl2Col TEXT, $celebrityUrl3Col TEXT '
+  '$celebrityUrl2Col TEXT, $celebrityUrl3Col TEXT, '
   '$celebrityUrl4Col TEXT, $celebrityUrl5Col TEXT, $celebrityUrl6Col TEXT)';

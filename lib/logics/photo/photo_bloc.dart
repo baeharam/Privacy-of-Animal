@@ -30,7 +30,8 @@ class PhotoBloc extends BlocEventStateBase<PhotoEvent,PhotoState>
         yield PhotoState.loading(0.33);
         ANALYZE_RESULT analyzeResultNaver = await _api.analyzeFaceNaver(event.photoPath);
         analyzeResultNaver = await _api.analyzeCelebrityNaver(event.photoPath);
-        if(analyzeResultNaver==ANALYZE_RESULT.FAILURE){
+        GET_IMAGE_RESULT getImageResult = await _api.getImageFromInternet();
+        if(analyzeResultNaver==ANALYZE_RESULT.FAILURE || getImageResult==GET_IMAGE_RESULT.FAILURE){
           yield PhotoState.failed();
         }else{
           yield PhotoState.loading(0.66);
@@ -39,6 +40,7 @@ class PhotoBloc extends BlocEventStateBase<PhotoEvent,PhotoState>
           if(storeResult==ANALYZE_RESULT.FAILURE){
             yield PhotoState.failed();
           }else{
+            await _api.setFlags();
             yield PhotoState.loading(1.0);
             yield PhotoState.succeeded();
           }
