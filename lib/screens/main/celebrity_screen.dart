@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
+import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 
 class CelebrityScreen extends StatelessWidget {
@@ -7,9 +8,17 @@ class CelebrityScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('네이버 검색 결과'),
+        title: Text(
+          '네이버 검색 결과',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold
+          ),
+        ),
+        centerTitle: true,
         leading: Container(),
-        backgroundColor: Colors.green,
+        elevation: 0.0,
+        backgroundColor: primaryBlue,
       ),
       body: GridView.count(
         crossAxisCount: 2,

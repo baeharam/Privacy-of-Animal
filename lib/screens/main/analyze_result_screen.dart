@@ -67,6 +67,7 @@ class _AnalyzeResultScreenState extends State<AnalyzeResultScreen> {
                     radius: ScreenUtil.width/1.9,
                     percent: sl.get<CurrentUser>().fakeProfileModel.animalConfidence,
                     lineWidth: 10.0,
+                    progressColor: primaryBeige,
                   ),
                   CircleAvatar(
                     backgroundImage: AssetImage(sl.get<CurrentUser>().fakeProfileModel.animalImage),

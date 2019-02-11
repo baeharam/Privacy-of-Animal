@@ -23,6 +23,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
 
     return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          '프로필',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold
+          ),
+        ),
+        centerTitle: true,
+        elevation: 0.0,
+        backgroundColor: primaryBlue,
+      ),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Column(
@@ -56,7 +68,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Text(
                           '닮은 유명인 보기',
                           style: TextStyle(
-                            color: Colors.blue,
+                            color: primaryBlue,
                             fontWeight: FontWeight.bold
                           ),
                         ),
@@ -85,6 +97,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     radius: ScreenUtil.width/2.8,
                                     percent: _user.fakeProfileModel.animalConfidence,
                                     lineWidth: 10.0,
+                                    progressColor: primaryBeige,
                                   ),
                                   CircleAvatar(
                                     backgroundImage: AssetImage(_user.fakeProfileModel.animalImage),
@@ -131,20 +144,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(bottom: 10.0),
-                    child: Text(
-                      '실제프로필',
-                      style: primaryTextStyle,
-                    ),
-                  ),
-                  Text(
-                    '수정 불가하며, 친구가 될시 공개됩니다.',
-                    style: TextStyle(
-                      color: Colors.red,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15.0
-                    ),
+                  Row(
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(bottom: 10.0),
+                        child: Text(
+                          '실제프로필',
+                          style: primaryTextStyle,
+                        ),
+                      ),
+                      Spacer(),
+                      Text(
+                        '친구가 될시 공개됩니다.',
+                        style: TextStyle(
+                          color: primaryBlue,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      )
+                    ],
                   ),
                   SizedBox(height: 10.0),
                   RealProfileForm(title: '이름',detail: _user.realProfileModel.name),
@@ -165,14 +182,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(bottom: 10.0),
-                    child: Text(
-                      '관심사 태그',
-                      style: primaryTextStyle,
-                    )
+                  Row(
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(bottom: 10.0),
+                        child: Text(
+                          '관심사 태그',
+                          style: primaryTextStyle,
+                        )
+                      ),
+                      Spacer(),
+                      Text(
+                        '바꾸고 싶으면 태그를 누르세요.',
+                        style: TextStyle(
+                          color: primaryBlue,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      )
+                    ],
                   ),
-                  SizedBox(height: 10.0),
+                  SizedBox(height: 20.0),
                   TagPart()
                 ],
               )
