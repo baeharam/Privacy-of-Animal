@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/photo/photo.dart';
 import 'package:privacy_of_animal/resources/resources.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_helpers.dart';
@@ -8,10 +9,8 @@ import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:privacy_of_animal/utils/stream_snackbar.dart';
 import 'dart:io';
 
-import 'package:privacy_of_animal/widgets/progress_indicator.dart';
-
-
 class PhotoScreen extends StatefulWidget {
+
   @override
   _PhotoScreenState createState() => _PhotoScreenState();
 }
@@ -22,9 +21,12 @@ class _PhotoScreenState extends State<PhotoScreen> {
   
   @override
   Widget build(BuildContext context){
+
+    final bool fromProfile = sl.get<CurrentUser>().fakeProfileModel.animalName!=null;
+
     return Scaffold(
       body: WillPopScope(
-          onWillPop: () => BackButtonAction.stopInMiddle(context),
+          onWillPop: () => fromProfile ? Navigator.pop(context) : BackButtonAction.stopInMiddle(context),
           child: BlocBuilder(
             bloc: _photoBloc,
             builder: (context, PhotoState state){
