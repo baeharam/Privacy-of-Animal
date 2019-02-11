@@ -166,6 +166,15 @@ const String firestoreNickNameField = nickNameCol;
 const String firestoreCelebrityField = celebrityCol;
 const String firestoreCelebrityConfidenceField = celebrityConfidenceCol;
 
+// Cloud Firestore 유명인 url 필드
+const String firestoreCelebrityUrlField = celebrityUrlTable;
+const String firestoreCelebrityUrl1Field = celebrityUrl1Col;
+const String firestoreCelebrityUrl2Field = celebrityUrl2Col;
+const String firestoreCelebrityUrl3Field = celebrityUrl3Col;
+const String firestoreCelebrityUrl4Field = celebrityUrl4Col;
+const String firestoreCelebrityUrl5Field = celebrityUrl5Col;
+const String firestoreCelebrityUrl6Field = celebrityUrl6Col;
+
 // Cloud Firestore 플래그 필드
 const String firestoreIsTagSelectedField = isTagSelected;
 const String firestoreIsTagChattedField = isTagChatted;
@@ -195,10 +204,11 @@ const String isFaceAnalyzed = 'is_face_analyzed';
 // 로컬 DB 이름
 const String userDB = 'user.db';
 
-// 테이블 3개 이름
+// 테이블 이름
 const String tagTable = 'tags';
 const String realProfileTable = 'real_profile';
 const String fakeProfileTable = 'fake_profile';
+const String celebrityUrlTable = 'celebrity_url';
 
 // 테이블 3개의 각 컬럼 이름
 // 공통 컬럼
@@ -239,6 +249,14 @@ const String nickNameCol = 'nick_name';
 const String celebrityCol = 'celebrity';
 const String celebrityConfidenceCol = 'celebrity_confidence';
 
+// 유명인 사진 url 테이블
+const String celebrityUrl1Col = 'celebrity1';
+const String celebrityUrl2Col = 'celebrity2';
+const String celebrityUrl3Col = 'celebrity3';
+const String celebrityUrl4Col = 'celebrity4';
+const String celebrityUrl5Col = 'celebrity5';
+const String celebrityUrl6Col = 'celebrity6';
+
 // 태그 테이블 생성하는 SQL
 const String tagTableCreationSQL = 
   'CREATE TABLE $tagTable '
@@ -271,3 +289,11 @@ const String fakeProfileTableCreationSQL =
   '$fakeEmotionCol TEXT, $firestoreFakeEmotionConfidenceField REAL, '
   '$animalNameCol TEXT, $animalImageCol TEXT, $animalConfidenceCol REAL, '
   '$celebrityCol TEXT, $celebrityConfidenceCol REAL)';
+
+// 유명인 사진 url 테이블 생성하는 SQL
+const String celebrityUrlTableCreationSQL = 
+  'CREATE TABLE $celebrityUrlTable'
+  '($id INTEGER PRIMARY KEY AUTOINCREMENT,'
+  '$uidCol TEXT, $celebrityUrl1Col TEXT, '
+  '$celebrityUrl2Col TEXT, $celebrityUrl3Col TEXT '
+  '$celebrityUrl4Col TEXT, $celebrityUrl5Col TEXT, $celebrityUrl6Col TEXT)';
