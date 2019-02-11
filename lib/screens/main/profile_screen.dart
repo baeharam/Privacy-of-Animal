@@ -97,7 +97,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               FakeProfileForm(title: '추정동물',detail: _user.fakeProfileModel.animalName),
                               FakeProfileForm(title: '추정성별',detail: _user.fakeProfileModel.gender),
                               FakeProfileForm(title: '추정나이',detail: _user.fakeProfileModel.age),
-                              FakeProfileForm(title: '추정기분',detail: _user.fakeProfileModel.emotion)
+                              FakeProfileForm(title: '추정기분',detail: _user.fakeProfileModel.emotion),
+                              FakeProfileForm(title: '연예인   ',detail: _user.fakeProfileModel.celebrity)
                             ],
                           )
                         ],
