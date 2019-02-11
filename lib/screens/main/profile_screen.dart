@@ -9,7 +9,6 @@ import 'package:privacy_of_animal/resources/constants.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:privacy_of_animal/utils/stream_dialog.dart';
-import 'package:rflutter_alert/rflutter_alert.dart';
 
 class ProfileScreen extends StatefulWidget {
   @override
@@ -135,10 +134,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   ),
                   SizedBox(height: 10.0),
-                  RealProfileForm(title: '실제이름',detail: _user.realProfileModel.name),
-                  RealProfileForm(title: '실제성별',detail: _user.realProfileModel.gender),
-                  RealProfileForm(title: '실제나이',detail: _user.realProfileModel.age),
-                  RealProfileForm(title: '실제직업',detail: _user.realProfileModel.job)
+                  RealProfileForm(title: '이름',detail: _user.realProfileModel.name),
+                  RealProfileForm(title: '성별',detail: _user.realProfileModel.gender),
+                  RealProfileForm(title: '나이',detail: _user.realProfileModel.age),
+                  RealProfileForm(title: '직업',detail: _user.realProfileModel.job)
                 ],
               )
             ),
@@ -194,6 +193,7 @@ class _TagPartState extends State<TagPart> {
           builder: (context, TagEditState state){
             if(state.isShowDialog){
               streamDialogEditTag(context,state.tagIndex,state.dropDownItems);
+              _tagEditBloc.emitEvent(TagEventInitial());
             }
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -311,18 +311,27 @@ class RealProfileForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RichText(
-      text: TextSpan(
-        text: '$title  ',
-        style: TextStyle(
-          color: Colors.black,
-          fontWeight: FontWeight.bold,
-          fontSize: 20.0
-        ),
-        children: [TextSpan(
-          text: detail
-        )]
-      )
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20.0,vertical: 10.0),
+      child: Row(
+        children: <Widget>[
+          Text(
+            '*'+title,
+            style: TextStyle(
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
+              fontSize: 15.0
+            ),
+          ),
+          Spacer(),
+          Text(
+            detail,
+            style: TextStyle(
+              fontSize: 15.0
+            ),
+          )
+        ],
+      ),
     );
   }
 }

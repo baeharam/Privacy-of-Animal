@@ -10,6 +10,11 @@ class TagEditBloc extends BlocEventStateBase<TagEditEvent,TagEditState> {
 
   @override
   Stream<TagEditState> eventHandler(TagEditEvent event, TagEditState currentState) async*{
+
+    if(event is TagEventInitial){
+      yield TagEditState.initial();
+    }
+
     if(event is TagEditEventClick){
       List<String> dropDownItems = _tagEditAPI.filterTags(event.tagIndex);
       yield TagEditState.showDialog(dropDownItems,event.tagIndex);

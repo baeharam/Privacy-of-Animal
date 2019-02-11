@@ -3,6 +3,8 @@ import 'package:privacy_of_animal/bloc_helpers/bloc_event_state.dart';
 
 abstract class TagEditEvent extends BlocEvent{}
 
+class TagEventInitial extends TagEditEvent {}
+
 class TagEditEventClick extends TagEditEvent {
   final int tagIndex;
   TagEditEventClick({@required this.tagIndex});

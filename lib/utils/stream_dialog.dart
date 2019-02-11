@@ -20,7 +20,7 @@ void streamDialogEditTag(BuildContext context, int tagIndex, List<String> dropDo
   WidgetsBinding.instance.addPostFrameCallback((_){
     Alert(
       context: context,
-      title: '태그 수정하기',
+      title: '관심사 수정',
       content: BlocBuilder(
         bloc: tagEditBloc,
         builder: (context,TagEditState state){
@@ -63,10 +63,10 @@ void streamDialogEditTag(BuildContext context, int tagIndex, List<String> dropDo
       buttons: [
         DialogButton(
           onPressed: () {tagEditBloc.emitEvent(
-            TagEditEventSubmit(tagTitle: selectedTag, tagDetail: tagController.text, tagIndex: tagIndex)
-          );
-          FocusScope.of(context).requestFocus(FocusNode());
-          Navigator.pop(context);
+              TagEditEventSubmit(tagTitle: selectedTag, tagDetail: tagController.text, tagIndex: tagIndex)
+            );
+            FocusScope.of(context).requestFocus(FocusNode());
+            Navigator.pop(context);
           },
           child: Text(
             '수정',
@@ -74,7 +74,20 @@ void streamDialogEditTag(BuildContext context, int tagIndex, List<String> dropDo
               color: Colors.white
             ),
           ),
-          color: primaryGreen,
+          color: primaryGreen
+        ),
+        DialogButton(
+          onPressed: () {
+            FocusScope.of(context).requestFocus(FocusNode());
+            Navigator.pop(context);
+          },
+          child: Text(
+            '취소',
+            style: TextStyle(
+              color: Colors.white
+            ),
+          ),
+          color: Colors.red
         )
       ]
     ).show();
