@@ -193,15 +193,15 @@ class PhotoAPI {
 
     String emotion = '';
     switch(naverMLModel.emotion){
-      case 'angry': emotion='화남'; break;
-      case 'disgust': emotion='역겨움'; break;
-      case 'fear': emotion='두려움'; break;
-      case 'laugh': emotion='웃음'; break;
-      case 'neutral': emotion='중립'; break;
-      case 'sad': emotion='슬픔'; break;
-      case 'surprise': emotion='놀람'; break;
-      case 'smile': emotion='미소지음'; break;
-      case 'talking': emotion='말하는 중'; break;
+      case 'angry': emotion='화난'; break;
+      case 'disgust': emotion='역겨운'; break;
+      case 'fear': emotion='두려운'; break;
+      case 'laugh': emotion='웃는'; break;
+      case 'neutral': emotion='무표정'; break;
+      case 'sad': emotion='슬픈'; break;
+      case 'surprise': emotion='놀란'; break;
+      case 'smile': emotion='미소띤'; break;
+      case 'talking': emotion='말하는'; break;
     }
     sl.get<CurrentUser>().fakeProfileModel.emotion = emotion;
     sl.get<CurrentUser>().fakeProfileModel.emotionConfidence = naverMLModel.emotionConfidence;
@@ -337,7 +337,7 @@ class PhotoAPI {
     sl.get<CurrentUser>().fakeProfileModel.animalImage = animal.image;
     sl.get<CurrentUser>().fakeProfileModel.animalName = animal.name;
     sl.get<CurrentUser>().fakeProfileModel.animalConfidence 
-      = (candidate[index].length/animalList.length)*(7-index);
+      = (candidate[index].length/animalList.length) + (index*2.0);
     if(sl.get<CurrentUser>().fakeProfileModel.animalConfidence>1.0)
       sl.get<CurrentUser>().fakeProfileModel.animalConfidence = 1.0;
   }
