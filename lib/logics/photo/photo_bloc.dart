@@ -22,20 +22,23 @@ class PhotoBloc extends BlocEventStateBase<PhotoEvent,PhotoState>
       yield PhotoState.take(path);
     }
     if (event is PhotoEventGotoAnalysis){
-      yield PhotoState.loading();
+      yield PhotoState.loading(0.0);
       ANALYZE_RESULT analyzeResultKakao = await _api.analyzeFaceKakao(event.photoPath);
       if(analyzeResultKakao==ANALYZE_RESULT.FAILURE){
         yield PhotoState.failed();
       }else{
+        yield PhotoState.loading(0.33);
         ANALYZE_RESULT analyzeResultNaver = await _api.analyzeFaceNaver(event.photoPath);
         if(analyzeResultNaver==ANALYZE_RESULT.FAILURE){
           yield PhotoState.failed();
         }else{
+          yield PhotoState.loading(0.66);
           await _api.detectAnimal(sl.get<CurrentUser>().kakaoMLModel);
           ANALYZE_RESULT storeResult = await _api.storeProfile();
           if(storeResult==ANALYZE_RESULT.FAILURE){
             yield PhotoState.failed();
           }else{
+            yield PhotoState.loading(1.0);
             yield PhotoState.succeeded();
           }
         }

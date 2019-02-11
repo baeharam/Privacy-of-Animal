@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:privacy_of_animal/logics/photo/photo.dart';
 import 'package:privacy_of_animal/resources/resources.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_helpers.dart';
@@ -28,7 +29,13 @@ class _PhotoScreenState extends State<PhotoScreen> {
             bloc: _photoBloc,
             builder: (context, PhotoState state){
               if(state.isLoading){
-                return CustomProgressIndicator();
+                return Center(
+                  child: CircularPercentIndicator(
+                    radius: ScreenUtil.width/4,
+                    percent: state.percentage,
+                    center: Text('분석중입니다...')
+                  ),
+                );
               }
               if(state.isAnalyzeFailed){
                 streamSnackbar(context,'분석에 실패했습니다.');
