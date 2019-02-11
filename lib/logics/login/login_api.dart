@@ -9,6 +9,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 
 class LoginAPI {
+
+  SharedPreferences prefs;
+  String uid;
+
   // 로그인
   Future<LOGIN_RESULT> login(String email, String password) async {
     try {
@@ -35,39 +39,32 @@ class LoginAPI {
 
   // 사용자 상태 확인
   Future<USER_CONDITION> checkUserCondition() async {
-    await _setSharedPreferences();
-    if(sl.get<CurrentUser>().isTagSelected==false){
+    await _setLoginFlags();
+    if(prefs.getBool(uid+isTagSelected)==false){
       return USER_CONDITION.NONE;
-    } else if(sl.get<CurrentUser>().isTagChatted==false){
+    } else if(prefs.getBool(uid+isTagChatted)==false){
       return USER_CONDITION.TAG_SELECTED;
-    } else if(sl.get<CurrentUser>().isFaceAnalyzed==false){
+    } else if(prefs.getBool(uid+isFaceAnalyzed)==false){
       return USER_CONDITION.TAG_CHATTED;
     } else {
       return USER_CONDITION.FACE_ANALYZED;
     }
   }
 
-  Future<void> _setSharedPreferences() async {
-    String uid = await sl.get<FirebaseAPI>().user;
-    SharedPreferences prefs = await sl.get<DatabaseHelper>().sharedPreferences;
+  // 상태에 따라 보여지는 화면이 다르기 때문에 SharedPreferences 값 설정해주어야 함
+  Future<void> _setLoginFlags() async {
+    uid = await sl.get<FirebaseAPI>().user;
+    prefs = await sl.get<DatabaseHelper>().sharedPreferences;
 
-    sl.get<CurrentUser>().isTagSelected = prefs.getBool(uid+firestoreIsTagSelectedField);
-    sl.get<CurrentUser>().isTagChatted = prefs.getBool(uid+firestoreIsTagChattedField);
-    sl.get<CurrentUser>().isFaceAnalyzed = prefs.getBool(uid+firestoreIsFaceAnalyzedField);
-    if(sl.get<CurrentUser>().isTagSelected==null || sl.get<CurrentUser>().isTagChatted==null || sl.get<CurrentUser>().isFaceAnalyzed==null){
-      sl.get<CurrentUser>().isTagSelected = await fetchUserCondition(uid, firestoreIsTagSelectedField);
-      sl.get<CurrentUser>().isTagChatted = await fetchUserCondition(uid, firestoreIsTagChattedField);
-      sl.get<CurrentUser>().isFaceAnalyzed = await fetchUserCondition(uid, firestoreIsFaceAnalyzedField);
-      prefs.setBool(uid+firestoreIsTagSelectedField, sl.get<CurrentUser>().isTagSelected);
-      prefs.setBool(uid+firestoreIsTagChattedField, sl.get<CurrentUser>().isTagChatted);
-      prefs.setBool(uid+firestoreIsFaceAnalyzedField, sl.get<CurrentUser>().isFaceAnalyzed);
+    bool tagSelectFlag = prefs.getBool(uid+isTagSelected);
+    bool tagChatFlag = prefs.getBool(uid+isTagChatted);
+    bool faceAnalyzeFlag = prefs.getBool(uid+isFaceAnalyzed);
+    if(tagSelectFlag==null || tagChatFlag==null || faceAnalyzeFlag==null){
+      DocumentSnapshot document = await sl.get<FirebaseAPI>().firestore.collection(firestoreUsersCollection).document(uid).get();
+      prefs.setBool(uid+isTagSelected, document[firestoreIsTagSelectedField]);
+      prefs.setBool(uid+firestoreIsTagChattedField, document[firestoreIsTagChattedField]);
+      prefs.setBool(uid+firestoreIsFaceAnalyzedField, document[firestoreIsFaceAnalyzedField]);
     }
-  }
-
-  // Firestore에서 사용자 상태 가져오기
-  Future<bool> fetchUserCondition(String uid, String field) async {
-    DocumentSnapshot document = await sl.get<FirebaseAPI>().firestore.collection(firestoreUsersCollection).document(uid).get();
-    return document[field];
   }
 }
 

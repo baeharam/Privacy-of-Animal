@@ -1,10 +1,14 @@
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state.dart';
+import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/home/home.dart';
+import 'package:privacy_of_animal/utils/service_locator.dart';
 
 class HomeBloc extends BlocEventStateBase<HomeEvent,HomeState> {
 
+  final HomeAPI _api = HomeAPI();
+
   @override
-    HomeState get initialState => HomeState.profile(3);
+    HomeState get initialState => HomeState.loading(3);
 
   @override
   Stream<HomeState> eventHandler(HomeEvent event, HomeState currentState) async*{
@@ -18,6 +22,9 @@ class HomeBloc extends BlocEventStateBase<HomeEvent,HomeState> {
       yield HomeState.friend(event.index);
     }
     else if(event.index==3){
+      if(sl.get<CurrentUser>().isDataFetched==false){
+        await _api.fetchUserData();
+      }
       yield HomeState.profile(event.index);
     }
   }

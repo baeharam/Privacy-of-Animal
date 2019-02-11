@@ -74,7 +74,8 @@ class TagChatState extends BlocState {
 
   factory TagChatState.failed() {
     return TagChatState(
-      isDetailStoreFailed: true
+      isDetailStoreFailed: true,
+      showSubmitButton: true
     );
   }
 }

@@ -34,6 +34,8 @@ class LoginBloc extends BlocEventStateBase<LoginEvent,LoginState> {
           case USER_CONDITION.TAG_CHATTED:
             yield LoginState.authenticatedTagChatted();
             break;
+          // 모든 작업을 끝낸 경우, 데이터를 가져온 상태일 수도 있고
+          // 아닌 상태일 수도 있으므로 데이터를 가져온다.
           case USER_CONDITION.FACE_ANALYZED:
             yield LoginState.authenticatedFaceAnalyzed();
             break;

@@ -5,6 +5,7 @@ class PhotoState extends BlocState {
   final bool isAnalyzeSucceeded;
   final bool isAnalyzeFailed;
   final bool isLoading;
+  final double percentage;
   final String path;
   
   PhotoState({
@@ -12,6 +13,7 @@ class PhotoState extends BlocState {
     this.isAnalyzeSucceeded: false,
     this.isAnalyzeFailed: false,
     this.isLoading: false,
+    this.percentage: 0.0,
     this.path: '',
   });
 
@@ -29,9 +31,10 @@ class PhotoState extends BlocState {
     );
   }
 
-  factory PhotoState.loading(){
+  factory PhotoState.loading(double percentage){
     return PhotoState(
-      isLoading: true
+      isLoading: true,
+      percentage: percentage
     );
   }
 

@@ -12,24 +12,39 @@ class PhotoBloc extends BlocEventStateBase<PhotoEvent,PhotoState>
 
   @override
   Stream<PhotoState> eventHandler(PhotoEvent event, PhotoState currentState) async*{
+
+    if(event is PhotoEventReset) {
+      yield PhotoState.noTake();
+    }
     
     if (event is PhotoEventTaking) {
       String path = await _api.getImage();
       yield PhotoState.take(path);
     }
     if (event is PhotoEventGotoAnalysis){
-      yield PhotoState.loading();
+      yield PhotoState.loading(0.0);
       ANALYZE_RESULT analyzeResultKakao = await _api.analyzeFaceKakao(event.photoPath);
-      ANALYZE_RESULT analyzeResultNaver = await _api.analyzeFaceNaver(event.photoPath);
-      await _api.detectAnimal(sl.get<CurrentUser>().kakaoMLModel);
-      ANALYZE_RESULT analyzeResultFlag = await _api.storeProfile();
-      if(analyzeResultKakao == ANALYZE_RESULT.SUCCESS 
-        && analyzeResultNaver == ANALYZE_RESULT.SUCCESS
-        && analyzeResultFlag == ANALYZE_RESULT.SUCCESS){
-        yield PhotoState.succeeded();
-      }
-      else {
+      if(analyzeResultKakao==ANALYZE_RESULT.FAILURE){
         yield PhotoState.failed();
+      }else{
+        yield PhotoState.loading(0.33);
+        ANALYZE_RESULT analyzeResultNaver = await _api.analyzeFaceNaver(event.photoPath);
+        analyzeResultNaver = await _api.analyzeCelebrityNaver(event.photoPath);
+        GET_IMAGE_RESULT getImageResult = await _api.getImageFromInternet();
+        if(analyzeResultNaver==ANALYZE_RESULT.FAILURE || getImageResult==GET_IMAGE_RESULT.FAILURE){
+          yield PhotoState.failed();
+        }else{
+          yield PhotoState.loading(0.66);
+          await _api.detectAnimal(sl.get<CurrentUser>().kakaoMLModel);
+          ANALYZE_RESULT storeResult = await _api.storeProfile();
+          if(storeResult==ANALYZE_RESULT.FAILURE){
+            yield PhotoState.failed();
+          }else{
+            await _api.setFlags();
+            yield PhotoState.loading(1.0);
+            yield PhotoState.succeeded();
+          }
+        }
       }
     }
   }

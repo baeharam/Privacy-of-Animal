@@ -5,18 +5,16 @@ import 'package:privacy_of_animal/models/tag_list_model.dart';
 
 class CurrentUser {
   String uid;
-  RealProfileModel realProfile;
+  RealProfileModel realProfileModel;
   TagListModel tagListModel;
   KakaoMLModel kakaoMLModel;
   FakeProfileModel fakeProfileModel;
+  List<String> celebrityUrls;
 
-  bool isTagSelected = false;
-  bool isTagChatted = false;
-  bool isFaceAnalyzed = false;
   bool isDataFetched = false;
 
   CurrentUser() : 
-    realProfile = RealProfileModel(), 
+    realProfileModel = RealProfileModel(), 
     tagListModel = TagListModel(tagTitleList: List<String>(), tagDetailList: List<String>()),
-    fakeProfileModel = FakeProfileModel();
+    fakeProfileModel = FakeProfileModel(), celebrityUrls = List<String>();
 }

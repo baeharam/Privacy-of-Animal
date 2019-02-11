@@ -10,6 +10,7 @@ import 'package:sqflite/sqflite.dart';
 
 class TagSelectAPI {
 
+  // 현재 사용자의 정보에 태그 이름 저장
   void _storeTagsIntoCurrentUser(List<bool> isTagSelected) {
     for(int i=0; i<tags.length; i++){
       if(isTagSelected[i]){
@@ -33,6 +34,8 @@ class TagSelectAPI {
     return TAG_STORE_RESULT.SUCCESS;
   }
 
+
+  // Cloud Firestore에 태그 이름 저장
   Future<void> _storeTagsIntoFirestore(String uid) async {
     await sl.get<FirebaseAPI>().firestore.runTransaction((transaction) async{
         CollectionReference collectionReference = sl.get<FirebaseAPI>().firestore.collection(firestoreUsersCollection);
@@ -50,6 +53,7 @@ class TagSelectAPI {
       });
   }
 
+  // 로컬 DB에 태그 이름 저장
   Future<void> _storeTagsIntoLocalDB(String uid) async {
     List<String> tags = sl.get<CurrentUser>().tagListModel.tagTitleList;
     Database db = await sl.get<DatabaseHelper>().database;

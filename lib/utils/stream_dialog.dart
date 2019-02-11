@@ -1,11 +1,98 @@
 import 'package:flutter/material.dart';
-import 'package:privacy_of_animal/bloc_helpers/bloc_helpers.dart';
+import 'package:privacy_of_animal/bloc_helpers/bloc_event_state_builder.dart';
+import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/find_password/find_password.dart';
 import 'package:privacy_of_animal/logics/signup/signup.dart';
+import 'package:privacy_of_animal/logics/tag_edit/tag_edit.dart';
 import 'package:privacy_of_animal/logics/validation/validation_bloc.dart';
 import 'package:privacy_of_animal/resources/resources.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
+import 'package:privacy_of_animal/widgets/progress_indicator.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
+
+void streamDialogEditTag(BuildContext context, int tagIndex, List<String> dropDownItems) {
+
+  final ValidationBloc validationBloc = sl.get<ValidationBloc>();
+  final TagEditBloc tagEditBloc = sl.get<TagEditBloc>();
+  final TextEditingController tagController = TextEditingController();
+  String selectedTag = sl.get<CurrentUser>().tagListModel.tagTitleList[tagIndex];
+
+  WidgetsBinding.instance.addPostFrameCallback((_){
+    Alert(
+      context: context,
+      title: '관심사 수정',
+      content: BlocBuilder(
+        bloc: tagEditBloc,
+        builder: (context,TagEditState state){
+          if(state.isTagChanged){
+            selectedTag = state.currentTag;
+          }
+          if(state.isLoading){
+            return CustomProgressIndicator();
+          }
+          return Column(
+            children: <Widget>[
+              DropdownButton<String>(
+                value: selectedTag,
+                items: dropDownItems.map((String value){
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+                onChanged: (tag) => sl.get<TagEditBloc>().emitEvent(TagEditEventMenuChange(changedTag: tag))
+              ),
+              StreamBuilder<String>(
+                stream: validationBloc.tag,
+                builder: (BuildContext context, AsyncSnapshot<String> snapshot){
+                  return TextField(
+                    decoration: InputDecoration(
+                      labelText: tagToMessage[selectedTag],
+                      errorText: snapshot.error,
+                    ),
+                    onChanged: validationBloc.onTagChanged,
+                    keyboardType: TextInputType.text,
+                    controller: tagController,
+                  );
+                },
+              )
+            ],
+          );
+        }
+      ),
+      buttons: [
+        DialogButton(
+          onPressed: () {tagEditBloc.emitEvent(
+              TagEditEventSubmit(tagTitle: selectedTag, tagDetail: tagController.text, tagIndex: tagIndex)
+            );
+            FocusScope.of(context).requestFocus(FocusNode());
+            Navigator.pop(context);
+          },
+          child: Text(
+            '수정',
+            style: TextStyle(
+              color: Colors.white
+            ),
+          ),
+          color: primaryGreen
+        ),
+        DialogButton(
+          onPressed: () {
+            FocusScope.of(context).requestFocus(FocusNode());
+            Navigator.pop(context);
+          },
+          child: Text(
+            '취소',
+            style: TextStyle(
+              color: Colors.white
+            ),
+          ),
+          color: Colors.red
+        )
+      ]
+    ).show();
+  });
+}
 
 void streamDialogForgotPassword(BuildContext context) {
 

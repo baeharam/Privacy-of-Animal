@@ -27,13 +27,23 @@ class PhotoAPI {
     return compressedImage.path;
   }
 
+  Future<void> setFlags() async {
+    String uid = sl.get<CurrentUser>().uid;
+    SharedPreferences prefs = await sl.get<DatabaseHelper>().sharedPreferences;
+    prefs.setBool(uid+isFaceAnalyzed,true);
+    CollectionReference collectionReference = sl.get<FirebaseAPI>().firestore.collection(firestoreUsersCollection);
+    DocumentReference reference = collectionReference.document(sl.get<CurrentUser>().uid);
+    await reference.updateData({
+      firestoreIsFaceAnalyzedField: true
+    });
+  }
+
   Future<ANALYZE_RESULT> storeProfile() async {
     try{
-      String uid = sl.get<CurrentUser>().uid;
-      SharedPreferences prefs = await sl.get<DatabaseHelper>().sharedPreferences;
-      prefs.setBool(uid+isFaceAnalyzed,true);
       await _storeProfileIntoFirestore();
       await _storeProfileIntoLocalDB();
+      await _storeCelebrityUrlsIntoFirestore();
+      await _storeCelebrityUrlsIntoLocalDB();
       
     } catch(exception){
       return ANALYZE_RESULT.FAILURE;
@@ -46,8 +56,7 @@ class PhotoAPI {
       CollectionReference collectionReference = sl.get<FirebaseAPI>().firestore.collection(firestoreUsersCollection);
       DocumentReference reference = collectionReference.document(sl.get<CurrentUser>().uid);
       FakeProfileModel fakeProfileModel = sl.get<CurrentUser>().fakeProfileModel;
-      await reference.updateData({
-        firestoreIsFaceAnalyzedField: true,
+      await reference.setData({
         firestoreFakeProfileField: {
           firestoreFakeGenderField: fakeProfileModel.gender,
           firestoreFakeGenderConfidenceField: fakeProfileModel.genderConfidence,
@@ -57,21 +66,27 @@ class PhotoAPI {
           firestoreFakeEmotionConfidenceField: fakeProfileModel.emotionConfidence,
           firestoreAnimalNameField: fakeProfileModel.animalName,
           firestoreAnimalImageField: fakeProfileModel.animalImage,
-          firestoreAnimalConfidenceField: fakeProfileModel.animalConfidence
-        }
-      });
+          firestoreAnimalConfidenceField: fakeProfileModel.animalConfidence,
+          firestoreCelebrityField: fakeProfileModel.celebrity,
+          firestoreCelebrityConfidenceField: fakeProfileModel.celebrityConfidence
+        },
+      }, merge: true);
     });
   }
 
   Future<void> _storeProfileIntoLocalDB() async {
+    DocumentSnapshot doc = 
+    await sl.get<FirebaseAPI>().firestore.collection(firestoreUsersCollection).document(sl.get<CurrentUser>().uid).get();
+    String nickName = doc[firestoreFakeProfileField][firestoreNickNameField];
     Database db = await sl.get<DatabaseHelper>().database;
     FakeProfileModel fakeProfileModel = sl.get<CurrentUser>().fakeProfileModel;
-    await db.rawInsert(
+    int result = await db.rawInsert(
       'INSERT INTO $fakeProfileTable'
-      '($uidCol,$fakeGenderCol,$fakeGenderConfidenceCol,'
+      '($uidCol,$nickNameCol,$fakeGenderCol,$fakeGenderConfidenceCol,'
       '$fakeAgeCol,$fakeAgeConfidenceCol,$fakeEmotionCol,$fakeEmotionConfidenceCol,'
-      '$animalNameCol,$animalImageCol,$animalConfidenceCol) '
+      '$animalNameCol,$animalImageCol,$animalConfidenceCol,$celebrityCol,$celebrityConfidenceCol) '
       'VALUES("${sl.get<CurrentUser>().uid}",'
+      '"$nickName",'
       '"${fakeProfileModel.gender}",'
       '"${fakeProfileModel.genderConfidence}",'
       '"${fakeProfileModel.age}",'
@@ -80,10 +95,49 @@ class PhotoAPI {
       '"${fakeProfileModel.emotionConfidence}",'
       '"${fakeProfileModel.animalName}",'
       '"${fakeProfileModel.animalImage}",'
-      '"${fakeProfileModel.animalConfidence}")'
+      '"${fakeProfileModel.animalConfidence}",'
+      '"${fakeProfileModel.celebrity}",'
+      '"${fakeProfileModel.celebrityConfidence}")'
+    );
+    print(result);
+  }
+
+  Future<void> _storeCelebrityUrlsIntoFirestore() async {
+    await sl.get<FirebaseAPI>().firestore.runTransaction((transaction) async{
+      CollectionReference collectionReference = sl.get<FirebaseAPI>().firestore.collection(firestoreUsersCollection);
+      DocumentReference reference = collectionReference.document(sl.get<CurrentUser>().uid);
+      List<String> urls = sl.get<CurrentUser>().celebrityUrls;
+      await reference.setData({
+        firestoreCelebrityUrlField: {
+          firestoreCelebrityUrl1Field: urls[0],
+          firestoreCelebrityUrl2Field: urls[1],
+          firestoreCelebrityUrl3Field: urls[2],
+          firestoreCelebrityUrl4Field: urls[3],
+          firestoreCelebrityUrl5Field: urls[4],
+          firestoreCelebrityUrl6Field: urls[5]
+        },
+      }, merge: true);
+    });
+  }
+
+  Future<void> _storeCelebrityUrlsIntoLocalDB() async {
+    Database db = await sl.get<DatabaseHelper>().database;
+    List<String> urls = sl.get<CurrentUser>().celebrityUrls;
+    await db.rawInsert(
+      'INSERT INTO $celebrityUrlTable'
+      '($uidCol,$celebrityUrl1Col,$celebrityUrl2Col,$celebrityUrl3Col,'
+      '$celebrityUrl4Col,$celebrityUrl5Col,$celebrityUrl6Col) '
+      'VALUES("${sl.get<CurrentUser>().uid}",'
+      '"${urls[0]}",'
+      '"${urls[1]}",'
+      '"${urls[2]}",'
+      '"${urls[3]}",'
+      '"${urls[4]}",'
+      '"${urls[5]}")'
     );
   }
 
+  // 카카오 얼굴인식
   Future<ANALYZE_RESULT> analyzeFaceKakao(String photoPath) async {
     final Uri uri = Uri.parse(kakaoAPIurl);
     final http.MultipartRequest request = http.MultipartRequest('POST',uri);
@@ -103,8 +157,9 @@ class PhotoAPI {
     return ANALYZE_RESULT.SUCCESS;
   }
 
+  // 네이버 얼굴인식
   Future<ANALYZE_RESULT> analyzeFaceNaver(String photoPath) async {
-    final Uri uri = Uri.parse(naverAPIurl);
+    final Uri uri = Uri.parse(naverFaceAPIurl);
     final http.MultipartRequest request = http.MultipartRequest('POST',uri);
     request.headers['X-Naver-Client-Id'] = naverClientID;
     request.headers['X-Naver-Client-Secret'] = naverClientSecret;
@@ -114,7 +169,7 @@ class PhotoAPI {
     final http.Response response = await http.Response.fromStream(streamedResponse);
     Map<String,dynamic> resultJson = json.decode(response.body);
 
-    if(resultJson['faces']==null){
+    if((resultJson['faces'] as List).length==0){
       return ANALYZE_RESULT.FAILURE;
     }
 
@@ -141,6 +196,64 @@ class PhotoAPI {
     sl.get<CurrentUser>().fakeProfileModel.emotion = emotion;
     sl.get<CurrentUser>().fakeProfileModel.emotionConfidence = naverMLModel.emotionConfidence;
     return ANALYZE_RESULT.SUCCESS;
+  }
+
+  // 네이버 유명인 인식
+  Future<ANALYZE_RESULT> analyzeCelebrityNaver(String photoPath) async {
+    final Uri uri = Uri.parse(naverCelebrityAPIurl);
+    final http.MultipartRequest request = http.MultipartRequest('POST',uri);
+    request.headers['X-Naver-Client-Id'] = naverClientID;
+    request.headers['X-Naver-Client-Secret'] = naverClientSecret;
+    request.files.add(await http.MultipartFile.fromPath('image', photoPath));
+
+    http.StreamedResponse streamedResponse = await request.send();
+    final http.Response response = await http.Response.fromStream(streamedResponse);
+    Map<String,dynamic> resultJson = json.decode(response.body);
+
+    if((resultJson['faces'] as List).length==0){
+      return ANALYZE_RESULT.FAILURE;
+    }
+
+    sl.get<CurrentUser>().fakeProfileModel.celebrity = resultJson['faces'][0]['celebrity']['value'];
+    sl.get<CurrentUser>().fakeProfileModel.celebrityConfidence = resultJson['faces'][0]['celebrity']['confidence'];
+
+    return ANALYZE_RESULT.SUCCESS;
+  }
+
+  // 유명인 사진 url 가져오기
+  Future<GET_IMAGE_RESULT> getImageFromInternet() async {
+    String keyword = sl.get<CurrentUser>().fakeProfileModel.celebrity;
+    if(keyword.isEmpty) return GET_IMAGE_RESULT.SUCCESS;
+    try{
+      final Uri url = Uri.parse('$naverSearchAPIurl$keyword');
+      final http.Request request = http.Request('GET',url);
+      request.headers['X-Naver-Client-Id'] = naverClientID;
+      request.headers['X-Naver-Client-Secret'] = naverClientSecret;
+      http.StreamedResponse streamedResponse = await request.send();
+
+      final response = await http.Response.fromStream(streamedResponse);
+      final Map jsonData = json.decode(response.body);
+      sl.get<CurrentUser>().celebrityUrls = _getImageUrl(jsonData);
+    } catch(exception){
+      print(exception);
+      return GET_IMAGE_RESULT.FAILURE;
+    }
+    return GET_IMAGE_RESULT.SUCCESS;
+  }
+
+  // Json 데이터를 이미지 url 리스트로 변환
+  List<String> _getImageUrl(Map json) {
+    List<String> imageUrls = List<String>();
+    (json['items'] as List).forEach((imageMap){
+      String imageLink = imageMap['thumbnail'];
+      List<String> splitData = imageLink.split('src=');
+      splitData = splitData[1].split('&');
+      imageUrls.add(splitData[0]);
+    });
+    while(imageUrls.length<6){
+      imageUrls.add('');
+    }
+    return imageUrls;
   }
 
   Future<void> detectAnimal(KakaoMLModel data) async {
@@ -211,10 +324,17 @@ class PhotoAPI {
     sl.get<CurrentUser>().fakeProfileModel.animalName = animal.name;
     sl.get<CurrentUser>().fakeProfileModel.animalConfidence 
       = (candidate[index].length/animalList.length)*(7-index);
+    if(sl.get<CurrentUser>().fakeProfileModel.animalConfidence>1.0)
+      sl.get<CurrentUser>().fakeProfileModel.animalConfidence = 1.0;
   }
 }
 
 enum ANALYZE_RESULT {
+  SUCCESS,
+  FAILURE
+}
+
+enum GET_IMAGE_RESULT {
   SUCCESS,
   FAILURE
 }

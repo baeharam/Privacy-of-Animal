@@ -44,6 +44,7 @@ flutter:
     - assets/images/components/friend.png
     - assets/images/components/match.png
     - assets/images/components/profile.png
+    - assets/images/components/modify.png
 
     - assets/images/tags/art.png
     - assets/images/tags/book.png

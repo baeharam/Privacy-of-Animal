@@ -4,6 +4,8 @@ const String routeLogin = '/login';
 const String routeTagSelect = '/tagSelect';
 const String routeTagChat = '/tagChat';
 const String routePhoto = '/signUpPhoto';
+const String routeAnalyzeIntro = '/analyzeIntro';
+const String routeCelebrity = '/analyzeCelebrity';
 
 const String routeLoginDecision = '/loginDecision';
 const String routeSignUpDecision = '/signUpDecision';
@@ -36,9 +38,11 @@ const String signUpInvalidNameError = '이름을 제대로 입력해주세요.';
 const String signUpEmptyAgeError = '나이를 입력하세요.';
 const String signUpEmptyJobError = '직업을 입력하세요.';
 const String signUpInvalidJobError = '직업을 제대로 입력해주세요.';
+const String signUpEmptyNickNameError = '닉네임을 입력하세요.';
 const String signUpNameHint = '본인의 이름을 입력해주세요.';
 const String signUpAgeHint = '나이를 설정해주세요.';
 const String signUpJobHint = '직업을 입력해주세요.';
+const String signUpNickNameHint = '닉네임을 입력해주세요.';
 const String signUpEmailHint = '이메일을 입력해주세요.';
 const String signUpPasswordHint = '6글자 이상의 비밀번호를 입력해주세요.';
 const String signUpAccountFailedTitle = '계정생성 실패!';
@@ -52,6 +56,9 @@ const List<String> tagChatNPCIntro = [tagChatNPCIntro1,tagChatNPCIntro2,tagChatN
 const String tagChatNPCIntro1 = '안녕! 조금만 더 질문을 할게 ㅎㅎ';
 const String tagChatNPCIntro2 = '너의 관심사 매칭을 도와주기 위해서야!';
 const String tagChatNPCIntro3 = '최대한 정성껏 대답 부탁해~';
+
+// ProfileScreen
+const String profileEmptyTagEditError = '답변을 입력해주세요.';
 
 // 태그 이름
 const String movie = '영화';
@@ -95,7 +102,9 @@ const String photoWarningMessage2 = '※ 분석한 후 3일이 지나야 재분�
 
 // 머신러닝 API
 const String kakaoAPIurl = 'https://kapi.kakao.com/v1/vision/face/detect';
-const String naverAPIurl = 'https://openapi.naver.com/v1/vision/face';
+const String naverFaceAPIurl = 'https://openapi.naver.com/v1/vision/face';
+const String naverCelebrityAPIurl = 'https://openapi.naver.com/v1/vision/celebrity';
+const String naverSearchAPIurl = 'https://openapi.naver.com/v1/search/image?query=';
 
 // 동물 이름
 const String bisonAnimal = 'bison';
@@ -154,6 +163,18 @@ const String firestoreFakeEmotionConfidenceField = fakeEmotionConfidenceCol;
 const String firestoreAnimalNameField = animalNameCol;
 const String firestoreAnimalImageField = animalImageCol;
 const String firestoreAnimalConfidenceField = animalConfidenceCol;
+const String firestoreNickNameField = nickNameCol;
+const String firestoreCelebrityField = celebrityCol;
+const String firestoreCelebrityConfidenceField = celebrityConfidenceCol;
+
+// Cloud Firestore 유명인 url 필드
+const String firestoreCelebrityUrlField = celebrityUrlTable;
+const String firestoreCelebrityUrl1Field = celebrityUrl1Col;
+const String firestoreCelebrityUrl2Field = celebrityUrl2Col;
+const String firestoreCelebrityUrl3Field = celebrityUrl3Col;
+const String firestoreCelebrityUrl4Field = celebrityUrl4Col;
+const String firestoreCelebrityUrl5Field = celebrityUrl5Col;
+const String firestoreCelebrityUrl6Field = celebrityUrl6Col;
 
 // Cloud Firestore 플래그 필드
 const String firestoreIsTagSelectedField = isTagSelected;
@@ -167,12 +188,14 @@ const String firestoreTagTitle2Field = tagName2Col;
 const String firestoreTagTitle3Field = tagName3Col;
 const String firestoreTagTitle4Field = tagName4Col;
 const String firestoreTagTitle5Field = tagName5Col;
+const List<String> firestoreTagTitleList = tagTitleList;
 
 const String firestoreTagDetail1Field = tagDetail1Col;
 const String firestoreTagDetail2Field = tagDetail2Col;
 const String firestoreTagDetail3Field = tagDetail3Col;
 const String firestoreTagDetail4Field = tagDetail4Col;
 const String firestoreTagDetail5Field = tagDetail5Col;
+const List<String> firestoreTagDetailList = tagDetailList;
 
 // SharedPreferences 플래그 key값
 const String isTagSelected = 'is_tag_selected';
@@ -182,10 +205,11 @@ const String isFaceAnalyzed = 'is_face_analyzed';
 // 로컬 DB 이름
 const String userDB = 'user.db';
 
-// 테이블 3개 이름
+// 테이블 이름
 const String tagTable = 'tags';
 const String realProfileTable = 'real_profile';
 const String fakeProfileTable = 'fake_profile';
+const String celebrityUrlTable = 'celebrity_url';
 
 // 테이블 3개의 각 컬럼 이름
 // 공통 컬럼
@@ -203,6 +227,8 @@ const String tagName4Col = 'tag_name_4';
 const String tagDetail4Col = 'tag_detail_4';
 const String tagName5Col = 'tag_name_5';
 const String tagDetail5Col = 'tag_detail_5';
+const List<String> tagTitleList = [tagName1Col,tagName2Col,tagName3Col,tagName4Col,tagName5Col];
+const List<String> tagDetailList = [tagDetail1Col,tagDetail2Col,tagDetail3Col,tagDetail4Col,tagDetail5Col];
 
 // 실제 프로필 테이블
 const String nameCol = 'name';
@@ -220,6 +246,17 @@ const String fakeEmotionConfidenceCol = 'fake_emotion_confidence';
 const String animalNameCol = 'animal_name';
 const String animalImageCol = 'animal_image';
 const String animalConfidenceCol = 'animal_confidence';
+const String nickNameCol = 'nick_name';
+const String celebrityCol = 'celebrity';
+const String celebrityConfidenceCol = 'celebrity_confidence';
+
+// 유명인 사진 url 테이블
+const String celebrityUrl1Col = 'celebrity1';
+const String celebrityUrl2Col = 'celebrity2';
+const String celebrityUrl3Col = 'celebrity3';
+const String celebrityUrl4Col = 'celebrity4';
+const String celebrityUrl5Col = 'celebrity5';
+const String celebrityUrl6Col = 'celebrity6';
 
 // 태그 테이블 생성하는 SQL
 const String tagTableCreationSQL = 
@@ -241,14 +278,23 @@ const String tagTableCreationSQL =
 const String realProfileTableCreationSQL = 
   'CREATE TABLE $realProfileTable'
   '($id INTEGER PRIMARY KEY AUTOINCREMENT,'
-  '$uidCol TEXT, $nameCol TEXT, $genderCol TEXT, $ageCol INTEGER, $jobCol TEXT)';
+  '$uidCol TEXT, $nameCol TEXT, $genderCol TEXT, $ageCol TEXT, $jobCol TEXT)';
 
 
 // 가상 프로필 테이블 생성하는 SQL  
 const String fakeProfileTableCreationSQL = 
   'CREATE TABLE $fakeProfileTable'
   '($id INTEGER PRIMARY KEY AUTOINCREMENT,'
-  '$uidCol TEXT, $fakeGenderCol TEXT, $fakeGenderConfidenceCol REAL, '
+  '$uidCol TEXT, $nickNameCol TEXT, $fakeGenderCol TEXT, $fakeGenderConfidenceCol REAL, '
   '$fakeAgeCol TEXT, $fakeAgeConfidenceCol REAL, '
   '$fakeEmotionCol TEXT, $firestoreFakeEmotionConfidenceField REAL, '
-  '$animalNameCol TEXT, $animalImageCol TEXT, $animalConfidenceCol REAL)';
+  '$animalNameCol TEXT, $animalImageCol TEXT, $animalConfidenceCol REAL, '
+  '$celebrityCol TEXT, $celebrityConfidenceCol REAL)';
+
+// 유명인 사진 url 테이블 생성하는 SQL
+const String celebrityUrlTableCreationSQL = 
+  'CREATE TABLE $celebrityUrlTable'
+  '($id INTEGER PRIMARY KEY AUTOINCREMENT,'
+  '$uidCol TEXT, $celebrityUrl1Col TEXT, '
+  '$celebrityUrl2Col TEXT, $celebrityUrl3Col TEXT, '
+  '$celebrityUrl4Col TEXT, $celebrityUrl5Col TEXT, $celebrityUrl6Col TEXT)';
