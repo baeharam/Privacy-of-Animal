@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state_builder.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
-import 'package:privacy_of_animal/logics/photo/photo.dart';
+import 'package:privacy_of_animal/logics/profile/profile.dart';
 import 'package:privacy_of_animal/logics/tag_edit/tag_edit.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/resources/constants.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:privacy_of_animal/utils/stream_dialog.dart';
+import 'package:privacy_of_animal/utils/stream_navigator.dart';
+import 'package:privacy_of_animal/utils/stream_snackbar.dart';
 
 class ProfileScreen extends StatefulWidget {
   @override
@@ -60,8 +62,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             height: 50.0,
                           ),
                           onTap: (){
-                            sl.get<PhotoBloc>().emitEvent(PhotoEventReset());
-                            Navigator.pushNamed(context, routePhotoDecision);
+                            sl.get<ProfileBloc>().emitEvent(ProfileEventResetFakeProfile());
                           }
                         ),
                         Spacer(),
@@ -206,6 +207,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ],
               )
             ),
+            BlocBuilder(
+              bloc: sl.get<ProfileBloc>(),
+              builder: (context, ProfileState state){
+                if(state.isResetImpossible){
+                  streamSnackbar(context,state.remainedTime);
+                  sl.get<ProfileBloc>().emitEvent(ProfileEventInitial());
+                }
+                if(state.isResetPossible){
+                  StreamNavigator.pushNamed(context, routePhotoDecision);
+                }
+                return Container();
+              },
+            )
           ],
         )
       )

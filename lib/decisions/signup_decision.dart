@@ -21,6 +21,7 @@ class _SignUpDecisionState extends State<SignUpDecision> {
       bloc: sl.get<SignUpBloc>(),
       builder: (BuildContext context, SignUpState state){
         if(state.isRegistered){
+          sl.get<SignUpBloc>().emitEvent(SignUpEventInitial());
           StreamNavigator.pushReplacementNamed(context, routeLoginDecision);
         }
         if(!state.isRegistered){

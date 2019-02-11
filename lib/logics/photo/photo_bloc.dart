@@ -16,10 +16,6 @@ class PhotoBloc extends BlocEventStateBase<PhotoEvent,PhotoState>
     if(event is PhotoEventEmitLoading){
       yield PhotoState.loading(event.percentage);
     }
-
-    if(event is PhotoEventReset) {
-      yield PhotoState.noTake();
-    }
     
     if (event is PhotoEventTaking) {
       String path = await _api.getImage();

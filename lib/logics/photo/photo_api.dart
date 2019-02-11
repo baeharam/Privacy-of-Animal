@@ -51,7 +51,7 @@ class PhotoAPI {
     // 로컬 DB 업데이트
     Database db = await sl.get<DatabaseHelper>().database;
     await db.rawUpdate(
-      'UPDATE $fakeProfileTable $analyzedTimeCol=? WHERE $uidCol="${sl.get<CurrentUser>().uid}"',
+      'UPDATE $fakeProfileTable SET $analyzedTimeCol=? WHERE $uidCol="${sl.get<CurrentUser>().uid}"',
       ['$now']
     );
 

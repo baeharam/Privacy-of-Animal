@@ -108,11 +108,6 @@ class _IntroScreenState extends State<IntroScreen> with SingleTickerProviderStat
                       color: primaryGrey,
                       callback: () => Navigator.of(context).pushNamed(routeSignUpDecision)
                     )
-                    // InitialButton(
-                    //   text: 'photo', 
-                    //   color: introSignUpButtonColor,
-                    //   callback: () => Navigator.of(context).pushNamed('/photo')
-                    // )
                   ],
                 ),
               )
