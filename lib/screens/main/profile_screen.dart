@@ -9,6 +9,7 @@ import 'package:privacy_of_animal/resources/constants.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:privacy_of_animal/utils/stream_dialog.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 class ProfileScreen extends StatefulWidget {
   @override
@@ -191,6 +192,9 @@ class _TagPartState extends State<TagPart> {
         child: BlocBuilder(
           bloc: _tagEditBloc,
           builder: (context, TagEditState state){
+            if(state.isShowDialog){
+              streamDialogEditTag(context,state.tagIndex,state.dropDownItems);
+            }
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
@@ -198,22 +202,22 @@ class _TagPartState extends State<TagPart> {
                   children: <Widget>[
                     GestureDetector(
                       child: TagForm(content: _user.tagListModel.tagTitleList[0],isTitle: true),
-                      onTap: () => streamDialogEditTag(context,0)
+                      onTap: () => _tagEditBloc.emitEvent(TagEditEventClick(tagIndex: 0))
                     ),
                     SizedBox(width: 10.0),
                     GestureDetector(
                       child: TagForm(content: _user.tagListModel.tagDetailList[0],isTitle: false),
-                      onTap: () => streamDialogEditTag(context,0)
+                      onTap: () => _tagEditBloc.emitEvent(TagEditEventClick(tagIndex: 0))
                     ),
                     SizedBox(width: 10.0),
                     GestureDetector(
                       child: TagForm(content: _user.tagListModel.tagTitleList[1],isTitle: true),
-                      onTap: () => streamDialogEditTag(context,1)
+                      onTap: () => _tagEditBloc.emitEvent(TagEditEventClick(tagIndex: 1))
                     ),
                     SizedBox(width: 10.0),
                     GestureDetector(
                       child: TagForm(content: _user.tagListModel.tagDetailList[1],isTitle: false),
-                      onTap: () => streamDialogEditTag(context,1)
+                      onTap: () => _tagEditBloc.emitEvent(TagEditEventClick(tagIndex: 1))
                     )
                   ],
                 ),
@@ -222,7 +226,7 @@ class _TagPartState extends State<TagPart> {
                   children: <Widget>[
                     GestureDetector(
                       child: TagForm(content: _user.tagListModel.tagTitleList[2],isTitle: true),
-                      onTap: () => streamDialogEditTag(context,2)
+                      onTap: () => _tagEditBloc.emitEvent(TagEditEventClick(tagIndex: 2))
                     ),
                     SizedBox(width: 10.0),
                     TagForm(content: _user.tagListModel.tagDetailList[2],isTitle: false),
@@ -247,6 +251,8 @@ class _TagPartState extends State<TagPart> {
       ),
     );
   }
+
+  
 }
 
 class FakeProfileForm extends StatelessWidget {

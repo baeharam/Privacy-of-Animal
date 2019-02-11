@@ -7,3 +7,8 @@ class TagEditEventClick extends TagEditEvent {
   final int tagIndex;
   TagEditEventClick({@required this.tagIndex});
 }
+
+class TagEditEventMenuChange extends TagEditEvent {
+  final String changedTag;
+  TagEditEventMenuChange({@required this.changedTag});
+}

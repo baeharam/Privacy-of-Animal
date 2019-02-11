@@ -3,7 +3,8 @@ import 'package:privacy_of_animal/logics/validation/validator.dart';
 import 'package:rxdart/rxdart.dart';
 
 class ValidationBloc extends Object 
-  with EmailValidator,PasswordValidator,NameValidator,AgeValidator,JobValidator,GenderValidator,NickNameValidator
+  with EmailValidator,PasswordValidator,NameValidator,AgeValidator
+  ,JobValidator,GenderValidator,NickNameValidator,TagValidator
   implements BlocBase {
 
   final BehaviorSubject<String> _emailController = BehaviorSubject<String>();
@@ -13,12 +14,14 @@ class ValidationBloc extends Object
   final BehaviorSubject<String> _jobController = BehaviorSubject<String>();
   final BehaviorSubject<String> _genderController = BehaviorSubject<String>(seedValue: null);
   final BehaviorSubject<String> _nickNameController = BehaviorSubject<String>();
+  final BehaviorSubject<String> _tagController = BehaviorSubject<String>();
 
   Function(String) get onEmailChanged => _emailController.sink.add;
   Function(String) get onPasswordChanged => _passwordController.sink.add;
   Function(String) get onNameChanged => _nameController.sink.add;
   Function(String) get onJobChanged => _jobController.sink.add;
   Function(String) get onNickNameChanged => _nickNameController.sink.add;
+  Function(String) get onTagChanged => _tagController.sink.add;
   onAgeSelected(int age) => _ageController.sink.add(age);
   onGenderSelected(String gender) => _genderController.sink.add(gender);
 
@@ -41,6 +44,7 @@ class ValidationBloc extends Object
   Stream<int> get age => _ageController.stream.transform(validateAge);
   Stream<String> get gender => _genderController.stream.transform(validateGender);
   Stream<String> get nickName => _nickNameController.stream.transform(validateNickName);
+  Stream<String> get tag => _tagController.stream.transform(validateTag);
 
   Stream<bool> get loginValid => Observable.combineLatest2(email,password, (e,p) => true);
   Stream<bool> get signUpValid => 
@@ -55,5 +59,6 @@ class ValidationBloc extends Object
     _jobController.close();
     _genderController.close();
     _nickNameController.close();
+    _tagController.close();
   }
 }

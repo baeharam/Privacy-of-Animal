@@ -55,6 +55,9 @@ const String tagChatNPCIntro1 = '안녕! 조금만 더 질문을 할게 ㅎㅎ';
 const String tagChatNPCIntro2 = '너의 관심사 매칭을 도와주기 위해서야!';
 const String tagChatNPCIntro3 = '최대한 정성껏 대답 부탁해~';
 
+// ProfileScreen
+const String profileEmptyTagEditError = '답변을 입력해주세요.';
+
 // 태그 이름
 const String movie = '영화';
 const String food = '음식';

@@ -1,51 +1,60 @@
 import 'package:flutter/material.dart';
+import 'package:privacy_of_animal/bloc_helpers/bloc_event_state_builder.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/find_password/find_password.dart';
 import 'package:privacy_of_animal/logics/signup/signup.dart';
+import 'package:privacy_of_animal/logics/tag_edit/tag_edit.dart';
 import 'package:privacy_of_animal/logics/validation/validation_bloc.dart';
 import 'package:privacy_of_animal/resources/resources.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
-void streamDialogEditTag(BuildContext context, int tagIndex) {
+void streamDialogEditTag(BuildContext context, int tagIndex, List<String> dropDownItems) {
 
   final ValidationBloc validationBloc = sl.get<ValidationBloc>();
-  final TextEditingController _emailController = TextEditingController();
+  final TagEditBloc tagEditBloc = sl.get<TagEditBloc>();
+  final TextEditingController tagController = TextEditingController();
+  String selectedTag = sl.get<CurrentUser>().tagListModel.tagTitleList[tagIndex];
 
   WidgetsBinding.instance.addPostFrameCallback((_){
-    List<String> dropDownItems = List<String>();
-    List<String> userTagList = sl.get<CurrentUser>().tagListModel.tagTitleList;
-    bool isAlreadyExist = false;
-    tags.forEach((tag){
-      for(final String userTag in userTagList){
-        if(tag.title.compareTo(userTag)==0){
-          isAlreadyExist = true;
-          break;
-        }
-      }
-      if(!isAlreadyExist){
-        dropDownItems.add(tag.title);
-      }
-      else{
-        isAlreadyExist = false;
-      }
-    });
-
     Alert(
       context: context,
       title: '태그 수정하기',
-      content: Column(
-        children: <Widget>[
-          DropdownButton(
-            items: dropDownItems.map((String value){
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value),
-              );
-            }).toList(),
-            onChanged: (_) {},
-          )
-        ],
+      content: BlocBuilder(
+        bloc: tagEditBloc,
+        builder: (context,TagEditState state){
+          if(state.isTagChanged){
+            selectedTag = state.currentTag;
+          }
+          return Column(
+            children: <Widget>[
+              DropdownButton<String>(
+                value: selectedTag,
+                items: dropDownItems.map((String value){
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+                onChanged: (tag) => sl.get<TagEditBloc>().emitEvent(TagEditEventMenuChange(changedTag: tag))
+              ),
+              StreamBuilder<String>(
+                stream: validationBloc.tag,
+                builder: (BuildContext context, AsyncSnapshot<String> snapshot){
+                  return TextField(
+                    decoration: InputDecoration(
+                      labelText: tagToMessage[selectedTag],
+                      errorText: snapshot.error,
+                    ),
+                    onChanged: validationBloc.onTagChanged,
+                    keyboardType: TextInputType.text,
+                    controller: tagController,
+                  );
+                },
+              )
+            ],
+          );
+        }
       ),
       buttons: [
         DialogButton(
