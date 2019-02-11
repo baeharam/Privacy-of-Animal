@@ -31,13 +31,32 @@ class PhotoAPI {
 
   Future<void> setFlags() async {
     String uid = sl.get<CurrentUser>().uid;
+
+    // SharedPreferences 업데이트
     SharedPreferences prefs = await sl.get<DatabaseHelper>().sharedPreferences;
     prefs.setBool(uid+isFaceAnalyzed,true);
+
+    int now = DateTime.now().millisecondsSinceEpoch;
+
+    // Cloud Firestore 업데이트
     CollectionReference collectionReference = sl.get<FirebaseAPI>().firestore.collection(firestoreUsersCollection);
     DocumentReference reference = collectionReference.document(sl.get<CurrentUser>().uid);
-    await reference.updateData({
-      firestoreIsFaceAnalyzedField: true
-    });
+    await reference.setData({
+      firestoreIsFaceAnalyzedField: true,
+      firestoreFakeProfileField: {
+        firestoreAnalyzedTimeField: now
+      }
+    },merge: true);
+
+    // 로컬 DB 업데이트
+    Database db = await sl.get<DatabaseHelper>().database;
+    await db.rawUpdate(
+      'UPDATE $fakeProfileTable $analyzedTimeCol=? WHERE $uidCol="${sl.get<CurrentUser>().uid}"',
+      ['$now']
+    );
+
+    // 현재 사용자 정보 업데이트
+    sl.get<CurrentUser>().fakeProfileModel.analyzedTime = now;
   }
 
   Future<ANALYZE_RESULT> storeProfile() async {

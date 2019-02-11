@@ -166,6 +166,7 @@ const String firestoreAnimalConfidenceField = animalConfidenceCol;
 const String firestoreNickNameField = nickNameCol;
 const String firestoreCelebrityField = celebrityCol;
 const String firestoreCelebrityConfidenceField = celebrityConfidenceCol;
+const String firestoreAnalyzedTimeField = analyzedTimeCol;
 
 // Cloud Firestore 유명인 url 필드
 const String firestoreCelebrityUrlField = celebrityUrlTable;
@@ -249,6 +250,7 @@ const String animalConfidenceCol = 'animal_confidence';
 const String nickNameCol = 'nick_name';
 const String celebrityCol = 'celebrity';
 const String celebrityConfidenceCol = 'celebrity_confidence';
+const String analyzedTimeCol = 'analyzed_time';
 
 // 유명인 사진 url 테이블
 const String celebrityUrl1Col = 'celebrity1';
@@ -289,7 +291,7 @@ const String fakeProfileTableCreationSQL =
   '$fakeAgeCol TEXT, $fakeAgeConfidenceCol REAL, '
   '$fakeEmotionCol TEXT, $firestoreFakeEmotionConfidenceField REAL, '
   '$animalNameCol TEXT, $animalImageCol TEXT, $animalConfidenceCol REAL, '
-  '$celebrityCol TEXT, $celebrityConfidenceCol REAL)';
+  '$celebrityCol TEXT, $celebrityConfidenceCol REAL, $analyzedTimeCol INTEGER)';
 
 // 유명인 사진 url 테이블 생성하는 SQL
 const String celebrityUrlTableCreationSQL = 
