@@ -54,7 +54,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         Spacer(),
                         Text(
-                          '닮은 연예인 보기',
+                          '닮은 유명인 보기',
                           style: TextStyle(
                             color: Colors.blue,
                             fontWeight: FontWeight.bold
@@ -110,7 +110,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               FakeProfileForm(title: '추정성별',detail: _user.fakeProfileModel.gender),
                               FakeProfileForm(title: '추정나이',detail: _user.fakeProfileModel.age),
                               FakeProfileForm(title: '추정기분',detail: _user.fakeProfileModel.emotion),
-                              FakeProfileForm(title: '연예인   ',detail: _user.fakeProfileModel.celebrity)
+                              FakeProfileForm(title: '유명인   ',detail: _user.fakeProfileModel.celebrity)
                             ],
                           )
                         ],

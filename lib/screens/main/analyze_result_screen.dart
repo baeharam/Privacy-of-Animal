@@ -103,7 +103,7 @@ class _AnalyzeResultScreenState extends State<AnalyzeResultScreen> {
                   ),
                   SizedBox(height: 10.0),
                   ResultText(
-                    title: '연예인',
+                    title: '유명인',
                     value: sl.get<CurrentUser>().fakeProfileModel.celebrity,
                     confidence: (sl.get<CurrentUser>().fakeProfileModel.celebrityConfidence*100).toStringAsFixed(1),
                   ),

@@ -51,7 +51,7 @@ class AnalyzeIntroScreen extends StatelessWidget {
               ),
             ),
             Text(
-              '닮은 동물, 추정성별, 추정나이\n추정기분, 닮은 연예인\n',
+              '닮은 동물, 추정성별, 추정나이\n추정기분, 닮은 유명인\n',
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: primaryGreen,
