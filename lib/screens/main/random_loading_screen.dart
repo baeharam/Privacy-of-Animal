@@ -32,21 +32,35 @@ class _RandomLoadingScreenState extends State<RandomLoadingScreen> {
         elevation: 0.0,
         backgroundColor: primaryBlue
       ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: sl.get<FirebaseAPI>().firestore.collection(firestoreRandomChatCollection)
-          .where(firestoreRandom,isGreaterThan: Random().nextInt(pow(2,32))).orderBy(firestoreRandom).limit(1).snapshots(),
-        builder: (context, AsyncSnapshot<QuerySnapshot> snapshot){
-          if(snapshot.hasData && snapshot.data.documents.length!=0){
-            String selectedUser = snapshot.data.documents[0].documentID;
-            if(selectedUser.compareTo(sl.get<CurrentUser>().uid)!=0){
-              sl.get<RandomChatBloc>().emitEvent(RandomChatEventMatchUsers(
-                user: selectedUser
-              ));
-              StreamNavigator.pushReplacementNamed(context, routeRandomChat);
-            }
-          }
-          return CustomProgressIndicator();
-        },
+      body: Column(
+        children: <Widget>[
+          StreamBuilder<QuerySnapshot>(
+            stream: sl.get<FirebaseAPI>().firestore.collection(firestoreRandomChatCollection)
+              .where(firestoreRandom,isGreaterThan: Random().nextInt(pow(2,32))).orderBy(firestoreRandom).limit(1).snapshots(),
+            builder: (context, AsyncSnapshot<QuerySnapshot> snapshot){
+              if(snapshot.hasData && snapshot.data.documents.length!=0){
+                String selectedUser = snapshot.data.documents[0].documentID;
+                if(selectedUser.compareTo(sl.get<CurrentUser>().uid)!=0){
+                  sl.get<RandomChatBloc>().emitEvent(RandomChatEventMatchUsers(
+                    user: selectedUser
+                  ));
+                  StreamNavigator.pushReplacementNamed(context, routeRandomChat);
+                }
+              }
+              return CustomProgressIndicator();
+            },
+          ),
+          StreamBuilder(
+            stream: sl.get<FirebaseAPI>().firestore.collection(firestoreRandomChatCollection)
+              .where(uidCol, isEqualTo: sl.get<CurrentUser>().uid).snapshots(),
+            builder: (context, AsyncSnapshot<QuerySnapshot> snapshot){
+              if(snapshot.hasData && snapshot.data.documents.length==0){
+                StreamNavigator.pushReplacementNamed(context, routeRandomChat);
+              }
+              return Container();
+            },
+          )
+        ],
       ),
     );
   }

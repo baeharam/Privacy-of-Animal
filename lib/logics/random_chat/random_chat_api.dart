@@ -14,7 +14,8 @@ class RandomChatAPI {
 
     await sl.get<FirebaseAPI>().firestore.runTransaction((transaction) async{
       col.document(sl.get<CurrentUser>().uid).setData({
-        'random': randomValue
+        firestoreRandom: randomValue,
+        uidCol: sl.get<CurrentUser>().uid
       });
     });
   }
