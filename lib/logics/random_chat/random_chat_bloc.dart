@@ -16,7 +16,7 @@ class RandomChatBloc extends BlocEventStateBase<RandomChatEvent,RandomChatState>
       await api.setRandomUser();
     }
     if(event is RandomChatEventMatchUsers){
-      await api.updateUsers(event.userMyself, event.userOpponent);
+      await api.updateUsers(event.user);
     }
   }
 }

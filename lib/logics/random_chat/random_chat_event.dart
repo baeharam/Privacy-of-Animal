@@ -6,11 +6,9 @@ abstract class RandomChatEvent extends BlocEvent{}
 class RandomChatEventMatchStart extends RandomChatEvent {}
 
 class RandomChatEventMatchUsers extends RandomChatEvent {
-  final String userMyself;
-  final String userOpponent;
+  final String user;
 
   RandomChatEventMatchUsers({
-    @required this.userMyself,
-    @required this.userOpponent
+    @required this.user
   });
 }
