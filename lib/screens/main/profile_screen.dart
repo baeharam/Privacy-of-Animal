@@ -36,6 +36,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
         centerTitle: true,
         elevation: 0.0,
         backgroundColor: primaryBlue,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.settings),
+            onPressed: (){},
+          )
+        ],
       ),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,

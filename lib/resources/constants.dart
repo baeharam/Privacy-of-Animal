@@ -80,8 +80,7 @@ WebviewScaffold webViewImage = WebviewScaffold(
     centerTitle: true,
     elevation: 0.0,
     backgroundColor: primaryBlue,
-  ),
-  hidden: true,
+  )
 );
 
 const agePickerData = '''

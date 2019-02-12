@@ -46,6 +46,9 @@ flutter:
     - assets/images/components/match.png
     - assets/images/components/profile.png
     - assets/images/components/modify.png
+    - assets/images/components/setting.png
+    - assets/images/components/match_tag_circle.png
+    - assets/images/components/match_random_circle.png
 
     - assets/images/tags/art.png
     - assets/images/tags/book.png
