@@ -35,27 +35,34 @@ class _AnalyzeResultScreenState extends State<AnalyzeResultScreen> {
                       fontWeight: FontWeight.bold
                     ),
                   ),
-                  RichText(
-                    text: TextSpan(
-                      text: sl.get<CurrentUser>().fakeProfileModel.animalName,
-                      style: TextStyle(
-                        background: Paint()
-                              ..color = primaryGreen,
-                        color: Colors.white,
-                        fontSize: 25.0,
-                        fontWeight: FontWeight.bold
-                      ),
-                      children: [
-                        TextSpan(
-                          text: '를 닮았습니다.',
+                  SizedBox(height: 10.0),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                        padding: const EdgeInsets.all(4.0),
+                        decoration: BoxDecoration(
+                          color: primaryGreen,
+                          borderRadius: BorderRadius.circular(5.0)
+                        ),
+                        child: Text(
+                          sl.get<CurrentUser>().fakeProfileModel.animalName,
                           style: TextStyle(
-                            color: Colors.black,
-                            background: Paint()
-                              ..color = Colors.transparent,
-                          )
-                        )
-                      ]
-                    ),
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20.0
+                          ),
+                        ),
+                      ),
+                      Text(
+                        '를 닮았습니다.',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20.0
+                        ),
+                      )
+                    ],
                   )
                 ],
               ),
@@ -104,7 +111,7 @@ class _AnalyzeResultScreenState extends State<AnalyzeResultScreen> {
                   ),
                   SizedBox(height: 10.0),
                   ResultText(
-                    title: '유명인',
+                    title: '유명인   ',
                     value: sl.get<CurrentUser>().fakeProfileModel.celebrity,
                     confidence: (sl.get<CurrentUser>().fakeProfileModel.celebrityConfidence*100).toStringAsFixed(1),
                   ),
@@ -139,7 +146,7 @@ class ResultText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(left: ScreenUtil.width/6,right: ScreenUtil.width/6),
+      padding: EdgeInsets.only(left: ScreenUtil.width/8,right: ScreenUtil.width/8),
       child: Row(
         children: <Widget>[
           Text(
@@ -150,7 +157,7 @@ class ResultText extends StatelessWidget {
               fontWeight: FontWeight.bold
             )
           ),
-          SizedBox(width: ScreenUtil.width/12),
+          SizedBox(width: ScreenUtil.width/10),
           Expanded(
             child: Text(
               value,
