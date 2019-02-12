@@ -25,4 +25,12 @@ class RandomChatAPI {
     Query query = col.where('random',isGreaterThan: randomValue).orderBy('random').limit(1);
     return query.snapshots();
   }
+
+  Future<void> updateUsers(String uid1, String uid2) async {
+    CollectionReference col = sl.get<FirebaseAPI>().firestore.collection(firestoreRandomChatCollection);
+    await sl.get<FirebaseAPI>().firestore.runTransaction((transaction) async{
+      await col.document(uid1).delete();
+      await col.document(uid2).delete();
+    });
+  }
 }
