@@ -65,9 +65,6 @@ class PhotoAPI {
       sl.get<PhotoBloc>().emitEvent(PhotoEventEmitLoading(percentage: 0.82));
       await _storeProfileIntoLocalDB();
       sl.get<PhotoBloc>().emitEvent(PhotoEventEmitLoading(percentage: 0.84));
-      await _storeCelebrityUrlsIntoFirestore();
-      sl.get<PhotoBloc>().emitEvent(PhotoEventEmitLoading(percentage: 0.86));
-      await _storeCelebrityUrlsIntoLocalDB();
       sl.get<PhotoBloc>().emitEvent(PhotoEventEmitLoading(percentage: 0.9));
       
     } catch(exception){
@@ -125,41 +122,6 @@ class PhotoAPI {
       '"${fakeProfileModel.celebrityConfidence}")'
     );
     print(result);
-  }
-
-  Future<void> _storeCelebrityUrlsIntoFirestore() async {
-    await sl.get<FirebaseAPI>().firestore.runTransaction((transaction) async{
-      CollectionReference collectionReference = sl.get<FirebaseAPI>().firestore.collection(firestoreUsersCollection);
-      DocumentReference reference = collectionReference.document(sl.get<CurrentUser>().uid);
-      List<String> urls = sl.get<CurrentUser>().celebrityUrls;
-      await reference.setData({
-        firestoreCelebrityUrlField: {
-          firestoreCelebrityUrl1Field: urls[0],
-          firestoreCelebrityUrl2Field: urls[1],
-          firestoreCelebrityUrl3Field: urls[2],
-          firestoreCelebrityUrl4Field: urls[3],
-          firestoreCelebrityUrl5Field: urls[4],
-          firestoreCelebrityUrl6Field: urls[5]
-        },
-      }, merge: true);
-    });
-  }
-
-  Future<void> _storeCelebrityUrlsIntoLocalDB() async {
-    Database db = await sl.get<DatabaseHelper>().database;
-    List<String> urls = sl.get<CurrentUser>().celebrityUrls;
-    await db.rawInsert(
-      'INSERT INTO $celebrityUrlTable'
-      '($uidCol,$celebrityUrl1Col,$celebrityUrl2Col,$celebrityUrl3Col,'
-      '$celebrityUrl4Col,$celebrityUrl5Col,$celebrityUrl6Col) '
-      'VALUES("${sl.get<CurrentUser>().uid}",'
-      '"${urls[0]}",'
-      '"${urls[1]}",'
-      '"${urls[2]}",'
-      '"${urls[3]}",'
-      '"${urls[4]}",'
-      '"${urls[5]}")'
-    );
   }
 
   // 카카오 얼굴인식
@@ -249,44 +211,6 @@ class PhotoAPI {
     sl.get<CurrentUser>().fakeProfileModel.celebrityConfidence = resultJson['faces'][0]['celebrity']['confidence'];
 
     return ANALYZE_RESULT.SUCCESS;
-  }
-
-  // 유명인 사진 url 가져오기
-  Future<GET_IMAGE_RESULT> getImageFromInternet() async {
-    String keyword = sl.get<CurrentUser>().fakeProfileModel.celebrity;
-    if(keyword.isEmpty) return GET_IMAGE_RESULT.SUCCESS;
-    try{
-      final Uri url = Uri.parse('$naverSearchAPIurl$keyword');
-      final http.Request request = http.Request('GET',url);
-      request.headers['X-Naver-Client-Id'] = naverClientID;
-      request.headers['X-Naver-Client-Secret'] = naverClientSecret;
-      http.StreamedResponse streamedResponse = await request.send();
-      sl.get<PhotoBloc>().emitEvent(PhotoEventEmitLoading(percentage: 0.7));
-
-      final response = await http.Response.fromStream(streamedResponse);
-      final Map jsonData = json.decode(response.body);
-      sl.get<CurrentUser>().celebrityUrls = _getImageUrl(jsonData);
-      sl.get<PhotoBloc>().emitEvent(PhotoEventEmitLoading(percentage: 0.8));
-    } catch(exception){
-      print(exception);
-      return GET_IMAGE_RESULT.FAILURE;
-    }
-    return GET_IMAGE_RESULT.SUCCESS;
-  }
-
-  // Json 데이터를 이미지 url 리스트로 변환
-  List<String> _getImageUrl(Map json) {
-    List<String> imageUrls = List<String>();
-    (json['items'] as List).forEach((imageMap){
-      String imageLink = imageMap['thumbnail'];
-      List<String> splitData = imageLink.split('src=');
-      splitData = splitData[1].split('&');
-      imageUrls.add(splitData[0]);
-    });
-    while(imageUrls.length<6){
-      imageUrls.add('');
-    }
-    return imageUrls;
   }
 
   Future<void> detectAnimal(KakaoMLModel data) async {

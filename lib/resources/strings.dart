@@ -106,7 +106,6 @@ const String photoWarningMessage2 = '※ 분석한 후 3일이 지나야 재분�
 const String kakaoAPIurl = 'https://kapi.kakao.com/v1/vision/face/detect';
 const String naverFaceAPIurl = 'https://openapi.naver.com/v1/vision/face';
 const String naverCelebrityAPIurl = 'https://openapi.naver.com/v1/vision/celebrity';
-const String naverSearchAPIurl = 'https://openapi.naver.com/v1/search/image?query=';
 
 // 동물 이름
 const String bisonAnimal = 'bison';
@@ -169,15 +168,6 @@ const String firestoreNickNameField = nickNameCol;
 const String firestoreCelebrityField = celebrityCol;
 const String firestoreCelebrityConfidenceField = celebrityConfidenceCol;
 const String firestoreAnalyzedTimeField = analyzedTimeCol;
-
-// Cloud Firestore 유명인 url 필드
-const String firestoreCelebrityUrlField = celebrityUrlTable;
-const String firestoreCelebrityUrl1Field = celebrityUrl1Col;
-const String firestoreCelebrityUrl2Field = celebrityUrl2Col;
-const String firestoreCelebrityUrl3Field = celebrityUrl3Col;
-const String firestoreCelebrityUrl4Field = celebrityUrl4Col;
-const String firestoreCelebrityUrl5Field = celebrityUrl5Col;
-const String firestoreCelebrityUrl6Field = celebrityUrl6Col;
 
 // Cloud Firestore 플래그 필드
 const String firestoreIsTagSelectedField = isTagSelected;
@@ -254,14 +244,6 @@ const String celebrityCol = 'celebrity';
 const String celebrityConfidenceCol = 'celebrity_confidence';
 const String analyzedTimeCol = 'analyzed_time';
 
-// 유명인 사진 url 테이블
-const String celebrityUrl1Col = 'celebrity1';
-const String celebrityUrl2Col = 'celebrity2';
-const String celebrityUrl3Col = 'celebrity3';
-const String celebrityUrl4Col = 'celebrity4';
-const String celebrityUrl5Col = 'celebrity5';
-const String celebrityUrl6Col = 'celebrity6';
-
 // 태그 테이블 생성하는 SQL
 const String tagTableCreationSQL = 
   'CREATE TABLE $tagTable '
@@ -294,11 +276,3 @@ const String fakeProfileTableCreationSQL =
   '$fakeEmotionCol TEXT, $firestoreFakeEmotionConfidenceField REAL, '
   '$animalNameCol TEXT, $animalImageCol TEXT, $animalConfidenceCol REAL, '
   '$celebrityCol TEXT, $celebrityConfidenceCol REAL, $analyzedTimeCol INTEGER)';
-
-// 유명인 사진 url 테이블 생성하는 SQL
-const String celebrityUrlTableCreationSQL = 
-  'CREATE TABLE $celebrityUrlTable'
-  '($id INTEGER PRIMARY KEY AUTOINCREMENT,'
-  '$uidCol TEXT, $celebrityUrl1Col TEXT, '
-  '$celebrityUrl2Col TEXT, $celebrityUrl3Col TEXT, '
-  '$celebrityUrl4Col TEXT, $celebrityUrl5Col TEXT, $celebrityUrl6Col TEXT)';
