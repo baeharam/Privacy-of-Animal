@@ -6,6 +6,7 @@ const String routeTagChat = '/tagChat';
 const String routePhoto = '/signUpPhoto';
 const String routeAnalyzeIntro = '/analyzeIntro';
 const String routeCelebrity = '/analyzeCelebrity';
+const String routeChat = '/chat';
 
 const String routeLoginDecision = '/loginDecision';
 const String routeSignUpDecision = '/signUpDecision';
@@ -145,6 +146,7 @@ const String zebraAnimal = 'zebra';
 
 // Cloud Firestore 컬렉션 이름
 const String firestoreUsersCollection = 'users';
+const String firestoreRandomChatCollection = 'random_chat';
 
 // Cloud Firestore 실제 프로필 필드
 const String firestoreRealProfileField = realProfileTable;

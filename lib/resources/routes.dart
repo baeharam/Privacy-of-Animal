@@ -12,7 +12,7 @@ Map<String, WidgetBuilder> routes =  {
   routeTagChat: (BuildContext context) => TagChatScreen(),
   routePhoto: (BuildContext context) => PhotoScreen(),
   routeAnalyzeIntro: (BuildContext context) => AnalyzeIntroScreen(),
-  routeCelebrity: (BuildContext context) => CelebrityScreen(),
+  routeChat: (BuildContext context) => ChatScreen(),
 
   /// Decision
   routeLoginDecision: (BuildContext context) => LoginDecision(),

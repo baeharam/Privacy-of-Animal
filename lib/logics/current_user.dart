@@ -9,12 +9,11 @@ class CurrentUser {
   TagListModel tagListModel;
   KakaoMLModel kakaoMLModel;
   FakeProfileModel fakeProfileModel;
-  List<String> celebrityUrls;
 
   bool isDataFetched = false;
 
   CurrentUser() : 
     realProfileModel = RealProfileModel(), 
     tagListModel = TagListModel(tagTitleList: List<String>(), tagDetailList: List<String>()),
-    fakeProfileModel = FakeProfileModel(), celebrityUrls = List<String>();
+    fakeProfileModel = FakeProfileModel();
 }
