@@ -1,6 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:privacy_of_animal/decisions/decision.dart';
-import 'package:privacy_of_animal/resources/strings.dart';
+import 'package:privacy_of_animal/resources/resources.dart';
 import 'package:privacy_of_animal/screens/main/screen.dart';
 
 Map<String, WidgetBuilder> routes =  {
@@ -17,5 +18,8 @@ Map<String, WidgetBuilder> routes =  {
   routeLoginDecision: (BuildContext context) => LoginDecision(),
   routeSignUpDecision: (BuildContext context) => SignUpDecision(),
   routePhotoDecision: (BuildContext context) => PhotoDecision(),
-  routeHomeDecision: (BuildContext context) => HomeDecision()
+  routeHomeDecision: (BuildContext context) => HomeDecision(),
+
+  // WebView
+  routeWebViewImage: (BuildContext context) => webViewImage
 };

@@ -66,16 +66,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           }
                         ),
                         Spacer(),
-                        Text(
-                          '닮은 유명인 보기',
-                          style: TextStyle(
-                            color: primaryBlue,
-                            fontWeight: FontWeight.bold
+                        GestureDetector(
+                          child: Row(
+                            children: <Widget>[
+                              Text(
+                                '닮은 유명인 보기',
+                                style: TextStyle(
+                                  color: primaryBlue,
+                                  fontWeight: FontWeight.bold
+                                ),
+                              ),
+                              Icon(Icons.search)
+                            ],
                           ),
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.search),
-                          onPressed: () => Navigator.pushNamed(context, routeCelebrity),
+                          onTap: () => Navigator.pushNamed(context, routeWebViewImage),
                         )
                       ],
                     )
