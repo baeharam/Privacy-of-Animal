@@ -46,7 +46,7 @@ class _SignUpInputState extends State<SignUpInput> {
         }
         if((state.isAccountRegisterFailed && widget.type==FOCUS_TYPE.ACCOUNT_FOCUS) ||
            (state.isProfileRegisterFailed && widget.type==FOCUS_TYPE.PROFILE_FOCUS)){
-          signUpBloc.emitEvent(SignUpEventRetry(context: context,failFocusNode: widget.failFocusNode));
+          FocusScope.of(context).requestFocus(widget.failFocusNode);
         }
         return StreamBuilder<String>(
           stream: widget.stream,

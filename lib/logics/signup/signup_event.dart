@@ -4,6 +4,7 @@ import 'package:privacy_of_animal/models/signup_model.dart';
 
 abstract class SignUpEvent extends BlocEvent{}
 
+class SignUpEventClear extends SignUpEvent {}
 class SignUpEventInitial extends SignUpEvent {}
 
 class SignUpEventAgeSelect extends SignUpEvent {
@@ -20,15 +21,5 @@ class SignUpEventComplete extends SignUpEvent {
 
   SignUpEventComplete({
     @required this.data
-  });
-}
-
-class SignUpEventRetry extends SignUpEvent {
-  final BuildContext context;
-  final FocusNode failFocusNode;
-
-  SignUpEventRetry({
-    @required this.context,
-    @required this.failFocusNode
   });
 }

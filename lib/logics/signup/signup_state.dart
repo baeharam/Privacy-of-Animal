@@ -10,6 +10,7 @@ class SignUpState extends BlocState {
   final bool isMaleSelected;
   final bool isFemaleSelected;
   final String gender;
+  final bool isFinished;
 
   SignUpState({
     this.isRegistered: false,
@@ -20,12 +21,13 @@ class SignUpState extends BlocState {
     this.age: -1,
     this.isMaleSelected: false,
     this.isFemaleSelected: false,
-    this.gender: ''
+    this.gender: '',
+    this.isFinished: false,
   });
-
-  factory SignUpState.notRegistered() {
+  
+  factory SignUpState.finished() {
     return SignUpState(
-      isRegistered: false
+      isFinished: true
     );
   }
 
