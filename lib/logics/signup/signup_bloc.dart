@@ -4,20 +4,19 @@ import 'package:privacy_of_animal/logics/signup/signup.dart';
 class SignUpBloc extends BlocEventStateBase<SignUpEvent,SignUpState> {
 
   static final SignUpAPI _api = SignUpAPI();
-
+  
   @override
-    SignUpState get initialState => SignUpState.notRegistered();
+  SignUpState get initialState => SignUpState();
 
   @override
   Stream<SignUpState> eventHandler(SignUpEvent event, SignUpState currentState) async*{
 
     if(event is SignUpEventInitial){
-      yield SignUpState.notRegistered();
+      yield SignUpState();
     }
 
-    if(event is SignUpEventRetry){
-      _api.requestFocusOnRetry(event.context, event.failFocusNode);
-      yield SignUpState.notRegistered();
+    if(event is SignUpEventClear){
+      yield SignUpState.finished();
     }
 
     if(event is SignUpEventAgeSelect){

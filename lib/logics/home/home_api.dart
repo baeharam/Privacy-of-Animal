@@ -50,15 +50,7 @@ class HomeAPI {
       sl.get<CurrentUser>().fakeProfileModel.animalConfidence = fakeProfile[0][animalConfidenceCol];
       sl.get<CurrentUser>().fakeProfileModel.celebrity = fakeProfile[0][celebrityCol];
       sl.get<CurrentUser>().fakeProfileModel.celebrityConfidence = fakeProfile[0][celebrityConfidenceCol];
-
-      List<Map<String,dynamic>> celebrityUrls = 
-      await db.rawQuery('SELECT * FROM $celebrityUrlTable WHERE $uidCol="$uid"');
-      sl.get<CurrentUser>().celebrityUrls.add(celebrityUrls[0][celebrityUrl1Col]);
-      sl.get<CurrentUser>().celebrityUrls.add(celebrityUrls[1][celebrityUrl1Col]);
-      sl.get<CurrentUser>().celebrityUrls.add(celebrityUrls[2][celebrityUrl1Col]);
-      sl.get<CurrentUser>().celebrityUrls.add(celebrityUrls[3][celebrityUrl1Col]);
-      sl.get<CurrentUser>().celebrityUrls.add(celebrityUrls[4][celebrityUrl1Col]);
-      sl.get<CurrentUser>().celebrityUrls.add(celebrityUrls[5][celebrityUrl1Col]);
+      sl.get<CurrentUser>().fakeProfileModel.analyzedTime = fakeProfile[0][analyzedTimeCol];
 
       sl.get<CurrentUser>().isDataFetched = true;
     

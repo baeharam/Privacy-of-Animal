@@ -15,7 +15,7 @@ class HomeDecision extends StatefulWidget {
 class _HomeDecisionState extends State<HomeDecision> {
 
   final HomeBloc homeBloc = sl.get<HomeBloc>();
-  final List<Widget> homePage = [MatchScreen(),ChatScreen(),FriendScreen(),ProfileScreen()];
+  final List<Widget> homePage = [MatchScreen(),ChatRoomScreen(),FriendScreen(),ProfileScreen()];
 
   @override
   Widget build(BuildContext context) {

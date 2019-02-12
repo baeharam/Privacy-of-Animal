@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/photo/photo.dart';
 import 'package:privacy_of_animal/resources/resources.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_helpers.dart';
@@ -8,10 +9,8 @@ import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:privacy_of_animal/utils/stream_snackbar.dart';
 import 'dart:io';
 
-import 'package:privacy_of_animal/widgets/progress_indicator.dart';
-
-
 class PhotoScreen extends StatefulWidget {
+
   @override
   _PhotoScreenState createState() => _PhotoScreenState();
 }
@@ -22,18 +21,34 @@ class _PhotoScreenState extends State<PhotoScreen> {
   
   @override
   Widget build(BuildContext context){
+
+    final bool fromProfile = sl.get<CurrentUser>().fakeProfileModel.animalName!=null;
+
     return Scaffold(
       body: WillPopScope(
-          onWillPop: () => BackButtonAction.stopInMiddle(context),
+          onWillPop: () => fromProfile ? Navigator.pop(context) : BackButtonAction.stopInMiddle(context),
           child: BlocBuilder(
             bloc: _photoBloc,
             builder: (context, PhotoState state){
               if(state.isLoading){
                 return Center(
-                  child: CircularPercentIndicator(
-                    radius: ScreenUtil.width/4,
-                    percent: state.percentage,
-                    center: Text('분석중입니다...')
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      CircularPercentIndicator(
+                        radius: ScreenUtil.width/2.5,
+                        percent: state.percentage,
+                      ),
+                      SizedBox(height: 10.0),
+                      Text(
+                        '분석중입니다...',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20.0
+                        ),
+                      )
+                    ],
                   ),
                 );
               }

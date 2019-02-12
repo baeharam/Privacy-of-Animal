@@ -7,6 +7,7 @@ import 'package:privacy_of_animal/utils/service_locator.dart';
 
 
 class PhotoDecision extends StatefulWidget {
+
   @override
   _PhotoDecisionState createState() => _PhotoDecisionState();
 }

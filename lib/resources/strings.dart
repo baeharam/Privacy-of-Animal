@@ -6,11 +6,14 @@ const String routeTagChat = '/tagChat';
 const String routePhoto = '/signUpPhoto';
 const String routeAnalyzeIntro = '/analyzeIntro';
 const String routeCelebrity = '/analyzeCelebrity';
+const String routeChat = '/chat';
 
 const String routeLoginDecision = '/loginDecision';
 const String routeSignUpDecision = '/signUpDecision';
 const String routePhotoDecision = '/photoDecision';
 const String routeHomeDecision = '/homeDecision';
+
+const String routeWebViewImage = '/webViewImage';
 
 // IntroScreen
 const String introMessage1Above = '내 얼굴 사진을 바탕으로';
@@ -104,7 +107,6 @@ const String photoWarningMessage2 = '※ 분석한 후 3일이 지나야 재분�
 const String kakaoAPIurl = 'https://kapi.kakao.com/v1/vision/face/detect';
 const String naverFaceAPIurl = 'https://openapi.naver.com/v1/vision/face';
 const String naverCelebrityAPIurl = 'https://openapi.naver.com/v1/vision/celebrity';
-const String naverSearchAPIurl = 'https://openapi.naver.com/v1/search/image?query=';
 
 // 동물 이름
 const String bisonAnimal = 'bison';
@@ -144,6 +146,7 @@ const String zebraAnimal = 'zebra';
 
 // Cloud Firestore 컬렉션 이름
 const String firestoreUsersCollection = 'users';
+const String firestoreRandomChatCollection = 'random_chat';
 
 // Cloud Firestore 실제 프로필 필드
 const String firestoreRealProfileField = realProfileTable;
@@ -166,15 +169,7 @@ const String firestoreAnimalConfidenceField = animalConfidenceCol;
 const String firestoreNickNameField = nickNameCol;
 const String firestoreCelebrityField = celebrityCol;
 const String firestoreCelebrityConfidenceField = celebrityConfidenceCol;
-
-// Cloud Firestore 유명인 url 필드
-const String firestoreCelebrityUrlField = celebrityUrlTable;
-const String firestoreCelebrityUrl1Field = celebrityUrl1Col;
-const String firestoreCelebrityUrl2Field = celebrityUrl2Col;
-const String firestoreCelebrityUrl3Field = celebrityUrl3Col;
-const String firestoreCelebrityUrl4Field = celebrityUrl4Col;
-const String firestoreCelebrityUrl5Field = celebrityUrl5Col;
-const String firestoreCelebrityUrl6Field = celebrityUrl6Col;
+const String firestoreAnalyzedTimeField = analyzedTimeCol;
 
 // Cloud Firestore 플래그 필드
 const String firestoreIsTagSelectedField = isTagSelected;
@@ -249,14 +244,7 @@ const String animalConfidenceCol = 'animal_confidence';
 const String nickNameCol = 'nick_name';
 const String celebrityCol = 'celebrity';
 const String celebrityConfidenceCol = 'celebrity_confidence';
-
-// 유명인 사진 url 테이블
-const String celebrityUrl1Col = 'celebrity1';
-const String celebrityUrl2Col = 'celebrity2';
-const String celebrityUrl3Col = 'celebrity3';
-const String celebrityUrl4Col = 'celebrity4';
-const String celebrityUrl5Col = 'celebrity5';
-const String celebrityUrl6Col = 'celebrity6';
+const String analyzedTimeCol = 'analyzed_time';
 
 // 태그 테이블 생성하는 SQL
 const String tagTableCreationSQL = 
@@ -289,12 +277,4 @@ const String fakeProfileTableCreationSQL =
   '$fakeAgeCol TEXT, $fakeAgeConfidenceCol REAL, '
   '$fakeEmotionCol TEXT, $firestoreFakeEmotionConfidenceField REAL, '
   '$animalNameCol TEXT, $animalImageCol TEXT, $animalConfidenceCol REAL, '
-  '$celebrityCol TEXT, $celebrityConfidenceCol REAL)';
-
-// 유명인 사진 url 테이블 생성하는 SQL
-const String celebrityUrlTableCreationSQL = 
-  'CREATE TABLE $celebrityUrlTable'
-  '($id INTEGER PRIMARY KEY AUTOINCREMENT,'
-  '$uidCol TEXT, $celebrityUrl1Col TEXT, '
-  '$celebrityUrl2Col TEXT, $celebrityUrl3Col TEXT, '
-  '$celebrityUrl4Col TEXT, $celebrityUrl5Col TEXT, $celebrityUrl6Col TEXT)';
+  '$celebrityCol TEXT, $celebrityConfidenceCol REAL, $analyzedTimeCol INTEGER)';

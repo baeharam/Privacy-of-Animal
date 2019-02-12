@@ -1,9 +1,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/models/intro_page_model.dart';
 import 'package:privacy_of_animal/models/tag_model.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
+import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
+import 'package:privacy_of_animal/utils/service_locator.dart';
 
 final double dashedCircleRadius = ScreenUtil.height/16;
 final double dashedBackgroundCircleDiameter = dashedCircleRadius*2+30.0;
@@ -63,6 +66,22 @@ Map<String,String> tagToMessage = {
   sport: tagSportMessage,
   music: tagMusicMessage
 };
+
+WebviewScaffold webViewImage = WebviewScaffold(
+  url: 'https://www.google.co.kr/search?q=${sl.get<CurrentUser>().fakeProfileModel.celebrity}&hl=ko&source=lnms&tbm=isch',
+  appBar: AppBar(
+    title: Text(
+      '구글 검색 결과',
+      style: TextStyle(
+        color: Colors.white,
+        fontWeight: FontWeight.bold
+      ),
+    ),
+    centerTitle: true,
+    elevation: 0.0,
+    backgroundColor: primaryBlue,
+  )
+);
 
 const agePickerData = '''
 [

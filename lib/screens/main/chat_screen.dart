@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:privacy_of_animal/resources/colors.dart';
 
 class ChatScreen extends StatefulWidget {
   @override
@@ -9,7 +10,18 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(child: Text('채팅방 화면'))
+      appBar: AppBar(
+        title: Text(
+          '채팅',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold
+          ),
+        ),
+        centerTitle: true,
+        elevation: 0.0,
+        backgroundColor: primaryBlue
+      ),
     );
   }
 }

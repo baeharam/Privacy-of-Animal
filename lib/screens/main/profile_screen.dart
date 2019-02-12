@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state_builder.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
-import 'package:privacy_of_animal/logics/photo/photo.dart';
+import 'package:privacy_of_animal/logics/profile/profile.dart';
 import 'package:privacy_of_animal/logics/tag_edit/tag_edit.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/resources/constants.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:privacy_of_animal/utils/stream_dialog.dart';
+import 'package:privacy_of_animal/utils/stream_navigator.dart';
+import 'package:privacy_of_animal/utils/stream_snackbar.dart';
 
 class ProfileScreen extends StatefulWidget {
   @override
@@ -23,6 +25,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
 
     return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          '프로필',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold
+          ),
+        ),
+        centerTitle: true,
+        elevation: 0.0,
+        backgroundColor: primaryBlue,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.settings),
+            onPressed: (){},
+          )
+        ],
+      ),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Column(
@@ -48,21 +68,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             height: 50.0,
                           ),
                           onTap: (){
-                            sl.get<PhotoBloc>().emitEvent(PhotoEventReset());
-                            Navigator.pushNamed(context, routePhotoDecision);
+                            sl.get<ProfileBloc>().emitEvent(ProfileEventResetFakeProfile());
                           }
                         ),
                         Spacer(),
-                        Text(
-                          '닮은 연예인 보기',
-                          style: TextStyle(
-                            color: Colors.blue,
-                            fontWeight: FontWeight.bold
+                        GestureDetector(
+                          child: Row(
+                            children: <Widget>[
+                              Text(
+                                '닮은 유명인 보기',
+                                style: TextStyle(
+                                  color: primaryBlue,
+                                  fontWeight: FontWeight.bold
+                                ),
+                              ),
+                              Icon(Icons.search)
+                            ],
                           ),
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.search),
-                          onPressed: () => Navigator.pushNamed(context, routeCelebrity),
+                          onTap: () => Navigator.pushNamed(context, routeWebViewImage),
                         )
                       ],
                     )
@@ -85,6 +108,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     radius: ScreenUtil.width/2.8,
                                     percent: _user.fakeProfileModel.animalConfidence,
                                     lineWidth: 10.0,
+                                    progressColor: primaryBeige,
                                   ),
                                   CircleAvatar(
                                     backgroundImage: AssetImage(_user.fakeProfileModel.animalImage),
@@ -110,7 +134,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               FakeProfileForm(title: '추정성별',detail: _user.fakeProfileModel.gender),
                               FakeProfileForm(title: '추정나이',detail: _user.fakeProfileModel.age),
                               FakeProfileForm(title: '추정기분',detail: _user.fakeProfileModel.emotion),
-                              FakeProfileForm(title: '연예인   ',detail: _user.fakeProfileModel.celebrity)
+                              FakeProfileForm(title: '유명인   ',detail: _user.fakeProfileModel.celebrity)
                             ],
                           )
                         ],
@@ -131,20 +155,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(bottom: 10.0),
-                    child: Text(
-                      '실제프로필',
-                      style: primaryTextStyle,
-                    ),
-                  ),
-                  Text(
-                    '수정 불가하며, 친구가 될시 공개됩니다.',
-                    style: TextStyle(
-                      color: Colors.red,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15.0
-                    ),
+                  Row(
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(bottom: 10.0),
+                        child: Text(
+                          '실제프로필',
+                          style: primaryTextStyle,
+                        ),
+                      ),
+                      Spacer(),
+                      Text(
+                        '친구가 될시 공개됩니다.',
+                        style: TextStyle(
+                          color: primaryBlue,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      )
+                    ],
                   ),
                   SizedBox(height: 10.0),
                   RealProfileForm(title: '이름',detail: _user.realProfileModel.name),
@@ -165,18 +193,43 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(bottom: 10.0),
-                    child: Text(
-                      '관심사 태그',
-                      style: primaryTextStyle,
-                    )
+                  Row(
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(bottom: 10.0),
+                        child: Text(
+                          '관심사 태그',
+                          style: primaryTextStyle,
+                        )
+                      ),
+                      Spacer(),
+                      Text(
+                        '바꾸고 싶으면 태그를 누르세요.',
+                        style: TextStyle(
+                          color: primaryBlue,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      )
+                    ],
                   ),
-                  SizedBox(height: 10.0),
+                  SizedBox(height: 20.0),
                   TagPart()
                 ],
               )
             ),
+            BlocBuilder(
+              bloc: sl.get<ProfileBloc>(),
+              builder: (context, ProfileState state){
+                if(state.isResetImpossible){
+                  streamSnackbar(context,state.remainedTime);
+                  sl.get<ProfileBloc>().emitEvent(ProfileEventInitial());
+                }
+                if(state.isResetPossible){
+                  StreamNavigator.pushNamed(context, routePhotoDecision);
+                }
+                return Container();
+              },
+            )
           ],
         )
       )

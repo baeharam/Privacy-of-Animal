@@ -6,6 +6,8 @@ import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/logics/home/home_bloc.dart';
 import 'package:privacy_of_animal/logics/initialize_api.dart';
 import 'package:privacy_of_animal/logics/login/login_bloc.dart';
+import 'package:privacy_of_animal/logics/profile/profile_bloc.dart';
+import 'package:privacy_of_animal/logics/random_chat_api.dart';
 import 'package:privacy_of_animal/logics/signup/signup_bloc.dart';
 import 'package:privacy_of_animal/logics/tag_chat/tag_chat_bloc.dart';
 import 'package:privacy_of_animal/logics/tag_edit/tag_edit_bloc.dart';
@@ -19,6 +21,7 @@ void setup() {
   sl.registerLazySingleton<InitializeAPI>(()=> InitializeAPI());
   sl.registerLazySingleton<DatabaseHelper>(() => DatabaseHelper());
   sl.registerLazySingleton<FirebaseAPI>(() => FirebaseAPI());
+  sl..registerLazySingleton<RandomChatAPI>(() => RandomChatAPI());
   sl.registerSingleton(CurrentUser());
   
   sl.registerLazySingleton<LoginBloc>(()=> LoginBloc());
@@ -30,4 +33,5 @@ void setup() {
   sl.registerLazySingleton<PhotoBloc>(()=>PhotoBloc());
   sl.registerLazySingleton<HomeBloc>(() => HomeBloc());
   sl.registerLazySingleton<TagEditBloc>(() => TagEditBloc());
+  sl.registerLazySingleton<ProfileBloc>(() => ProfileBloc());
 }
