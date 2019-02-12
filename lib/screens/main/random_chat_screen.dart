@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
 
-class ChatScreen extends StatefulWidget {
+class RandomChatScreen extends StatefulWidget {
   @override
-  _ChatScreenState createState() => _ChatScreenState();
+  _RandomChatScreenState createState() => _RandomChatScreenState();
 }
 
-class _ChatScreenState extends State<ChatScreen> {
+class _RandomChatScreenState extends State<RandomChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,7 +21,7 @@ class _ChatScreenState extends State<ChatScreen> {
         centerTitle: true,
         elevation: 0.0,
         backgroundColor: primaryBlue
-      ),
+      )
     );
   }
 }

@@ -6,7 +6,8 @@ const String routeTagChat = '/tagChat';
 const String routePhoto = '/signUpPhoto';
 const String routeAnalyzeIntro = '/analyzeIntro';
 const String routeCelebrity = '/analyzeCelebrity';
-const String routeChat = '/chat';
+const String routeRandomLoading = '/randomRandomLoading';
+const String routeRandomChat = '/randomRandomChat';
 
 const String routeLoginDecision = '/loginDecision';
 const String routeSignUpDecision = '/signUpDecision';
@@ -191,6 +192,9 @@ const String firestoreTagDetail3Field = tagDetail3Col;
 const String firestoreTagDetail4Field = tagDetail4Col;
 const String firestoreTagDetail5Field = tagDetail5Col;
 const List<String> firestoreTagDetailList = tagDetailList;
+
+// Cloud Firestore 랜덤 필드
+const String firestoreRandom = 'random';
 
 // SharedPreferences 플래그 key값
 const String isTagSelected = 'is_tag_selected';

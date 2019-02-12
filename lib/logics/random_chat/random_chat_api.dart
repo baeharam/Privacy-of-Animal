@@ -19,10 +19,11 @@ class RandomChatAPI {
     });
   }
 
-  Stream getDocumentStream() {
-    int randomValue = Random().nextInt(pow(2,32));
+  Future<void> updateUsers(String user) async {
     CollectionReference col = sl.get<FirebaseAPI>().firestore.collection(firestoreRandomChatCollection);
-    Query query = col.where('random',isGreaterThan: randomValue).orderBy('random').limit(1);
-    return query.snapshots();
+    await sl.get<FirebaseAPI>().firestore.runTransaction((transaction) async{
+      await col.document(sl.get<CurrentUser>().uid).delete();
+      await col.document(user).delete();
+    });
   }
 }

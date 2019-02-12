@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
-import 'package:privacy_of_animal/logics/random_chat_api.dart';
+import 'package:privacy_of_animal/logics/random_chat/random_chat.dart';
 import 'package:privacy_of_animal/models/tag_list_model.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/resources/constants.dart';
@@ -89,9 +89,9 @@ class _MatchScreenState extends State<MatchScreen> {
                 width: ScreenUtil.width*1.1,
                 height: ScreenUtil.width*1.1,
               ),
-              onTap: () async{
-                await sl.get<RandomChatAPI>().setRandomUser();
-                Navigator.pushNamed(context, routeChat);
+              onTap: () {
+                sl.get<RandomChatBloc>().emitEvent(RandomChatEventMatchStart());
+                Navigator.pushNamed(context, routeRandomLoading);
               }
             )
           ),
