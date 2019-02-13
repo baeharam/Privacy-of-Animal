@@ -7,6 +7,36 @@ import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 
 class RandomChatAPI {
+
+  String getChatRoomID(String receiver){
+    if(sl.get<CurrentUser>().uid.compareTo(receiver)<0){
+      return sl.get<CurrentUser>().uid+receiver;
+    } else {
+      return receiver+sl.get<CurrentUser>().uid;
+    }
+  }
+
+  Future<void> sendMessage(String content,String receiver,String chatRoomID) async {
+    DocumentReference doc = sl.get<FirebaseAPI>().firestore
+      .collection('messages')
+      .document(chatRoomID)
+      .collection(chatRoomID)
+      .document(DateTime.now().millisecondsSinceEpoch.toString());
+
+    sl.get<FirebaseAPI>().firestore.runTransaction((tx) async{
+      await tx.set(
+        doc,
+        {
+          'From': sl.get<CurrentUser>().uid,
+          'To': receiver,
+          'timestamp': DateTime.now().millisecondsSinceEpoch.toString(),
+          'content': content
+        }
+      );
+    });
+  }
+
+
   Future<void> setRandomUser() async {
     CollectionReference col = sl.get<FirebaseAPI>().firestore.collection(firestoreRandomChatCollection);
     DocumentReference doc = col.document(sl.get<CurrentUser>().uid);

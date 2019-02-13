@@ -7,12 +7,18 @@ class RandomChatState extends BlocState {
   final bool matchFailed;
   final bool isCanceled;
 
+  final String chatRoomID;
+  final String receiver;
+
   RandomChatState({
     this.isInitial:false,
     this.isLoading: false,
     this.matchCompleted: false,
     this.matchFailed: false,
-    this.isCanceled: false
+    this.isCanceled: false,
+
+    this.chatRoomID:'',
+    this.receiver:''
   });
 
   factory RandomChatState.initial() {
@@ -27,9 +33,11 @@ class RandomChatState extends BlocState {
     );
   }
 
-  factory RandomChatState.matchSucceeded() {
+  factory RandomChatState.matchSucceeded({String chatRoomID, String receiver}) {
     return RandomChatState(
-      matchCompleted: true
+      matchCompleted: true,
+      chatRoomID: chatRoomID,
+      receiver: receiver
     );
   }
 

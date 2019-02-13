@@ -16,3 +16,15 @@ class RandomChatEventMatchUsers extends RandomChatEvent {
 }
 
 class RandomChatEventCancel extends RandomChatEvent {}
+
+class RandomChatEventMessageSend extends RandomChatEvent {
+  final String content;
+  final String receiver;
+  final String chatRoomID;
+
+  RandomChatEventMessageSend({
+    @required this.content,
+    @required this.receiver,
+    @required this.chatRoomID
+  });
+}

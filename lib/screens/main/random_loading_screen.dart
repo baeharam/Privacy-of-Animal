@@ -6,8 +6,8 @@ import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/logics/random_chat/random_chat.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
+import 'package:privacy_of_animal/screens/main/random_chat_screen.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
-import 'package:privacy_of_animal/utils/stream_navigator.dart';
 import 'package:privacy_of_animal/widgets/progress_indicator.dart';
 
 class RandomLoadingScreen extends StatefulWidget {
@@ -51,7 +51,14 @@ class _RandomLoadingScreenState extends State<RandomLoadingScreen> {
                 if(snapshot.hasData && state.matchCompleted){
                   String uid = snapshot.data.documentChanges[0].document.documentID;
                   if(uid.compareTo(sl.get<CurrentUser>().uid)==0){
-                    StreamNavigator.pushReplacementNamed(context, routeRandomChat);
+                    WidgetsBinding.instance.addPostFrameCallback((_){
+                      Navigator.push(context, MaterialPageRoute(
+                        builder: (context) => RandomChatScreen(
+                          chatRoomID: state.chatRoomID,
+                          receiver: state.receiver,
+                        )
+                      ));
+                    });
                   }
                 }
                 return CustomProgressIndicator();
