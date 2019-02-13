@@ -30,6 +30,7 @@ class SignUpAPI {
       await registerProfileIntoFirestore(data);
       await registerProfileIntoLocalDB(data);
     } catch(exception){
+      await sl.get<FirebaseAPI>().deleteUser(sl.get<CurrentUser>().uid);
       return PROFILE_RESULT.FAILURE;
     }
     return PROFILE_RESULT.SUCCESS;

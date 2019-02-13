@@ -148,6 +148,7 @@ const String zebraAnimal = 'zebra';
 // Cloud Firestore 컬렉션 이름
 const String firestoreUsersCollection = 'users';
 const String firestoreRandomChatCollection = 'random_chat';
+const String firestoreDeletedUserListCollection = 'deleted_user_list';
 
 // Cloud Firestore 실제 프로필 필드
 const String firestoreRealProfileField = realProfileTable;
