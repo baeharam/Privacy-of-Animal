@@ -5,12 +5,14 @@ class RandomChatState extends BlocState {
   final bool isLoading;
   final bool matchCompleted;
   final bool matchFailed;
+  final bool isCanceled;
 
   RandomChatState({
     this.isInitial:false,
     this.isLoading: false,
     this.matchCompleted: false,
-    this.matchFailed: false
+    this.matchFailed: false,
+    this.isCanceled: false
   });
 
   factory RandomChatState.loading() {
@@ -22,6 +24,12 @@ class RandomChatState extends BlocState {
   factory RandomChatState.matchSucceeded() {
     return RandomChatState(
       matchCompleted: true
+    );
+  }
+
+  factory RandomChatState.cancel() {
+    return RandomChatState(
+      isCanceled: true
     );
   }
 }

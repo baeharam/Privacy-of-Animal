@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:privacy_of_animal/resources/strings.dart';
 
 
 class FirebaseAPI {
@@ -11,5 +12,11 @@ class FirebaseAPI {
     return result;
   }
 
-  
+  Future<void> deleteUserAccount(String uid) async {
+    CollectionReference col = firestore.collection(firestoreDeletedUserListCollection);
+    DocumentReference doc = col.document(uid);
+    await firestore.runTransaction((tx) async{
+      await doc.delete();
+    });
+  }
 }
