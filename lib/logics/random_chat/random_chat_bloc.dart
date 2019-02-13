@@ -10,6 +10,11 @@ class RandomChatBloc extends BlocEventStateBase<RandomChatEvent,RandomChatState>
 
   @override
   Stream<RandomChatState> eventHandler(RandomChatEvent event, RandomChatState currentState) async*{
+
+    if(event is RandomChatEventInitial){
+      yield RandomChatState.initial();
+    }
+
     if(event is RandomChatEventMatchStart){
       await api.setRandomUser();
       yield RandomChatState.loading();

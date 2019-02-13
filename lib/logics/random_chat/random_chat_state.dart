@@ -15,6 +15,12 @@ class RandomChatState extends BlocState {
     this.isCanceled: false
   });
 
+  factory RandomChatState.initial() {
+    return RandomChatState(
+      isInitial: true
+    );
+  }
+
   factory RandomChatState.loading() {
     return RandomChatState(
       isLoading: true

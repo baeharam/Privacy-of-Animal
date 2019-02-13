@@ -23,8 +23,14 @@ import 'package:sqflite/sqflite.dart';
 
 class PhotoAPI {
 
-  Future<String> getImage() async {
+  Future<String> getImageFromCamera() async {
     final File image = await ImagePicker.pickImage(source: ImageSource.camera);
+    final File compressedImage = await FlutterNativeImage.compressImage(image.path, quality: 80, percentage: 100);
+    return compressedImage.path;
+  }
+
+  Future<String> getImageFromGallery() async {
+    final File image = await ImagePicker.pickImage(source: ImageSource.gallery);
     final File compressedImage = await FlutterNativeImage.compressImage(image.path, quality: 80, percentage: 100);
     return compressedImage.path;
   }

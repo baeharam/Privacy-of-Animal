@@ -3,6 +3,8 @@ import 'package:privacy_of_animal/bloc_helpers/bloc_event_state.dart';
 
 abstract class RandomChatEvent extends BlocEvent{}
 
+class RandomChatEventInitial extends RandomChatEvent {}
+
 class RandomChatEventMatchStart extends RandomChatEvent {}
 
 class RandomChatEventMatchUsers extends RandomChatEvent {

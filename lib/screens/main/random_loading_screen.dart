@@ -48,7 +48,7 @@ class _RandomLoadingScreenState extends State<RandomLoadingScreen> {
             return StreamBuilder(
               stream: sl.get<FirebaseAPI>().firestore.collection(firestoreRandomChatCollection).snapshots(),
               builder: (context, AsyncSnapshot<QuerySnapshot> snapshot){
-                if(snapshot.hasData){
+                if(snapshot.hasData && state.matchCompleted){
                   String uid = snapshot.data.documentChanges[0].document.documentID;
                   if(uid.compareTo(sl.get<CurrentUser>().uid)==0){
                     StreamNavigator.pushReplacementNamed(context, routeRandomChat);

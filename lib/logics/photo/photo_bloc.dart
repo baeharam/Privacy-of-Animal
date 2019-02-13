@@ -16,11 +16,17 @@ class PhotoBloc extends BlocEventStateBase<PhotoEvent,PhotoState>
     if(event is PhotoEventEmitLoading){
       yield PhotoState.loading(event.percentage);
     }
-    
-    if (event is PhotoEventTaking) {
-      String path = await _api.getImage();
+
+    if (event is PhotoEventFetching) {
+      String path = await _api.getImageFromGallery();
       yield PhotoState.take(path);
     }
+    
+    if (event is PhotoEventTaking) {
+      String path = await _api.getImageFromCamera();
+      yield PhotoState.take(path);
+    }
+
     if (event is PhotoEventGotoAnalysis){
       yield PhotoState.loading(0.0);
       ANALYZE_RESULT analyzeResultKakao = await _api.analyzeFaceKakao(event.photoPath);
