@@ -25,8 +25,8 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
   final FocusNode messageFocusNode = FocusNode();
   final RandomChatBloc randomChatBloc = sl.get<RandomChatBloc>();
 
-  // Cloud Firestore? ?? ???? ???? ??.
-  List<String> messages = List<String>();
+  // Cloud Firestore에서 불러와서 저장.
+  List<DocumentSnapshot> messages = List<DocumentSnapshot>();
 
   bool isFirstLeft = false;
   bool isFirstRight = false;
@@ -86,35 +86,39 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
                 }
               ),
             ),
-            Flexible(
-              child: Container(
-                child: TextField(
-                  style: TextStyle(color: primaryGreen, fontSize: 15.0),
-                  decoration: InputDecoration.collapsed(
-                    hintText: '???? ?????.',
-                    hintStyle: TextStyle(color: Colors.grey)
+            Row(
+              children: <Widget>[
+                Flexible(
+                  child: Container(
+                    child: TextField(
+                      style: TextStyle(color: primaryGreen, fontSize: 15.0),
+                      decoration: InputDecoration.collapsed(
+                        hintText: '메시지를 입력하세요.',
+                        hintStyle: TextStyle(color: Colors.grey)
+                      ),
+                      controller: messageController,
+                      focusNode: messageFocusNode,
+                    ),
                   ),
-                  controller: messageController,
-                  focusNode: messageFocusNode,
                 ),
-              ),
+                Material(
+                  child: Container(
+                    margin: EdgeInsets.symmetric(horizontal: 8.0),
+                    child: IconButton(
+                      icon: Icon(Icons.send),
+                      onPressed: () => randomChatBloc.emitEvent(
+                        RandomChatEventMessageSend(
+                          content: messageController.text,
+                          receiver: widget.receiver,
+                          chatRoomID: widget.chatRoomID
+                        )
+                      ),
+                      color: Colors.black,
+                    ),
+                  ),
+                )
+              ],
             ),
-            Material(
-              child: Container(
-                margin: EdgeInsets.symmetric(horizontal: 8.0),
-                child: IconButton(
-                  icon: Icon(Icons.send),
-                  onPressed: () => randomChatBloc.emitEvent(
-                    RandomChatEventMessageSend(
-                      content: messageController.text,
-                      receiver: widget.receiver,
-                      chatRoomID: widget.chatRoomID
-                    )
-                  ),
-                  color: Colors.black,
-                ),
-              ),
-            )
           ],
         ),
       ),

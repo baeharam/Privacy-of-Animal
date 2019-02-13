@@ -115,7 +115,7 @@ class _AnalyzeResultScreenState extends State<AnalyzeResultScreen> {
                     value: sl.get<CurrentUser>().fakeProfileModel.celebrity,
                     confidence: (sl.get<CurrentUser>().fakeProfileModel.celebrityConfidence*100).toStringAsFixed(1),
                   ),
-                  SizedBox(height: ScreenUtil.height/10),
+                  SizedBox(height: ScreenUtil.height/25),
                   PrimaryButton(
                     text: '프로필 확인',
                     color: primaryBeige,

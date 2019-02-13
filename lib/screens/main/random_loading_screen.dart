@@ -5,7 +5,6 @@ import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/logics/random_chat/random_chat.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
-import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:privacy_of_animal/screens/main/random_chat_screen.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:privacy_of_animal/widgets/progress_indicator.dart';
@@ -46,19 +45,27 @@ class _RandomLoadingScreenState extends State<RandomLoadingScreen> {
               return Container();
             }
             return StreamBuilder(
-              stream: sl.get<FirebaseAPI>().firestore.collection(firestoreRandomChatCollection).snapshots(),
+              stream: sl.get<FirebaseAPI>().firestore.collection('messages').snapshots(),
               builder: (context, AsyncSnapshot<QuerySnapshot> snapshot){
-                if(snapshot.hasData && state.matchCompleted){
-                  String uid = snapshot.data.documentChanges[0].document.documentID;
-                  if(uid.compareTo(sl.get<CurrentUser>().uid)==0){
-                    WidgetsBinding.instance.addPostFrameCallback((_){
-                      Navigator.push(context, MaterialPageRoute(
-                        builder: (context) => RandomChatScreen(
-                          chatRoomID: state.chatRoomID,
-                          receiver: state.receiver,
-                        )
-                      ));
-                    });
+                if(snapshot.hasData && snapshot.data.documentChanges.length!=0){
+                  String chatRoomID = snapshot.data.documentChanges[0].document.documentID;
+                  int currentUserLength = sl.get<CurrentUser>().uid.length;
+                  if(chatRoomID.length==currentUserLength*2){
+                    String uid1 = chatRoomID.substring(0,currentUserLength);
+                    String uid2 = chatRoomID.substring(currentUserLength,currentUserLength*2);
+
+                    bool isUID1 = uid1.compareTo(sl.get<CurrentUser>().uid)==0;
+                    bool isUID2 = uid2.compareTo(sl.get<CurrentUser>().uid)==0;
+                    if(isUID1 || isUID2){
+                      WidgetsBinding.instance.addPostFrameCallback((_){
+                        Navigator.pushReplacement(context, MaterialPageRoute(
+                          builder: (context) => RandomChatScreen(
+                            chatRoomID: chatRoomID,
+                            receiver: isUID1?uid1:uid2,
+                          )
+                        ));
+                      });
+                    }
                   }
                 }
                 return CustomProgressIndicator();
