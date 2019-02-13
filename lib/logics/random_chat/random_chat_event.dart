@@ -12,3 +12,5 @@ class RandomChatEventMatchUsers extends RandomChatEvent {
     @required this.user
   });
 }
+
+class RandomChatEventCancel extends RandomChatEvent {}

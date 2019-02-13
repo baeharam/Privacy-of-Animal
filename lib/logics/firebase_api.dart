@@ -10,6 +10,4 @@ class FirebaseAPI {
     String result = await auth.currentUser().then((user) => user.uid).catchError((error)=>error);
     return result;
   }
-
-  
 }
