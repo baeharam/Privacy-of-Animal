@@ -36,7 +36,6 @@ class _RandomLoadingScreenState extends State<RandomLoadingScreen> {
       body: WillPopScope(
         onWillPop: () async{
           sl.get<RandomChatBloc>().emitEvent(RandomChatEventCancel());
-          Navigator.pop(context);
           return Future.value(true);
         },
         child: Column(
@@ -61,11 +60,14 @@ class _RandomLoadingScreenState extends State<RandomLoadingScreen> {
             BlocBuilder(
               bloc: sl.get<RandomChatBloc>(),
               builder: (context, RandomChatState state){
+                if(state.isCanceled){
+                  return Container();
+                }
                 return StreamBuilder(
                   stream: sl.get<FirebaseAPI>().firestore.collection(firestoreRandomChatCollection)
                     .where(uidCol, isEqualTo: sl.get<CurrentUser>().uid).snapshots(),
                   builder: (context, AsyncSnapshot<QuerySnapshot> snapshot){
-                    if(snapshot.hasData && snapshot.data.documents.length==0 && !state.isCanceled){
+                    if(snapshot.hasData && snapshot.data.documents.length==0){
                       StreamNavigator.pushReplacementNamed(context, routeRandomChat);
                     }
                     return Container();
