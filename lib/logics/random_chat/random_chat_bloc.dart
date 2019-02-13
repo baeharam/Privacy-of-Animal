@@ -1,26 +1,40 @@
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state.dart';
-import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/random_chat/random_chat.dart';
-import 'package:privacy_of_animal/utils/service_locator.dart';
 
 class RandomChatBloc extends BlocEventStateBase<RandomChatEvent,RandomChatState>
 {
-  static final RandomChatAPI api = RandomChatAPI();
+  static final RandomChatAPI _api = RandomChatAPI();
 
   @override
   RandomChatState get initialState => RandomChatState.loading();
 
   @override
   Stream<RandomChatState> eventHandler(RandomChatEvent event, RandomChatState currentState) async*{
+
+    if(event is RandomChatEventMessageSend){
+      await _api.sendMessage(event.content, event.receiver, event.chatRoomID);
+    }
+
+    if(event is RandomChatEventInitial){
+      yield RandomChatState.loading();
+    }
+
     if(event is RandomChatEventMatchStart){
-      await api.setRandomUser();
+      _api.isContinue = true;
+      await _api.setRandomUser();
+      yield RandomChatState.loading();
+      String receiver = await _api.findUser();
+      if(receiver.isNotEmpty){
+        await _api.makeChatRoom(_api.getChatRoomID(receiver), receiver);
+        yield RandomChatState.matchSucceeded();
+        await _api.updateUsers(receiver);
+      }
     }
-    if(event is RandomChatEventMatchUsers){
-      await api.updateUsers(event.user);
-    }
+
     if(event is RandomChatEventCancel){
+      _api.isContinue = false;
       yield RandomChatState.cancel();
-      await api.deleteUser();
+      await _api.deleteUser();
     }
   }
 }

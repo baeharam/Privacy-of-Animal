@@ -14,7 +14,6 @@ Map<String, WidgetBuilder> routes =  {
   routePhoto: (BuildContext context) => PhotoScreen(),
   routeAnalyzeIntro: (BuildContext context) => AnalyzeIntroScreen(),
   routeRandomLoading: (BuildContext context) => RandomLoadingScreen(),
-  routeRandomChat: (BuildContext context) => RandomChatScreen(),
 
   /// Decision
   routeLoginDecision: (BuildContext context) => LoginDecision(),

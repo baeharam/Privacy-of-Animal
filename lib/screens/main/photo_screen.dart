@@ -78,6 +78,20 @@ class _PhotoScreenState extends State<PhotoScreen> {
                         padding: EdgeInsets.symmetric(horizontal: ScreenUtil.width/3, vertical: ScreenUtil.height/40),
                         color: primaryPink,
                         child: Text(
+                          '갤러리',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 17.0
+                          ),
+                        ),
+                        onPressed: () => _photoBloc.emitEvent(PhotoEventFetching()),
+                      ),
+                      SizedBox(height: 20.0),
+                      RaisedButton(
+                        padding: EdgeInsets.symmetric(horizontal: ScreenUtil.width/3, vertical: ScreenUtil.height/40),
+                        color: primaryPink,
+                        child: Text(
                           '사진 찍기',
                           style: TextStyle(
                             color: Colors.white,

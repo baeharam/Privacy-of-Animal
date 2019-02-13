@@ -26,8 +26,8 @@ class _TagSelectScreenState extends State<TagSelectScreen> {
       body: WillPopScope(
         onWillPop: () => BackButtonAction.stopInMiddle(context),
         child: ListView(
+          padding: CurrentPlatform.platform==TargetPlatform.iOS ? const EdgeInsets.all(10.0) : const EdgeInsets.all(0.0),
           scrollDirection: Axis.vertical,
-          physics: const AlwaysScrollableScrollPhysics(),
           children:<Widget>[
             Container(
               padding: EdgeInsets.only(top: ScreenUtil.height/30),
@@ -44,7 +44,7 @@ class _TagSelectScreenState extends State<TagSelectScreen> {
             GridView.builder(
               shrinkWrap: true,
               itemCount: tags.length,
-              physics: const AlwaysScrollableScrollPhysics(),
+              physics: const ScrollPhysics(),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3,
               ),

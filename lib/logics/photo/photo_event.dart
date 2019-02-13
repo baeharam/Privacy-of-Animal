@@ -12,6 +12,8 @@ class PhotoEventReset extends PhotoEvent {}
 
 class PhotoEventTaking extends PhotoEvent {}
 
+class PhotoEventFetching extends PhotoEvent {}
+
 class PhotoEventGotoAnalysis extends PhotoEvent {
   final String photoPath;
 
