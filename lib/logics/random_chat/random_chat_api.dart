@@ -21,6 +21,24 @@ class RandomChatAPI {
     });
   }
 
+  Future<String> findUser() async {
+    bool isFindUser = false;
+    String opponent = '';
+    while(!isFindUser) {
+      QuerySnapshot querySnapshot = await sl.get<FirebaseAPI>().firestore.collection(firestoreRandomChatCollection)
+        .where(firestoreRandom,isGreaterThan: Random().nextInt(pow(2,32)))
+        .orderBy(firestoreRandom).limit(1).getDocuments(); 
+      if(querySnapshot.documents.length!=0){
+        String uid = querySnapshot.documents[0].documentID;
+        if(uid.compareTo(sl.get<CurrentUser>().uid)!=0){
+          isFindUser = true;
+          opponent = uid;
+        }
+      }
+    }
+    return opponent;
+  }
+
   Future<void> updateUsers(String user) async {
     CollectionReference col = sl.get<FirebaseAPI>().firestore.collection(firestoreRandomChatCollection);
     DocumentReference user1 = col.document(sl.get<CurrentUser>().uid);

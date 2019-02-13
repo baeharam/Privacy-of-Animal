@@ -12,6 +12,10 @@ class RandomChatBloc extends BlocEventStateBase<RandomChatEvent,RandomChatState>
   Stream<RandomChatState> eventHandler(RandomChatEvent event, RandomChatState currentState) async*{
     if(event is RandomChatEventMatchStart){
       await api.setRandomUser();
+      yield RandomChatState.loading();
+      String opponent = await api.findUser();
+      yield RandomChatState.matchSucceeded();
+      await api.updateUsers(opponent);
     }
     if(event is RandomChatEventMatchUsers){
       await api.updateUsers(event.user);

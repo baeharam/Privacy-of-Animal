@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state_builder.dart';
@@ -38,45 +36,29 @@ class _RandomLoadingScreenState extends State<RandomLoadingScreen> {
           sl.get<RandomChatBloc>().emitEvent(RandomChatEventCancel());
           return Future.value(true);
         },
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            StreamBuilder<QuerySnapshot>(
-              stream: sl.get<FirebaseAPI>().firestore.collection(firestoreRandomChatCollection)
-                .where(firestoreRandom,isGreaterThan: Random().nextInt(pow(2,32))).orderBy(firestoreRandom).limit(1).snapshots(),
+        child: BlocBuilder(
+          bloc: sl.get<RandomChatBloc>(),
+          builder: (context, RandomChatState state){
+            if(state.isLoading){
+              return CustomProgressIndicator();
+            }
+            if(state.isCanceled){
+              return Container();
+            }
+            return StreamBuilder(
+              stream: sl.get<FirebaseAPI>().firestore.collection(firestoreRandomChatCollection).snapshots(),
               builder: (context, AsyncSnapshot<QuerySnapshot> snapshot){
-                if(snapshot.hasData && snapshot.data.documents.length!=0){
-                  String selectedUser = snapshot.data.documents[0].documentID;
-                  if(selectedUser.compareTo(sl.get<CurrentUser>().uid)!=0){
-                    sl.get<RandomChatBloc>().emitEvent(RandomChatEventMatchUsers(
-                      user: selectedUser
-                    ));
+                if(snapshot.hasData){
+                  String uid = snapshot.data.documentChanges[0].document.documentID;
+                  if(uid.compareTo(sl.get<CurrentUser>().uid)==0){
                     StreamNavigator.pushReplacementNamed(context, routeRandomChat);
                   }
                 }
                 return CustomProgressIndicator();
               },
-            ),
-            BlocBuilder(
-              bloc: sl.get<RandomChatBloc>(),
-              builder: (context, RandomChatState state){
-                if(state.isCanceled){
-                  return Container();
-                }
-                return StreamBuilder(
-                  stream: sl.get<FirebaseAPI>().firestore.collection(firestoreRandomChatCollection)
-                    .where(uidCol, isEqualTo: sl.get<CurrentUser>().uid).snapshots(),
-                  builder: (context, AsyncSnapshot<QuerySnapshot> snapshot){
-                    if(snapshot.hasData && snapshot.data.documents.length==0){
-                      StreamNavigator.pushReplacementNamed(context, routeRandomChat);
-                    }
-                    return Container();
-                  },
-                );
-              }
-            )
-          ],
-        ),
+            );
+          }
+        )
       ),
     );
   }
