@@ -18,6 +18,14 @@ class SignUpAPI {
         email: data.email,
         password: data.password
       ).then((user) => sl.get<CurrentUser>().uid = user.uid);
+
+      await sl.get<FirebaseAPI>().firestore.runTransaction((tx) async{
+        CollectionReference col = sl.get<FirebaseAPI>().firestore.collection(firestoreDeletedUserListCollection);
+        DocumentReference doc = col.document(sl.get<CurrentUser>().uid);
+        await doc.setData({
+          'delete': true
+        });
+      }); 
     } catch(exception){
       return SIGNUP_RESULT.FAILURE;
     }
@@ -30,7 +38,7 @@ class SignUpAPI {
       await registerProfileIntoFirestore(data);
       await registerProfileIntoLocalDB(data);
     } catch(exception){
-      await sl.get<FirebaseAPI>().deleteUser(sl.get<CurrentUser>().uid);
+      await sl.get<FirebaseAPI>().deleteUserAccount(sl.get<CurrentUser>().uid);
       return PROFILE_RESULT.FAILURE;
     }
     return PROFILE_RESULT.SUCCESS;

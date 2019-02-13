@@ -12,13 +12,11 @@ class FirebaseAPI {
     return result;
   }
 
-  Future<void> deleteUser(String uid) async {
-    CollectionReference col = await firestore.collection(firestoreDeletedUserListCollection);
+  Future<void> deleteUserAccount(String uid) async {
+    CollectionReference col = firestore.collection(firestoreDeletedUserListCollection);
+    DocumentReference doc = col.document(uid);
     await firestore.runTransaction((tx) async{
-      DocumentSnapshot snapshot = await tx.get(col.document(uid));
-      if(snapshot.exists){
-        await tx.set(snapshot.reference, {'delete': true});
-      }
+      await doc.delete();
     });
   }
 }

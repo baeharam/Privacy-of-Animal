@@ -104,10 +104,11 @@ const String tagMusicMessage = '음악 하나 추천해줘!';
 const String photoWarningMessage1 = '※ 정면 사진이 아닐시 분석이 안될 수 있습니다.';
 const String photoWarningMessage2 = '※ 분석한 후 3일이 지나야 재분석이 가능합니다.';
 
-// 머신러닝 API
+// API url
 const String kakaoAPIurl = 'https://kapi.kakao.com/v1/vision/face/detect';
 const String naverFaceAPIurl = 'https://openapi.naver.com/v1/vision/face';
 const String naverCelebrityAPIurl = 'https://openapi.naver.com/v1/vision/celebrity';
+const String cloudFunctionUrl = 'https://console.firebase.google.com/project/privacy-of-animal-a94e7/overview';
 
 // 동물 이름
 const String bisonAnimal = 'bison';
