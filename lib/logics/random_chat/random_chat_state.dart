@@ -3,16 +3,21 @@ import 'package:privacy_of_animal/bloc_helpers/bloc_event_state.dart';
 class RandomChatState extends BlocState {
   final bool isInitial;
   final bool isLoading;
+  final bool isChatRoomMade;
   final bool matchCompleted;
   final bool matchFailed;
   final bool isCanceled;
 
+  final String chatRoomID;
+
   RandomChatState({
     this.isInitial:false,
     this.isLoading: false,
+    this.isChatRoomMade: false,
     this.matchCompleted: false,
     this.matchFailed: false,
     this.isCanceled: false,
+    this.chatRoomID: ''
   });
 
   factory RandomChatState.initial() {
@@ -24,6 +29,13 @@ class RandomChatState extends BlocState {
   factory RandomChatState.loading() {
     return RandomChatState(
       isLoading: true
+    );
+  }
+
+  factory RandomChatState.madeChatRoom(String chatRoomID) {
+    return RandomChatState(
+      isChatRoomMade: true,
+      chatRoomID: chatRoomID
     );
   }
 

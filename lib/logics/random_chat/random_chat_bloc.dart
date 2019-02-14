@@ -4,6 +4,7 @@ import 'package:privacy_of_animal/logics/random_chat/random_chat.dart';
 class RandomChatBloc extends BlocEventStateBase<RandomChatEvent,RandomChatState>
 {
   static final RandomChatAPI _api = RandomChatAPI();
+  String chatRoomID = '';
 
   @override
   RandomChatState get initialState => RandomChatState.loading();
@@ -20,21 +21,19 @@ class RandomChatBloc extends BlocEventStateBase<RandomChatEvent,RandomChatState>
     }
 
     if(event is RandomChatEventMatchStart){
-      _api.isContinue = true;
-      await _api.setRandomUser();
       yield RandomChatState.loading();
-      String receiver = await _api.findUser();
-      if(receiver.isNotEmpty){
-        await _api.makeChatRoom(_api.getChatRoomID(receiver), receiver);
+      chatRoomID = await _api.getRoomID();
+      if(chatRoomID.isEmpty){
+        chatRoomID = await _api.makeChatRoom();
+        yield RandomChatState.madeChatRoom(chatRoomID);
+      } else {
+        await _api.enterChatRoom(chatRoomID);
         yield RandomChatState.matchSucceeded();
-        await _api.updateUsers(receiver);
       }
     }
 
     if(event is RandomChatEventCancel){
-      _api.isContinue = false;
-      yield RandomChatState.cancel();
-      await _api.deleteUser();
+      await _api.deleteChatRoom(chatRoomID);
     }
   }
 }

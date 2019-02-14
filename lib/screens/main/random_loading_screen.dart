@@ -16,7 +16,7 @@ class RandomLoadingScreen extends StatefulWidget {
 
 class _RandomLoadingScreenState extends State<RandomLoadingScreen> {
 
-  String chatRoomID = '';
+  final RandomChatBloc chatBloc = sl.get<RandomChatBloc>();
 
   @override
   Widget build(BuildContext context) {
@@ -35,41 +35,31 @@ class _RandomLoadingScreenState extends State<RandomLoadingScreen> {
       ),
       body: WillPopScope(
         onWillPop: () async{
-          sl.get<RandomChatBloc>().emitEvent(RandomChatEventCancel());
+          chatBloc.emitEvent(RandomChatEventCancel());
           return Future.value(true);
         },
         child: BlocBuilder(
-          bloc: sl.get<RandomChatBloc>(),
+          bloc: chatBloc,
           builder: (context, RandomChatState state){
-            return StreamBuilder<QuerySnapshot>(
-              stream: sl.get<FirebaseAPI>().firestore.collection('messages').snapshots(),
-              builder: (context, AsyncSnapshot<QuerySnapshot> snapshot){
+            return StreamBuilder<DocumentSnapshot>(
+              stream: sl.get<FirebaseAPI>().firestore
+              .collection('messages')
+              .document(state.chatRoomID)
+              .snapshots(),
+              builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot){
                 if(!snapshot.hasData){
                   return CustomProgressIndicator();
+                } else if(snapshot.data['begin']){
+                  WidgetsBinding.instance.addPostFrameCallback((_){
+                    Navigator.push(context, MaterialPageRoute(
+                      builder: (context) => RandomChatScreen(
+                        chatRoomID: snapshot.data.documentID,
+                        receiver: snapshot.data['users'][0]==sl.get<CurrentUser>().uid ? 
+                        snapshot.data['users'][1] : snapshot.data['users'][0],
+                      )
+                    ));
+                  });
                 }
-
-                if(snapshot.hasData && snapshot.data.documentChanges.length!=0){
-                  chatRoomID = snapshot.data.documentChanges[0].document.documentID;
-                  int currentUserLength = sl.get<CurrentUser>().uid.length;
-                  if(chatRoomID.length==currentUserLength*2){
-                    String uid1 = chatRoomID.substring(0,currentUserLength);
-                    String uid2 = chatRoomID.substring(currentUserLength,currentUserLength*2);
-
-                    bool isUID1 = uid1.compareTo(sl.get<CurrentUser>().uid)==0;
-                    bool isUID2 = uid2.compareTo(sl.get<CurrentUser>().uid)==0;
-                    if(isUID1 || isUID2){
-                      WidgetsBinding.instance.addPostFrameCallback((_){
-                        Navigator.pushReplacement(context, MaterialPageRoute(
-                          builder: (context) => RandomChatScreen(
-                            chatRoomID: chatRoomID,
-                            receiver: isUID1?uid1:uid2,
-                          )
-                        ));
-                      });
-                    }
-                  }
-                }
-                return Container();
               },
             );
           }

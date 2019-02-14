@@ -3,32 +3,70 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
-import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 
 class RandomChatAPI {
 
-  bool isContinue = true;
-
-  String getChatRoomID(String receiver){
-    if(sl.get<CurrentUser>().uid.compareTo(receiver)<0){
-      return sl.get<CurrentUser>().uid+receiver;
+  // 현재 대기중인 방 중에 랜덤으로 찾기
+  // 대기중인 방이 없으면 빈 문자열 리턴
+  Future<String> getRoomID() async {
+    QuerySnapshot snapshot = await sl.get<FirebaseAPI>().firestore
+      .collection('messages')
+      .where('begin',isEqualTo: false).getDocuments();
+    if(snapshot.documents.length==0){
+      return '';
     } else {
-      return receiver+sl.get<CurrentUser>().uid;
+      Random random = Random();
+      DocumentSnapshot document = snapshot.documents[random.nextInt(snapshot.documents.length)];
+      return document.documentID;
     }
   }
 
-  Future<void> makeChatRoom(String chatRoomID, String receiver) async{
+  // 대기중인 방이 없으면 방을 만들어야 됨
+  Future<String> makeChatRoom() async {
+    String autoChatRoomID = sl.get<FirebaseAPI>().firestore
+      .collection('messages')
+      .document().documentID;
+    DocumentReference document = sl.get<FirebaseAPI>().firestore
+      .collection('messages')
+      .document(autoChatRoomID);
+    
+    sl.get<FirebaseAPI>().firestore.runTransaction((tx) async{
+      await tx.set(document, {
+        'begin': false,
+        'users': [sl.get<CurrentUser>().uid]
+      });
+    });
 
-    DocumentReference doc = sl.get<FirebaseAPI>().firestore
+    return autoChatRoomID;
+  }
+
+  // 대기중인 방이 있으면 그곳에 들어가서 flag 값을 true로 변경
+  Future<void> enterChatRoom(String chatRoomID) async {
+    DocumentReference document = sl.get<FirebaseAPI>().firestore
       .collection('messages')
       .document(chatRoomID);
-
-    await sl.get<FirebaseAPI>().firestore.runTransaction((tx) async{
-      await doc.setData({});
+    
+    sl.get<FirebaseAPI>().firestore.runTransaction((tx) async{
+      await tx.update(document, {
+        'begin': true,
+        'users': FieldValue.arrayUnion([sl.get<CurrentUser>().uid])
+      });
     });
   }
 
+  // 매칭을 하기 싫거나, 채팅 도중에 나갈 경우 채팅방이 삭제되어야 함.
+  Future<void> deleteChatRoom(String chatRoomID) async {
+    QuerySnapshot snapshot = await sl.get<FirebaseAPI>().firestore
+      .collection('messages')
+      .where('users', arrayContains: sl.get<CurrentUser>().uid).getDocuments();
+    DocumentSnapshot document = snapshot.documents[0];
+    sl.get<FirebaseAPI>().firestore.runTransaction((tx) async{
+      await tx.delete(document.reference);
+    });
+  }
+
+  // 메시지 보내기
   Future<void> sendMessage(String content,String receiver,String chatRoomID) async {
     DocumentReference doc = sl.get<FirebaseAPI>().firestore
       .collection('messages')
@@ -43,57 +81,6 @@ class RandomChatAPI {
         'timestamp': DateTime.now().millisecondsSinceEpoch.toString(),
         'content': content
       });
-    });
-  }
-
-
-  Future<void> setRandomUser() async {
-    CollectionReference col = sl.get<FirebaseAPI>().firestore.collection(firestoreRandomChatCollection);
-    DocumentReference doc = col.document(sl.get<CurrentUser>().uid);
-    Random random = Random();
-    int randomValue = random.nextInt(pow(2,32));
-
-    await sl.get<FirebaseAPI>().firestore.runTransaction((transaction) async{
-      await doc.setData({
-        firestoreRandom: randomValue,
-        uidCol: sl.get<CurrentUser>().uid
-      }, merge: true);
-    });
-  }
-
-  Future<String> findUser() async {
-    bool isFindUser = false;
-    String opponent = '';
-    while(!isFindUser && isContinue) {
-      QuerySnapshot querySnapshot = await sl.get<FirebaseAPI>().firestore.collection(firestoreRandomChatCollection)
-        .where(firestoreRandom,isGreaterThan: Random().nextInt(pow(2,32)))
-        .orderBy(firestoreRandom).limit(1).getDocuments(); 
-      if(querySnapshot.documents.length!=0){
-        String uid = querySnapshot.documents[0].documentID;
-        if(uid.compareTo(sl.get<CurrentUser>().uid)!=0 && uid.isNotEmpty){
-          isFindUser = true;
-          opponent = uid;
-        }
-      }
-    }
-    return opponent;
-  }
-
-  Future<void> updateUsers(String user) async {
-    CollectionReference col = sl.get<FirebaseAPI>().firestore.collection(firestoreRandomChatCollection);
-    DocumentReference user1 = col.document(sl.get<CurrentUser>().uid);
-    DocumentReference user2 = col.document(user);
-    await sl.get<FirebaseAPI>().firestore.runTransaction((transaction) async{
-      await user1.delete();
-      await user2.delete();
-    });
-  }
-
-  Future<void> deleteUser() async {
-    CollectionReference col = sl.get<FirebaseAPI>().firestore.collection(firestoreRandomChatCollection);
-    DocumentReference user = col.document(sl.get<CurrentUser>().uid);
-    await sl.get<FirebaseAPI>().firestore.runTransaction((transaction) async{
-      await user.delete();
     });
   }
 }
