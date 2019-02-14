@@ -133,12 +133,14 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
           Container(
             child: Text(
               document['content'],
-              style: TextStyle(color: primaryGreen),
+              style: TextStyle(
+                color: Colors.black
+              ),
             ),
             padding: EdgeInsets.fromLTRB(15.0,10.0,15.0,10.0),
             width: 200.0,
             decoration: BoxDecoration(
-              color: Colors.grey,
+              color: primaryBeige,
               borderRadius: BorderRadius.circular(3.0)
             ),
             margin: EdgeInsets.only(bottom: 10.0, right: 10.0),
@@ -152,7 +154,7 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
           Container(
             child: Text(
               document['content'],
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(color: Colors.black),
             ),
             padding: EdgeInsets.fromLTRB(15.0,10.0,15.0,10.0),
             width: 200.0,

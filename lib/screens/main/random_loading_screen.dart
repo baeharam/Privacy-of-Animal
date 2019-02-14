@@ -15,6 +15,9 @@ class RandomLoadingScreen extends StatefulWidget {
 }
 
 class _RandomLoadingScreenState extends State<RandomLoadingScreen> {
+
+  String chatRoomID = '';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,17 +41,15 @@ class _RandomLoadingScreenState extends State<RandomLoadingScreen> {
         child: BlocBuilder(
           bloc: sl.get<RandomChatBloc>(),
           builder: (context, RandomChatState state){
-            if(state.isLoading){
-              return CustomProgressIndicator();
-            }
-            if(state.isCanceled){
-              return Container();
-            }
-            return StreamBuilder(
+            return StreamBuilder<QuerySnapshot>(
               stream: sl.get<FirebaseAPI>().firestore.collection('messages').snapshots(),
               builder: (context, AsyncSnapshot<QuerySnapshot> snapshot){
+                if(!snapshot.hasData){
+                  return CustomProgressIndicator();
+                }
+
                 if(snapshot.hasData && snapshot.data.documentChanges.length!=0){
-                  String chatRoomID = snapshot.data.documentChanges[0].document.documentID;
+                  chatRoomID = snapshot.data.documentChanges[0].document.documentID;
                   int currentUserLength = sl.get<CurrentUser>().uid.length;
                   if(chatRoomID.length==currentUserLength*2){
                     String uid1 = chatRoomID.substring(0,currentUserLength);
@@ -68,7 +69,7 @@ class _RandomLoadingScreenState extends State<RandomLoadingScreen> {
                     }
                   }
                 }
-                return CustomProgressIndicator();
+                return Container();
               },
             );
           }
