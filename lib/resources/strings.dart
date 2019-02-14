@@ -150,6 +150,7 @@ const String zebraAnimal = 'zebra';
 const String firestoreUsersCollection = 'users';
 const String firestoreRandomChatCollection = 'random_chat';
 const String firestoreDeletedUserListCollection = 'deleted_user_list';
+const String firestoreMessageCollection = 'messages';
 
 // Cloud Firestore 실제 프로필 필드
 const String firestoreRealProfileField = realProfileTable;
@@ -195,8 +196,9 @@ const String firestoreTagDetail4Field = tagDetail4Col;
 const String firestoreTagDetail5Field = tagDetail5Col;
 const List<String> firestoreTagDetailList = tagDetailList;
 
-// Cloud Firestore 랜덤 필드
-const String firestoreRandom = 'random';
+// Cloud Firestore 메시지 필드
+const String firestoreChatBeginField = 'begin';
+const String firestoreChatUsersField = 'users';
 
 // SharedPreferences 플래그 key값
 const String isTagSelected = 'is_tag_selected';
