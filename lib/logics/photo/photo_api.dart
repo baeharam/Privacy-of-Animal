@@ -25,14 +25,22 @@ class PhotoAPI {
 
   Future<String> getImageFromCamera() async {
     final File image = await ImagePicker.pickImage(source: ImageSource.camera);
-    final File compressedImage = await FlutterNativeImage.compressImage(image.path, quality: 80, percentage: 100);
-    return compressedImage.path;
+    File compressedImage;
+    if(image!=null){
+      compressedImage = await FlutterNativeImage.compressImage(image.path, quality: 80, percentage: 100);
+      return compressedImage.path;
+    }
+    return '';
   }
 
   Future<String> getImageFromGallery() async {
     final File image = await ImagePicker.pickImage(source: ImageSource.gallery);
-    final File compressedImage = await FlutterNativeImage.compressImage(image.path, quality: 80, percentage: 100);
-    return compressedImage.path;
+    File compressedImage;
+    if(image!=null){
+      compressedImage = await FlutterNativeImage.compressImage(image.path, quality: 80, percentage: 100);
+      return compressedImage.path;
+    }
+    return '';
   }
 
   Future<void> setFlags() async {

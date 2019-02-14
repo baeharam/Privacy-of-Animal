@@ -17,7 +17,7 @@ class PhotoScreen extends StatefulWidget {
 
 class _PhotoScreenState extends State<PhotoScreen> {
   final PhotoBloc _photoBloc = sl.get<PhotoBloc>();
-  Widget image = Center(child: Text('사진을 찍지 않았습니다.'));
+  Widget image = Center(child: Text('사진이 없습니다.'));
   
   @override
   Widget build(BuildContext context){
@@ -54,17 +54,22 @@ class _PhotoScreenState extends State<PhotoScreen> {
               }
               if(state.isAnalyzeFailed){
                 streamSnackbar(context,'분석에 실패했습니다.');
-                image = Center(child: Text('사진을 찍지 않았습니다.'));
+                image = Center(child: Text('사진이 없습니다.'));
               }
               if(state.isPhotoDone){
-                image = Container(
-                  height: ScreenUtil.height/1.2,
-                  width: ScreenUtil.width/1.2,
-                  child: FittedBox(
-                    fit:BoxFit.contain,
-                    child: Image.file(File(state.path))
-                  )
-                );
+                if(state.path.isEmpty){
+                  image = Center(child: Text('사진이 없습니다.'));
+                }
+                else {
+                  image = Container(
+                    height: ScreenUtil.height/1.2,
+                    width: ScreenUtil.width/1.2,
+                    child: FittedBox(
+                      fit:BoxFit.contain,
+                      child: Image.file(File(state.path))
+                    )
+                  );
+                }
               }
               return Center(
                 child: Padding(
