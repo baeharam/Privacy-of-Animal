@@ -11,28 +11,27 @@ class RandomChatAPI {
   // 현재 대기중인 방 중에 랜덤으로 찾기
   // 대기중인 방이 없으면 빈 문자열 리턴
   Future<String> getRoomID() async {
-    QuerySnapshot snapshot = await sl.get<FirebaseAPI>().getFirestore()
-      .collection(firestoreMessageCollection+'/')
-      .where(firestoreChatBeginField,isEqualTo: false).getDocuments();
-    if(snapshot.documents.length==0){
+    CollectionReference col = Firestore.instance.collection(firestoreMessageCollection);
+    QuerySnapshot querySnapshot = await col.where('begin',isEqualTo: false).getDocuments();
+    
+    if(querySnapshot.documents.length==0){
       return '';
     }
     Random random = Random();
-    DocumentSnapshot document = snapshot.documents[random.nextInt(snapshot.documents.length)];
+    DocumentSnapshot document = querySnapshot.documents[random.nextInt(querySnapshot.documents.length)];
     return document.documentID;
   }
 
   // 대기중인 방이 없으면 방을 만들어야 됨
   Future<String> makeChatRoom() async {
-    String autoChatRoomID = sl.get<FirebaseAPI>().getFirestore()
+    String autoChatRoomID =  sl.get<FirebaseAPI>().getFirestore()
       .collection(firestoreMessageCollection)
       .document().documentID;
-    DocumentReference document = sl.get<FirebaseAPI>().getFirestore()
-      .collection(firestoreMessageCollection)
-      .document(autoChatRoomID);
+
+    CollectionReference col = sl.get<FirebaseAPI>().getFirestore().collection(firestoreMessageCollection);
 
     await sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async{
-      await tx.set(document, {
+      await col.add({
         firestoreChatBeginField: false,
         firestoreChatUsersField: [sl.get<CurrentUser>().uid]
       });
@@ -48,7 +47,7 @@ class RandomChatAPI {
       .document(chatRoomID);
 
     await sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async{
-      await tx.update(document, {
+      await document.updateData({
         firestoreChatBeginField: true,
         firestoreChatUsersField: FieldValue.arrayUnion([sl.get<CurrentUser>().uid])
       });
@@ -60,10 +59,9 @@ class RandomChatAPI {
     QuerySnapshot snapshot = await sl.get<FirebaseAPI>().getFirestore()
       .collection(firestoreMessageCollection)
       .where(firestoreChatUsersField, arrayContains: sl.get<CurrentUser>().uid).getDocuments();
-    DocumentSnapshot document = snapshot.documents[0];
 
     await sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async{
-      await tx.delete(document.reference);
+      await snapshot.documents[0].reference.delete();
     });
   }
 
@@ -76,7 +74,7 @@ class RandomChatAPI {
       .document(DateTime.now().millisecondsSinceEpoch.toString());
 
     await sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async{
-      await tx.set(doc,{
+      await doc.setData({
         'From': sl.get<CurrentUser>().uid,
         'To': receiver,
         'timestamp': DateTime.now().millisecondsSinceEpoch.toString(),

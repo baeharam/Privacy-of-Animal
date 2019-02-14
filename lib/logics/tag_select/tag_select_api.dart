@@ -37,7 +37,7 @@ class TagSelectAPI {
 
   // Cloud Firestore에 태그 이름 저장
   Future<void> _storeTagsIntoFirestore(String uid) async {
-    await sl.get<FirebaseAPI>().getFirestore().runTransaction((transaction) async{
+    await sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async{
         CollectionReference collectionReference = sl.get<FirebaseAPI>().getFirestore().collection(firestoreUsersCollection);
         DocumentReference reference = collectionReference.document(uid);
         await reference.updateData({
