@@ -48,31 +48,31 @@ class _MatchScreenState extends State<MatchScreen> {
               height: ScreenUtil.width*1.1
             ),
           ),
-          // TagTitleForm(
-          //   content: tagListModel.tagTitleList[0],
-          //   left: ScreenUtil.width/7,
-          //   top: ScreenUtil.height/15,
-          // ),
-          // TagTitleForm(
-          //   content: tagListModel.tagTitleList[1],
-          //   left: ScreenUtil.width/12,
-          //   top: ScreenUtil.height/8,
-          // ),
-          // TagTitleForm(
-          //   content: tagListModel.tagTitleList[2],
-          //   left: ScreenUtil.width/13,
-          //   top: ScreenUtil.height/5.5,
-          // ),
-          // TagTitleForm(
-          //   content: tagListModel.tagTitleList[3],
-          //   left: ScreenUtil.width/11,
-          //   top: ScreenUtil.height/4,
-          // ),
-          // TagTitleForm(
-          //   content: tagListModel.tagTitleList[4],
-          //   left: ScreenUtil.width/15,
-          //   top: ScreenUtil.height/3.2,
-          // ),
+          TagTitleForm(
+            content: tagListModel.tagTitleList[0],
+            left: ScreenUtil.width/7,
+            top: ScreenUtil.height/15,
+          ),
+          TagTitleForm(
+            content: tagListModel.tagTitleList[1],
+            left: ScreenUtil.width/12,
+            top: ScreenUtil.height/8,
+          ),
+          TagTitleForm(
+            content: tagListModel.tagTitleList[2],
+            left: ScreenUtil.width/13,
+            top: ScreenUtil.height/5.5,
+          ),
+          TagTitleForm(
+            content: tagListModel.tagTitleList[3],
+            left: ScreenUtil.width/11,
+            top: ScreenUtil.height/4,
+          ),
+          TagTitleForm(
+            content: tagListModel.tagTitleList[4],
+            left: ScreenUtil.width/15,
+            top: ScreenUtil.height/3.2,
+          ),
           Positioned(
             left: ScreenUtil.width/3,
             top: ScreenUtil.height/6,
