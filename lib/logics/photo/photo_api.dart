@@ -22,12 +22,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
 class PhotoAPI {
-<<<<<<< HEAD
-  Future<String> getImage() async {
-=======
 
   Future<String> getImageFromCamera() async {
->>>>>>> upstream/master
     final File image = await ImagePicker.pickImage(source: ImageSource.camera);
     final File compressedImage = await FlutterNativeImage.compressImage(image.path, quality: 80, percentage: 100);
     return compressedImage.path;
