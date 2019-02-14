@@ -42,7 +42,7 @@ class _RandomLoadingScreenState extends State<RandomLoadingScreen> {
           bloc: chatBloc,
           builder: (context, RandomChatState state){
             return StreamBuilder<DocumentSnapshot>(
-              stream: sl.get<FirebaseAPI>().firestore
+              stream: sl.get<FirebaseAPI>().getFirestore()
               .collection(firestoreMessageCollection)
               .document(state.chatRoomID)
               .snapshots(),

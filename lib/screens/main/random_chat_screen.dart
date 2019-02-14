@@ -63,7 +63,7 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
           children: <Widget>[
             Flexible(
               child: StreamBuilder(
-                stream: sl.get<FirebaseAPI>().firestore
+                stream: sl.get<FirebaseAPI>().getFirestore()
                   .collection('messages')
                   .document(widget.chatRoomID)
                   .collection(widget.chatRoomID)

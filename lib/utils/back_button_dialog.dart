@@ -34,7 +34,7 @@ class BackButtonAction {
             ),
           ),
           onPressed: () async {
-            await sl.get<FirebaseAPI>().auth.signOut();
+            await sl.get<FirebaseAPI>().getAuth().signOut();
             SystemChannels.platform.invokeMethod('SystemNavigator.pop');
           },
         ),

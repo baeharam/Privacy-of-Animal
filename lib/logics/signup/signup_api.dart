@@ -14,13 +14,13 @@ class SignUpAPI {
   // 회원가입
   Future<SIGNUP_RESULT> registerAccount(SignUpModel data) async {
     try {
-      await sl.get<FirebaseAPI>().auth.createUserWithEmailAndPassword(
+      await sl.get<FirebaseAPI>().getAuth().createUserWithEmailAndPassword(
         email: data.email,
         password: data.password
       ).then((user) => sl.get<CurrentUser>().uid = user.uid);
 
-      await sl.get<FirebaseAPI>().firestore.runTransaction((tx) async{
-        CollectionReference col = sl.get<FirebaseAPI>().firestore.collection(firestoreDeletedUserListCollection);
+      await sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async{
+        CollectionReference col = sl.get<FirebaseAPI>().getFirestore().collection(firestoreDeletedUserListCollection);
         DocumentReference doc = col.document(sl.get<CurrentUser>().uid);
         await doc.setData({
           'delete': true
@@ -46,8 +46,8 @@ class SignUpAPI {
 
   // Cloud Firestore에 저장
   Future<void> registerProfileIntoFirestore(SignUpModel data) async {
-    await sl.get<FirebaseAPI>().firestore.runTransaction((transaction) async{
-        CollectionReference collectionReference = sl.get<FirebaseAPI>().firestore.collection(firestoreUsersCollection);
+    await sl.get<FirebaseAPI>().getFirestore().runTransaction((transaction) async{
+        CollectionReference collectionReference = sl.get<FirebaseAPI>().getFirestore().collection(firestoreUsersCollection);
         DocumentReference reference = collectionReference.document(sl.get<CurrentUser>().uid);
         await reference.setData({
           firestoreRealProfileField: {
