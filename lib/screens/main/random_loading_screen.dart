@@ -7,6 +7,7 @@ import 'package:privacy_of_animal/logics/random_chat/random_chat.dart';
 import 'package:privacy_of_animal/resources/resources.dart';
 import 'package:privacy_of_animal/screens/main/random_chat_screen.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
+import 'package:privacy_of_animal/utils/stream_snackbar.dart';
 import 'package:privacy_of_animal/widgets/progress_indicator.dart';
 
 class RandomLoadingScreen extends StatefulWidget {
@@ -41,6 +42,11 @@ class _RandomLoadingScreenState extends State<RandomLoadingScreen> {
         child: BlocBuilder(
           bloc: chatBloc,
           builder: (context, RandomChatState state){
+            if(state.apiFailed){
+              streamSnackbar(context,state.errorMessage);
+              return Container();
+            }
+
             return StreamBuilder<DocumentSnapshot>(
               stream: sl.get<FirebaseAPI>().getFirestore()
               .collection(firestoreMessageCollection)
