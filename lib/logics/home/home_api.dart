@@ -11,8 +11,10 @@ class HomeAPI {
   // 바로 홈 화면으로 갈 경우 그에 해당하는 데이터를 가져옴
   Future<FETCH_RESULT> fetchUserData() async {
 
-    await _checkDBAndCallFirestore();
-
+    FETCH_RESULT result = await _checkDBAndCallFirestore();
+    if(result==FETCH_RESULT.FAILURE){
+      return result;
+    }
     try {
 
       String uid = sl.get<CurrentUser>().uid;
@@ -65,25 +67,36 @@ class HomeAPI {
     return FETCH_RESULT.SUCCESS;
   }
 
-  Future<void> _checkDBAndCallFirestore() async {
+  // 로컬 DB체크한 후에 없으면 서버에서 가져옴
+  Future<FETCH_RESULT> _checkDBAndCallFirestore() async {
     Database db = await sl.get<DatabaseHelper>().database;
     try {
       await db.rawQuery('SELECT * FROM $tagTable WHERE $uidCol=${sl.get<CurrentUser>().uid}');
     } catch(exception){
-      await _fetchTagsFromFirestore();
+      await _fetchTagsFromFirestore().catchError((e){
+        print('FATAL ERROR: ${e.toString()}');
+        return FETCH_RESULT.FAILURE;
+      });
     }
 
     try {
       await db.rawQuery('SELECT * FROM $realProfileTable WHERE $uidCol=${sl.get<CurrentUser>().uid}');
     } catch(exception){
-      await _fetchRealProfileFromFirestore();
+      await _fetchRealProfileFromFirestore().catchError((e){
+        print('FATAL ERROR: ${e.toString()}');
+        return FETCH_RESULT.FAILURE;
+      });
     }
 
     try {
       await db.rawQuery('SELECT * FROM $fakeProfileTable WHERE $uidCol=${sl.get<CurrentUser>().uid}');
     } catch(exception){
-      await _fetchFakeProfileFromFirestore();
+      await _fetchFakeProfileFromFirestore().catchError((e){
+        print('FATAL ERROR: ${e.toString()}');
+        return FETCH_RESULT.FAILURE;
+      });
     }
+    return FETCH_RESULT.SUCCESS;
   }
 
   Future<void> _fetchFakeProfileFromFirestore() async {
