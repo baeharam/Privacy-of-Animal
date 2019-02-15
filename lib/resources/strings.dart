@@ -199,6 +199,11 @@ const List<String> firestoreTagDetailList = tagDetailList;
 // Cloud Firestore 메시지 필드
 const String firestoreChatBeginField = 'begin';
 const String firestoreChatUsersField = 'users';
+const String firestoreChatDeleteField = 'delete';
+const String firestoreChatFromField = 'from';
+const String firestoreChatToField = 'to';
+const String firestoreChatContentField = 'content';
+const String firestoreChatTimestampField = 'timestamp';
 
 // SharedPreferences 플래그 key값
 const String isTagSelected = 'is_tag_selected';

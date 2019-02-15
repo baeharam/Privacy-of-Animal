@@ -1,12 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:privacy_of_animal/bloc_helpers/bloc_event_state_builder.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/logics/random_chat/random_chat.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:privacy_of_animal/widgets/progress_indicator.dart';
+import 'package:privacy_of_animal/resources/strings.dart';
 
 class RandomChatScreen extends StatefulWidget {
 
@@ -65,10 +65,10 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
             Flexible(
               child: StreamBuilder(
                 stream: sl.get<FirebaseAPI>().getFirestore()
-                  .collection('messages')
+                  .collection(firestoreMessageCollection)
                   .document(widget.chatRoomID)
                   .collection(widget.chatRoomID)
-                  .orderBy('timestamp',descending: true)
+                  .orderBy(firestoreChatTimestampField,descending: true)
                   .limit(20)
                   .snapshots(),
                 builder: (context, snapshot){
@@ -89,11 +89,11 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
             ),
             StreamBuilder(
               stream: sl.get<FirebaseAPI>().getFirestore()
-                  .collection('messages')
+                  .collection(firestoreMessageCollection)
                   .document(widget.chatRoomID)
                   .snapshots(),
               builder: (context, snapshot){
-                if(snapshot.hasData && snapshot.data.data!=null && snapshot.data.data['delete']){
+                if(snapshot.hasData && snapshot.data.data!=null && snapshot.data.data[firestoreChatDeleteField]){
                   return Text('상대방이 나갔습니다.');
                 }
                 return Container();
@@ -139,13 +139,13 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
   }
 
   Widget _buildMessage(DocumentSnapshot document) {
-    if(document['From'] == sl.get<CurrentUser>().uid){
+    if(document[firestoreChatFromField] == sl.get<CurrentUser>().uid){
       return Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
           Container(
             child: Text(
-              document['content'],
+              document[firestoreChatContentField],
               style: TextStyle(
                 color: Colors.black
               ),
@@ -166,7 +166,7 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
         children: <Widget>[
           Container(
             child: Text(
-              document['content'],
+              document[firestoreChatContentField],
               style: TextStyle(color: Colors.black),
             ),
             padding: EdgeInsets.fromLTRB(15.0,10.0,15.0,10.0),

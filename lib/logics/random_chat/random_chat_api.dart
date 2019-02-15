@@ -13,7 +13,7 @@ class RandomChatAPI {
   Future<String> getRoomID() async {
     QuerySnapshot querySnapshot
       = await Firestore.instance.collection(firestoreMessageCollection)
-        .where('begin',isEqualTo: false).getDocuments();
+        .where(firestoreChatBeginField,isEqualTo: false).getDocuments();
 
     if(querySnapshot.documents.length==0){
       return '';
@@ -31,7 +31,8 @@ class RandomChatAPI {
     await sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async{
       doc = await col.add({
         firestoreChatBeginField: false,
-        firestoreChatUsersField: [sl.get<CurrentUser>().uid]
+        firestoreChatUsersField: [sl.get<CurrentUser>().uid],
+        firestoreChatDeleteField: false
       });
     });
 
@@ -73,10 +74,10 @@ class RandomChatAPI {
       .document(chatRoomID);
 
     DocumentSnapshot snapshot = await doc.get();
-    if(snapshot.data['delete']!=null){
+    if(snapshot.data[firestoreChatDeleteField]!=null){
       await deleteChatRoom(chatRoomID);
     } else {
-      await doc.setData({'delete': true},merge: true);
+      await doc.setData({firestoreChatDeleteField: true},merge: true);
     }
   }
 
@@ -90,10 +91,10 @@ class RandomChatAPI {
 
     await sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async{
       await doc.setData({
-        'From': sl.get<CurrentUser>().uid,
-        'To': receiver,
-        'timestamp': DateTime.now().millisecondsSinceEpoch.toString(),
-        'content': content
+        firestoreChatFromField: sl.get<CurrentUser>().uid,
+        firestoreChatToField: receiver,
+        firestoreChatTimestampField: DateTime.now().millisecondsSinceEpoch.toString(),
+        firestoreChatContentField: content
       });
     });
   }
