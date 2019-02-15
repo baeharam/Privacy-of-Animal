@@ -7,12 +7,10 @@ class RandomChatEventStateClear extends RandomChatEvent {}
 
 class RandomChatEventMatchStart extends RandomChatEvent {}
 
-class RandomChatEventMatchUsers extends RandomChatEvent {
-  final String user;
+class RandomChatEventUserEntered extends RandomChatEvent {
+  final String receiver;
 
-  RandomChatEventMatchUsers({
-    @required this.user
-  });
+  RandomChatEventUserEntered({@required this.receiver});
 }
 
 class RandomChatEventCancel extends RandomChatEvent {}

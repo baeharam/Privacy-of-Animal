@@ -88,6 +88,12 @@ class RandomChatAPI {
     }
   }
 
+  // 사용자가 들어오면 해당 사용자에 대한 정보를 받아와야 함
+  Future<DocumentSnapshot> fetchUserData(String uid) async {
+    return await sl.get<FirebaseAPI>().getFirestore().collection(firestoreUsersCollection)
+      .document(uid).get();
+  }
+
   // 메시지 보내기
   Future<void> sendMessage(String content,String receiver,String chatRoomID) async {
     DocumentReference doc = sl.get<FirebaseAPI>().getFirestore()

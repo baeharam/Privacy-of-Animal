@@ -47,6 +47,10 @@ class RandomChatBloc extends BlocEventStateBase<RandomChatEvent,RandomChatState>
       }
     }
 
+    if(event is RandomChatEventUserEntered) {
+      yield RandomChatState.matchSucceeded(receiver: await _api.fetchUserData(event.receiver));
+    }
+
     if(event is RandomChatEventOut) {
       try {
         await _api.getOutChatRoom(event.chatRoomID);
