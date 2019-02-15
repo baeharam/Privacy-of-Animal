@@ -17,7 +17,7 @@ class RandomLoadingScreen extends StatefulWidget {
 
 class _RandomLoadingScreenState extends State<RandomLoadingScreen> {
 
-  final RandomChatBloc chatBloc = sl.get<RandomChatBloc>();
+  final RandomChatBloc randomChatBloc = sl.get<RandomChatBloc>();
 
   @override
   Widget build(BuildContext context) {
@@ -36,11 +36,11 @@ class _RandomLoadingScreenState extends State<RandomLoadingScreen> {
       ),
       body: WillPopScope(
         onWillPop: () async{
-          chatBloc.emitEvent(RandomChatEventCancel());
+          randomChatBloc.emitEvent(RandomChatEventCancel());
           return Future.value(true);
         },
         child: BlocBuilder(
-          bloc: chatBloc,
+          bloc: randomChatBloc,
           builder: (context, RandomChatState state){
             if(state.isAPIFailed){
               streamSnackbar(context,state.errorMessage);
@@ -58,7 +58,7 @@ class _RandomLoadingScreenState extends State<RandomLoadingScreen> {
               });
             }
 
-            if(state.isChatRoomMade) {
+            if(state.isChatRoomMade || state.isMatched) {
               return StreamBuilder<DocumentSnapshot>(
                 stream: sl.get<FirebaseAPI>().getFirestore()
                 .collection(firestoreMessageCollection)
@@ -66,16 +66,17 @@ class _RandomLoadingScreenState extends State<RandomLoadingScreen> {
                 .snapshots(),
                 builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot){
                   if(snapshot.hasData && snapshot.data.data!=null && snapshot.data.data[firestoreChatBeginField]){
-                    Map<String,dynamic> map = snapshot.data.data;
-                    WidgetsBinding.instance.addPostFrameCallback((_){
-                      Navigator.pushReplacement(context, MaterialPageRoute(
-                        builder: (context) => RandomChatScreen(
-                          chatRoomID: snapshot.data.documentID,
-                          receiver: map[firestoreChatUsersField][0]==sl.get<CurrentUser>().uid ? 
-                          map[firestoreChatUsersField][1] : map[firestoreChatUsersField][0],
-                        )
-                      ));
-                    });
+                    randomChatBloc.emitEvent(RandomChatEventUserEntered(receiver: snapshot.data.data[firestoreChatUsersField][1]));
+                    if(state.isMatched){
+                      WidgetsBinding.instance.addPostFrameCallback((_) async{
+                        Navigator.pushReplacement(context, MaterialPageRoute(
+                          builder: (context) => RandomChatScreen(
+                            chatRoomID: snapshot.data.documentID,
+                            receiver: state.receiver,
+                          )
+                        ));
+                      });
+                    }
                   }
                   return CustomProgressIndicator();
                 },
