@@ -103,7 +103,7 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
               bloc: randomChatBloc,
               builder: (context, RandomChatState state){
                 if(state.isChatFinished){
-                  randomChatBloc.emitEvent(RandomChatEventStateClear());
+                  // randomChatBloc.emitEvent(RandomChatEventStateClear());
                   return Container();
                 }
                 return Row(
