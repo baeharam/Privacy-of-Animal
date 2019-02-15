@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:privacy_of_animal/bloc_helpers/bloc_event_state_builder.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/logics/random_chat/random_chat.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
+import 'package:privacy_of_animal/utils/back_button_dialog.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:privacy_of_animal/widgets/progress_indicator.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
@@ -56,10 +58,7 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
         backgroundColor: primaryBlue
       ),
       body: WillPopScope(
-        onWillPop: (){
-          randomChatBloc.emitEvent(RandomChatEventOut(chatRoomID: widget.chatRoomID));
-          return Future.value(true);
-        },
+        onWillPop: () => BackButtonAction.dialogChatExit(context, widget.chatRoomID),
         child: Column(
           children: <Widget>[
             Flexible(
@@ -94,43 +93,53 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
                   .snapshots(),
               builder: (context, snapshot){
                 if(snapshot.hasData && snapshot.data.data!=null && snapshot.data.data[firestoreChatDeleteField]){
+                  randomChatBloc.emitEvent(RandomChatEventFinished());
                   return Text('상대방이 나갔습니다.');
                 }
                 return Container();
               },
             ),
-            Row(
-              children: <Widget>[
-                Flexible(
-                  child: Container(
-                    child: TextField(
-                      style: TextStyle(color: primaryGreen, fontSize: 15.0),
-                      decoration: InputDecoration.collapsed(
-                        hintText: '메시지를 입력하세요.',
-                        hintStyle: TextStyle(color: Colors.grey)
+            BlocBuilder(
+              bloc: randomChatBloc,
+              builder: (context, RandomChatState state){
+                if(state.isChatFinished){
+                  randomChatBloc.emitEvent(RandomChatEventStateClear());
+                  return Container();
+                }
+                return Row(
+                  children: <Widget>[
+                    Flexible(
+                      child: Container(
+                        child: TextField(
+                          style: TextStyle(color: primaryGreen, fontSize: 15.0),
+                          decoration: InputDecoration.collapsed(
+                            hintText: '메시지를 입력하세요.',
+                            hintStyle: TextStyle(color: Colors.grey)
+                          ),
+                          controller: messageController,
+                          focusNode: messageFocusNode,
+                        ),
                       ),
-                      controller: messageController,
-                      focusNode: messageFocusNode,
                     ),
-                  ),
-                ),
-                Material(
-                  child: Container(
-                    margin: EdgeInsets.symmetric(horizontal: 8.0),
-                    child: IconButton(
-                      icon: Icon(Icons.send),
-                      onPressed: () => randomChatBloc.emitEvent(
-                        RandomChatEventMessageSend(
-                          content: messageController.text,
-                          receiver: widget.receiver,
-                          chatRoomID: widget.chatRoomID
-                        )
+                    Material(
+                      child: Container(
+                        margin: EdgeInsets.symmetric(horizontal: 8.0),
+                        child: IconButton(
+                          icon: Icon(Icons.send),
+                          onPressed: () => randomChatBloc.emitEvent(
+                            RandomChatEventMessageSend(
+                              content: messageController.text,
+                              receiver: widget.receiver,
+                              chatRoomID: widget.chatRoomID
+                            )
+                          ),
+                          color: Colors.black,
+                        ),
                       ),
-                      color: Colors.black,
-                    ),
-                  ),
-                )
-              ],
+                    )
+                  ],
+                ); 
+              }
             ),
           ],
         ),

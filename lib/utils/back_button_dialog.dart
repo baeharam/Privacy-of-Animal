@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
+import 'package:privacy_of_animal/logics/random_chat/random_chat.dart';
+import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
@@ -49,6 +51,45 @@ class BackButtonAction {
         )
       ]
     ).show();
+    return Future.value(false);
+  }
+
+  static Future<bool> dialogChatExit(BuildContext context, String chatRoomID) {
+
+    final randomChatBloc = sl.get<RandomChatBloc>();
+
+    Alert(
+      context: context,
+      title: '정말로 끝내시겠습니까?',
+      type: AlertType.warning,
+      buttons: [
+        DialogButton(
+          onPressed: (){
+            randomChatBloc.emitEvent(RandomChatEventOut(chatRoomID: chatRoomID));
+            Navigator.pop(context);
+            Navigator.pop(context);
+          },
+          child: Text(
+            '예',
+            style: TextStyle(
+              color: Colors.white
+            ),
+          ),
+          color: primaryPink,
+        ),
+        DialogButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text(
+            '아니오',
+            style: TextStyle(
+              color: Colors.white
+            ),
+          ),
+          color: primaryBeige,
+        )
+      ]
+    ).show();
+
     return Future.value(false);
   }
 }

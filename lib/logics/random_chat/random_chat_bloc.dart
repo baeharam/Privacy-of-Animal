@@ -14,6 +14,10 @@ class RandomChatBloc extends BlocEventStateBase<RandomChatEvent,RandomChatState>
   @override
   Stream<RandomChatState> eventHandler(RandomChatEvent event, RandomChatState currentState) async*{
     
+    if(event is RandomChatEventStateClear) {
+      yield RandomChatState.initial();
+    }
+
     if(event is RandomChatEventMessageSend){
       try {
         await _api.sendMessage(event.content, event.receiver, event.chatRoomID);
@@ -50,6 +54,10 @@ class RandomChatBloc extends BlocEventStateBase<RandomChatEvent,RandomChatState>
         print(exception);
         yield RandomChatState.apiFailed();
       }
+    }
+
+    if(event is RandomChatEventFinished) {
+      yield RandomChatState.finished();
     }
       
 

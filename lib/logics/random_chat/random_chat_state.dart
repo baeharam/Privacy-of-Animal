@@ -6,6 +6,7 @@ class RandomChatState extends BlocState {
   final bool isCanceled;
   final bool isAPIFailed;
   final bool isChatRoomMade;
+  final bool isChatFinished;
 
   final String errorMessage;
   final String chatRoomID;
@@ -17,6 +18,7 @@ class RandomChatState extends BlocState {
     this.isMatched: false,
     this.isAPIFailed: false,
     this.isCanceled: false,
+    this.isChatFinished: false,
     this.chatRoomID: '',
     this.errorMessage: '',
     this.receiver: ''
@@ -53,6 +55,12 @@ class RandomChatState extends BlocState {
   factory RandomChatState.cancel() {
     return RandomChatState(
       isCanceled: true
+    );
+  }
+
+  factory RandomChatState.finished() {
+    return RandomChatState(
+      isChatFinished: true
     );
   }
 }
