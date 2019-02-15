@@ -10,13 +10,8 @@ import 'package:sqflite/sqflite.dart';
 class HomeAPI {
   // 바로 홈 화면으로 갈 경우 그에 해당하는 데이터를 가져옴
   Future<FETCH_RESULT> fetchUserData() async {
-
-    FETCH_RESULT result = await _checkDBAndCallFirestore();
-    if(result==FETCH_RESULT.FAILURE){
-      return result;
-    }
     try {
-
+      await _checkDBAndCallFirestore();
       String uid = sl.get<CurrentUser>().uid;
       Database db = await sl.get<DatabaseHelper>().database;
 
@@ -68,35 +63,22 @@ class HomeAPI {
   }
 
   // 로컬 DB체크한 후에 없으면 서버에서 가져옴
-  Future<FETCH_RESULT> _checkDBAndCallFirestore() async {
+  Future<void> _checkDBAndCallFirestore() async {
     Database db = await sl.get<DatabaseHelper>().database;
-    try {
-      await db.rawQuery('SELECT * FROM $tagTable WHERE $uidCol="${sl.get<CurrentUser>().uid}"');
-    } catch(exception){
-      await _fetchTagsFromFirestore().catchError((e){
-        print('FATAL ERROR: ${e.toString()}');
-        return FETCH_RESULT.FAILURE;
-      });
+    List tags = await db.rawQuery('SELECT * FROM $tagTable WHERE $uidCol="${sl.get<CurrentUser>().uid}"');
+    if(tags.length==0){
+      await _fetchTagsFromFirestore();
     }
 
-    try {
-      await db.rawQuery('SELECT * FROM $realProfileTable WHERE $uidCol="${sl.get<CurrentUser>().uid}"');
-    } catch(exception){
-      await _fetchRealProfileFromFirestore().catchError((e){
-        print('FATAL ERROR: ${e.toString()}');
-        return FETCH_RESULT.FAILURE;
-      });
+    List realProfile = await db.rawQuery('SELECT * FROM $realProfileTable WHERE $uidCol="${sl.get<CurrentUser>().uid}"');
+    if(realProfile.length==0){
+      await _fetchRealProfileFromFirestore();
     }
 
-    try {
-      await db.rawQuery('SELECT * FROM $fakeProfileTable WHERE $uidCol="${sl.get<CurrentUser>().uid}"');
-    } catch(exception){
-      await _fetchFakeProfileFromFirestore().catchError((e){
-        print('FATAL ERROR: ${e.toString()}');
-        return FETCH_RESULT.FAILURE;
-      });
+    List fakeProfile = await db.rawQuery('SELECT * FROM $fakeProfileTable WHERE $uidCol="${sl.get<CurrentUser>().uid}"');
+    if(fakeProfile.length==0){
+      await _fetchFakeProfileFromFirestore();
     }
-    return FETCH_RESULT.SUCCESS;
   }
 
   Future<void> _fetchFakeProfileFromFirestore() async {
