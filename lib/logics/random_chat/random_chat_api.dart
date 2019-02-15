@@ -11,9 +11,10 @@ class RandomChatAPI {
   // 현재 대기중인 방 중에 랜덤으로 찾기
   // 대기중인 방이 없으면 빈 문자열 리턴
   Future<String> getRoomID() async {
-    CollectionReference col = Firestore.instance.collection(firestoreMessageCollection);
-    QuerySnapshot querySnapshot = await col.where('begin',isEqualTo: false).getDocuments();
-    
+    QuerySnapshot querySnapshot
+      = await Firestore.instance.collection(firestoreMessageCollection)
+        .where('begin',isEqualTo: false).getDocuments();
+
     if(querySnapshot.documents.length==0){
       return '';
     }
@@ -24,20 +25,17 @@ class RandomChatAPI {
 
   // 대기중인 방이 없으면 방을 만들어야 됨
   Future<String> makeChatRoom() async {
-    String autoChatRoomID =  sl.get<FirebaseAPI>().getFirestore()
-      .collection(firestoreMessageCollection)
-      .document().documentID;
-
     CollectionReference col = sl.get<FirebaseAPI>().getFirestore().collection(firestoreMessageCollection);
+    DocumentReference doc;
 
     await sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async{
-      await col.add({
+      doc = await col.add({
         firestoreChatBeginField: false,
         firestoreChatUsersField: [sl.get<CurrentUser>().uid]
       });
     });
 
-    return autoChatRoomID;
+    return doc.documentID;
   }
 
   // 대기중인 방이 있으면 그곳에 들어가서 flag 값을 true로 변경
@@ -45,7 +43,7 @@ class RandomChatAPI {
     DocumentReference document = sl.get<FirebaseAPI>().getFirestore()
       .collection(firestoreMessageCollection)
       .document(chatRoomID);
-
+    
     await sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async{
       await document.updateData({
         firestoreChatBeginField: true,
@@ -56,13 +54,13 @@ class RandomChatAPI {
 
   // 매칭을 하기 싫거나, 채팅 도중에 나갈 경우 채팅방이 삭제되어야 함.
   Future<void> deleteChatRoom(String chatRoomID) async {
-    QuerySnapshot snapshot = await sl.get<FirebaseAPI>().getFirestore()
-      .collection(firestoreMessageCollection)
-      .where(firestoreChatUsersField, arrayContains: sl.get<CurrentUser>().uid).getDocuments();
+    // QuerySnapshot snapshot = await sl.get<FirebaseAPI>().getFirestore()
+    //   .collection(firestoreMessageCollection)
+    //   .where(firestoreChatUsersField, arrayContains: sl.get<CurrentUser>().uid).getDocuments();
 
-    await sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async{
-      await snapshot.documents[0].reference.delete();
-    });
+    // await sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async{
+    //   await snapshot.documents[0].reference.delete();
+    // });
   }
 
   // 메시지 보내기

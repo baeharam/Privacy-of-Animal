@@ -9,7 +9,7 @@ class RandomChatBloc extends BlocEventStateBase<RandomChatEvent,RandomChatState>
   String chatRoomID = '';
 
   @override
-  RandomChatState get initialState => RandomChatState.loading();
+  RandomChatState get initialState => RandomChatState.initial();
 
   @override
   Stream<RandomChatState> eventHandler(RandomChatEvent event, RandomChatState currentState) async*{

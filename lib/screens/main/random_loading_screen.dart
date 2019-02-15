@@ -42,32 +42,48 @@ class _RandomLoadingScreenState extends State<RandomLoadingScreen> {
         child: BlocBuilder(
           bloc: chatBloc,
           builder: (context, RandomChatState state){
-            if(state.apiFailed){
+            if(state.isAPIFailed){
               streamSnackbar(context,state.errorMessage);
               Navigator.pop(context);
             }
 
-            return StreamBuilder<DocumentSnapshot>(
-              stream: sl.get<FirebaseAPI>().getFirestore()
-              .collection(firestoreMessageCollection)
-              .document(state.chatRoomID)
-              .snapshots(),
-              builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot){
-                if(!snapshot.hasData){
-                  return CustomProgressIndicator();
-                } else if(snapshot.data[firestoreChatBeginField]){
-                  WidgetsBinding.instance.addPostFrameCallback((_){
-                    Navigator.push(context, MaterialPageRoute(
-                      builder: (context) => RandomChatScreen(
-                        chatRoomID: snapshot.data.documentID,
-                        receiver: snapshot.data[firestoreChatUsersField][0]==sl.get<CurrentUser>().uid ? 
-                        snapshot.data[firestoreChatUsersField][1] : snapshot.data[firestoreChatUsersField][0],
-                      )
-                    ));
-                  });
-                }
-              },
-            );
+            if(state.isMatched){
+              WidgetsBinding.instance.addPostFrameCallback((_){
+                Navigator.pushReplacement(context, MaterialPageRoute(
+                  builder: (context) => RandomChatScreen(
+                    chatRoomID: state.chatRoomID,
+                    receiver: state.receiver,
+                  )
+                ));
+              });
+            }
+
+            if(state.isChatRoomMade) {
+              return StreamBuilder<DocumentSnapshot>(
+                stream: sl.get<FirebaseAPI>().getFirestore()
+                .collection(firestoreMessageCollection)
+                .document(state.chatRoomID)
+                .snapshots(),
+                builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot){
+                  if(!snapshot.hasData || snapshot.data.data==null || !snapshot.data.data[firestoreChatBeginField]){
+                    return CustomProgressIndicator();
+                  } else {
+                    Map<String,dynamic> map = snapshot.data.data;
+                    WidgetsBinding.instance.addPostFrameCallback((_){
+                      Navigator.pushReplacement(context, MaterialPageRoute(
+                        builder: (context) => RandomChatScreen(
+                          chatRoomID: snapshot.data.documentID,
+                          receiver: map[firestoreChatUsersField][0]==sl.get<CurrentUser>().uid ? 
+                          map[firestoreChatUsersField][1] : map[firestoreChatUsersField][0],
+                        )
+                      ));
+                    });
+                  }
+                  return Container();
+                },
+              );
+            }
+            return CustomProgressIndicator();
           }
         )
       ),
