@@ -93,9 +93,10 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
                   .document(widget.chatRoomID)
                   .snapshots(),
               builder: (context, snapshot){
-                if(!snapshot.hasData || snapshot.data.data==null || !snapshot.data.data['delete'])
-                  return Container();
-                return Text('상대방이 나갔습니다.');
+                if(snapshot.hasData && snapshot.data.data!=null && snapshot.data.data['delete']){
+                  return Text('상대방이 나갔습니다.');
+                }
+                return Container();
               },
             ),
             Row(

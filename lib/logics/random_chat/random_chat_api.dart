@@ -73,10 +73,10 @@ class RandomChatAPI {
       .document(chatRoomID);
 
     DocumentSnapshot snapshot = await doc.get();
-    if(snapshot.data['delete']){
+    if(snapshot.data['delete']!=null){
       await deleteChatRoom(chatRoomID);
     } else {
-      await doc.setData({'delete': true});
+      await doc.setData({'delete': true},merge: true);
     }
   }
 
