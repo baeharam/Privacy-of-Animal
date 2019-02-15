@@ -65,9 +65,7 @@ class _RandomLoadingScreenState extends State<RandomLoadingScreen> {
                 .document(state.chatRoomID)
                 .snapshots(),
                 builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot){
-                  if(!snapshot.hasData || snapshot.data.data==null || !snapshot.data.data[firestoreChatBeginField]){
-                    return CustomProgressIndicator();
-                  } else {
+                  if(snapshot.hasData && snapshot.data.data!=null && snapshot.data.data[firestoreChatBeginField]){
                     Map<String,dynamic> map = snapshot.data.data;
                     WidgetsBinding.instance.addPostFrameCallback((_){
                       Navigator.pushReplacement(context, MaterialPageRoute(
