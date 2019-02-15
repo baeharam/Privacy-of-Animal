@@ -58,7 +58,7 @@ class _RandomLoadingScreenState extends State<RandomLoadingScreen> {
               });
             }
 
-            if(state.isChatRoomMade || state.isMatched) {
+            if(state.isChatRoomMade) {
               return StreamBuilder<DocumentSnapshot>(
                 stream: sl.get<FirebaseAPI>().getFirestore()
                 .collection(firestoreMessageCollection)
@@ -66,22 +66,27 @@ class _RandomLoadingScreenState extends State<RandomLoadingScreen> {
                 .snapshots(),
                 builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot){
                   if(snapshot.hasData && snapshot.data.data!=null && snapshot.data.data[firestoreChatBeginField]){
-                    randomChatBloc.emitEvent(RandomChatEventUserEntered(receiver: snapshot.data.data[firestoreChatUsersField][1]));
-                    if(state.isMatched){
-                      WidgetsBinding.instance.addPostFrameCallback((_) async{
-                        Navigator.pushReplacement(context, MaterialPageRoute(
-                          builder: (context) => RandomChatScreen(
-                            chatRoomID: snapshot.data.documentID,
-                            receiver: state.receiver,
-                          )
-                        ));
-                      });
-                    }
+                    randomChatBloc.emitEvent(RandomChatEventUserEntered(
+                      receiver: snapshot.data.data[firestoreChatUsersField][1],
+                      chatRoomID: snapshot.data.documentID)
+                    );
                   }
                   return CustomProgressIndicator();
                 },
               );
             }
+
+            if(state.isMatched){
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                Navigator.pushReplacement(context, MaterialPageRoute(
+                  builder: (context) => RandomChatScreen(
+                    chatRoomID: state.chatRoomID,
+                    receiver: state.receiver,
+                  )
+                ));
+              });
+            }
+
             return CustomProgressIndicator();
           }
         )
