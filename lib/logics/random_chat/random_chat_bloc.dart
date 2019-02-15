@@ -13,10 +13,6 @@ class RandomChatBloc extends BlocEventStateBase<RandomChatEvent,RandomChatState>
 
   @override
   Stream<RandomChatState> eventHandler(RandomChatEvent event, RandomChatState currentState) async*{
-
-    if(event is RandomChatEventInitial){
-      yield RandomChatState.initial();
-    }
     
     if(event is RandomChatEventMessageSend){
       try {
@@ -34,8 +30,11 @@ class RandomChatBloc extends BlocEventStateBase<RandomChatEvent,RandomChatState>
           _chatRoomID = await _api.makeChatRoom();
           yield RandomChatState.madeChatRoom(_chatRoomID);
         } else {
-          await _api.enterChatRoom(_chatRoomID);
-          yield RandomChatState.matchSucceeded();
+          String receiver = await _api.enterChatRoom(_chatRoomID);
+          yield RandomChatState.matchSucceeded(
+            chatRoomID: _chatRoomID,
+            receiver: receiver
+          );
         }
       } catch(exception) {
         print(exception);
@@ -46,6 +45,7 @@ class RandomChatBloc extends BlocEventStateBase<RandomChatEvent,RandomChatState>
     if(event is RandomChatEventCancel){
       try {
         await _api.deleteChatRoom(_chatRoomID);
+        yield RandomChatState.initial();
       } catch(exception) {
         print(exception);
         yield RandomChatState.apiFailed();

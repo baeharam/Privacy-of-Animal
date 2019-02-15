@@ -56,7 +56,7 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
       ),
       body: WillPopScope(
         onWillPop: (){
-          randomChatBloc.emitEvent(RandomChatEventInitial());
+          randomChatBloc.emitEvent(RandomChatEventCancel());
           return Future.value(true);
         },
         child: Column(
