@@ -66,6 +66,20 @@ class RandomChatAPI {
     });
   }
 
+  // 첫번째로 채팅방을 나갈 경우, delete 플래그를 true로 바꿔야 함.
+  Future<void> getOutChatRoom(String chatRoomID) async {
+    DocumentReference doc = sl.get<FirebaseAPI>().getFirestore()
+      .collection(firestoreMessageCollection)
+      .document(chatRoomID);
+
+    DocumentSnapshot snapshot = await doc.get();
+    if(snapshot.data['delete']){
+      await deleteChatRoom(chatRoomID);
+    } else {
+      await doc.setData({'delete': true});
+    }
+  }
+
   // 메시지 보내기
   Future<void> sendMessage(String content,String receiver,String chatRoomID) async {
     DocumentReference doc = sl.get<FirebaseAPI>().getFirestore()
