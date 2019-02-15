@@ -77,7 +77,7 @@ class _RandomLoadingScreenState extends State<RandomLoadingScreen> {
                       ));
                     });
                   }
-                  return Container();
+                  return CustomProgressIndicator();
                 },
               );
             }
