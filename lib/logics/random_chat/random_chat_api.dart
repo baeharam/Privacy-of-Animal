@@ -74,7 +74,7 @@ class RandomChatAPI {
       .document(chatRoomID);
 
     DocumentSnapshot snapshot = await doc.get();
-    if(snapshot.data[firestoreChatDeleteField]!=null){
+    if(snapshot.data[firestoreChatDeleteField]==true){
       await deleteChatRoom(chatRoomID);
     } else {
       await doc.setData({firestoreChatDeleteField: true},merge: true);
