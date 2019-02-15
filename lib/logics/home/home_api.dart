@@ -71,7 +71,7 @@ class HomeAPI {
   Future<FETCH_RESULT> _checkDBAndCallFirestore() async {
     Database db = await sl.get<DatabaseHelper>().database;
     try {
-      await db.rawQuery('SELECT * FROM $tagTable WHERE $uidCol=${sl.get<CurrentUser>().uid}');
+      await db.rawQuery('SELECT * FROM $tagTable WHERE $uidCol="${sl.get<CurrentUser>().uid}"');
     } catch(exception){
       await _fetchTagsFromFirestore().catchError((e){
         print('FATAL ERROR: ${e.toString()}');
@@ -80,7 +80,7 @@ class HomeAPI {
     }
 
     try {
-      await db.rawQuery('SELECT * FROM $realProfileTable WHERE $uidCol=${sl.get<CurrentUser>().uid}');
+      await db.rawQuery('SELECT * FROM $realProfileTable WHERE $uidCol="${sl.get<CurrentUser>().uid}"');
     } catch(exception){
       await _fetchRealProfileFromFirestore().catchError((e){
         print('FATAL ERROR: ${e.toString()}');
@@ -89,7 +89,7 @@ class HomeAPI {
     }
 
     try {
-      await db.rawQuery('SELECT * FROM $fakeProfileTable WHERE $uidCol=${sl.get<CurrentUser>().uid}');
+      await db.rawQuery('SELECT * FROM $fakeProfileTable WHERE $uidCol="${sl.get<CurrentUser>().uid}"');
     } catch(exception){
       await _fetchFakeProfileFromFirestore().catchError((e){
         print('FATAL ERROR: ${e.toString()}');

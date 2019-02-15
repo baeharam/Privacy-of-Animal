@@ -2,7 +2,6 @@ import 'package:privacy_of_animal/bloc_helpers/bloc_event_state.dart';
 
 class RandomChatState extends BlocState {
   final bool isInitial;
-  final bool isLoading;
   final bool isMatched;
   final bool isCanceled;
   final bool isAPIFailed;
@@ -14,7 +13,6 @@ class RandomChatState extends BlocState {
 
   RandomChatState({
     this.isInitial:false,
-    this.isLoading: false,
     this.isChatRoomMade: false,
     this.isMatched: false,
     this.isAPIFailed: false,
@@ -27,12 +25,6 @@ class RandomChatState extends BlocState {
   factory RandomChatState.initial() {
     return RandomChatState(
       isInitial: true
-    );
-  }
-
-  factory RandomChatState.loading() {
-    return RandomChatState(
-      isLoading: true
     );
   }
 
@@ -51,10 +43,10 @@ class RandomChatState extends BlocState {
     );
   }
 
-  factory RandomChatState.apiFailed(String error) {
+  factory RandomChatState.apiFailed() {
     return RandomChatState(
       isAPIFailed: true,
-      errorMessage: error
+      errorMessage: '랜덤매칭에 실패했습니다.'
     );
   }
 

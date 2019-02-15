@@ -39,7 +39,7 @@ class RandomChatAPI {
   }
 
   // 대기중인 방이 있으면 그곳에 들어가서 flag 값을 true로 변경
-  Future<void> enterChatRoom(String chatRoomID) async {
+  Future<String> enterChatRoom(String chatRoomID) async {
     DocumentReference document = sl.get<FirebaseAPI>().getFirestore()
       .collection(firestoreMessageCollection)
       .document(chatRoomID);
@@ -50,17 +50,20 @@ class RandomChatAPI {
         firestoreChatUsersField: FieldValue.arrayUnion([sl.get<CurrentUser>().uid])
       });
     });
+
+    DocumentSnapshot doc = await document.get();
+    return doc.data[firestoreChatUsersField][0];
   }
 
   // 매칭을 하기 싫거나, 채팅 도중에 나갈 경우 채팅방이 삭제되어야 함.
   Future<void> deleteChatRoom(String chatRoomID) async {
-    // QuerySnapshot snapshot = await sl.get<FirebaseAPI>().getFirestore()
-    //   .collection(firestoreMessageCollection)
-    //   .where(firestoreChatUsersField, arrayContains: sl.get<CurrentUser>().uid).getDocuments();
+    QuerySnapshot snapshot = await sl.get<FirebaseAPI>().getFirestore()
+      .collection(firestoreMessageCollection)
+      .where(firestoreChatUsersField, arrayContains: sl.get<CurrentUser>().uid).getDocuments();
 
-    // await sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async{
-    //   await snapshot.documents[0].reference.delete();
-    // });
+    await sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async{
+      await snapshot.documents[0].reference.delete();
+    });
   }
 
   // 메시지 보내기
