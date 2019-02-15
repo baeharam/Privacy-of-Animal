@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state.dart';
 import 'package:privacy_of_animal/logics/random_chat/random_chat.dart';
 
@@ -34,7 +35,7 @@ class RandomChatBloc extends BlocEventStateBase<RandomChatEvent,RandomChatState>
           _chatRoomID = await _api.makeChatRoom();
           yield RandomChatState.madeChatRoom(_chatRoomID);
         } else {
-          String receiver = await _api.enterChatRoom(_chatRoomID);
+          DocumentSnapshot receiver = await _api.enterChatRoom(_chatRoomID);
           yield RandomChatState.matchSucceeded(
             chatRoomID: _chatRoomID,
             receiver: receiver

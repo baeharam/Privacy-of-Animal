@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state.dart';
 
 class RandomChatState extends BlocState {
@@ -10,7 +11,7 @@ class RandomChatState extends BlocState {
 
   final String errorMessage;
   final String chatRoomID;
-  final String receiver;
+  final DocumentSnapshot receiver;
 
   RandomChatState({
     this.isInitial:false,
@@ -21,7 +22,7 @@ class RandomChatState extends BlocState {
     this.isChatFinished: false,
     this.chatRoomID: '',
     this.errorMessage: '',
-    this.receiver: ''
+    this.receiver
   });
 
   factory RandomChatState.initial() {
@@ -37,7 +38,7 @@ class RandomChatState extends BlocState {
     );
   }
 
-  factory RandomChatState.matchSucceeded({String chatRoomID, String receiver}) {
+  factory RandomChatState.matchSucceeded({String chatRoomID, DocumentSnapshot receiver}) {
     return RandomChatState(
       isMatched: true,
       chatRoomID: chatRoomID,

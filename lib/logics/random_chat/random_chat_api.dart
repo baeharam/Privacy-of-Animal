@@ -40,7 +40,7 @@ class RandomChatAPI {
   }
 
   // 대기중인 방이 있으면 그곳에 들어가서 flag 값을 true로 변경
-  Future<String> enterChatRoom(String chatRoomID) async {
+  Future<DocumentSnapshot> enterChatRoom(String chatRoomID) async {
     DocumentReference document = sl.get<FirebaseAPI>().getFirestore()
       .collection(firestoreMessageCollection)
       .document(chatRoomID);
@@ -53,7 +53,14 @@ class RandomChatAPI {
     });
 
     DocumentSnapshot doc = await document.get();
-    return doc.data[firestoreChatUsersField][0];
+    String receiver = doc.data[firestoreChatUsersField][0];
+
+    DocumentReference users = sl.get<FirebaseAPI>().getFirestore()
+      .collection(firestoreUsersCollection)
+      .document(receiver);
+    DocumentSnapshot userDoc = await users.get();
+
+    return userDoc;
   }
 
   // 매칭을 하기 싫거나, 채팅 도중에 나갈 경우 채팅방이 삭제되어야 함.
