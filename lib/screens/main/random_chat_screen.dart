@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:privacy_of_animal/bloc_helpers/bloc_event_state_builder.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/logics/random_chat/random_chat.dart';
@@ -56,7 +57,7 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
       ),
       body: WillPopScope(
         onWillPop: (){
-          randomChatBloc.emitEvent(RandomChatEventCancel());
+          randomChatBloc.emitEvent(RandomChatEventOut(chatRoomID: widget.chatRoomID));
           return Future.value(true);
         },
         child: Column(
@@ -85,6 +86,17 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
                   }
                 }
               ),
+            ),
+            StreamBuilder(
+              stream: sl.get<FirebaseAPI>().getFirestore()
+                  .collection('messages')
+                  .document(widget.chatRoomID)
+                  .snapshots(),
+              builder: (context, snapshot){
+                if(!snapshot.hasData || snapshot.data.data==null || !snapshot.data.data['delete'])
+                  return Container();
+                return Text('상대방이 나갔습니다.');
+              },
             ),
             Row(
               children: <Widget>[
