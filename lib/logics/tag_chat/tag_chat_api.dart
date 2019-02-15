@@ -26,7 +26,7 @@ class TagChatAPI {
   // Cloud Firestore에 태그 상세 저장
   Future<void> _storeTagDetailIntoFirestore() async {
     _tagDetails = sl.get<CurrentUser>().tagListModel.tagDetailList;
-    await sl.get<FirebaseAPI>().firestore.collection(firestoreUsersCollection).document(sl.get<CurrentUser>().uid)
+    await sl.get<FirebaseAPI>().getFirestore().collection(firestoreUsersCollection).document(sl.get<CurrentUser>().uid)
     .setData(
       {
         firestoreIsTagChattedField: true,

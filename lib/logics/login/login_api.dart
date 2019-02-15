@@ -16,7 +16,7 @@ class LoginAPI {
   // 로그인
   Future<LOGIN_RESULT> login(String email, String password) async {
     try {
-      await sl.get<FirebaseAPI>().auth.signInWithEmailAndPassword(
+      await sl.get<FirebaseAPI>().getAuth().signInWithEmailAndPassword(
         email: email,
         password: password
       );
@@ -30,7 +30,7 @@ class LoginAPI {
   // 비밀번호 찾기
   Future<LOGIN_RESULT> findPassword(String email) async {
     try {
-      await sl.get<FirebaseAPI>().auth.sendPasswordResetEmail(email: email);
+      await sl.get<FirebaseAPI>().getAuth().sendPasswordResetEmail(email: email);
     } catch(exception){
       return LOGIN_RESULT.FAILURE;
     }
@@ -60,7 +60,7 @@ class LoginAPI {
     bool tagChatFlag = prefs.getBool(uid+isTagChatted);
     bool faceAnalyzeFlag = prefs.getBool(uid+isFaceAnalyzed);
     if(tagSelectFlag==null || tagChatFlag==null || faceAnalyzeFlag==null){
-      DocumentSnapshot document = await sl.get<FirebaseAPI>().firestore.collection(firestoreUsersCollection).document(uid).get();
+      DocumentSnapshot document = await sl.get<FirebaseAPI>().getFirestore().collection(firestoreUsersCollection).document(uid).get();
       prefs.setBool(uid+isTagSelected, document[firestoreIsTagSelectedField]);
       prefs.setBool(uid+firestoreIsTagChattedField, document[firestoreIsTagChattedField]);
       prefs.setBool(uid+firestoreIsFaceAnalyzedField, document[firestoreIsFaceAnalyzedField]);

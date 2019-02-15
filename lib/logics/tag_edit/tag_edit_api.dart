@@ -32,7 +32,7 @@ class TagEditAPI {
   // Cloud Firestore 값 수정
   Future<void> editTagOfFirestore(String tagTitle, String tagDetail, int index) async{
     DocumentReference doc = 
-      sl.get<FirebaseAPI>().firestore.collection(firestoreUsersCollection).document(sl.get<CurrentUser>().uid);
+      sl.get<FirebaseAPI>().getFirestore().collection(firestoreUsersCollection).document(sl.get<CurrentUser>().uid);
     await doc.setData({
       firestoreTagField: {
         firestoreTagTitleList[index]: tagTitle,

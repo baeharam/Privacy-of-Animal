@@ -25,14 +25,22 @@ class PhotoAPI {
 
   Future<String> getImageFromCamera() async {
     final File image = await ImagePicker.pickImage(source: ImageSource.camera);
-    final File compressedImage = await FlutterNativeImage.compressImage(image.path, quality: 80, percentage: 100);
-    return compressedImage.path;
+    File compressedImage;
+    if(image!=null){
+      compressedImage = await FlutterNativeImage.compressImage(image.path, quality: 80, percentage: 100);
+      return compressedImage.path;
+    }
+    return '';
   }
 
   Future<String> getImageFromGallery() async {
     final File image = await ImagePicker.pickImage(source: ImageSource.gallery);
-    final File compressedImage = await FlutterNativeImage.compressImage(image.path, quality: 80, percentage: 100);
-    return compressedImage.path;
+    File compressedImage;
+    if(image!=null){
+      compressedImage = await FlutterNativeImage.compressImage(image.path, quality: 80, percentage: 100);
+      return compressedImage.path;
+    }
+    return '';
   }
 
   Future<void> setFlags() async {
@@ -45,7 +53,7 @@ class PhotoAPI {
     int now = DateTime.now().millisecondsSinceEpoch;
 
     // Cloud Firestore 업데이트
-    CollectionReference collectionReference = sl.get<FirebaseAPI>().firestore.collection(firestoreUsersCollection);
+    CollectionReference collectionReference = sl.get<FirebaseAPI>().getFirestore().collection(firestoreUsersCollection);
     DocumentReference reference = collectionReference.document(sl.get<CurrentUser>().uid);
     await reference.setData({
       firestoreIsFaceAnalyzedField: true,
@@ -80,8 +88,8 @@ class PhotoAPI {
   }
 
   Future<void> _storeProfileIntoFirestore() async {
-    await sl.get<FirebaseAPI>().firestore.runTransaction((transaction) async{
-      CollectionReference collectionReference = sl.get<FirebaseAPI>().firestore.collection(firestoreUsersCollection);
+    await sl.get<FirebaseAPI>().getFirestore().runTransaction((transaction) async{
+      CollectionReference collectionReference = sl.get<FirebaseAPI>().getFirestore().collection(firestoreUsersCollection);
       DocumentReference reference = collectionReference.document(sl.get<CurrentUser>().uid);
       FakeProfileModel fakeProfileModel = sl.get<CurrentUser>().fakeProfileModel;
       await reference.setData({
@@ -104,7 +112,7 @@ class PhotoAPI {
 
   Future<void> _storeProfileIntoLocalDB() async {
     DocumentSnapshot doc = 
-    await sl.get<FirebaseAPI>().firestore.collection(firestoreUsersCollection).document(sl.get<CurrentUser>().uid).get();
+    await sl.get<FirebaseAPI>().getFirestore().collection(firestoreUsersCollection).document(sl.get<CurrentUser>().uid).get();
     String nickName = doc[firestoreFakeProfileField][firestoreNickNameField];
     Database db = await sl.get<DatabaseHelper>().database;
     FakeProfileModel fakeProfileModel = sl.get<CurrentUser>().fakeProfileModel;

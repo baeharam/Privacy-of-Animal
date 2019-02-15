@@ -6,7 +6,7 @@ import 'package:privacy_of_animal/utils/service_locator.dart';
 class FindPasswordAPI {
   Future<FIND_PASSWORD_RESULT> findPassword(String email) async {
     try {
-      await sl.get<FirebaseAPI>().auth.sendPasswordResetEmail(email: email);
+      await sl.get<FirebaseAPI>().getAuth().sendPasswordResetEmail(email: email);
     } catch(exception){
       return FIND_PASSWORD_RESULT.FAILURE;
     }

@@ -1,6 +1,8 @@
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/database_helper.dart';
+import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:sqflite/sqflite.dart';
@@ -8,7 +10,13 @@ import 'package:sqflite/sqflite.dart';
 class HomeAPI {
   // 바로 홈 화면으로 갈 경우 그에 해당하는 데이터를 가져옴
   Future<FETCH_RESULT> fetchUserData() async {
+
+    FETCH_RESULT result = await _checkDBAndCallFirestore();
+    if(result==FETCH_RESULT.FAILURE){
+      return result;
+    }
     try {
+
       String uid = sl.get<CurrentUser>().uid;
       Database db = await sl.get<DatabaseHelper>().database;
 
@@ -53,11 +61,89 @@ class HomeAPI {
       sl.get<CurrentUser>().fakeProfileModel.analyzedTime = fakeProfile[0][analyzedTimeCol];
 
       sl.get<CurrentUser>().isDataFetched = true;
-    
-    } catch(exception){
+    } catch(exception) {
       return FETCH_RESULT.FAILURE;
     }
     return FETCH_RESULT.SUCCESS;
+  }
+
+  // 로컬 DB체크한 후에 없으면 서버에서 가져옴
+  Future<FETCH_RESULT> _checkDBAndCallFirestore() async {
+    Database db = await sl.get<DatabaseHelper>().database;
+    try {
+      await db.rawQuery('SELECT * FROM $tagTable WHERE $uidCol=${sl.get<CurrentUser>().uid}');
+    } catch(exception){
+      await _fetchTagsFromFirestore().catchError((e){
+        print('FATAL ERROR: ${e.toString()}');
+        return FETCH_RESULT.FAILURE;
+      });
+    }
+
+    try {
+      await db.rawQuery('SELECT * FROM $realProfileTable WHERE $uidCol=${sl.get<CurrentUser>().uid}');
+    } catch(exception){
+      await _fetchRealProfileFromFirestore().catchError((e){
+        print('FATAL ERROR: ${e.toString()}');
+        return FETCH_RESULT.FAILURE;
+      });
+    }
+
+    try {
+      await db.rawQuery('SELECT * FROM $fakeProfileTable WHERE $uidCol=${sl.get<CurrentUser>().uid}');
+    } catch(exception){
+      await _fetchFakeProfileFromFirestore().catchError((e){
+        print('FATAL ERROR: ${e.toString()}');
+        return FETCH_RESULT.FAILURE;
+      });
+    }
+    return FETCH_RESULT.SUCCESS;
+  }
+
+  Future<void> _fetchFakeProfileFromFirestore() async {
+    CollectionReference col = sl.get<FirebaseAPI>().getFirestore().collection(firestoreUsersCollection);
+    DocumentSnapshot doc = await col.document(sl.get<CurrentUser>().uid).get();
+    Database db = await sl.get<DatabaseHelper>().database;
+    await db.rawInsert(
+      'INSERT INTO $fakeProfileTable ($uidCol,$nickNameCol,$fakeAgeCol,$fakeGenderCol,$fakeEmotionCol,'
+      '$fakeAgeConfidenceCol,$fakeGenderConfidenceCol,$fakeEmotionConfidenceCol,'
+      '$animalNameCol,$animalImageCol,$animalConfidenceCol,$celebrityCol,$celebrityConfidenceCol,$analyzedTimeCol) VALUES('
+      '"${sl.get<CurrentUser>().uid}",'
+      '"${doc.data[firestoreFakeProfileField][firestoreNickNameField]}","${doc.data[firestoreFakeProfileField][firestoreFakeAgeField]}",'
+      '"${doc.data[firestoreFakeProfileField][firestoreFakeGenderField]}","${doc.data[firestoreFakeProfileField][firestoreFakeEmotionField]}",'
+      '"${doc.data[firestoreFakeProfileField][firestoreFakeAgeConfidenceField]}","${doc.data[firestoreFakeProfileField][firestoreFakeGenderConfidenceField]}",'
+      '"${doc.data[firestoreFakeProfileField][firestoreFakeEmotionConfidenceField]}","${doc.data[firestoreFakeProfileField][firestoreAnimalNameField]}",'
+      '"${doc.data[firestoreFakeProfileField][firestoreAnimalImageField]}","${doc.data[firestoreFakeProfileField][firestoreAnimalConfidenceField]}",'
+      '"${doc.data[firestoreFakeProfileField][firestoreCelebrityField]}","${doc.data[firestoreFakeProfileField][firestoreCelebrityConfidenceField]}",'
+      '"${doc.data[firestoreFakeProfileField][firestoreAnalyzedTimeField]}")'
+    );
+  }
+
+  Future<void> _fetchRealProfileFromFirestore() async {
+    CollectionReference col = sl.get<FirebaseAPI>().getFirestore().collection(firestoreUsersCollection);
+    DocumentSnapshot doc = await col.document(sl.get<CurrentUser>().uid).get();
+    Database db = await sl.get<DatabaseHelper>().database;
+    await db.rawInsert(
+      'INSERT INTO $realProfileTable ($uidCol,$nameCol,$ageCol,$genderCol,$jobCol) VALUES('
+      '"${sl.get<CurrentUser>().uid}",'
+      '"${doc.data[firestoreRealProfileField][firestoreNameField]}","${doc.data[firestoreRealProfileField][firestoreAgeField]}",'
+      '"${doc.data[firestoreRealProfileField][firestoreGenderField]}","${doc.data[firestoreRealProfileField][firestoreJobField]}")'
+    );
+  }
+
+  Future<void> _fetchTagsFromFirestore() async {
+    CollectionReference col = sl.get<FirebaseAPI>().getFirestore().collection(firestoreUsersCollection);
+    DocumentSnapshot doc = await col.document(sl.get<CurrentUser>().uid).get();
+    Database db = await sl.get<DatabaseHelper>().database;
+    await db.rawInsert(
+      'INSERT INTO $tagTable ($uidCol,$tagName1Col,$tagName2Col,$tagName3Col,$tagName4Col,$tagName5Col,'
+      '$tagDetail1Col,$tagDetail2Col,$tagDetail3Col,$tagDetail4Col,$tagDetail5Col) VALUES('
+      '"${sl.get<CurrentUser>().uid}",'
+      '"${doc.data[firestoreTagField][firestoreTagTitle1Field]}","${doc.data[firestoreTagField][firestoreTagTitle2Field]}",'
+      '"${doc.data[firestoreTagField][firestoreTagTitle3Field]}","${doc.data[firestoreTagField][firestoreTagTitle4Field]}",'
+      '"${doc.data[firestoreTagField][firestoreTagTitle5Field]}","${doc.data[firestoreTagField][firestoreTagDetail1Field]}",'
+      '"${doc.data[firestoreTagField][firestoreTagDetail2Field]}","${doc.data[firestoreTagField][firestoreTagDetail3Field]}",'
+      '"${doc.data[firestoreTagField][firestoreTagDetail4Field]}","${doc.data[firestoreTagField][firestoreTagDetail5Field]}")'
+    );
   }
 }
 

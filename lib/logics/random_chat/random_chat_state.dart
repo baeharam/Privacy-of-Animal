@@ -3,16 +3,25 @@ import 'package:privacy_of_animal/bloc_helpers/bloc_event_state.dart';
 class RandomChatState extends BlocState {
   final bool isInitial;
   final bool isLoading;
-  final bool matchCompleted;
-  final bool matchFailed;
+  final bool isMatched;
   final bool isCanceled;
+  final bool isAPIFailed;
+  final bool isChatRoomMade;
+
+  final String errorMessage;
+  final String chatRoomID;
+  final String receiver;
 
   RandomChatState({
     this.isInitial:false,
     this.isLoading: false,
-    this.matchCompleted: false,
-    this.matchFailed: false,
+    this.isChatRoomMade: false,
+    this.isMatched: false,
+    this.isAPIFailed: false,
     this.isCanceled: false,
+    this.chatRoomID: '',
+    this.errorMessage: '',
+    this.receiver: ''
   });
 
   factory RandomChatState.initial() {
@@ -27,9 +36,25 @@ class RandomChatState extends BlocState {
     );
   }
 
+  factory RandomChatState.madeChatRoom(String chatRoomID) {
+    return RandomChatState(
+      isChatRoomMade: true,
+      chatRoomID: chatRoomID
+    );
+  }
+
   factory RandomChatState.matchSucceeded({String chatRoomID, String receiver}) {
     return RandomChatState(
-      matchCompleted: true,
+      isMatched: true,
+      chatRoomID: chatRoomID,
+      receiver: receiver
+    );
+  }
+
+  factory RandomChatState.apiFailed(String error) {
+    return RandomChatState(
+      isAPIFailed: true,
+      errorMessage: error
     );
   }
 

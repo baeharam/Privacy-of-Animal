@@ -1,18 +1,25 @@
+import 'dart:async';
+
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state.dart';
 import 'package:privacy_of_animal/logics/random_chat/random_chat.dart';
 
 class RandomChatBloc extends BlocEventStateBase<RandomChatEvent,RandomChatState>
 {
   static final RandomChatAPI _api = RandomChatAPI();
+  String chatRoomID = '';
 
   @override
-  RandomChatState get initialState => RandomChatState.loading();
+  RandomChatState get initialState => RandomChatState.initial();
 
   @override
   Stream<RandomChatState> eventHandler(RandomChatEvent event, RandomChatState currentState) async*{
 
     if(event is RandomChatEventMessageSend){
-      await _api.sendMessage(event.content, event.receiver, event.chatRoomID);
+      try {
+        await _api.sendMessage(event.content, event.receiver, event.chatRoomID);
+      } catch(exception) {
+        yield RandomChatState.apiFailed(exception.toString());
+      }
     }
 
     if(event is RandomChatEventInitial){
@@ -20,21 +27,27 @@ class RandomChatBloc extends BlocEventStateBase<RandomChatEvent,RandomChatState>
     }
 
     if(event is RandomChatEventMatchStart){
-      _api.isContinue = true;
-      await _api.setRandomUser();
       yield RandomChatState.loading();
-      String receiver = await _api.findUser();
-      if(receiver.isNotEmpty){
-        await _api.makeChatRoom(_api.getChatRoomID(receiver), receiver);
-        yield RandomChatState.matchSucceeded();
-        await _api.updateUsers(receiver);
+      try {
+        chatRoomID = await _api.getRoomID();
+        if(chatRoomID.isEmpty){
+          chatRoomID = await _api.makeChatRoom();
+          yield RandomChatState.madeChatRoom(chatRoomID);
+        } else {
+          await _api.enterChatRoom(chatRoomID);
+          yield RandomChatState.matchSucceeded();
+        }
+      } catch(exception) {
+        yield RandomChatState.apiFailed(exception.toString());
       }
     }
 
     if(event is RandomChatEventCancel){
-      _api.isContinue = false;
-      yield RandomChatState.cancel();
-      await _api.deleteUser();
+      try {
+        await _api.deleteChatRoom(chatRoomID);
+      } catch(exception) {
+        yield RandomChatState.apiFailed(exception.toString());
+      }
     }
   }
 }
