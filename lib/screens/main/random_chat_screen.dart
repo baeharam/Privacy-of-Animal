@@ -163,7 +163,8 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
             margin: EdgeInsets.only(right: 10.0),
             child: Text(
               DateFormat('kk:mm','ko')
-                .format(DateTime.fromMillisecondsSinceEpoch(int.parse(document[firestoreChatTimestampField]))),
+                .format(DateTime.fromMillisecondsSinceEpoch(
+                  (document[firestoreChatTimestampField] as Timestamp).millisecondsSinceEpoch)),
                 style: TextStyle(color: Colors.grey,fontSize: 12.0),
             ),
           ) : Container(),
@@ -220,7 +221,8 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
             margin: EdgeInsets.only(left: 10.0,top: 15.0),
             child: Text(
               DateFormat('kk:mm','ko')
-                .format(DateTime.fromMillisecondsSinceEpoch(int.parse(document[firestoreChatTimestampField]))),
+                .format(DateTime.fromMillisecondsSinceEpoch(
+                  (document[firestoreChatTimestampField] as Timestamp).millisecondsSinceEpoch)),
                 style: TextStyle(color: Colors.grey,fontSize: 12.0),
             ),
           ) : Container()

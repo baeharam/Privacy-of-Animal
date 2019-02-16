@@ -13,9 +13,9 @@ class TagEditAPI {
   Future<TAG_EDIT_RESULT> editTag(String tagTitle, String tagDetail, int index) async
   {
     try{
-      editTagOfCurrentUser(tagTitle, tagDetail, index);
       await editTagOfFirestore(tagTitle, tagDetail, index);
       await editTagOfLocalDB(tagTitle, tagDetail, index);
+      editTagOfCurrentUser(tagTitle, tagDetail, index);
     }catch(exception){
       print(exception);
       return TAG_EDIT_RESULT.FAILURE;
