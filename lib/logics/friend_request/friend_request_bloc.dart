@@ -10,12 +10,17 @@ class FriendRequestBloc extends BlocEventStateBase<FriendRequestEvent,FriendRequ
 
   @override
   Stream<FriendRequestState> eventHandler(FriendRequestEvent event, FriendRequestState currentState) async*{
-    try {
-      await _api.requestFriend(event.uid);
-      yield FriendRequestState.requestSucceeded();
-    } catch(exception) {
-      print(exception);
-      yield FriendRequestState.requestFailed();
+    if(event is FriendRequestEventSendRequest) {
+      try {
+        await _api.requestFriend(event.uid);
+        yield FriendRequestState.requestSucceeded();
+      } catch(exception) {
+        print(exception);
+        yield FriendRequestState.requestFailed();
+      }
+    }
+    if(event is FriendRequestEventStateClear) {
+      yield FriendRequestState.initial();
     }
   }
 }

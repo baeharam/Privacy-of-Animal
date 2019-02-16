@@ -1,12 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:privacy_of_animal/bloc_helpers/bloc_event_state_builder.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/friend_request/friend_request.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/resources/constants.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
+import 'package:privacy_of_animal/utils/stream_snackbar.dart';
 
 class OtherProfileScreen extends StatefulWidget {
 
@@ -206,7 +208,7 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
                       ),
                     ),
                     onTap: () => sl.get<FriendRequestBloc>()
-                      .emitEvent(FriendRequestEvent(uid: widget.user.documentID)),
+                      .emitEvent(FriendRequestEventSendRequest(uid: widget.user.documentID)),
                   )
                 ]
               )
@@ -233,6 +235,19 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
                   OtherTagPart(user: widget.user)
                 ],
               )
+            ),
+            BlocBuilder(
+              bloc: sl.get<FriendRequestBloc>(),
+              builder: (context, FriendRequestState state){
+                if(state.isSucceeded){
+                  streamSnackbar(context, '친구신청에 성공하였습니다.');
+                  sl.get<FriendRequestBloc>().emitEvent(FriendRequestEventStateClear());
+                } else if(state.isFailed){
+                  streamSnackbar(context, '친구신청에 실패하였습니다.');
+                  sl.get<FriendRequestBloc>().emitEvent(FriendRequestEventStateClear());
+                }
+                return Container();
+              },
             )
           ],
         )
