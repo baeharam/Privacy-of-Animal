@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/resources/constants.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
+import 'package:privacy_of_animal/utils/service_locator.dart';
 
 class OtherProfileScreen extends StatefulWidget {
 
@@ -17,6 +19,14 @@ class OtherProfileScreen extends StatefulWidget {
 
 class _OtherProfileScreenState extends State<OtherProfileScreen> {
 
+  bool isFriend;
+
+  @override
+  void initState() {
+    super.initState();
+    isFriend = (widget.user.data[firestoreFriendsField] as List<String>)
+    .contains(sl.get<CurrentUser>().uid);
+  }
 
   @override
   Widget build(BuildContext context) {
