@@ -8,16 +8,15 @@ class InitializeAPI {
 
   // 앱 시작 초기화
   Future<void> appInitialize() async {
-    final FirebaseApp app = await FirebaseApp.configure(
+    await FirebaseApp.configure(
       name: 'Privacy of Animal',
       options: const FirebaseOptions(
-        googleAppID: iosAppID,
+        googleAppID: androidAppID,
         apiKey: appAPIKey,
         projectID: projectID
       )
     );
-    final Firestore firestore = Firestore(app: app);
-    await firestore.settings(timestampsInSnapshotsEnabled: true);
+    await Firestore.instance.settings(timestampsInSnapshotsEnabled: true);
   }
 
   // 상수값 초기화

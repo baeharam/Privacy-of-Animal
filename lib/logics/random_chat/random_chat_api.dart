@@ -46,7 +46,7 @@ class RandomChatAPI {
       .document(chatRoomID);
     
     await sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async{
-      await document.updateData({
+      await tx.update(document, {
         firestoreChatBeginField: true,
         firestoreChatUsersField: FieldValue.arrayUnion([sl.get<CurrentUser>().uid])
       });
@@ -74,9 +74,9 @@ class RandomChatAPI {
         await snapshot.documents[0].reference.collection(snapshot.documents[0].documentID)
         .getDocuments();
       for(DocumentSnapshot document in forDelete.documents) {
-        await document.reference.delete();
+        await tx.delete(document.reference);
       }
-      await snapshot.documents[0].reference.delete();
+      await tx.delete(snapshot.documents[0].reference);
     });
   }
 
@@ -90,7 +90,9 @@ class RandomChatAPI {
     if(snapshot.data[firestoreChatDeleteField]==true){
       await deleteChatRoom(chatRoomID);
     } else {
-      await doc.setData({firestoreChatDeleteField: true},merge: true);
+      sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async{
+        await tx.update(doc, {firestoreChatDeleteField: true});
+      });
     }
   }
 
@@ -101,15 +103,17 @@ class RandomChatAPI {
   }
 
   // 메시지 보내기
-  Future<void> sendMessage(String content,String receiver,String chatRoomID) async {
+  void sendMessage(String content,String receiver,String chatRoomID) {
+    String a = DateTime.now().millisecondsSinceEpoch.toString();
     DocumentReference doc = sl.get<FirebaseAPI>().getFirestore()
       .collection(firestoreMessageCollection)
       .document(chatRoomID)
       .collection(chatRoomID)
       .document(DateTime.now().millisecondsSinceEpoch.toString());
+    print(a);
 
-    await sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async{
-      await doc.setData({
+    sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async{
+      await tx.set(doc,{
         firestoreChatFromField: sl.get<CurrentUser>().uid,
         firestoreChatToField: receiver,
         firestoreChatTimestampField: DateTime.now().millisecondsSinceEpoch.toString(),

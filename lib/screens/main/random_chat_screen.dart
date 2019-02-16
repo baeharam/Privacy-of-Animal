@@ -78,7 +78,6 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
                   .document(widget.chatRoomID)
                   .collection(widget.chatRoomID)
                   .orderBy(firestoreChatTimestampField,descending: true)
-                  .limit(20)
                   .snapshots(),
                 builder: (context, snapshot){
                   if(!snapshot.hasData){
@@ -216,7 +215,7 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
           Container(
             margin: EdgeInsets.only(left: 10.0,top: 15.0),
             child: Text(
-              DateFormat('MM월 dd일 kk:mm','ko')
+              DateFormat('kk:mm','ko')
                 .format(DateTime.fromMillisecondsSinceEpoch(int.parse(document[firestoreChatTimestampField]))),
                 style: TextStyle(color: Colors.grey,fontSize: 12.0),
             ),
@@ -227,7 +226,8 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
   }
 
   bool _isFirstLeft(int index) {
-    if((index>0 && messages!=null && messages[index-1][firestoreChatFromField] != messages[index][firestoreChatFromField])
+    if((index<messages.length-1 && messages!=null && messages[index+1][firestoreChatFromField] 
+      != messages[index][firestoreChatFromField])
      || index == messages.length-1) {
        return true;
      } else {

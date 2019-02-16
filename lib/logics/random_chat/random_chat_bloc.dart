@@ -21,7 +21,7 @@ class RandomChatBloc extends BlocEventStateBase<RandomChatEvent,RandomChatState>
 
     if(event is RandomChatEventMessageSend){
       try {
-        await _api.sendMessage(event.content, event.receiver, event.chatRoomID);
+        _api.sendMessage(event.content, event.receiver, event.chatRoomID);
       } catch(exception) {
         print(exception);
         yield RandomChatState.apiFailed();
