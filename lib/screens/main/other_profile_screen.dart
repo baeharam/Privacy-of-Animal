@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state_builder.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
+import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/logics/friend_request/friend_request.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/resources/constants.dart';
@@ -22,6 +23,7 @@ class OtherProfileScreen extends StatefulWidget {
 
 class _OtherProfileScreenState extends State<OtherProfileScreen> {
 
+  final FriendRequestBloc friendRequestBloc = sl.get<FriendRequestBloc>();
   bool isFriend;
 
   @override
@@ -191,24 +193,35 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
                     ]
                   ),
                   SizedBox(height: 10.0),
-                  GestureDetector(
-                    child: Container(
-                      padding: EdgeInsets.all(10.0),
-                      decoration: BoxDecoration(
-                        color: primaryBlue,
-                        border: Border.all(color: primaryBlue),
-                        borderRadius: BorderRadius.circular(3.0)
-                      ),
-                      child: Text(
-                        '친구신청 하기',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold
+                  StreamBuilder<QuerySnapshot>(
+                    stream: sl.get<FirebaseAPI>().getFirestore().collection(firestoreUsersCollection)
+                      .where(firestoreFriendsRequestField,arrayContains: sl.get<CurrentUser>().uid)
+                      .snapshots(),
+                    builder: (context, snapshot){
+                      if(snapshot.hasData && snapshot.data.documents.length!=0 &&
+                        snapshot.data.documents.contains(widget.user.documentID)){
+                        return Text('이미 친구신청 한 상태입니다.');
+                      }
+                      return GestureDetector(
+                        child: Container(
+                          padding: EdgeInsets.all(10.0),
+                          decoration: BoxDecoration(
+                            color: primaryBlue,
+                            border: Border.all(color: primaryBlue),
+                            borderRadius: BorderRadius.circular(3.0)
+                          ),
+                          child: Text(
+                            '친구신청 하기',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                    onTap: () => sl.get<FriendRequestBloc>()
-                      .emitEvent(FriendRequestEventSendRequest(uid: widget.user.documentID)),
+                        onTap: () => friendRequestBloc
+                          .emitEvent(FriendRequestEventSendRequest(uid: widget.user.documentID)),
+                      );
+                    }
                   )
                 ]
               )
@@ -237,14 +250,14 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
               )
             ),
             BlocBuilder(
-              bloc: sl.get<FriendRequestBloc>(),
+              bloc: friendRequestBloc,
               builder: (context, FriendRequestState state){
                 if(state.isSucceeded){
                   streamSnackbar(context, '친구신청에 성공하였습니다.');
-                  sl.get<FriendRequestBloc>().emitEvent(FriendRequestEventStateClear());
+                  friendRequestBloc.emitEvent(FriendRequestEventStateClear());
                 } else if(state.isFailed){
                   streamSnackbar(context, '친구신청에 실패하였습니다.');
-                  sl.get<FriendRequestBloc>().emitEvent(FriendRequestEventStateClear());
+                  friendRequestBloc.emitEvent(FriendRequestEventStateClear());
                 }
                 return Container();
               },
