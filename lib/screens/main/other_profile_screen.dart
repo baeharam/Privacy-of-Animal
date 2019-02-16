@@ -47,13 +47,7 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
         ),
         centerTitle: true,
         elevation: 0.0,
-        backgroundColor: primaryBlue,
-        actions: [
-          IconButton(
-            icon: Icon(Icons.settings),
-            onPressed: (){},
-          )
-        ],
+        backgroundColor: primaryBlue
       ),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
@@ -199,8 +193,15 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
                       .snapshots(),
                     builder: (context, snapshot){
                       if(snapshot.hasData && snapshot.data.documents.length!=0 &&
-                        snapshot.data.documents.contains(widget.user.documentID)){
-                        return Text('이미 친구신청 한 상태입니다.');
+                        snapshot.data.documents
+                        .where((doc) => doc.documentID==widget.user.documentID).length!=0){
+                        return Text(
+                          '친구신청 승인 대기중입니다.',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold
+                          ),
+                        );
                       }
                       return GestureDetector(
                         child: Container(
