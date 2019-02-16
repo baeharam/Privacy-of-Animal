@@ -11,7 +11,7 @@ class RandomChatEventUserEntered extends RandomChatEvent {
   final String receiver;
   final String chatRoomID;
 
-  RandomChatEventUserEntered({@required this.receiver,@required this.chatRoomID);
+  RandomChatEventUserEntered({@required this.receiver,@required this.chatRoomID});
 }
 
 class RandomChatEventCancel extends RandomChatEvent {}
