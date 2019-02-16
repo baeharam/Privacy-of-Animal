@@ -70,6 +70,12 @@ class RandomChatAPI {
       .where(firestoreChatUsersField, arrayContains: sl.get<CurrentUser>().uid).getDocuments();
 
     await sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async{
+      QuerySnapshot forDelete = 
+        await snapshot.documents[0].reference.collection(snapshot.documents[0].documentID)
+        .getDocuments();
+      for(DocumentSnapshot document in forDelete.documents) {
+        await document.reference.delete();
+      }
       await snapshot.documents[0].reference.delete();
     });
   }
