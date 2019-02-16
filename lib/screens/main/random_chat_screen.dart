@@ -33,6 +33,7 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
 
   // Cloud Firestore에서 불러와서 저장.
   List<DocumentSnapshot> messages = List<DocumentSnapshot>();
+  bool isReceiverOut = false;
 
   @override
   void initState() {
@@ -64,7 +65,9 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
         backgroundColor: primaryBlue
       ),
       body: WillPopScope(
-        onWillPop: () => BackButtonAction.dialogChatExit(context, widget.chatRoomID),
+        onWillPop: () => !isReceiverOut 
+        ? BackButtonAction.dialogChatExit(context, widget.chatRoomID)
+        : Future.value(true),
         child: Column(
           children: <Widget>[
             Flexible(
@@ -99,6 +102,7 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
               builder: (context, snapshot){
                 if(snapshot.hasData && snapshot.data.data!=null && snapshot.data.data[firestoreChatDeleteField]){
                   randomChatBloc.emitEvent(RandomChatEventFinished());
+                  isReceiverOut = true;
                   return Text('상대방이 나갔습니다.');
                 }
                 return Container();
