@@ -1,25 +1,22 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
-import 'package:privacy_of_animal/bloc_helpers/bloc_event_state_builder.dart';
-import 'package:privacy_of_animal/logics/current_user.dart';
-import 'package:privacy_of_animal/logics/profile/profile.dart';
-import 'package:privacy_of_animal/logics/tag_edit/tag_edit.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/resources/constants.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
-import 'package:privacy_of_animal/utils/service_locator.dart';
-import 'package:privacy_of_animal/utils/stream_dialog.dart';
-import 'package:privacy_of_animal/utils/stream_navigator.dart';
-import 'package:privacy_of_animal/utils/stream_snackbar.dart';
 
-class ProfileScreen extends StatefulWidget {
+class OtherProfileScreen extends StatefulWidget {
+
+  final DocumentSnapshot user;
+
+  OtherProfileScreen({@required this.user});  
+
   @override
-  _ProfileScreenState createState() => _ProfileScreenState();
+  _OtherProfileScreenState createState() => _OtherProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class _OtherProfileScreenState extends State<OtherProfileScreen> {
 
-  final CurrentUser _user = sl.get<CurrentUser>();
 
   @override
   Widget build(BuildContext context) {
@@ -61,16 +58,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           '가상프로필',
                           style: primaryTextStyle,
                         ),
-                        GestureDetector(
-                          child: Image(
-                            image: AssetImage('assets/images/components/modify.png'),
-                            width: 50.0,
-                            height: 50.0,
-                          ),
-                          onTap: (){
-                            sl.get<ProfileBloc>().emitEvent(ProfileEventResetFakeProfile());
-                          }
-                        ),
                         Spacer(),
                         GestureDetector(
                           child: Row(
@@ -87,7 +74,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                           onTap: () => Navigator.push(context, MaterialPageRoute(
                             builder: (context) => 
-                              webViewImage(sl.get<CurrentUser>().fakeProfileModel.celebrity)
+                              webViewImage(widget.user.data[firestoreFakeProfileField]
+                                [firestoreCelebrityField])
                           )),
                         )
                       ],
@@ -109,19 +97,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 children: <Widget>[
                                   CircularPercentIndicator(
                                     radius: ScreenUtil.width/2.8,
-                                    percent: _user.fakeProfileModel.animalConfidence,
+                                    percent: widget.user.data[firestoreFakeProfileField][firestoreAnimalConfidenceField],
                                     lineWidth: 10.0,
                                     progressColor: primaryBeige,
                                   ),
                                   CircleAvatar(
-                                    backgroundImage: AssetImage(_user.fakeProfileModel.animalImage),
+                                    backgroundImage: AssetImage(widget.user.data[firestoreFakeProfileField]
+                                      [firestoreAnimalImageField]),
                                     radius: ScreenUtil.width/6.2,
                                   )
                                 ],
                               ),
                               SizedBox(height: 10.0),
                               Text(
-                                _user.fakeProfileModel.nickName,
+                                widget.user.data[firestoreFakeProfileField][firestoreNickNameField],
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold
@@ -133,11 +122,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              FakeProfileForm(title: '추정동물',detail: _user.fakeProfileModel.animalName),
-                              FakeProfileForm(title: '추정성별',detail: _user.fakeProfileModel.gender),
-                              FakeProfileForm(title: '추정나이',detail: _user.fakeProfileModel.age),
-                              FakeProfileForm(title: '추정기분',detail: _user.fakeProfileModel.emotion),
-                              FakeProfileForm(title: '유명인   ',detail: _user.fakeProfileModel.celebrity)
+                              OtherFakeProfileForm(title: '추정동물',detail: widget.user.data[firestoreFakeProfileField][firestoreAnimalNameField]),
+                              OtherFakeProfileForm(title: '추정성별',detail: widget.user.data[firestoreFakeProfileField][firestoreFakeGenderField]),
+                              OtherFakeProfileForm(title: '추정나이',detail: widget.user.data[firestoreFakeProfileField][firestoreFakeAgeField]),
+                              OtherFakeProfileForm(title: '추정기분',detail: widget.user.data[firestoreFakeProfileField][firestoreFakeEmotionField]),
+                              OtherFakeProfileForm(title: '유명인   ',detail: widget.user.data[firestoreFakeProfileField][firestoreCelebrityField])
                             ],
                           )
                         ],
@@ -178,10 +167,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ],
                   ),
                   SizedBox(height: 10.0),
-                  RealProfileForm(title: '이름',detail: _user.realProfileModel.name),
-                  RealProfileForm(title: '성별',detail: _user.realProfileModel.gender),
-                  RealProfileForm(title: '나이',detail: _user.realProfileModel.age),
-                  RealProfileForm(title: '직업',detail: _user.realProfileModel.job)
+                  OtherRealProfileForm(title: '이름',detail: widget.user.data[firestoreRealProfileField][firestoreNameField]),
+                  OtherRealProfileForm(title: '성별',detail: widget.user.data[firestoreRealProfileField][firestoreGenderField]),
+                  OtherRealProfileForm(title: '나이',detail: widget.user.data[firestoreRealProfileField][firestoreAgeField]),
+                  OtherRealProfileForm(title: '직업',detail: widget.user.data[firestoreRealProfileField][firestoreJobField])
                 ],
               )
             ),
@@ -196,42 +185,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.only(bottom: 10.0),
-                        child: Text(
-                          '관심사 태그',
-                          style: primaryTextStyle,
-                        )
-                      ),
-                      Spacer(),
-                      Text(
-                        '바꾸고 싶으면 태그를 누르세요.',
-                        style: TextStyle(
-                          color: primaryBlue,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      )
-                    ],
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 10.0),
+                    child: Text(
+                      '관심사 태그',
+                      style: primaryTextStyle,
+                    )
                   ),
                   SizedBox(height: 20.0),
-                  TagPart()
+                  OtherTagPart(user: widget.user)
                 ],
               )
-            ),
-            BlocBuilder(
-              bloc: sl.get<ProfileBloc>(),
-              builder: (context, ProfileState state){
-                if(state.isResetImpossible){
-                  streamSnackbar(context,state.remainedTime);
-                  sl.get<ProfileBloc>().emitEvent(ProfileEventInitial());
-                }
-                if(state.isResetPossible){
-                  StreamNavigator.pushNamed(context, routePhotoDecision);
-                }
-                return Container();
-              },
             )
           ],
         )
@@ -240,111 +204,65 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 }
 
+class OtherTagPart extends StatelessWidget {
 
-class TagPart extends StatefulWidget {
-  @override
-  _TagPartState createState() => _TagPartState();
-}
+  final DocumentSnapshot user;
+  OtherTagPart({@required this.user}); 
 
-class _TagPartState extends State<TagPart> {
   @override
   Widget build(BuildContext context) {
-
-    final CurrentUser _user = sl.get<CurrentUser>();
-    final TagEditBloc _tagEditBloc = sl.get<TagEditBloc>();
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Padding(
         padding: EdgeInsets.only(left: ScreenUtil.width/20),
-        child: BlocBuilder(
-          bloc: _tagEditBloc,
-          builder: (context, TagEditState state){
-            if(state.isShowDialog){
-              streamDialogEditTag(context,state.tagIndex,state.dropDownItems);
-              _tagEditBloc.emitEvent(TagEventInitial());
-            }
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Row(
               children: <Widget>[
-                Row(
-                  children: <Widget>[
-                    GestureDetector(
-                      child: TagForm(content: _user.tagListModel.tagTitleList[0],isTitle: true),
-                      onTap: () => _tagEditBloc.emitEvent(TagEditEventClick(tagIndex: 0))
-                    ),
-                    SizedBox(width: 10.0),
-                    GestureDetector(
-                      child: TagForm(content: _user.tagListModel.tagDetailList[0],isTitle: false),
-                      onTap: () => _tagEditBloc.emitEvent(TagEditEventClick(tagIndex: 0))
-                    ),
-                    SizedBox(width: 10.0),
-                    GestureDetector(
-                      child: TagForm(content: _user.tagListModel.tagTitleList[1],isTitle: true),
-                      onTap: () => _tagEditBloc.emitEvent(TagEditEventClick(tagIndex: 1))
-                    ),
-                    SizedBox(width: 10.0),
-                    GestureDetector(
-                      child: TagForm(content: _user.tagListModel.tagDetailList[1],isTitle: false),
-                      onTap: () => _tagEditBloc.emitEvent(TagEditEventClick(tagIndex: 1))
-                    )
-                  ],
-                ),
-                SizedBox(height: 10.0),
-                Row(
-                  children: <Widget>[
-                    GestureDetector(
-                      child: TagForm(content: _user.tagListModel.tagTitleList[2],isTitle: true),
-                      onTap: () => _tagEditBloc.emitEvent(TagEditEventClick(tagIndex: 2))
-                    ),
-                    SizedBox(width: 10.0),
-                    GestureDetector(
-                      child: TagForm(content: _user.tagListModel.tagDetailList[2],isTitle: false),
-                      onTap: () => _tagEditBloc.emitEvent(TagEditEventClick(tagIndex: 2))
-                    ),
-                    SizedBox(width: 10.0),
-                    GestureDetector(
-                      child: TagForm(content: _user.tagListModel.tagTitleList[3],isTitle: true),
-                      onTap: () => _tagEditBloc.emitEvent(TagEditEventClick(tagIndex: 3))
-                    ),
-                    SizedBox(width: 10.0),
-                    GestureDetector(
-                      child: TagForm(content: _user.tagListModel.tagDetailList[3],isTitle: false),
-                      onTap: () => _tagEditBloc.emitEvent(TagEditEventClick(tagIndex: 3))
-                    )
-                  ],
-                ),
-                SizedBox(height: 10.0),
-                Row(
-                  children: <Widget>[
-                    GestureDetector(
-                      child: TagForm(content: _user.tagListModel.tagTitleList[4],isTitle: true),
-                      onTap: () => _tagEditBloc.emitEvent(TagEditEventClick(tagIndex: 4))
-                    ),
-                    SizedBox(width: 10.0),
-                    GestureDetector(
-                      child: TagForm(content: _user.tagListModel.tagDetailList[4],isTitle: false),
-                      onTap: () => _tagEditBloc.emitEvent(TagEditEventClick(tagIndex: 4))
-                    )
-                  ],
-                )
+                OtherTagForm(content: user.data[firestoreTagField][firestoreTagTitle1Field],isTitle: true),
+                SizedBox(width: 10.0),
+                OtherTagForm(content: user.data[firestoreTagField][firestoreTagDetail1Field],isTitle: false),
+                SizedBox(width: 10.0),
+                OtherTagForm(content: user.data[firestoreTagField][firestoreTagTitle2Field],isTitle: true),
+                SizedBox(width: 10.0),
+                OtherTagForm(content: user.data[firestoreTagField][firestoreTagDetail2Field],isTitle: false)
               ],
-            );
-          }
+            ),
+            SizedBox(height: 10.0),
+            Row(
+              children: <Widget>[
+                OtherTagForm(content: user.data[firestoreTagField][firestoreTagTitle3Field],isTitle: true),
+                SizedBox(width: 10.0),
+                OtherTagForm(content: user.data[firestoreTagField][firestoreTagDetail3Field],isTitle: false),
+                SizedBox(width: 10.0),
+                OtherTagForm(content: user.data[firestoreTagField][firestoreTagTitle4Field],isTitle: true),
+                SizedBox(width: 10.0),
+                OtherTagForm(content: user.data[firestoreTagField][firestoreTagDetail4Field],isTitle: false)
+              ],
+            ),
+            SizedBox(height: 10.0),
+            Row(
+              children: <Widget>[
+                OtherTagForm(content: user.data[firestoreTagField][firestoreTagTitle5Field],isTitle: true),
+                SizedBox(width: 10.0),
+                OtherTagForm(content: user.data[firestoreTagField][firestoreTagDetail5Field],isTitle: false)
+              ],
+            )
+          ],
         )
       ),
     );
   }
-
-  
 }
 
-class FakeProfileForm extends StatelessWidget {
+class OtherFakeProfileForm extends StatelessWidget {
 
   final String title;
   final String detail;
 
-  FakeProfileForm({
+  OtherFakeProfileForm({
     @required this.title,
     @required this.detail
   });
@@ -368,12 +286,12 @@ class FakeProfileForm extends StatelessWidget {
   }
 }
 
-class RealProfileForm extends StatelessWidget {
+class OtherRealProfileForm extends StatelessWidget {
 
   final String title;
   final String detail;
 
-  RealProfileForm({
+  OtherRealProfileForm({
     @required this.title,
     @required this.detail
   });
@@ -405,10 +323,10 @@ class RealProfileForm extends StatelessWidget {
   }
 }
 
-class TagForm extends StatelessWidget {
+class OtherTagForm extends StatelessWidget {
   final String content;
   final bool isTitle;
-  TagForm({@required this.content, @required this.isTitle});
+  OtherTagForm({@required this.content, @required this.isTitle});
 
   @override
   Widget build(BuildContext context) {

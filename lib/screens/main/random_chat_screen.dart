@@ -5,7 +5,7 @@ import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/logics/random_chat/random_chat.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
-import 'package:privacy_of_animal/resources/constants.dart';
+import 'package:privacy_of_animal/screens/main/other_profile_screen.dart';
 import 'package:privacy_of_animal/utils/back_button_dialog.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:privacy_of_animal/widgets/progress_indicator.dart';
@@ -132,13 +132,13 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
                         child: IconButton(
                           icon: Icon(Icons.send),
                           onPressed: () {
-                            messageController.clear();
                             randomChatBloc.emitEvent(
                               RandomChatEventMessageSend(
                                 content: messageController.text,
                                 receiver: widget.receiver.documentID,
                                 chatRoomID: widget.chatRoomID
                               ));
+                              messageController.clear();
                             },
                           color: Colors.black,
                         ),
@@ -193,11 +193,16 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
         children: <Widget>[
           Column(
             children: <Widget>[
-              CircleAvatar(
-                backgroundImage: _isFirstLeft(index)
-                ? AssetImage(widget.receiver.data[firestoreFakeProfileField][firestoreAnimalImageField])
-                : null,
-                backgroundColor: Colors.transparent,
+              GestureDetector(
+                child: CircleAvatar(
+                  backgroundImage: _isFirstLeft(index)
+                  ? AssetImage(widget.receiver.data[firestoreFakeProfileField][firestoreAnimalImageField])
+                  : null,
+                  backgroundColor: Colors.transparent,
+                ),
+                onTap: () => Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => OtherProfileScreen(user: widget.receiver)
+                )),
               ),
               Text(
                 _isFirstLeft(index) ? 

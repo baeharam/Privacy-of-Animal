@@ -18,8 +18,5 @@ Map<String, WidgetBuilder> routes =  {
   routeLoginDecision: (BuildContext context) => LoginDecision(),
   routeSignUpDecision: (BuildContext context) => SignUpDecision(),
   routePhotoDecision: (BuildContext context) => PhotoDecision(),
-  routeHomeDecision: (BuildContext context) => HomeDecision(),
-
-  // WebView
-  routeWebViewImage: (BuildContext context) => webViewImage
+  routeHomeDecision: (BuildContext context) => HomeDecision()
 };
