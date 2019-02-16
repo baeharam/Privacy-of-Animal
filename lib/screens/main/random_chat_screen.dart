@@ -34,10 +34,6 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
   // Cloud Firestore에서 불러와서 저장.
   List<DocumentSnapshot> messages = List<DocumentSnapshot>();
 
-  bool isFirstLeft = false;
-  bool isLastLeft = false;
-  bool isLastRight = false;
-
   @override
   void initState() {
     super.initState();
@@ -162,6 +158,15 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
       return Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
+          _isLastRight(index) ?
+          Container(
+            margin: EdgeInsets.only(right: 10.0),
+            child: Text(
+              DateFormat('kk:mm','ko')
+                .format(DateTime.fromMillisecondsSinceEpoch(int.parse(document[firestoreChatTimestampField]))),
+                style: TextStyle(color: Colors.grey,fontSize: 12.0),
+            ),
+          ) : Container(),
           Container(
             child: Text(
               document[firestoreChatContentField],
@@ -170,13 +175,12 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
               ),
             ),
             padding: EdgeInsets.fromLTRB(15.0,10.0,15.0,10.0),
-            width: 200.0,
             decoration: BoxDecoration(
               color: primaryBeige,
               borderRadius: BorderRadius.circular(3.0)
             ),
             margin: EdgeInsets.only(bottom: 10.0, right: 10.0),
-          )
+          ),
         ],
       );
       // 상대방이 보내는 메시지
@@ -237,6 +241,15 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
 
   bool _isLastLeft(int index) {
     if((index>0 && messages!=null && messages[index-1][firestoreChatFromField] == sl.get<CurrentUser>().uid) 
+      || index==0){
+        return true;
+    } else {
+      return false;
+    }
+  }
+
+  bool _isLastRight(int index) {
+    if((index>0 && messages!=null && messages[index-1][firestoreChatToField] == sl.get<CurrentUser>().uid) 
       || index==0){
         return true;
     } else {
