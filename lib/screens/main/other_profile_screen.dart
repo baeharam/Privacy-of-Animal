@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
+import 'package:privacy_of_animal/logics/friend_request/friend_request.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/resources/constants.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
@@ -188,20 +189,24 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
                     ]
                   ),
                   SizedBox(height: 10.0),
-                  Container(
-                    padding: EdgeInsets.all(10.0),
-                    decoration: BoxDecoration(
-                      color: primaryBlue,
-                      border: Border.all(color: primaryBlue),
-                      borderRadius: BorderRadius.circular(3.0)
-                    ),
-                    child: Text(
-                      '친구신청 하기',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold
+                  GestureDetector(
+                    child: Container(
+                      padding: EdgeInsets.all(10.0),
+                      decoration: BoxDecoration(
+                        color: primaryBlue,
+                        border: Border.all(color: primaryBlue),
+                        borderRadius: BorderRadius.circular(3.0)
+                      ),
+                      child: Text(
+                        '친구신청 하기',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold
+                        ),
                       ),
                     ),
+                    onTap: () => sl.get<FriendRequestBloc>()
+                      .emitEvent(FriendRequestEvent(uid: widget.user.documentID)),
                   )
                 ]
               )
