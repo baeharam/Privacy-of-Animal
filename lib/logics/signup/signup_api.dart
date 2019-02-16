@@ -22,7 +22,7 @@ class SignUpAPI {
       await sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async{
         CollectionReference col = sl.get<FirebaseAPI>().getFirestore().collection(firestoreDeletedUserListCollection);
         DocumentReference doc = col.document(sl.get<CurrentUser>().uid);
-        await doc.setData({
+        await tx.set(doc,{
           'delete': true
         });
       }); 
@@ -46,10 +46,10 @@ class SignUpAPI {
 
   // Cloud Firestore에 저장
   Future<void> registerProfileIntoFirestore(SignUpModel data) async {
-    await sl.get<FirebaseAPI>().getFirestore().runTransaction((transaction) async{
+    await sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async{
         CollectionReference collectionReference = sl.get<FirebaseAPI>().getFirestore().collection(firestoreUsersCollection);
         DocumentReference reference = collectionReference.document(sl.get<CurrentUser>().uid);
-        await reference.setData({
+        await tx.set(reference,{
           firestoreRealProfileField: {
             firestoreNameField: data.realProfileModel.name,
             firestoreAgeField: data.realProfileModel.age,
@@ -61,7 +61,9 @@ class SignUpAPI {
           },
           firestoreIsTagSelectedField: false,
           firestoreIsTagChattedField: false,
-          firestoreIsFaceAnalyzedField: false
+          firestoreIsFaceAnalyzedField: false,
+          firestoreFriendsField: [],
+          firestoreFriendsRequestField: []
         });
       });
   }

@@ -152,6 +152,7 @@ const String firestoreMessageCollection = 'messages';
 
 // Cloud Firestore 친구 필드
 const String firestoreFriendsField = 'friends';
+const String firestoreFriendsRequestField = 'friends_request';
 
 // Cloud Firestore 실제 프로필 필드
 const String firestoreRealProfileField = realProfileTable;
