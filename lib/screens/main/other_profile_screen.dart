@@ -24,7 +24,7 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
   @override
   void initState() {
     super.initState();
-    isFriend = (widget.user.data[firestoreFriendsField] as List<String>)
+    isFriend = (widget.user.data[firestoreFriendsField] as List)
     .contains(sl.get<CurrentUser>().uid);
   }
 
@@ -154,27 +154,15 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
             Container(
               padding: EdgeInsets.symmetric(horizontal: ScreenUtil.width/20,vertical: ScreenUtil.height/20),
               width: double.infinity,
-              child: Column(
+              child: isFriend ? Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.only(bottom: 10.0),
-                        child: Text(
-                          '실제프로필',
-                          style: primaryTextStyle,
-                        ),
-                      ),
-                      Spacer(),
-                      Text(
-                        '친구가 될시 공개됩니다.',
-                        style: TextStyle(
-                          color: primaryBlue,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      )
-                    ],
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 10.0),
+                    child: Text(
+                      '실제프로필',
+                      style: primaryTextStyle,
+                    ),
                   ),
                   SizedBox(height: 10.0),
                   OtherRealProfileForm(title: '이름',detail: widget.user.data[firestoreRealProfileField][firestoreNameField]),
@@ -182,6 +170,40 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
                   OtherRealProfileForm(title: '나이',detail: widget.user.data[firestoreRealProfileField][firestoreAgeField]),
                   OtherRealProfileForm(title: '직업',detail: widget.user.data[firestoreRealProfileField][firestoreJobField])
                 ],
+              ) 
+              : Column(
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Icon(Icons.lock),
+                      SizedBox(width: 10.0),
+                      Text(
+                        '실제 프로필은 친구가 될시 공개됩니다.',
+                        style: TextStyle(
+                          color: Colors.red,
+                          fontWeight: FontWeight.bold
+                        ),
+                      )
+                    ]
+                  ),
+                  SizedBox(height: 10.0),
+                  Container(
+                    padding: EdgeInsets.all(10.0),
+                    decoration: BoxDecoration(
+                      color: primaryBlue,
+                      border: Border.all(color: primaryBlue),
+                      borderRadius: BorderRadius.circular(3.0)
+                    ),
+                    child: Text(
+                      '친구신청 하기',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold
+                      ),
+                    ),
+                  )
+                ]
               )
             ),
             Container(
