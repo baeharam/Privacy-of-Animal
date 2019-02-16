@@ -1,4 +1,5 @@
 import 'package:get_it/get_it.dart';
+import 'package:privacy_of_animal/logics/chat_list/chat_list_bloc.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/database_helper.dart';
 import 'package:privacy_of_animal/logics/find_password/find_password_bloc.dart';
@@ -36,4 +37,5 @@ void setup() {
   sl.registerLazySingleton<TagEditBloc>(() => TagEditBloc());
   sl.registerLazySingleton<ProfileBloc>(() => ProfileBloc());
   sl.registerLazySingleton<FriendRequestBloc>(() => FriendRequestBloc());
+  sl.registerLazySingleton<ChatListBloc>(() => ChatListBloc());
 }
