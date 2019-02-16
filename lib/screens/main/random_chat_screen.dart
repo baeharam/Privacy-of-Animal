@@ -100,7 +100,7 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
                   .document(widget.chatRoomID)
                   .snapshots(),
               builder: (context, snapshot){
-                if(snapshot.hasData && snapshot.data.data!=null && snapshot.data.data[firestoreChatDeleteField]){
+                if(snapshot.hasData && snapshot.data.data!=null && snapshot.data.data[firestoreChatOutField]){
                   randomChatBloc.emitEvent(RandomChatEventFinished());
                   isReceiverOut = true;
                   return Text('상대방이 나갔습니다.');

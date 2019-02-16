@@ -11,6 +11,15 @@ class ChatListBloc extends BlocEventStateBase<ChatListEvent,ChatListState> {
 
   @override
   Stream<ChatListState> eventHandler(ChatListEvent event, ChatListState currentState) async*{
+
+    if(event is ChatListEventDeleteChatRoom) {
+      try {
+        await _api.deleteChatRoom(event.chatRoomID);
+      } catch(exception) {
+        print(exception);
+      }
+    }
+
     if(event is ChatListEventFetchList) {
       List<ChatListModel> chatListModels = List<ChatListModel>();
       try { 

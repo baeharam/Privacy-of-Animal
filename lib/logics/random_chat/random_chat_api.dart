@@ -32,6 +32,7 @@ class RandomChatAPI {
       doc = await col.add({
         firestoreChatBeginField: false,
         firestoreChatUsersField: [sl.get<CurrentUser>().uid],
+        firestoreChatOutField: false,
         firestoreChatDeleteField: false
       });
     });
@@ -61,24 +62,7 @@ class RandomChatAPI {
     DocumentSnapshot userDoc = await users.get();
 
     return userDoc;
-  }
-
-  // 매칭을 하기 싫거나, 채팅 도중에 나갈 경우 채팅방이 삭제되어야 함.
-  // Future<void> deleteChatRoom(String chatRoomID) async {
-  //   QuerySnapshot snapshot = await sl.get<FirebaseAPI>().getFirestore()
-  //     .collection(firestoreMessageCollection)
-  //     .where(firestoreChatUsersField, arrayContains: sl.get<CurrentUser>().uid).getDocuments();
-
-  //   await sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async{
-  //     QuerySnapshot forDelete = 
-  //       await snapshot.documents[0].reference.collection(snapshot.documents[0].documentID)
-  //       .getDocuments();
-  //     for(DocumentSnapshot document in forDelete.documents) {
-  //       await tx.delete(document.reference);
-  //     }
-  //     await tx.delete(snapshot.documents[0].reference);
-  //   });
-  // }
+  }  
 
   // 첫번째로 채팅방을 나갈 경우, delete 플래그를 true로 바꿔야 함.
   Future<void> getOutChatRoom(String chatRoomID) async {
@@ -87,9 +71,9 @@ class RandomChatAPI {
       .document(chatRoomID);
 
     DocumentSnapshot snapshot = await doc.get();
-    if(snapshot.data[firestoreChatDeleteField]==false) {
+    if(snapshot.data[firestoreChatOutField]==false) {
       sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async{
-        await tx.update(doc, {firestoreChatDeleteField: true});
+        await tx.update(doc, {firestoreChatOutField: true});
       });
     }
   }

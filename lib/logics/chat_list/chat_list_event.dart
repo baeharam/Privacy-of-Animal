@@ -11,3 +11,9 @@ class ChatListEventFetchList extends ChatListEvent{
 
   ChatListEventFetchList({@required this.documents });
 }
+
+class ChatListEventDeleteChatRoom extends ChatListEvent {
+  final String chatRoomID;
+
+  ChatListEventDeleteChatRoom({@required this.chatRoomID});
+}

@@ -201,6 +201,7 @@ const List<String> firestoreTagDetailList = tagDetailList;
 // Cloud Firestore 메시지 필드
 const String firestoreChatBeginField = 'begin';
 const String firestoreChatUsersField = 'users';
+const String firestoreChatOutField = 'out';
 const String firestoreChatDeleteField = 'delete';
 const String firestoreChatFromField = 'from';
 const String firestoreChatToField = 'to';

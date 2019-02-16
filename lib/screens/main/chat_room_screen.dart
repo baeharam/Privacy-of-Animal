@@ -79,71 +79,77 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     bool isToday = chatListModel.lastTimestamp.toDate().difference(DateTime.now())
       == Duration(days: 0) ? true : false;
 
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10.0,vertical: 10.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          GestureDetector(
-            child: Container(
-              width: 60.0,
-              height: 60.0,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(chatListModel.profileImage),
-                  fit: BoxFit.cover
-                ),
-                borderRadius: BorderRadius.circular(5.0)
-              ),
-            ),
-            onTap: () => Navigator.push(context, MaterialPageRoute(
-              builder: (context) => OtherProfileScreen(user: chatListModel.snapshot)
-            )),
-          ),
-          SizedBox(width: 20.0),
-          Flexible(
-            child: GestureDetector(
+    return Dismissible(
+      key: Key(chatListModel.toString()),
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 10.0,vertical: 10.0),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            GestureDetector(
               child: Container(
-                width: ScreenUtil.width/1.2,
+                width: 60.0,
                 height: 60.0,
-                color: Colors.transparent,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Column(
-                      children: <Widget>[
-                        Text(
-                          chatListModel.nickName,
-                          style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(height: 10.0),
-                        Text(chatListModel.lastMessage)
-                      ],
-                    ),
-                    Spacer(),
-                    Text(
-                      !isToday ?
-                      DateFormat.jm('ko')
-                          .format(DateTime.fromMillisecondsSinceEpoch(
-                            chatListModel.lastTimestamp.millisecondsSinceEpoch)) :
-                      DateFormat('yy년 mm월 dd일')
-                          .format(DateTime.fromMillisecondsSinceEpoch(
-                            chatListModel.lastTimestamp.millisecondsSinceEpoch)),
-                      style: TextStyle(color: Colors.grey),
-                    )
-                  ],
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(chatListModel.profileImage),
+                    fit: BoxFit.cover
+                  ),
+                  borderRadius: BorderRadius.circular(5.0)
                 ),
               ),
               onTap: () => Navigator.push(context, MaterialPageRoute(
-                builder: (context) => RandomChatScreen(
-                  chatRoomID: chatListModel.chatRoomID,
-                  receiver: chatListModel.snapshot,
-                )
+                builder: (context) => OtherProfileScreen(user: chatListModel.snapshot)
               )),
             ),
-          )
-        ],
-      )
+            SizedBox(width: 20.0),
+            Flexible(
+              child: GestureDetector(
+                child: Container(
+                  width: ScreenUtil.width/1.2,
+                  height: 60.0,
+                  color: Colors.transparent,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Column(
+                        children: <Widget>[
+                          Text(
+                            chatListModel.nickName,
+                            style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(height: 10.0),
+                          Text(chatListModel.lastMessage)
+                        ],
+                      ),
+                      Spacer(),
+                      Text(
+                        !isToday ?
+                        DateFormat.jm('ko')
+                            .format(DateTime.fromMillisecondsSinceEpoch(
+                              chatListModel.lastTimestamp.millisecondsSinceEpoch)) :
+                        DateFormat('yy년 mm월 dd일')
+                            .format(DateTime.fromMillisecondsSinceEpoch(
+                              chatListModel.lastTimestamp.millisecondsSinceEpoch)),
+                        style: TextStyle(color: Colors.grey),
+                      )
+                    ],
+                  ),
+                ),
+                onTap: () => Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => RandomChatScreen(
+                    chatRoomID: chatListModel.chatRoomID,
+                    receiver: chatListModel.snapshot,
+                  )
+                )),
+              ),
+            )
+          ],
+        )
+      ),
+      onDismissed: sl.get<ChatListBloc>().emitEvent(ChatListEventDeleteChatRoom(
+        chatRoomID: chatListModel.chatRoomID
+      )),
     );
   }
 }
