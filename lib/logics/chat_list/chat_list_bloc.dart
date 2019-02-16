@@ -1,5 +1,6 @@
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state.dart';
 import 'package:privacy_of_animal/logics/chat_list/chat_list.dart';
+import 'package:privacy_of_animal/models/chat_list_model.dart';
 
 class ChatListBloc extends BlocEventStateBase<ChatListEvent,ChatListState> {
 
@@ -11,7 +12,14 @@ class ChatListBloc extends BlocEventStateBase<ChatListEvent,ChatListState> {
   @override
   Stream<ChatListState> eventHandler(ChatListEvent event, ChatListState currentState) async*{
     if(event is ChatListEventFetchList) {
-      yield ChatListState.fetchSucceeded(await _api.fetchUserData(event.documents));
+      List<ChatListModel> chatListModels = List<ChatListModel>();
+      try { 
+        chatListModels = await _api.fetchUserData(event.documents);
+      } catch(exception){
+        print(exception);
+        yield ChatListState.fetchFailed();
+      }
+      yield ChatListState.fetchSucceeded(chatListModels);
     }
     if(event is ChatListEventStateClear) {
       yield ChatListState.initial();
