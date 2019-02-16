@@ -131,13 +131,15 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
                         margin: EdgeInsets.symmetric(horizontal: 8.0),
                         child: IconButton(
                           icon: Icon(Icons.send),
-                          onPressed: () => randomChatBloc.emitEvent(
-                            RandomChatEventMessageSend(
-                              content: messageController.text,
-                              receiver: widget.receiver.documentID,
-                              chatRoomID: widget.chatRoomID
-                            )
-                          ),
+                          onPressed: () {
+                            messageController.clear();
+                            randomChatBloc.emitEvent(
+                              RandomChatEventMessageSend(
+                                content: messageController.text,
+                                receiver: widget.receiver.documentID,
+                                chatRoomID: widget.chatRoomID
+                              ));
+                            },
                           color: Colors.black,
                         ),
                       ),
