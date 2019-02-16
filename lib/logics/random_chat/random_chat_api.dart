@@ -104,19 +104,18 @@ class RandomChatAPI {
 
   // 메시지 보내기
   void sendMessage(String content,String receiver,String chatRoomID) {
-    String a = DateTime.now().millisecondsSinceEpoch.toString();
+    String time = DateTime.now().millisecondsSinceEpoch.toString();
     DocumentReference doc = sl.get<FirebaseAPI>().getFirestore()
       .collection(firestoreMessageCollection)
       .document(chatRoomID)
       .collection(chatRoomID)
-      .document(DateTime.now().millisecondsSinceEpoch.toString());
-    print(a);
+      .document(time);
 
     sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async{
       await tx.set(doc,{
         firestoreChatFromField: sl.get<CurrentUser>().uid,
         firestoreChatToField: receiver,
-        firestoreChatTimestampField: DateTime.now().millisecondsSinceEpoch.toString(),
+        firestoreChatTimestampField: time,
         firestoreChatContentField: content
       });
     });

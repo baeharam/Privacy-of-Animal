@@ -41,7 +41,7 @@ class _MatchScreenState extends State<MatchScreen> {
         children: <Widget>[
           Positioned(
             top: -ScreenUtil.height/10,
-            left: -ScreenUtil.width/2.5,
+            left: -ScreenUtil.width/2,
             child: Image(
               image: AssetImage('assets/images/components/match_tag_circle.png'),
               width: ScreenUtil.width*1.1,
@@ -81,8 +81,8 @@ class _MatchScreenState extends State<MatchScreen> {
             ),
           ),
           Positioned(
-            bottom: -ScreenUtil.height/10,
-            right: -ScreenUtil.width/2.5,
+            bottom: -ScreenUtil.height/7,
+            right: -ScreenUtil.width/2,
             child: GestureDetector(
               child: Image(
                 image: AssetImage('assets/images/components/match_random_circle.png'),
