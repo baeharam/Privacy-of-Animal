@@ -19,6 +19,21 @@ class FriendsAPI {
     return friendsList;
   }
 
+  // 친구 차단하기
+  Future<void> blockFriends(String userToBlock) async {
+    DocumentReference myselfDoc = sl.get<FirebaseAPI>().getFirestore().collection(firestoreUsersCollection)
+      .document(sl.get<CurrentUser>().uid).collection(firestoreFriendsSubCollection).document(userToBlock);
+    DocumentReference userToBlockDoc = sl.get<FirebaseAPI>().getFirestore().collection(firestoreUsersCollection)
+      .document(userToBlock).collection(firestoreFriendsSubCollection).document(sl.get<CurrentUser>().uid);
+
+    WriteBatch batch = sl.get<FirebaseAPI>().getFirestore().batch();
+
+    batch.delete(myselfDoc);
+    batch.delete(userToBlockDoc);
+
+    await batch.commit();
+  }
+
   // 친구신청 수락하기
   // 친구 신청 목록에서 삭제 + 현재유저 친구목록에 넣기 + 신청유저 친구목록에 넣기 = 일괄작업 batch로
   Future<void> acceptFriendsRequest(String requestingUser) async {
@@ -39,8 +54,8 @@ class FriendsAPI {
   Future<void> rejectFriendsRequest(String requestingUser) async {
     DocumentReference doc = sl.get<FirebaseAPI>().getFirestore().collection(firestoreUsersCollection)
       .document(sl.get<CurrentUser>().uid).collection(firestoreFriendsSubCollection).document(requestingUser);
-    sl.get<FirebaseAPI>().getFirestore().runTransaction((tx){
-      tx.delete(doc);
+    await sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async{
+      await tx.delete(doc);
     });
   }
 }

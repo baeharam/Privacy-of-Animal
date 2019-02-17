@@ -35,6 +35,16 @@ class FriendsBloc extends BlocEventStateBase<FriendsEvent,FriendsState>
       }
     }
 
+    if(event is FriendsEventBlock) {
+      try {
+        await _api.blockFriends(event.user);
+        yield FriendsState.friendsBlockSucceeded();
+      } catch(exception) {
+        print(exception);
+        yield FriendsState.friendsBlockFailed();
+      }
+    }
+
     if(event is FriendsEventRequestAccept) {
       try {
         await _api.acceptFriendsRequest(event.user);
@@ -42,6 +52,16 @@ class FriendsBloc extends BlocEventStateBase<FriendsEvent,FriendsState>
       } catch(exception) {
         print(exception);
         yield FriendsState.friendsAcceptFailed();
+      }
+    }
+
+    if(event is FriendsEventRequestReject) {
+      try {
+        await _api.rejectFriendsRequest(event.user);
+        yield FriendsState.friendsRejectSucceeded();
+      } catch(exception) {
+        print(exception);
+        yield FriendsState.friendsRejectFailed();
       }
     }
   }

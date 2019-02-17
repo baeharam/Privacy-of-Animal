@@ -6,6 +6,9 @@ class FriendsState extends BlocState {
   final bool isLoading;
   final bool isFriendsFetchSucceeded;
   final bool isFriendsFetchFailed;
+  final bool isFriendsBlockSucceeded;
+  final bool isFriendsBlockFailed;
+
   final bool isFriendsRequestFetchSucceeded;
   final bool isFriendsRequestFetchFailed;
   final bool isFriendsAcceptSucceeded;
@@ -21,9 +24,11 @@ class FriendsState extends BlocState {
     this.isLoading: false,
     this.isFriendsFetchSucceeded: false,
     this.isFriendsFetchFailed: false,
+    this.isFriendsBlockSucceeded: false,
+    this.isFriendsBlockFailed: false,
+
     this.isFriendsRequestFetchSucceeded: false,
     this.isFriendsRequestFetchFailed: false,
-
     this.isFriendsAcceptSucceeded: false,
     this.isFriendsAcceptFailed: false,
     this.isFriendsRejectSucceeded: false,
@@ -55,6 +60,18 @@ class FriendsState extends BlocState {
   factory FriendsState.friendsFetchFailed() {
     return FriendsState(
       isFriendsFetchFailed: true
+    );
+  }
+
+  factory FriendsState.friendsBlockSucceeded() {
+    return FriendsState(
+      isFriendsBlockSucceeded: true
+    );
+  }
+
+  factory FriendsState.friendsBlockFailed() {
+    return FriendsState(
+      isFriendsBlockFailed: true
     );
   }
 

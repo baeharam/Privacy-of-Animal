@@ -10,6 +10,7 @@ import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:privacy_of_animal/utils/stream_snackbar.dart';
 import 'package:privacy_of_animal/widgets/progress_indicator.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 class FriendScreen extends StatefulWidget {
   @override
@@ -31,6 +32,39 @@ class _FriendScreenState extends State<FriendScreen> with SingleTickerProviderSt
   void dispose() {
     tabController.dispose();
     super.dispose();
+  }
+
+  void _showAlertForBlock(String userToBlock) {
+    Alert(
+      context: context,
+      title: '정말로 차단하시겠습니까?',
+      type: AlertType.warning,
+      buttons: [
+        DialogButton(
+          onPressed: (){
+            friendsBloc.emitEvent(FriendsEventBlock(user: userToBlock));
+            Navigator.pop(context);
+          },
+          child: Text(
+            '예',
+            style: TextStyle(
+              color: Colors.white
+            ),
+          ),
+          color: primaryPink,
+        ),
+        DialogButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text(
+            '아니오',
+            style: TextStyle(
+              color: Colors.white
+            ),
+          ),
+          color: primaryBeige,
+        )
+      ]
+    ).show();
   }
 
   @override
@@ -198,20 +232,23 @@ class _FriendScreenState extends State<FriendScreen> with SingleTickerProviderSt
             ),
           ),
           SizedBox(width: 10.0),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 10.0,vertical: 5.0),
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.red),
-              borderRadius: BorderRadius.circular(5.0)
-            ),
-            child: Text(
-              '차단',
-              style: TextStyle(
-                color: Colors.red,
-                fontWeight: FontWeight.bold,
-                fontSize: 17.0
+          GestureDetector(
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 10.0,vertical: 5.0),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.red),
+                borderRadius: BorderRadius.circular(5.0)
+              ),
+              child: Text(
+                '차단',
+                style: TextStyle(
+                  color: Colors.red,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 17.0
+                ),
               ),
             ),
+            onTap: () { _showAlertForBlock(user.documentID); }
           )
         ],
       ),

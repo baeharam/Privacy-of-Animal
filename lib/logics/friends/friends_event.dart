@@ -15,6 +15,16 @@ class FriendsEventFetchFriendsRequestList extends FriendsEvent {
   FriendsEventFetchFriendsRequestList({@required this.friendsRequest});
 }
 
+class FriendsEventChat extends FriendsEvent {
+  final String user;
+  FriendsEventChat({@required this.user});
+}
+
+class FriendsEventBlock extends FriendsEvent {
+  final String user;
+  FriendsEventBlock({@required this.user});
+}
+
 class FriendsEventRequestAccept extends FriendsEvent {
   final String user;
   FriendsEventRequestAccept({@required this.user});
