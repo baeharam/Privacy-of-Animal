@@ -8,6 +8,7 @@ import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/screens/main/other_profile_screen.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
+import 'package:privacy_of_animal/utils/stream_snackbar.dart';
 import 'package:privacy_of_animal/widgets/progress_indicator.dart';
 
 class FriendScreen extends StatefulWidget {
@@ -67,19 +68,22 @@ class _FriendScreenState extends State<FriendScreen> with SingleTickerProviderSt
   }
 
   Widget _buildFriendsList() {
-    return StreamBuilder<DocumentSnapshot>(
+    return StreamBuilder<QuerySnapshot>(
       stream: sl.get<FirebaseAPI>().getFirestore()
-        .collection(firestoreUsersCollection)
-        .document(sl.get<CurrentUser>().uid)
+        .collection(firestoreUsersCollection).document(sl.get<CurrentUser>().uid)
+        .collection(firestoreFriendsSubCollection).where(firestoreFriendsField, isEqualTo: true)
         .snapshots(),
       builder: (context, snapshot) {
-        if(snapshot.hasData && snapshot.data.data!=null){
+        if(snapshot.hasData && snapshot.data.documents.length!=0){
           friendsBloc.emitEvent(FriendsEventFetchFriendsList(
-            friends: snapshot.data.data[firestoreFriendsField]));
+            friends: snapshot.data.documents));
         }
         return BlocBuilder(
           bloc: friendsBloc,
           builder: (context, FriendsState state){
+            if(state.isFriendsFetchFailed){
+              return Center(child: Text('친구목록을 불러오는데 실패했습니다.'));
+            }
             if(state.isLoading) {
               return CustomProgressIndicator();
             }
@@ -90,7 +94,7 @@ class _FriendScreenState extends State<FriendScreen> with SingleTickerProviderSt
                 itemBuilder: (context,index) => _buildFriendsItem(state.friends[index]),
               );
             }
-            return Container();
+            return Center(child: Text('친구가 없습니다.'));
           }
         );
       }
@@ -98,19 +102,22 @@ class _FriendScreenState extends State<FriendScreen> with SingleTickerProviderSt
   }
 
   Widget _buildFriendsRequestList() {
-    return StreamBuilder<DocumentSnapshot>(
+    return StreamBuilder<QuerySnapshot>(
       stream: sl.get<FirebaseAPI>().getFirestore()
-        .collection(firestoreUsersCollection)
-        .document(sl.get<CurrentUser>().uid)
+        .collection(firestoreUsersCollection).document(sl.get<CurrentUser>().uid)
+        .collection(firestoreFriendsSubCollection).where(firestoreFriendsField, isEqualTo: false)
         .snapshots(),
       builder: (context, snapshot) {
-        if(snapshot.hasData && snapshot.data.data!=null){
+        if(snapshot.hasData && snapshot.data.documents.length!=null){
           friendsBloc.emitEvent(FriendsEventFetchFriendsRequestList(
-            friendsRequest: snapshot.data.data[firestoreFriendsRequestField]));
+            friendsRequest: snapshot.data.documents));
         }
         return BlocBuilder(
           bloc: friendsBloc,
           builder: (context, FriendsState state){
+            if(state.isFriendsRequestFetchFailed){
+              return Center(child: Text('친구 신청 목록을 불러오는데 실패했습니다.'));
+            }
             if(state.isLoading) {
               return CustomProgressIndicator();
             }
@@ -121,7 +128,7 @@ class _FriendScreenState extends State<FriendScreen> with SingleTickerProviderSt
                 itemBuilder: (context,index) => _buildFriendsRequestItem(state.friendsRequest[index]),
               );
             }
-            return Container();
+            return Center(child: Text('친구신청이 없습니다.'));
           }
         );
       }

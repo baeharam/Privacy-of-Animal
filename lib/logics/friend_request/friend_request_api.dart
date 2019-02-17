@@ -9,11 +9,13 @@ class FriendRequestAPI {
   Future<void> requestFriend(String uid) async {
     DocumentReference doc = 
      sl.get<FirebaseAPI>().getFirestore().collection(firestoreUsersCollection)
-      .document(uid);
+      .document(uid).collection(firestoreFriendsSubCollection)
+      .document(sl.get<CurrentUser>().uid);
 
     await sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async{
       await tx.update(doc, {
-        firestoreFriendsRequestField: FieldValue.arrayUnion([sl.get<CurrentUser>().uid])
+        firestoreFriendsField: true,
+        uidCol: sl.get<CurrentUser>().uid
       });
     });
   }

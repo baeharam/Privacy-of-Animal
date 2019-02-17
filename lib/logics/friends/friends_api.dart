@@ -13,7 +13,7 @@ class FriendsAPI {
     for(var user in friends) {
       DocumentSnapshot userInfo = await sl.get<FirebaseAPI>().getFirestore()
         .collection(firestoreUsersCollection)
-        .document(user as String).get();
+        .document((user as DocumentSnapshot).documentID).get();
       friendsList.add(userInfo);
     }
     return friendsList;
@@ -23,16 +23,24 @@ class FriendsAPI {
   // 친구 신청 목록에서 삭제 + 현재유저 친구목록에 넣기 + 신청유저 친구목록에 넣기 = 일괄작업 batch로
   Future<void> acceptFriendsRequest(String requestingUser) async {
     DocumentReference myselfDoc = sl.get<FirebaseAPI>().getFirestore().collection(firestoreUsersCollection)
-      .document(sl.get<CurrentUser>().uid);
+      .document(sl.get<CurrentUser>().uid).collection(firestoreFriendsSubCollection).document(requestingUser);
     DocumentReference requestingUserDoc = sl.get<FirebaseAPI>().getFirestore().collection(firestoreUsersCollection)
-      .document(requestingUser);
+      .document(requestingUser).collection(firestoreFriendsSubCollection).document(sl.get<CurrentUser>().uid);
     
     WriteBatch batch = sl.get<FirebaseAPI>().getFirestore().batch();
 
-    batch.updateData(myselfDoc, {firestoreFriendsRequestField: FieldValue.arrayRemove([requestingUser])});
-    batch.updateData(myselfDoc, {firestoreFriendsField: FieldValue.arrayUnion([requestingUser])});
-    batch.updateData(requestingUserDoc, {firestoreFriendsField: FieldValue.arrayUnion([sl.get<CurrentUser>().uid])});
+    batch.setData(myselfDoc, {firestoreFriendsField: true},merge: true);
+    batch.setData(requestingUserDoc, {firestoreFriendsField: true},merge: true);
 
     await batch.commit();
+  }
+
+  // 친구신청 삭제하기
+  Future<void> rejectFriendsRequest(String requestingUser) async {
+    DocumentReference doc = sl.get<FirebaseAPI>().getFirestore().collection(firestoreUsersCollection)
+      .document(sl.get<CurrentUser>().uid).collection(firestoreFriendsSubCollection).document(requestingUser);
+    sl.get<FirebaseAPI>().getFirestore().runTransaction((tx){
+      tx.delete(doc);
+    });
   }
 }

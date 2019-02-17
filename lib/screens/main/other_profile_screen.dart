@@ -10,6 +10,8 @@ import 'package:privacy_of_animal/resources/constants.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:privacy_of_animal/utils/stream_snackbar.dart';
+import 'package:privacy_of_animal/widgets/progress_indicator.dart';
+import 'package:rxdart/rxdart.dart';
 
 class OtherProfileScreen extends StatefulWidget {
 
@@ -24,13 +26,23 @@ class OtherProfileScreen extends StatefulWidget {
 class _OtherProfileScreenState extends State<OtherProfileScreen> {
 
   final FriendRequestBloc friendRequestBloc = sl.get<FriendRequestBloc>();
-  bool isFriend;
 
-  @override
-  void initState() {
-    super.initState();
-    isFriend = (widget.user.data[firestoreFriendsField] as List)
-    .contains(sl.get<CurrentUser>().uid);
+  Stream<QuerySnapshot> _getRequestStream() {
+    Stream<QuerySnapshot> stream1 = sl.get<FirebaseAPI>().getFirestore().collection(firestoreUsersCollection)
+      .document(widget.user.documentID).collection(firestoreFriendsSubCollection)
+      .where(uidCol,isEqualTo:sl.get<CurrentUser>().uid)
+      .where(firestoreFriendsField,isEqualTo: false).snapshots();
+    Stream<QuerySnapshot> stream2 = sl.get<FirebaseAPI>().getFirestore().collection(firestoreUsersCollection)
+      .document(sl.get<CurrentUser>().uid).collection(firestoreFriendsSubCollection)
+      .where(uidCol,isEqualTo:widget.user.documentID)
+      .where(firestoreFriendsField,isEqualTo: false).snapshots();
+    return Observable.combineLatest2(stream1, stream2, (s1,s2){
+      if((s1 as QuerySnapshot).documents.isNotEmpty || (s2 as QuerySnapshot).documents.isNotEmpty){
+        return (s1 as QuerySnapshot).documents.isNotEmpty ? s1 : s2;
+      } else {
+        return s1;
+      }
+    });
   }
 
   @override
@@ -153,78 +165,88 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
             Container(
               padding: EdgeInsets.symmetric(horizontal: ScreenUtil.width/20,vertical: ScreenUtil.height/20),
               width: double.infinity,
-              child: isFriend ? Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(bottom: 10.0),
-                    child: Text(
-                      '실제프로필',
-                      style: primaryTextStyle,
-                    ),
-                  ),
-                  SizedBox(height: 10.0),
-                  OtherRealProfileForm(title: '이름',detail: widget.user.data[firestoreRealProfileField][firestoreNameField]),
-                  OtherRealProfileForm(title: '성별',detail: widget.user.data[firestoreRealProfileField][firestoreGenderField]),
-                  OtherRealProfileForm(title: '나이',detail: widget.user.data[firestoreRealProfileField][firestoreAgeField]),
-                  OtherRealProfileForm(title: '직업',detail: widget.user.data[firestoreRealProfileField][firestoreJobField])
-                ],
-              ) 
-              : Column(
-                children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Icon(Icons.lock),
-                      SizedBox(width: 10.0),
-                      Text(
-                        '실제 프로필은 친구가 될시 공개됩니다.',
-                        style: TextStyle(
-                          color: Colors.red,
-                          fontWeight: FontWeight.bold
-                        ),
-                      )
-                    ]
-                  ),
-                  SizedBox(height: 10.0),
-                  StreamBuilder<QuerySnapshot>(
-                    stream: sl.get<FirebaseAPI>().getFirestore().collection(firestoreUsersCollection)
-                      .where(firestoreFriendsRequestField,arrayContains: sl.get<CurrentUser>().uid)
-                      .snapshots(),
-                    builder: (context, snapshot){
-                      if(snapshot.hasData && snapshot.data.documents.length!=0 &&
-                        snapshot.data.documents
-                        .where((doc) => doc.documentID==widget.user.documentID).length!=0){
-                        return Text(
-                          '친구신청 승인 대기중입니다.',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold
-                          ),
-                        );
-                      }
-                      return GestureDetector(
-                        child: Container(
-                          padding: EdgeInsets.all(10.0),
-                          decoration: BoxDecoration(
-                            color: primaryBlue,
-                            border: Border.all(color: primaryBlue),
-                            borderRadius: BorderRadius.circular(3.0)
-                          ),
+              child: StreamBuilder<QuerySnapshot>(
+                stream: sl.get<FirebaseAPI>().getFirestore().collection(firestoreUsersCollection)
+                  .document(widget.user.documentID).collection(firestoreFriendsSubCollection)
+                  .where(uidCol,isEqualTo:sl.get<CurrentUser>().uid)
+                  .where(firestoreFriendsField,isEqualTo: true).snapshots(),
+                builder: (context, snapshot){
+                  if(snapshot.hasData && snapshot.data.documents.length!=0){
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.only(bottom: 10.0),
                           child: Text(
-                            '친구신청 하기',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold
-                            ),
+                            '실제프로필',
+                            style: primaryTextStyle,
                           ),
                         ),
-                        onTap: () => friendRequestBloc
-                          .emitEvent(FriendRequestEventSendRequest(uid: widget.user.documentID)),
-                      );
-                    }
-                  )
-                ]
+                        SizedBox(height: 10.0),
+                        OtherRealProfileForm(title: '이름',detail: widget.user.data[firestoreRealProfileField][firestoreNameField]),
+                        OtherRealProfileForm(title: '성별',detail: widget.user.data[firestoreRealProfileField][firestoreGenderField]),
+                        OtherRealProfileForm(title: '나이',detail: widget.user.data[firestoreRealProfileField][firestoreAgeField]),
+                        OtherRealProfileForm(title: '직업',detail: widget.user.data[firestoreRealProfileField][firestoreJobField])
+                      ],
+                    );
+                  } else {
+                    return Column(
+                      children: <Widget>[
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Icon(Icons.lock),
+                            SizedBox(width: 10.0),
+                            Text(
+                              '실제 프로필은 친구가 될시 공개됩니다.',
+                              style: TextStyle(
+                                color: Colors.red,
+                                fontWeight: FontWeight.bold
+                              ),
+                            )
+                          ]
+                        ),
+                        SizedBox(height: 10.0),
+                        StreamBuilder<QuerySnapshot>(
+                          stream: _getRequestStream(),
+                          builder: (context, snapshot){
+                            if(snapshot.hasData && snapshot.data.documents.length!=0){
+                              return Text(
+                                '친구신청 승인 대기중입니다.',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold
+                                ),
+                              );
+                            }
+                            if(snapshot.connectionState==ConnectionState.waiting){
+                              return CustomProgressIndicator();
+                            }
+                            return GestureDetector(
+                              child: Container(
+                                padding: EdgeInsets.all(10.0),
+                                decoration: BoxDecoration(
+                                  color: primaryBlue,
+                                  border: Border.all(color: primaryBlue),
+                                  borderRadius: BorderRadius.circular(3.0)
+                                ),
+                                child: Text(
+                                  '친구신청 하기',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold
+                                  ),
+                                ),
+                              ),
+                              onTap: () => friendRequestBloc
+                                .emitEvent(FriendRequestEventSendRequest(uid: widget.user.documentID)),
+                            );
+                          }
+                        )
+                      ]
+                    );
+                  }
+                },
               )
             ),
             Container(

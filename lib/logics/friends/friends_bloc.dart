@@ -9,7 +9,7 @@ class FriendsBloc extends BlocEventStateBase<FriendsEvent,FriendsState>
   static final FriendsAPI _api = FriendsAPI();
 
   @override
-  FriendsState get initialState => FriendsState.loading();
+  FriendsState get initialState => FriendsState.initial();
 
   @override
   Stream<FriendsState> eventHandler(FriendsEvent event, FriendsState currentState) async*{

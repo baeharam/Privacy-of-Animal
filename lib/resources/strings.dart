@@ -150,9 +150,11 @@ const String firestoreRandomChatCollection = 'random_chat';
 const String firestoreDeletedUserListCollection = 'deleted_user_list';
 const String firestoreMessageCollection = 'messages';
 
+// Cloud Firestore 서브 컬렉션 이름
+const String firestoreFriendsSubCollection = 'friends';
+
 // Cloud Firestore 친구 필드
-const String firestoreFriendsField = 'friends';
-const String firestoreFriendsRequestField = 'friends_request';
+const String firestoreFriendsField = 'is_friends';
 
 // Cloud Firestore 실제 프로필 필드
 const String firestoreRealProfileField = realProfileTable;

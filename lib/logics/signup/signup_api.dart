@@ -62,8 +62,6 @@ class SignUpAPI {
           firestoreIsTagSelectedField: false,
           firestoreIsTagChattedField: false,
           firestoreIsFaceAnalyzedField: false,
-          firestoreFriendsField: [],
-          firestoreFriendsRequestField: []
         });
       });
   }
