@@ -1,0 +1,26 @@
+import 'package:meta/meta.dart';
+import 'package:privacy_of_animal/bloc_helpers/bloc_event_state.dart';
+
+abstract class FriendsEvent extends BlocEvent {}
+
+class FriendsEventStateClear extends FriendsEvent {}
+
+class FriendsEventFetchFriendsList extends FriendsEvent {
+  final List<dynamic> friends;
+  FriendsEventFetchFriendsList({@required this.friends});
+}
+
+class FriendsEventFetchFriendsRequestList extends FriendsEvent {
+  final List<dynamic> friendsRequest;
+  FriendsEventFetchFriendsRequestList({@required this.friendsRequest});
+}
+
+class FriendsEventRequestAccept extends FriendsEvent {
+  final String user;
+  FriendsEventRequestAccept({@required this.user});
+}
+
+class FriendsEventRequestReject extends FriendsEvent {
+  final String user;
+  FriendsEventRequestReject({@required this.user});
+}

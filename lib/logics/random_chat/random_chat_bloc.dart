@@ -64,6 +64,16 @@ class RandomChatBloc extends BlocEventStateBase<RandomChatEvent,RandomChatState>
       }
     }
 
+    if(event is RandomChatEventCancel) {
+      try {
+        await _api.deleteMadeChatRoom();
+        yield RandomChatState.initial();
+      } catch(exception) {
+        print(exception);
+        yield RandomChatState.apiFailed();
+      }
+    }
+
     if(event is RandomChatEventFinished) {
       yield RandomChatState.finished();
     }

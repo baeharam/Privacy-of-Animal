@@ -96,6 +96,19 @@ class RandomChatAPI {
     });
   }
 
+  // 만든 채팅방 삭제
+  Future<void> deleteMadeChatRoom() async {
+    QuerySnapshot snapshot = await sl.get<FirebaseAPI>().getFirestore()
+      .collection(firestoreMessageCollection)
+      .where(firestoreChatUsersField, arrayContains: sl.get<CurrentUser>().uid)
+      .where(firestoreChatBeginField,isEqualTo:false)
+      .getDocuments();
+
+    await sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async{
+      await tx.delete(snapshot.documents[0].reference);
+    });
+  }
+
   // 사용자가 들어오면 해당 사용자에 대한 정보를 받아와야 함
   Future<DocumentSnapshot> fetchUserData(String uid) async {
     return await sl.get<FirebaseAPI>().getFirestore().collection(firestoreUsersCollection)
