@@ -38,6 +38,6 @@ void setup() {
   sl.registerLazySingleton<TagEditBloc>(() => TagEditBloc());
   sl.registerLazySingleton<ProfileBloc>(() => ProfileBloc());
   sl.registerLazySingleton<FriendRequestBloc>(() => FriendRequestBloc());
-  sl.registerLazySingleton<ChatListBloc>(() => ChatListBloc());
+  //sl.registerLazySingleton<ChatListBloc>(() => ChatListBloc());
   sl.registerLazySingleton<FriendsBloc>(() => FriendsBloc());
 }

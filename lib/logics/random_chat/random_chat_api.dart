@@ -33,7 +33,6 @@ class RandomChatAPI {
         firestoreChatBeginField: false,
         firestoreChatUsersField: [sl.get<CurrentUser>().uid],
         firestoreChatOutField: false,
-        firestoreChatDeleteField: false
       });
     });
 

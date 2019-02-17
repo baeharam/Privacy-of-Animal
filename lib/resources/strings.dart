@@ -149,6 +149,7 @@ const String firestoreUsersCollection = 'users';
 const String firestoreRandomChatCollection = 'random_chat';
 const String firestoreDeletedUserListCollection = 'deleted_user_list';
 const String firestoreRandomMessageCollection = 'random_messages';
+const String firestoreFriendsMessageCollection = 'friends_messages';
 
 // Cloud Firestore 서브 컬렉션 이름
 const String firestoreFriendsSubCollection = 'friends';
@@ -200,15 +201,17 @@ const String firestoreTagDetail4Field = tagDetail4Col;
 const String firestoreTagDetail5Field = tagDetail5Col;
 const List<String> firestoreTagDetailList = tagDetailList;
 
-// Cloud Firestore 메시지 필드
+// Cloud Firestore 랜덤 메시지 필드
 const String firestoreChatBeginField = 'begin';
 const String firestoreChatUsersField = 'users';
 const String firestoreChatOutField = 'out';
-const String firestoreChatDeleteField = 'delete';
 const String firestoreChatFromField = 'from';
 const String firestoreChatToField = 'to';
 const String firestoreChatContentField = 'content';
 const String firestoreChatTimestampField = 'timestamp';
+
+// Cloud Firestore 친구 메시지 필드
+const String firestoreChatDeleteField = 'delete';
 
 // SharedPreferences 플래그 key값
 const String isTagSelected = 'is_tag_selected';

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meta/meta.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state.dart';
 
@@ -16,7 +17,7 @@ class FriendsEventFetchFriendsRequestList extends FriendsEvent {
 }
 
 class FriendsEventChat extends FriendsEvent {
-  final String user;
+  final DocumentSnapshot user;
   FriendsEventChat({@required this.user});
 }
 

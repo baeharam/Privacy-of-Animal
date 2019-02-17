@@ -58,4 +58,28 @@ class FriendsAPI {
       await tx.delete(doc);
     });
   }
+
+  // 친구랑 대화하기
+  // 1. 대화한 내용이 서버에 없으면 방을 생성한다.
+  // 2. 대화한 내용이 서버에 있으면 해당 방에 입장한다.
+  Future<String> chatWithFriends(String userToChat) async {
+    QuerySnapshot snapshot = await sl.get<FirebaseAPI>().getFirestore().collection(firestoreFriendsMessageCollection)
+      .where(firestoreChatUsersField, arrayContains: [sl.get<CurrentUser>().uid,userToChat]).getDocuments();
+    
+    if(snapshot.documents.length==0) {
+      DocumentReference doc = sl.get<FirebaseAPI>().getFirestore()
+        .collection(firestoreFriendsMessageCollection)
+        .document();
+      await sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async{
+        await tx.set(doc, {
+          firestoreChatDeleteField: false,
+          firestoreChatUsersField: [userToChat, sl.get<CurrentUser>().uid]
+        });
+      });
+      return doc.documentID;
+    } else {
+      return snapshot.documents[0].documentID;
+    }
+  }
+
 }

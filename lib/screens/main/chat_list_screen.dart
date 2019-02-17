@@ -13,12 +13,12 @@ import 'package:privacy_of_animal/screens/main/random_chat_screen.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:privacy_of_animal/widgets/progress_indicator.dart';
 
-class ChatRoomScreen extends StatefulWidget {
+class ChatListScreen extends StatefulWidget {
   @override
-  _ChatRoomScreenState createState() => _ChatRoomScreenState();
+  _ChatListScreenState createState() => _ChatListScreenState();
 }
 
-class _ChatRoomScreenState extends State<ChatRoomScreen> {
+class _ChatListScreenState extends State<ChatListScreen> {
 
   final ChatListBloc chatListBloc = sl.get<ChatListBloc>();
 
@@ -45,7 +45,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: sl.get<FirebaseAPI>().getFirestore()
-          .collection(firestoreRandomMessageCollection)
+          .collection(firestoreFriendsMessageCollection)
           .where(firestoreChatUsersField,arrayContains: sl.get<CurrentUser>().uid)
           .snapshots(),
         builder: (context, snapshot){

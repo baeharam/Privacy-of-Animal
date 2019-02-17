@@ -35,6 +35,16 @@ class FriendsBloc extends BlocEventStateBase<FriendsEvent,FriendsState>
       }
     }
 
+    if(event is FriendsEventChat) {
+      try {
+        String chatRoomID = await _api.chatWithFriends(event.user.documentID);
+        yield FriendsState.friendsChatSucceeded(chatRoomID,event.user);
+      } catch(exception){
+        print(exception);
+        yield FriendsState.friendsChatFailed();
+      }
+    }
+
     if(event is FriendsEventBlock) {
       try {
         await _api.blockFriends(event.user);

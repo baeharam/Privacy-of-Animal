@@ -8,6 +8,8 @@ class FriendsState extends BlocState {
   final bool isFriendsFetchFailed;
   final bool isFriendsBlockSucceeded;
   final bool isFriendsBlockFailed;
+  final bool isFriendsChatSucceeded;
+  final bool isFriendsChatFailed;
 
   final bool isFriendsRequestFetchSucceeded;
   final bool isFriendsRequestFetchFailed;
@@ -18,6 +20,8 @@ class FriendsState extends BlocState {
 
   final List<DocumentSnapshot> friends;
   final List<DocumentSnapshot> friendsRequest;
+  final String chatRoomID;
+  final DocumentSnapshot receiver;
 
   FriendsState({
     this.isInitial: false,
@@ -26,6 +30,8 @@ class FriendsState extends BlocState {
     this.isFriendsFetchFailed: false,
     this.isFriendsBlockSucceeded: false,
     this.isFriendsBlockFailed: false,
+    this.isFriendsChatSucceeded: false,
+    this.isFriendsChatFailed: false,
 
     this.isFriendsRequestFetchSucceeded: false,
     this.isFriendsRequestFetchFailed: false,
@@ -35,7 +41,9 @@ class FriendsState extends BlocState {
     this.isFriendsRejectFailed: false,
 
     this.friends,
-    this.friendsRequest
+    this.friendsRequest,
+    this.chatRoomID: '',
+    this.receiver
   });
 
   factory FriendsState.initial() {
@@ -60,6 +68,20 @@ class FriendsState extends BlocState {
   factory FriendsState.friendsFetchFailed() {
     return FriendsState(
       isFriendsFetchFailed: true
+    );
+  }
+
+  factory FriendsState.friendsChatSucceeded(String chatRoomID, DocumentSnapshot receiver) {
+    return FriendsState(
+      isFriendsChatSucceeded: true,
+      chatRoomID: chatRoomID,
+      receiver: receiver
+    );
+  }
+
+  factory FriendsState.friendsChatFailed() {
+    return FriendsState(
+      isFriendsChatFailed: true
     );
   }
 

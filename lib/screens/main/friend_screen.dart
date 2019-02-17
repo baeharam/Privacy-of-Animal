@@ -5,6 +5,7 @@ import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/logics/friends/friends.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
+import 'package:privacy_of_animal/screens/main/friends_chat_screen.dart';
 import 'package:privacy_of_animal/screens/main/other_profile_screen.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
@@ -218,6 +219,17 @@ class _FriendScreenState extends State<FriendScreen> with SingleTickerProviderSt
         return BlocBuilder(
           bloc: friendsBloc,
           builder: (context, FriendsState state){
+            if(state.isFriendsChatSucceeded){
+              WidgetsBinding.instance.addPostFrameCallback((_){
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => FriendsChatScreen(
+                    chatRoomID: state.chatRoomID,
+                    receiver: state.receiver,
+                  )
+                ));
+              });
+            }
+
             if(state.isFriendsRequestFetchFailed){
               return Center(child: Text('친구 신청 목록을 불러오는데 실패했습니다.'));
             }
@@ -288,20 +300,23 @@ class _FriendScreenState extends State<FriendScreen> with SingleTickerProviderSt
               ],
             ),
           ),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 10.0,vertical: 5.0),
-            decoration: BoxDecoration(
-              border: Border.all(color: primaryGreen),
-              borderRadius: BorderRadius.circular(5.0)
-            ),
-            child: Text(
-              '대화',
-              style: TextStyle(
-                color: primaryGreen,
-                fontWeight: FontWeight.bold,
-                fontSize: 17.0
+          GestureDetector(
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 10.0,vertical: 5.0),
+              decoration: BoxDecoration(
+                border: Border.all(color: primaryGreen),
+                borderRadius: BorderRadius.circular(5.0)
+              ),
+              child: Text(
+                '대화',
+                style: TextStyle(
+                  color: primaryGreen,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 17.0
+                ),
               ),
             ),
+            onTap: () => friendsBloc.emitEvent(FriendsEventChat(user: user)),
           ),
           SizedBox(width: 10.0),
           GestureDetector(
