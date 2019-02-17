@@ -166,14 +166,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           '실제프로필',
                           style: primaryTextStyle,
                         ),
-                      ),
-                      Spacer(),
-                      Text(
-                        '친구가 될시 공개됩니다.',
-                        style: TextStyle(
-                          color: primaryBlue,
-                          fontWeight: FontWeight.bold,
-                        ),
                       )
                     ],
                   ),
