@@ -13,6 +13,11 @@ class FriendsBloc extends BlocEventStateBase<FriendsEvent,FriendsState>
 
   @override
   Stream<FriendsState> eventHandler(FriendsEvent event, FriendsState currentState) async*{
+
+    if(event is FriendsEventStateClear) {
+      yield FriendsState.initial();
+    }
+
     if(event is FriendsEventFetchFriendsList) {
       yield FriendsState.loading();
       try {

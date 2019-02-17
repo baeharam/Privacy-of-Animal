@@ -12,12 +12,12 @@ import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:privacy_of_animal/widgets/progress_indicator.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
-class FriendScreen extends StatefulWidget {
+class FriendsScreen extends StatefulWidget {
   @override
-  _FriendScreenState createState() => _FriendScreenState();
+  _FriendsScreenState createState() => _FriendsScreenState();
 }
 
-class _FriendScreenState extends State<FriendScreen> with SingleTickerProviderStateMixin{
+class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProviderStateMixin{
 
   final FriendsBloc friendsBloc = sl.get<FriendsBloc>();
   TabController tabController;
@@ -186,6 +186,17 @@ class _FriendScreenState extends State<FriendScreen> with SingleTickerProviderSt
             if(state.isLoading) {
               return CustomProgressIndicator();
             }
+            if(state.isFriendsChatSucceeded){
+              WidgetsBinding.instance.addPostFrameCallback((_){
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => FriendsChatScreen(
+                    chatRoomID: state.chatRoomID,
+                    receiver: state.receiver,
+                  )
+                ));
+              });
+              friendsBloc.emitEvent(FriendsEventStateClear());
+            }
             if(state.isFriendsFetchSucceeded) {
               sl.get<CurrentUser>().friendsList = state.friends;
             }
@@ -219,17 +230,6 @@ class _FriendScreenState extends State<FriendScreen> with SingleTickerProviderSt
         return BlocBuilder(
           bloc: friendsBloc,
           builder: (context, FriendsState state){
-            if(state.isFriendsChatSucceeded){
-              WidgetsBinding.instance.addPostFrameCallback((_){
-                Navigator.push(context, MaterialPageRoute(
-                  builder: (context) => FriendsChatScreen(
-                    chatRoomID: state.chatRoomID,
-                    receiver: state.receiver,
-                  )
-                ));
-              });
-            }
-
             if(state.isFriendsRequestFetchFailed){
               return Center(child: Text('친구 신청 목록을 불러오는데 실패했습니다.'));
             }

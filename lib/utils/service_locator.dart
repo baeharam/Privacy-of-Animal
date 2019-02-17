@@ -6,6 +6,7 @@ import 'package:privacy_of_animal/logics/find_password/find_password_bloc.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/logics/friend_request/friend_request_bloc.dart';
 import 'package:privacy_of_animal/logics/friends/friends_bloc.dart';
+import 'package:privacy_of_animal/logics/friends_chat/friends_chat_bloc.dart';
 import 'package:privacy_of_animal/logics/home/home_bloc.dart';
 import 'package:privacy_of_animal/logics/initialize_api.dart';
 import 'package:privacy_of_animal/logics/login/login_bloc.dart';
@@ -40,4 +41,5 @@ void setup() {
   sl.registerLazySingleton<FriendRequestBloc>(() => FriendRequestBloc());
   //sl.registerLazySingleton<ChatListBloc>(() => ChatListBloc());
   sl.registerLazySingleton<FriendsBloc>(() => FriendsBloc());
+  sl.registerLazySingleton<FriendsChatBloc>(() => FriendsChatBloc());
 }

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
+import 'package:privacy_of_animal/logics/friends_chat/friends_chat.dart';
 import 'package:privacy_of_animal/logics/random_chat/random_chat.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/screens/main/other_profile_screen.dart';
@@ -109,18 +110,12 @@ class _FriendsChatScreenState extends State<FriendsChatScreen> {
                   margin: EdgeInsets.symmetric(horizontal: 8.0),
                   child: IconButton(
                     icon: Icon(Icons.send),
-                    onPressed: () async{
-                      DocumentReference doc = sl.get<FirebaseAPI>().getFirestore()
-                      .collection(firestoreFriendsMessageCollection)
-                      .document(widget.chatRoomID);
-                      await sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async{
-                        await tx.set(doc, {
-                          firestoreChatFromField: sl.get<CurrentUser>().uid,
-                          firestoreChatToField: widget.receiver,
-                          firestoreChatContentField:messageController.text,
-                          firestoreChatTimestampField:FieldValue.serverTimestamp()
-                        });
-                      });
+                    onPressed: () {
+                      sl.get<FriendsChatBloc>().emitEvent(FriendsChatEventMessageSend(
+                        content: messageController.text,
+                        receiver: widget.receiver.documentID,
+                        chatRoomID: widget.chatRoomID
+                      ));
                       messageController.clear();
                     },
                     color: Colors.black,

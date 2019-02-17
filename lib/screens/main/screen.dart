@@ -11,5 +11,5 @@ export './other_profile_screen.dart';
 
 export './match_screen.dart';
 export './chat_list_screen.dart';
-export './friend_screen.dart';
+export './friends_screen.dart';
 export './profile_screen.dart';
