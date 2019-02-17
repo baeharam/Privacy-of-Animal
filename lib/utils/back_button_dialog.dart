@@ -60,7 +60,7 @@ class BackButtonAction {
 
     Alert(
       context: context,
-      title: '정말로 끝내시겠습니까?',
+      title: '채팅을 종료하시겠습니까?',
       type: AlertType.warning,
       buttons: [
         DialogButton(
