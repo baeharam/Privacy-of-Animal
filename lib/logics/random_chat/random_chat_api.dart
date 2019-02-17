@@ -75,7 +75,25 @@ class RandomChatAPI {
       sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async{
         await tx.update(doc, {firestoreChatOutField: true});
       });
+    } else {
+      await _deleteChatRoom(chatRoomID);
     }
+  }
+
+  // 두번째로 채팅방을 나가면 채팅방 삭제
+  Future<void> _deleteChatRoom(String chatRoomID) async {
+    DocumentSnapshot doc = await sl.get<FirebaseAPI>().getFirestore()
+      .collection(firestoreMessageCollection)
+      .document(chatRoomID).get();
+    await sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async{
+      QuerySnapshot forDelete = 
+        await doc.reference.collection(doc.documentID)
+        .getDocuments();
+      for(DocumentSnapshot document in forDelete.documents) {
+        await tx.delete(document.reference);
+      }
+      await tx.delete(doc.reference);
+    });
   }
 
   // 사용자가 들어오면 해당 사용자에 대한 정보를 받아와야 함

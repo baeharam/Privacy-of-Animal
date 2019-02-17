@@ -65,11 +65,20 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
         backgroundColor: primaryBlue
       ),
       body: WillPopScope(
-        onWillPop: () => !isReceiverOut 
-        ? BackButtonAction.dialogChatExit(context, widget.chatRoomID)
-        : Future.value(true),
+        onWillPop: () { 
+          if(isReceiverOut) {
+            randomChatBloc.emitEvent(RandomChatEventOut(chatRoomID: widget.chatRoomID));
+            return Future.value(true);
+          } else {  
+            return BackButtonAction.dialogChatExit(context, widget.chatRoomID);
+          }
+        },
         child: Column(
           children: <Widget>[
+            Container(
+              padding: EdgeInsets.only(top: 10.0),
+              child: Text('낯선 상대와 연결되었습니다.'),
+            ),
             Flexible(
               child: StreamBuilder(
                 stream: sl.get<FirebaseAPI>().getFirestore()
