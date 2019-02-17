@@ -82,7 +82,7 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
             Flexible(
               child: StreamBuilder(
                 stream: sl.get<FirebaseAPI>().getFirestore()
-                  .collection(firestoreMessageCollection)
+                  .collection(firestoreRandomMessageCollection)
                   .document(widget.chatRoomID)
                   .collection(widget.chatRoomID)
                   .orderBy(firestoreChatTimestampField,descending: true)
@@ -105,7 +105,7 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
             ),
             StreamBuilder(
               stream: sl.get<FirebaseAPI>().getFirestore()
-                  .collection(firestoreMessageCollection)
+                  .collection(firestoreRandomMessageCollection)
                   .document(widget.chatRoomID)
                   .snapshots(),
               builder: (context, snapshot){

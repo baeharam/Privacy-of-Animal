@@ -148,7 +148,7 @@ const String zebraAnimal = 'zebra';
 const String firestoreUsersCollection = 'users';
 const String firestoreRandomChatCollection = 'random_chat';
 const String firestoreDeletedUserListCollection = 'deleted_user_list';
-const String firestoreMessageCollection = 'messages';
+const String firestoreRandomMessageCollection = 'random_messages';
 
 // Cloud Firestore 서브 컬렉션 이름
 const String firestoreFriendsSubCollection = 'friends';

@@ -12,7 +12,7 @@ class RandomChatAPI {
   // 대기중인 방이 없으면 빈 문자열 리턴
   Future<String> getRoomID() async {
     QuerySnapshot querySnapshot
-      = await Firestore.instance.collection(firestoreMessageCollection)
+      = await Firestore.instance.collection(firestoreRandomMessageCollection)
         .where(firestoreChatBeginField,isEqualTo: false).getDocuments();
 
     if(querySnapshot.documents.length==0){
@@ -25,7 +25,7 @@ class RandomChatAPI {
 
   // 대기중인 방이 없으면 방을 만들어야 됨
   Future<String> makeChatRoom() async {
-    CollectionReference col = sl.get<FirebaseAPI>().getFirestore().collection(firestoreMessageCollection);
+    CollectionReference col = sl.get<FirebaseAPI>().getFirestore().collection(firestoreRandomMessageCollection);
     DocumentReference doc;
 
     await sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async{
@@ -43,7 +43,7 @@ class RandomChatAPI {
   // 대기중인 방이 있으면 그곳에 들어가서 flag 값을 true로 변경
   Future<DocumentSnapshot> enterChatRoom(String chatRoomID) async {
     DocumentReference document = sl.get<FirebaseAPI>().getFirestore()
-      .collection(firestoreMessageCollection)
+      .collection(firestoreRandomMessageCollection)
       .document(chatRoomID);
     
     await sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async{
@@ -67,7 +67,7 @@ class RandomChatAPI {
   // 첫번째로 채팅방을 나갈 경우, delete 플래그를 true로 바꿔야 함.
   Future<void> getOutChatRoom(String chatRoomID) async {
     DocumentReference doc = sl.get<FirebaseAPI>().getFirestore()
-      .collection(firestoreMessageCollection)
+      .collection(firestoreRandomMessageCollection)
       .document(chatRoomID);
 
     DocumentSnapshot snapshot = await doc.get();
@@ -83,7 +83,7 @@ class RandomChatAPI {
   // 두번째로 채팅방을 나가면 채팅방 삭제
   Future<void> _deleteChatRoom(String chatRoomID) async {
     DocumentSnapshot doc = await sl.get<FirebaseAPI>().getFirestore()
-      .collection(firestoreMessageCollection)
+      .collection(firestoreRandomMessageCollection)
       .document(chatRoomID).get();
     await sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async{
       QuerySnapshot forDelete = 
@@ -99,7 +99,7 @@ class RandomChatAPI {
   // 만든 채팅방 삭제
   Future<void> deleteMadeChatRoom() async {
     QuerySnapshot snapshot = await sl.get<FirebaseAPI>().getFirestore()
-      .collection(firestoreMessageCollection)
+      .collection(firestoreRandomMessageCollection)
       .where(firestoreChatUsersField, arrayContains: sl.get<CurrentUser>().uid)
       .where(firestoreChatBeginField,isEqualTo:false)
       .getDocuments();
@@ -118,7 +118,7 @@ class RandomChatAPI {
   // 메시지 보내기
   Future<void> sendMessage(String content,String receiver,String chatRoomID) async{
     DocumentReference doc = sl.get<FirebaseAPI>().getFirestore()
-      .collection(firestoreMessageCollection)
+      .collection(firestoreRandomMessageCollection)
       .document(chatRoomID)
       .collection(chatRoomID)
       .document(DateTime.now().millisecondsSinceEpoch.toString());

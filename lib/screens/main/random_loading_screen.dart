@@ -74,7 +74,7 @@ class _RandomLoadingScreenState extends State<RandomLoadingScreen> {
               isChatRoomMaker = true;
               return StreamBuilder<DocumentSnapshot>(
                 stream: sl.get<FirebaseAPI>().getFirestore()
-                .collection(firestoreMessageCollection)
+                .collection(firestoreRandomMessageCollection)
                 .document(state.chatRoomID)
                 .snapshots(),
                 builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot){

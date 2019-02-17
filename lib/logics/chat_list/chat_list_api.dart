@@ -44,7 +44,7 @@ class ChatListAPI {
   // 2. 두번째 사람이 삭제하는 경우는 delete 플래그가 true니까 아예 서버에서 삭제
   Future<void> deleteChatRoom(String chatRoomID) async {
     DocumentSnapshot doc = await sl.get<FirebaseAPI>().getFirestore()
-      .collection(firestoreMessageCollection)
+      .collection(firestoreRandomMessageCollection)
       .document(chatRoomID).get();
 
     if(!doc.data[firestoreChatDeleteField]){

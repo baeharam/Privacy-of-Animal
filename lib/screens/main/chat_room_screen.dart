@@ -45,7 +45,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: sl.get<FirebaseAPI>().getFirestore()
-          .collection(firestoreMessageCollection)
+          .collection(firestoreRandomMessageCollection)
           .where(firestoreChatUsersField,arrayContains: sl.get<CurrentUser>().uid)
           .snapshots(),
         builder: (context, snapshot){
