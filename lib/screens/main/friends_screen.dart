@@ -80,37 +80,7 @@ class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProvider
           backgroundColor: primaryBlue,
           bottom: TabBar(
             tabs: [
-              Tab(child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('친구'),
-                  SizedBox(width: 10.0),
-                  StreamBuilder<QuerySnapshot>(
-                    stream: sl.get<FirebaseAPI>().getFirestore()
-                      .collection(firestoreUsersCollection).document(sl.get<CurrentUser>().uid)
-                      .collection(firestoreFriendsSubCollection).where(firestoreFriendsField, isEqualTo: true)
-                      .snapshots(),
-                    builder: (context, snapshot){
-                      if(snapshot.hasData && snapshot.data.documents.isNotEmpty){
-                        if(friendsListLength==-1 || friendsListLength>snapshot.data.documents.length) {
-                          friendsListLength = snapshot.data.documents.length;
-                          return Container();
-                        }
-                        friendsListLength = snapshot.data.documents.length;
-                        return Container(
-                          padding: EdgeInsets.all(8.0),
-                          decoration: BoxDecoration(
-                            color: Colors.red,
-                            shape: BoxShape.circle
-                          ),
-                          child: Text('${snapshot.data.documentChanges.length}')
-                        );
-                      }
-                      return Container();
-                    },
-                  )
-                ],
-              )),
+              Tab(child: Text('친구')),
               Tab(child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

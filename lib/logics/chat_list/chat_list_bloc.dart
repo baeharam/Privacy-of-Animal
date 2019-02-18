@@ -15,20 +15,21 @@ class ChatListBloc extends BlocEventStateBase<ChatListEvent,ChatListState> {
     if(event is ChatListEventDeleteChatRoom) {
       try {
         await _api.deleteChatRoom(event.chatRoomID);
+        yield ChatListState.fetchLoading();
       } catch(exception) {
         print(exception);
       }
     }
-
+    
     if(event is ChatListEventFetchList) {
       List<ChatListModel> chatListModels = List<ChatListModel>();
       try { 
         chatListModels = await _api.fetchUserData(event.documents);
+        yield ChatListState.fetchSucceeded(chatListModels);
       } catch(exception){
         print(exception);
         yield ChatListState.fetchFailed();
       }
-      yield ChatListState.fetchSucceeded(chatListModels);
     }
     if(event is ChatListEventStateClear) {
       yield ChatListState.initial();

@@ -64,9 +64,16 @@ class FriendsAPI {
   // 2. 대화한 내용이 서버에 있으면 해당 방에 입장한다.
   Future<String> chatWithFriends(String userToChat) async {
     QuerySnapshot snapshot = await sl.get<FirebaseAPI>().getFirestore().collection(firestoreFriendsMessageCollection)
-      .where(firestoreChatUsersField, arrayContains: [sl.get<CurrentUser>().uid,userToChat]).getDocuments();
-    
-    if(snapshot.documents.length==0) {
+      .where(firestoreChatUsersField, arrayContains: sl.get<CurrentUser>().uid).getDocuments();
+
+    String chatRoomID = '';
+    for(DocumentSnapshot doc in snapshot.documents) {
+      if((doc.data[firestoreChatUsersField] as List).contains(userToChat)){
+        chatRoomID = doc.documentID;
+      }
+    }
+
+    if(chatRoomID.isEmpty) {
       DocumentReference doc = sl.get<FirebaseAPI>().getFirestore()
         .collection(firestoreFriendsMessageCollection)
         .document();
@@ -78,7 +85,7 @@ class FriendsAPI {
       });
       return doc.documentID;
     } else {
-      return snapshot.documents[0].documentID;
+      return chatRoomID;
     }
   }
 
