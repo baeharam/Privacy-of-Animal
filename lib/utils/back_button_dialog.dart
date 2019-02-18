@@ -54,6 +54,41 @@ class BackButtonAction {
     return Future.value(false);
   }
 
+  static Future<bool> terminateApp(BuildContext context) async{
+    Alert(
+      title: '종료하시겠습니까?',
+      type: AlertType.warning,
+      context: context,
+      content: Text(
+        '자동으로 로그아웃 됩니다.'
+      ),
+      buttons: [
+        DialogButton(
+          child: Text(
+            '예',
+            style: TextStyle(
+              color: Colors.white
+            ),
+          ),
+          onPressed: () async {
+            await sl.get<FirebaseAPI>().getAuth().signOut();
+            SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+          },
+        ),
+        DialogButton(
+          child: Text(
+            '아니오',
+            style: TextStyle(
+              color: Colors.white
+            ),
+          ),
+          onPressed: () => Navigator.of(context).pop()
+        )
+      ]
+    ).show();
+    return Future.value(false);
+  }
+
   static Future<bool> dialogChatExit(BuildContext context, String chatRoomID) {
 
     final randomChatBloc = sl.get<RandomChatBloc>();

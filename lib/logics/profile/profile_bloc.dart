@@ -20,8 +20,8 @@ class ProfileBloc extends BlocEventStateBase<ProfileEvent,ProfileState>
       DateTime now = DateTime.now();
       Duration diff = now.difference(before);
 
-      if(diff<Duration(days: 3)){
-        yield ProfileState.noReset('갱신가능까지 ${180-diff.inHours}시간 남았습니다.');
+      if(diff<Duration(days: 2)){
+        yield ProfileState.noReset('갱신가능까지 ${48-diff.inHours}시간 남았습니다.');
       } else {
         yield ProfileState.reset();
       }

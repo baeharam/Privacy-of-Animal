@@ -1,12 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/models/intro_page_model.dart';
 import 'package:privacy_of_animal/models/tag_model.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
-import 'package:privacy_of_animal/utils/service_locator.dart';
 
 final double dashedCircleRadius = ScreenUtil.height/16;
 final double dashedBackgroundCircleDiameter = dashedCircleRadius*2+30.0;
@@ -64,7 +62,8 @@ Map<String,String> tagToMessage = {
   photo: tagPhotoMessage,
   singleLife: tagSingleLifeMessage,
   sport: tagSportMessage,
-  music: tagMusicMessage
+  music: tagMusicMessage,
+  trip:tagTripMessage
 };
 
 WebviewScaffold webViewImage(String keyword) {
@@ -165,5 +164,9 @@ const tags = [
   const Tag(
     title: music,
     image: AssetImage('assets/images/tags/music.png')
+  ),
+  const Tag(
+    title: trip,
+    image: AssetImage('assets/images/tags/trip.png')
   )
 ];

@@ -64,7 +64,7 @@ class SettingScreenState extends State<SettingScreen> {
                   ButtonTheme(
                     minWidth: ScreenUtil.width*0.1,
                     child: RaisedButton(
-                      onPressed: () => BackButtonAction.stopInMiddle(context),
+                      onPressed: () => BackButtonAction.terminateApp(context),
                       color: primaryBeige,
                       textColor: primaryBlue,
                       child: Text("로그아웃",style: TextStyle(fontWeight: FontWeight.w800),),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/random_chat/random_chat.dart';
+import 'package:privacy_of_animal/logics/same_match/same_match.dart';
 import 'package:privacy_of_animal/models/tag_list_model.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/resources/constants.dart';
@@ -42,10 +43,16 @@ class _MatchScreenState extends State<MatchScreen> {
           Positioned(
             top: -ScreenUtil.height/10,
             left: -ScreenUtil.width/2,
-            child: Image(
-              image: AssetImage('assets/images/components/match_tag_circle.png'),
-              width: ScreenUtil.width*1.1,
-              height: ScreenUtil.width*1.1
+            child: GestureDetector(
+              child: Image(
+                image: AssetImage('assets/images/components/match_tag_circle.png'),
+                width: ScreenUtil.width*1.1,
+                height: ScreenUtil.width*1.1
+              ),
+              onTap: () {
+                sl.get<SameMatchBloc>().emitEvent(SameMatchEventFindUser());
+                Navigator.pushNamed(context, routeSameMatch);
+              },
             ),
           ),
           TagTitleForm(
@@ -85,9 +92,9 @@ class _MatchScreenState extends State<MatchScreen> {
             right: -ScreenUtil.width/2,
             child: GestureDetector(
               child: Image(
-                image: AssetImage('assets/images/components/match_random_circle.png'),
                 width: ScreenUtil.width*1.1,
                 height: ScreenUtil.width*1.1,
+                image: AssetImage('assets/images/components/match_random_circle.png'),
               ),
               onTap: () {
                 sl.get<RandomChatBloc>().emitEvent(RandomChatEventMatchStart());
@@ -96,7 +103,7 @@ class _MatchScreenState extends State<MatchScreen> {
             )
           ),
           Positioned(
-            right: ScreenUtil.width/3,
+            right: ScreenUtil.width/4,
             bottom: ScreenUtil.height/6,
             child: ExplainWidget(
               content: '완전 랜덤 매칭'
@@ -116,21 +123,25 @@ class ExplainWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20.0,vertical: 10.0),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: Colors.black, width: 1.0, style: BorderStyle.solid),
-        borderRadius: BorderRadius.circular(10.0),
-      ),
-      child: Text(
-        content,
-        style: TextStyle(
-          color: Colors.black,
-          fontWeight: FontWeight.bold,
-          fontSize: 20.0
+    return Material(
+      elevation: 10.0,
+      color: Colors.transparent,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0,vertical: 10.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(color: Colors.black, width: 1.0, style: BorderStyle.solid),
+          borderRadius: BorderRadius.circular(10.0),
         ),
-        textAlign: TextAlign.center,
+        child: Text(
+          content,
+          style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+            fontSize: 20.0
+          ),
+          textAlign: TextAlign.center,
+        ),
       ),
     );
   }
@@ -153,14 +164,14 @@ class TagTitleForm extends StatelessWidget {
       left: left,
       top: top,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 8.0,vertical: 5.0),
+        padding: EdgeInsets.symmetric(horizontal: 15.0,vertical: 5.0),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20.0),
           border: Border.all(
             color: primaryGreen,
             width: 3.0
           ),
-          color: primaryBeige.withOpacity(0.1)
+          color: Colors.white.withOpacity(0.2)
         ),
         child: Text(
           '# $content',
