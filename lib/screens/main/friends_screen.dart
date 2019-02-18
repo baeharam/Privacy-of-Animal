@@ -9,7 +9,6 @@ import 'package:privacy_of_animal/screens/main/friends_chat_screen.dart';
 import 'package:privacy_of_animal/screens/main/other_profile_screen.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
-import 'package:privacy_of_animal/utils/stream_snackbar.dart';
 import 'package:privacy_of_animal/widgets/progress_indicator.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
