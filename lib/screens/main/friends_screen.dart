@@ -9,6 +9,7 @@ import 'package:privacy_of_animal/screens/main/friends_chat_screen.dart';
 import 'package:privacy_of_animal/screens/main/other_profile_screen.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
+import 'package:privacy_of_animal/utils/stream_snackbar.dart';
 import 'package:privacy_of_animal/widgets/progress_indicator.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
@@ -204,6 +205,18 @@ class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProvider
             }
             if(state.isLoading) {
               return CustomProgressIndicator();
+            }
+            if(state.isFriendsBlockSucceeded){
+              streamSnackbar(context,'친구를 차단하였습니다.');
+              friendsBloc.emitEvent(FriendsEventStateClear());
+            }
+            if(state.isFriendsAcceptSucceeded) {
+              streamSnackbar(context,'친구를 수락하였습니다.');
+              friendsBloc.emitEvent(FriendsEventStateClear());
+            }
+            if(state.isFriendsRejectSucceeded) {
+              streamSnackbar(context,'친구를 삭제하였습니다.');
+              friendsBloc.emitEvent(FriendsEventStateClear());
             }
             if(state.isFriendsRequestFetchSucceeded) {
               sl.get<CurrentUser>().friendsRequestList = state.friendsRequest;
