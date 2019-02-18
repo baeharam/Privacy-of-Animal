@@ -14,6 +14,7 @@ class SameMatchBloc extends BlocEventStateBase<SameMatchEvent,SameMatchState>
   Stream<SameMatchState> eventHandler(SameMatchEvent event, SameMatchState currentState) async*{
     if(event is SameMatchEventFindUser) {
       try {
+        yield SameMatchState.loading();
         yield SameMatchState.findSucceeded(await _api.findUser());
       } catch(exception) {
         print(exception);

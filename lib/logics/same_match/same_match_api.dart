@@ -32,56 +32,78 @@ class SameMatchAPI {
     List<List<DocumentSnapshot>> matchedPeople = List<List<DocumentSnapshot>>(6);
     Map<String,List<List<String>>> matchedTags = Map<String,List<List<String>>>();
     for(DocumentSnapshot user in users.documents) {
-      // 친구관계라면 제외
-      if(!(friends.contains(user.documentID))){
-        // 친구 아니라면 매칭하는 태그 개수를 계산해서 해당하는 배열 인덱스에 넣는다.
-        int matchNum = 0;
-        if(currentUser.tagListModel.tagTitleList[0]
-          ==user.data[firestoreTagField][firestoreTagTitle1Field]) {
-            matchNum++;
-            matchedTags[user.documentID].add(
-              [currentUser.tagListModel.tagTitleList[0],
-              user.data[firestoreTagField][firestoreTagDetail1Field]]
-            );
-          }
-        if(currentUser.tagListModel.tagTitleList[1]
-          ==user.data[firestoreTagField][firestoreTagTitle2Field]) {
-            matchNum++;
-            matchedTags[user.documentID].add(
-              [currentUser.tagListModel.tagTitleList[1],
-              user.data[firestoreTagField][firestoreTagDetail2Field]]
-            );
-          }
-        if(currentUser.tagListModel.tagTitleList[2]
-          ==user.data[firestoreTagField][firestoreTagTitle3Field]) {
-            matchNum++;
-            matchedTags[user.documentID].add(
-              [currentUser.tagListModel.tagTitleList[2],
-              user.data[firestoreTagField][firestoreTagDetail3Field]]
-            );
-          }
-        if(currentUser.tagListModel.tagTitleList[3]
-          ==user.data[firestoreTagField][firestoreTagTitle4Field]) {
-            matchNum++;
-            matchedTags[user.documentID].add(
-              [currentUser.tagListModel.tagTitleList[3],
-              user.data[firestoreTagField][firestoreTagDetail4Field]]
-            );
-          }
-        if(currentUser.tagListModel.tagTitleList[4]
-          ==user.data[firestoreTagField][firestoreTagTitle5Field]) {
-            matchNum++;
-            matchedTags[user.documentID].add(
-              [currentUser.tagListModel.tagTitleList[4],
-              user.data[firestoreTagField][firestoreTagDetail5Field]]
-            );
-          }
+      // 친구관계이거나 자기 자신이라면 제외
+      if(!(friends.contains(user.documentID)) && user.documentID!=currentUser.uid){
+        // 통과하면 매칭하는 태그 개수를 계산해서 해당하는 배열 인덱스에 넣는다.
+        int matchNum = 0;       
+        matchedTags[user.documentID] = List<List<String>>();
+
+        List<String> tagTitles = [
+          user.data[firestoreTagField][firestoreTagTitle1Field],
+          user.data[firestoreTagField][firestoreTagTitle2Field],
+          user.data[firestoreTagField][firestoreTagTitle3Field],
+          user.data[firestoreTagField][firestoreTagTitle4Field],
+          user.data[firestoreTagField][firestoreTagTitle5Field]
+        ];
+
+        List<String> tagDetails = [
+          user.data[firestoreTagField][firestoreTagDetail1Field],
+          user.data[firestoreTagField][firestoreTagDetail2Field],
+          user.data[firestoreTagField][firestoreTagDetail3Field],
+          user.data[firestoreTagField][firestoreTagDetail4Field],
+          user.data[firestoreTagField][firestoreTagDetail5Field]
+        ];
+
+        int matchedIndex = 0;
+
+        matchedIndex = tagTitles.lastIndexOf(currentUser.tagListModel.tagTitleList[0]);
+        if(matchedIndex!=-1) {
+          matchNum++;
+          matchedTags[user.documentID].add(
+            [currentUser.tagListModel.tagTitleList[0],
+            tagDetails[matchedIndex]]
+          );
+        }
+        matchedIndex = tagTitles.lastIndexOf(currentUser.tagListModel.tagTitleList[1]);
+        if(matchedIndex!=-1) {
+          matchNum++;
+          matchedTags[user.documentID].add(
+            [currentUser.tagListModel.tagTitleList[1],
+            tagDetails[matchedIndex]]
+          );
+        }
+        matchedIndex = tagTitles.lastIndexOf(currentUser.tagListModel.tagTitleList[2]);
+        if(matchedIndex!=-1) {
+          matchNum++;
+          matchedTags[user.documentID].add(
+            [currentUser.tagListModel.tagTitleList[2],
+            tagDetails[matchedIndex]]
+          );
+        }
+        matchedIndex = tagTitles.lastIndexOf(currentUser.tagListModel.tagTitleList[3]);
+        if(matchedIndex!=-1) {
+          matchNum++;
+          matchedTags[user.documentID].add(
+            [currentUser.tagListModel.tagTitleList[3],
+            tagDetails[matchedIndex]]
+          );
+        }
+        matchedIndex = tagTitles.lastIndexOf(currentUser.tagListModel.tagTitleList[4]);
+        if(matchedIndex!=-1) {
+          matchNum++;
+          matchedTags[user.documentID].add(
+            [currentUser.tagListModel.tagTitleList[4],
+            tagDetails[matchedIndex]]
+          );
+        }
+        if(matchedPeople[matchNum]==null) matchedPeople[matchNum] = List<DocumentSnapshot>();
         matchedPeople[matchNum].add(user);
       }
     }
 
     // 가장 많이 매칭되는 태그부터 본다.
-    for(int i=5; i>=0; i--){
+    for(int i=5; i>=1; i--){
+      if(matchedPeople[i]==null) continue;
       if(matchedPeople[i].isNotEmpty){
         int index = Random().nextInt(matchedPeople[i].length);
         List<List<String>> tags = matchedTags[matchedPeople[i][index].documentID];
@@ -91,6 +113,11 @@ class SameMatchAPI {
         sameMatchModel.userInfo = matchedPeople[i][index];
         sameMatchModel.profileImage = sameMatchModel.userInfo.data[firestoreFakeProfileField][firestoreAnimalImageField];
         sameMatchModel.confidence =sameMatchModel.userInfo.data[firestoreFakeProfileField][firestoreAnimalConfidenceField];
+        sameMatchModel.nickName =sameMatchModel.userInfo.data[firestoreFakeProfileField][firestoreNickNameField];
+        sameMatchModel.age =sameMatchModel.userInfo.data[firestoreFakeProfileField][firestoreFakeAgeField];
+        sameMatchModel.gender =sameMatchModel.userInfo.data[firestoreFakeProfileField][firestoreFakeGenderField];
+        sameMatchModel.emotion =sameMatchModel.userInfo.data[firestoreFakeProfileField][firestoreFakeEmotionField];
+        sameMatchModel.animalName=sameMatchModel.userInfo.data[firestoreFakeProfileField][firestoreAnimalNameField];
         break;
       }
     }
