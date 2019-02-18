@@ -29,6 +29,7 @@ class _FriendsChatScreenState extends State<FriendsChatScreen> {
   final TextEditingController messageController = TextEditingController();
   final FocusNode messageFocusNode = FocusNode();
   final FriendsChatBloc friendsChatBloc = sl.get<FriendsChatBloc>();
+  final GlobalKey<ScaffoldState> scaffoldKey =GlobalKey<ScaffoldState>();
 
   // Cloud Firestore에서 불러와서 저장.
   List<DocumentSnapshot> messages = List<DocumentSnapshot>();
@@ -52,6 +53,7 @@ class _FriendsChatScreenState extends State<FriendsChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: scaffoldKey,
       appBar: AppBar(
         title: Text(
           '채팅',
@@ -127,12 +129,20 @@ class _FriendsChatScreenState extends State<FriendsChatScreen> {
                   child: IconButton(
                     icon: Icon(Icons.send),
                     onPressed: () {
-                      friendsChatBloc.emitEvent(FriendsChatEventMessageSend(
-                        content: messageController.text,
-                        receiver: widget.receiver.documentID,
-                        chatRoomID: widget.chatRoomID
-                      ));
-                      messageController.clear();
+                      if(messageController.text.isEmpty){
+                        scaffoldKey.currentState.showSnackBar(SnackBar(
+                          content: Text('메시지를 입력하세요.'),
+                          duration: const Duration(milliseconds: 100),
+                        ));
+                      }
+                      else {
+                        friendsChatBloc.emitEvent(FriendsChatEventMessageSend(
+                          content: messageController.text,
+                          receiver: widget.receiver.documentID,
+                          chatRoomID: widget.chatRoomID
+                        ));
+                        messageController.clear();
+                      }
                     },
                     color: Colors.black,
                   ),
