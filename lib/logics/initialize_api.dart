@@ -3,12 +3,13 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/resources/config.dart';
 import 'package:privacy_of_animal/resources/constants.dart';
+import 'dart:async';
 
 class InitializeAPI {
 
   // 앱 시작 초기화
   Future<void> appInitialize() async {
-    final FirebaseApp app = await FirebaseApp.configure(
+    await FirebaseApp.configure(
       name: 'PrivacyofAnimal',
       options: const FirebaseOptions(
         googleAppID: iosAppID,
@@ -16,8 +17,7 @@ class InitializeAPI {
         projectID: projectID
       )
     );
-    final Firestore firestore = Firestore(app: app);
-    await firestore.settings(timestampsInSnapshotsEnabled: true);
+    await Firestore.instance.settings(timestampsInSnapshotsEnabled: true);
   }
 
   // 상수값 초기화

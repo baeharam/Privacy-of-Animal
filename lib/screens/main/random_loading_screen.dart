@@ -1,14 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state_builder.dart';
-import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/logics/random_chat/random_chat.dart';
 import 'package:privacy_of_animal/resources/resources.dart';
 import 'package:privacy_of_animal/screens/main/random_chat_screen.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:privacy_of_animal/utils/stream_snackbar.dart';
-import 'package:privacy_of_animal/widgets/progress_indicator.dart';
 
 class RandomLoadingScreen extends StatefulWidget {
   @override
@@ -18,25 +16,40 @@ class RandomLoadingScreen extends StatefulWidget {
 class _RandomLoadingScreenState extends State<RandomLoadingScreen> {
 
   final RandomChatBloc randomChatBloc = sl.get<RandomChatBloc>();
+  bool isChatRoomMaker = false;
+
+  Widget _loadingWidget() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          CircularProgressIndicator(),
+          SizedBox(height: 20.0),
+          Text(
+            '채팅 상대를 찾고 있습니다...',
+            style: TextStyle(
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
+              fontSize: 15.0
+            ),
+          )
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          '매칭 상대 찾는 중...',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold
-          ),
-        ),
-        centerTitle: true,
         elevation: 0.0,
         backgroundColor: primaryBlue
       ),
       body: WillPopScope(
-        onWillPop: () async{
-          randomChatBloc.emitEvent(RandomChatEventCancel());
+        onWillPop: () {
+          if(isChatRoomMaker){
+            randomChatBloc.emitEvent(RandomChatEventCancel());
+          }
           return Future.value(true);
         },
         child: BlocBuilder(
@@ -59,6 +72,7 @@ class _RandomLoadingScreenState extends State<RandomLoadingScreen> {
             }
 
             if(state.isChatRoomMade) {
+              isChatRoomMaker = true;
               return StreamBuilder<DocumentSnapshot>(
                 stream: sl.get<FirebaseAPI>().getFirestore()
                 .collection(firestoreMessageCollection)
@@ -71,7 +85,7 @@ class _RandomLoadingScreenState extends State<RandomLoadingScreen> {
                       chatRoomID: snapshot.data.documentID)
                     );
                   }
-                  return CustomProgressIndicator();
+                  return _loadingWidget();
                 },
               );
             }
@@ -87,7 +101,7 @@ class _RandomLoadingScreenState extends State<RandomLoadingScreen> {
               });
             }
 
-            return CustomProgressIndicator();
+            return _loadingWidget();
           }
         )
       ),

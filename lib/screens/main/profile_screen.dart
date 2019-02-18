@@ -85,7 +85,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               Icon(Icons.search)
                             ],
                           ),
-                          onTap: () => Navigator.pushNamed(context, routeWebViewImage),
+                          onTap: () => Navigator.push(context, MaterialPageRoute(
+                            builder: (context) => 
+                              webViewImage(sl.get<CurrentUser>().fakeProfileModel.celebrity)
+                          )),
                         )
                       ],
                     )
@@ -162,14 +165,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         child: Text(
                           '실제프로필',
                           style: primaryTextStyle,
-                        ),
-                      ),
-                      Spacer(),
-                      Text(
-                        '친구가 될시 공개됩니다.',
-                        style: TextStyle(
-                          color: primaryBlue,
-                          fontWeight: FontWeight.bold,
                         ),
                       )
                     ],

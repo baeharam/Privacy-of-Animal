@@ -14,8 +14,6 @@ const String routeSignUpDecision = '/signUpDecision';
 const String routePhotoDecision = '/photoDecision';
 const String routeHomeDecision = '/homeDecision';
 
-const String routeWebViewImage = '/webViewImage';
-
 // IntroScreen
 const String introMessage1Above = '내 얼굴 사진을 바탕으로';
 const String introMessage1Below = '분석되는 \"닮은꼴 동물\"';
@@ -152,6 +150,12 @@ const String firestoreRandomChatCollection = 'random_chat';
 const String firestoreDeletedUserListCollection = 'deleted_user_list';
 const String firestoreMessageCollection = 'messages';
 
+// Cloud Firestore 서브 컬렉션 이름
+const String firestoreFriendsSubCollection = 'friends';
+
+// Cloud Firestore 친구 필드
+const String firestoreFriendsField = 'is_friends';
+
 // Cloud Firestore 실제 프로필 필드
 const String firestoreRealProfileField = realProfileTable;
 const String firestoreAgeField = ageCol;
@@ -199,6 +203,7 @@ const List<String> firestoreTagDetailList = tagDetailList;
 // Cloud Firestore 메시지 필드
 const String firestoreChatBeginField = 'begin';
 const String firestoreChatUsersField = 'users';
+const String firestoreChatOutField = 'out';
 const String firestoreChatDeleteField = 'delete';
 const String firestoreChatFromField = 'from';
 const String firestoreChatToField = 'to';

@@ -67,21 +67,23 @@ Map<String,String> tagToMessage = {
   music: tagMusicMessage
 };
 
-WebviewScaffold webViewImage = WebviewScaffold(
-  url: 'https://www.google.co.kr/search?q=${sl.get<CurrentUser>().fakeProfileModel.celebrity}&hl=ko&source=lnms&tbm=isch',
-  appBar: AppBar(
-    title: Text(
-      '구글 검색 결과',
-      style: TextStyle(
-        color: Colors.white,
-        fontWeight: FontWeight.bold
+WebviewScaffold webViewImage(String keyword) {
+  return WebviewScaffold(
+    url: 'https://www.google.co.kr/search?q=$keyword&hl=ko&source=lnms&tbm=isch',
+    appBar: AppBar(
+      title: Text(
+        '구글 검색 결과',
+        style: TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.bold
+        ),
       ),
-    ),
-    centerTitle: true,
-    elevation: 0.0,
-    backgroundColor: primaryBlue,
-  )
-);
+      centerTitle: true,
+      elevation: 0.0,
+      backgroundColor: primaryBlue,
+    )
+  );
+}
 
 const agePickerData = '''
 [

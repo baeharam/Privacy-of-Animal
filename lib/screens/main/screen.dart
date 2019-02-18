@@ -7,6 +7,7 @@ export './photo_screen.dart';
 export './analyze_intro_screen.dart';
 export './random_loading_screen.dart';
 export './random_chat_screen.dart';
+export './other_profile_screen.dart';
 
 export './match_screen.dart';
 export './chat_room_screen.dart';
