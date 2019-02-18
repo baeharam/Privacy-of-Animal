@@ -4,6 +4,7 @@ import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/home/home.dart';
 import 'package:privacy_of_animal/resources/constants.dart';
 import 'package:privacy_of_animal/screens/main/screen.dart';
+import 'package:privacy_of_animal/utils/back_button_dialog.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:privacy_of_animal/widgets/progress_indicator.dart';
 
@@ -27,43 +28,46 @@ class _HomeDecisionState extends State<HomeDecision> {
     return BlocBuilder(
       bloc: homeBloc,
       builder: (context, HomeState state){
-        return Scaffold(
-          body: state.isLoading ? CustomProgressIndicator() : homePage[state.activeIndex],
-          bottomNavigationBar: BottomNavigationBar(
-            currentIndex: state.activeIndex,
-            onTap: (index) => homeBloc.emitEvent(HomeEvent(index: index)),
-            items: [
-              BottomNavigationBarItem(
-                title: Text(''),
-                icon: ImageIcon(
-                  AssetImage('assets/images/components/match.png'),
-                  size: ScreenUtil.width/4,
+        return WillPopScope(
+          onWillPop: () => BackButtonAction.terminateApp(context),
+          child: Scaffold(
+            body: state.isLoading ? CustomProgressIndicator() : homePage[state.activeIndex],
+            bottomNavigationBar: BottomNavigationBar(
+              currentIndex: state.activeIndex,
+              onTap: (index) => homeBloc.emitEvent(HomeEvent(index: index)),
+              items: [
+                BottomNavigationBarItem(
+                  title: Text(''),
+                  icon: ImageIcon(
+                    AssetImage('assets/images/components/match.png'),
+                    size: ScreenUtil.width/4,
+                  )
+                ),
+                BottomNavigationBarItem(
+                  title: Text(''),
+                  icon: ImageIcon(
+                    AssetImage('assets/images/components/chat.png'),
+                    size: ScreenUtil.width/4,
+                  )
+                ),
+                BottomNavigationBarItem(
+                  title: Text(''),
+                  icon: ImageIcon(
+                    AssetImage('assets/images/components/friend.png'),
+                    size: ScreenUtil.width/4,
+                  )
+                ),
+                BottomNavigationBarItem(
+                  title: Text(''),
+                  icon: ImageIcon(
+                    AssetImage('assets/images/components/profile.png'),
+                    size: ScreenUtil.width/4,
+                  )
                 )
-              ),
-              BottomNavigationBarItem(
-                title: Text(''),
-                icon: ImageIcon(
-                  AssetImage('assets/images/components/chat.png'),
-                  size: ScreenUtil.width/4,
-                )
-              ),
-              BottomNavigationBarItem(
-                title: Text(''),
-                icon: ImageIcon(
-                  AssetImage('assets/images/components/friend.png'),
-                  size: ScreenUtil.width/4,
-                )
-              ),
-              BottomNavigationBarItem(
-                title: Text(''),
-                icon: ImageIcon(
-                  AssetImage('assets/images/components/profile.png'),
-                  size: ScreenUtil.width/4,
-                )
-              )
-            ],
-            fixedColor: Colors.red,
-            type: BottomNavigationBarType.fixed,
+              ],
+              fixedColor: Colors.red,
+              type: BottomNavigationBarType.fixed,
+            ),
           ),
         );
       }
