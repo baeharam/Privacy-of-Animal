@@ -62,7 +62,8 @@ Map<String,String> tagToMessage = {
   photo: tagPhotoMessage,
   singleLife: tagSingleLifeMessage,
   sport: tagSportMessage,
-  music: tagMusicMessage
+  music: tagMusicMessage,
+  trip:tagTripMessage
 };
 
 WebviewScaffold webViewImage(String keyword) {
@@ -163,5 +164,9 @@ const tags = [
   const Tag(
     title: music,
     image: AssetImage('assets/images/tags/music.png')
+  ),
+  const Tag(
+    title: trip,
+    image: AssetImage('assets/images/tags/trip.png')
   )
 ];

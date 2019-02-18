@@ -90,17 +90,17 @@ const String tagCelebrityMessage = '누구 덕질하고 있어?';
 const String tagDramaMessage = '너에게 있어 인생 드라마는?';
 const String tagFashionMessage = '가장 좋아하는 데일리룩은?';
 const String tagFoodMessage = '가장 좋아하는 음식은?';
-const String tagGameMessage = '진짜 이 게임은 최고다하는거 있어?';
-const String tagLeisureMessage = '가장 하고 싶은 레저스포츠가 뭐야?';
-const String tagMakeupMessage = '가장 좋아하는 화장품 브랜드는?';
-const String tagPhotoMessage = '너의 인생사진은 어디서 찍은 사진이야?';
-const String tagSingleLifeMessage = '자취 꿀팁은?';
+const String tagGameMessage = '너에게 있어 최고의 게임은?';
+const String tagLeisureMessage = '가장 하고 싶은 레저스포츠는?';
+const String tagMakeupMessage = '가장 좋아하는 메이크업은?';
+const String tagPhotoMessage = '너의 인생사진을 찍은 장소는?';
+const String tagSingleLifeMessage = '자취하면서 얻은 꿀팁은?';
 const String tagSportMessage = '가장 즐겨하는 운동은?';
 const String tagMusicMessage = '음악 하나 추천해줘!';
 
 // PhotoScreen
 const String photoWarningMessage1 = '※ 정면 사진이 아닐시 분석이 안될 수 있습니다.';
-const String photoWarningMessage2 = '※ 분석한 후 3일이 지나야 재분석이 가능합니다.';
+const String photoWarningMessage2 = '※ 분석한 후 2일이 지나야 재분석이 가능합니다.';
 
 // API url
 const String kakaoAPIurl = 'https://kapi.kakao.com/v1/vision/face/detect';
