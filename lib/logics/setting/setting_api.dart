@@ -72,6 +72,12 @@ class SettingAPI {
     for(DocumentSnapshot message in messagesSnapshot.documents) {
       batch.delete(message.reference);
     }
+
+    // 사용자 정보 삭제
+    DocumentReference myself = sl.get<FirebaseAPI>().getFirestore()
+      .collection(firestoreUsersCollection).document(currentUser.uid);
+
+    batch.delete(myself);
   
     await batch.commit();
   }
