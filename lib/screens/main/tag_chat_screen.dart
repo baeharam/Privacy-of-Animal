@@ -60,16 +60,13 @@ class _TagChatScreenState extends State<TagChatScreen> {
             return Column(
               children: <Widget>[
                 Flexible(
-                  child: ScrollConfiguration(
-                    behavior: NoScrollGlow(),
-                    child: ListView.builder(
-                      scrollDirection: Axis.vertical,
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0,vertical: 30.0),
-                      itemCount: widgets.length,
-                      itemBuilder: (context,index) => widgets[index],
-                      controller: _scrollController,
-                    ),
+                  child: ListView.builder(
+                    scrollDirection: Axis.vertical,
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0,vertical: 30.0),
+                    itemCount: widgets.length,
+                    itemBuilder: (context,index) => widgets[index],
+                    controller: _scrollController,
                   ),
                 ),
                 state.showSubmitButton 
@@ -94,12 +91,5 @@ class _TagChatScreenState extends State<TagChatScreen> {
         ),
       ),
     );
-  }
-}
-
-class NoScrollGlow extends ScrollBehavior {
-  @override
-  Widget buildViewportChrome(BuildContext context, Widget child, AxisDirection axisDirection) {
-    return child;
   }
 }

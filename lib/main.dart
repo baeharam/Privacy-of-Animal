@@ -3,6 +3,7 @@ import 'package:privacy_of_animal/logics/initialize_api.dart';
 import 'package:privacy_of_animal/resources/routes.dart';
 import 'package:privacy_of_animal/screens/main/intro_screen.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
+import 'package:privacy_of_animal/widgets/no_scroll_glow.dart';
 
 Future<void> main() async{
   setup();
@@ -21,7 +22,13 @@ class PrivacyOfAnimal extends StatelessWidget {
         fontFamily: 'NanumGothic'
       ),
       routes: routes,
-      debugShowCheckedModeBanner: false
+      debugShowCheckedModeBanner: false,
+      builder: (context, child){
+        return ScrollConfiguration(
+          behavior: NoScrollGlow(),
+          child: child,
+        );
+      },
     );
   }
 }
