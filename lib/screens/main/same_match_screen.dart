@@ -1,8 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state_builder.dart';
+import 'package:privacy_of_animal/logics/current_user.dart';
+import 'package:privacy_of_animal/logics/firebase_api.dart';
+import 'package:privacy_of_animal/logics/friend_request/friend_request.dart';
 import 'package:privacy_of_animal/logics/same_match/same_match.dart';
 import 'package:privacy_of_animal/resources/resources.dart';
+import 'package:privacy_of_animal/screens/main/other_profile_screen.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 
 class SameMatchScreen extends StatefulWidget {
@@ -40,7 +45,13 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
       appBar: AppBar(
         elevation: 0.0,
         backgroundColor: primaryBlue,
-        title: Text('관심사 매칭'),
+        title: Text(
+          '관심사 매칭',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold
+          ),
+        ),
         centerTitle: true,
         actions: [
           IconButton(
@@ -65,7 +76,7 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: EdgeInsets.only(top: ScreenUtil.height/14),
+                    padding: EdgeInsets.only(top: ScreenUtil.height/20),
                     child: Text(
                       '맞는 상대를 찾았습니다!',
                       textAlign: TextAlign.center,
@@ -76,7 +87,7 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
                       ),
                     ),
                   ),
-                  SizedBox(height: ScreenUtil.height/16),
+                  SizedBox(height: ScreenUtil.height/20),
                   Stack(
                     alignment: Alignment.center,
                     children: <Widget>[
@@ -113,7 +124,7 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
                   ),
                   SizedBox(height: 10.0),
                   Text(
-                    '${state.sameMatchModel.animalName}를 닮음/ '
+                    '${state.sameMatchModel.animalName} 얼굴형 / '
                     '${state.sameMatchModel.emotion} / '
                     '${state.sameMatchModel.age}살 / ${state.sameMatchModel.gender}',
                     style: TextStyle(
@@ -121,6 +132,52 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
                       fontSize: 20.0
                     ),
                     textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 10.0),
+                  RaisedButton(
+                    color: Color(0xFFff647f),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+                    child: Text(
+                      '★ 프로필 보기',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold
+                      ),
+                    ),
+                    elevation: 5.0,
+                    onPressed: () => WidgetsBinding.instance.addPostFrameCallback((_){
+                      Navigator.push(context, MaterialPageRoute(
+                        builder: (context) => OtherProfileScreen(user:state.sameMatchModel.userInfo)
+                      ));
+                    }),
+                  ),
+                  StreamBuilder<QuerySnapshot>(
+                    stream: sl.get<FirebaseAPI>().getFirestore()
+                      .collection(firestoreUsersCollection)
+                      .document(state.sameMatchModel.userInfo.documentID)
+                      .collection(firestoreFriendsSubCollection)
+                      .where(uidCol, isEqualTo: sl.get<CurrentUser>().uid)
+                      .where(firestoreFriendsField, isEqualTo: false).snapshots(),
+                    builder: (context, snapshot){
+                      if(!snapshot.hasData && snapshot.connectionState!=ConnectionState.waiting){
+                        return RaisedButton(
+                          color: primaryBlue,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+                          child: Text(
+                            '친구 신청하기',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold
+                            ),
+                          ),
+                          elevation: 5.0,
+                          onPressed: () => sl.get<FriendRequestBloc>()
+                            .emitEvent(FriendRequestEventSendRequest(
+                              uid: state.sameMatchModel.userInfo.documentID)),
+                        );
+                      }
+                      return Container();
+                    }
                   )
                 ],
               ),
