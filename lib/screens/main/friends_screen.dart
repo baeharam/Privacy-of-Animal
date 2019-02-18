@@ -39,7 +39,7 @@ class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProvider
     Alert(
       context: context,
       title: '정말로 차단하시겠습니까?',
-      desc: '상대방의 친구 목록에서\n삭제됩니다.',
+      desc: '상대방의 친구 목록에서\n삭제되며 모든 대화가 사라집니다.',
       type: AlertType.warning,
       buttons: [
         DialogButton(
