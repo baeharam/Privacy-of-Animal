@@ -206,18 +206,6 @@ class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProvider
             if(state.isLoading) {
               return CustomProgressIndicator();
             }
-            if(state.isFriendsBlockSucceeded){
-              streamSnackbar(context,'친구를 차단하였습니다.');
-              friendsBloc.emitEvent(FriendsEventStateClear());
-            }
-            if(state.isFriendsAcceptSucceeded) {
-              streamSnackbar(context,'친구를 수락하였습니다.');
-              friendsBloc.emitEvent(FriendsEventStateClear());
-            }
-            if(state.isFriendsRejectSucceeded) {
-              streamSnackbar(context,'친구를 삭제하였습니다.');
-              friendsBloc.emitEvent(FriendsEventStateClear());
-            }
             if(state.isFriendsRequestFetchSucceeded) {
               sl.get<CurrentUser>().friendsRequestList = state.friendsRequest;
             }
