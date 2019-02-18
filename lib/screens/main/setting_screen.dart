@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:privacy_of_animal/bloc_helpers/bloc_event_state_builder.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
+import 'package:privacy_of_animal/logics/setting/setting.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:privacy_of_animal/resources/resources.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:privacy_of_animal/utils/back_button_dialog.dart';
+import 'package:privacy_of_animal/utils/stream_navigator.dart';
+import 'package:privacy_of_animal/utils/stream_snackbar.dart';
 
 class SettingScreen extends StatefulWidget {
 
@@ -14,12 +18,20 @@ class SettingScreen extends StatefulWidget {
 class SettingScreenState extends State<SettingScreen> {
   final CurrentUser _user =sl.get<CurrentUser>();
   final List<SettingItem> items = SettingItem.items();
+  final SettingBloc settingBloc = sl.get<SettingBloc>();
 
   @override
   Widget build (BuildContext context){
     return Scaffold(
       appBar: AppBar(
-        title: Text("설정"),
+        title: Text(
+          "설정",
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold
+          ),
+        ),
+        centerTitle: true,
         backgroundColor: primaryBlue,
       ),
       body: Container(
@@ -61,17 +73,32 @@ class SettingScreenState extends State<SettingScreen> {
                       ],
                     ),
                   ),
-                  ButtonTheme(
-                    minWidth: ScreenUtil.width*0.1,
-                    child: RaisedButton(
-                      onPressed: () => BackButtonAction.terminateApp(context),
-                      color: primaryBeige,
-                      textColor: primaryBlue,
-                      child: Text("로그아웃",style: TextStyle(fontWeight: FontWeight.w800),),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18.0)
-                      ),
-                    ),
+                  BlocBuilder(
+                    bloc: settingBloc,
+                    builder: (context, SettingState state){
+                      if(state.isLogoutLoading){
+                        return CircularProgressIndicator();
+                      }
+                      if(state.isLogoutSucceeded){
+                        StreamNavigator.pushNamedAndRemoveAll(context, routeIntro);
+                      }
+                      if(state.isLogoutFailed){
+                        streamSnackbar(context, '로그아웃에 실패했습니다.');
+                        settingBloc.emitEvent(SettingEventStateClear());
+                      }
+                      return ButtonTheme(
+                        minWidth: ScreenUtil.width*0.1,
+                        child: RaisedButton(
+                          onPressed: () => BackButtonAction.terminateApp(context),
+                          color: primaryBeige,
+                          textColor: primaryBlue,
+                          child: Text("로그아웃",style: TextStyle(fontWeight: FontWeight.w800),),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18.0)
+                          ),
+                        ),
+                      );
+                    }
                   )
                 ],
               ),
