@@ -8,6 +8,7 @@ const String routeAnalyzeIntro = '/analyzeIntro';
 const String routeCelebrity = '/analyzeCelebrity';
 const String routeRandomLoading = '/randomRandomLoading';
 const String routeRandomChat = '/randomRandomChat';
+const String routeSetting = '/setting';
 
 const String routeLoginDecision = '/loginDecision';
 const String routeSignUpDecision = '/signUpDecision';

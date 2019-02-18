@@ -39,7 +39,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         actions: [
           IconButton(
             icon: Icon(Icons.settings),
-            onPressed: (){},
+            onPressed: () => Navigator.pushNamed(context, routeSetting),
           )
         ],
       ),
