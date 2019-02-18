@@ -45,7 +45,13 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
       appBar: AppBar(
         elevation: 0.0,
         backgroundColor: primaryBlue,
-        title: Text('관심사 매칭'),
+        title: Text(
+          '관심사 매칭',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold
+          ),
+        ),
         centerTitle: true,
         actions: [
           IconButton(
