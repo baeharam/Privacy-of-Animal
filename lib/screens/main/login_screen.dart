@@ -41,11 +41,11 @@ class _LoginScreenState extends State<LoginScreen> {
                 builder: (context, LoginState state){
                   if(state.isAuthenticationFailed){
                     streamSnackbar(context, loginError);
-                    loginBloc.emitEvent(LoginEventInitial());
+                    loginBloc.emitEvent(LoginEventStateClear());
                   }
                   if(state.isDialogOpenedForPassword){
                     streamDialogForgotPassword(context);
-                    loginBloc.emitEvent(LoginEventInitial());
+                    loginBloc.emitEvent(LoginEventStateClear());
                   }
                   return Container();
                 },

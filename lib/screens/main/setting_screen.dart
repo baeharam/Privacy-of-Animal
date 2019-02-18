@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state_builder.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
+import 'package:privacy_of_animal/logics/login/login.dart';
 import 'package:privacy_of_animal/logics/setting/setting.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:privacy_of_animal/resources/resources.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
-import 'package:privacy_of_animal/utils/back_button_dialog.dart';
 import 'package:privacy_of_animal/utils/stream_navigator.dart';
 import 'package:privacy_of_animal/utils/stream_snackbar.dart';
 
@@ -81,6 +81,8 @@ class SettingScreenState extends State<SettingScreen> {
                       }
                       if(state.isLogoutSucceeded){
                         StreamNavigator.pushNamedAndRemoveAll(context, routeIntro);
+                        sl.get<LoginBloc>().emitEvent(LoginEventStateClear());
+                        settingBloc.emitEvent(SettingEventStateClear());
                       }
                       if(state.isLogoutFailed){
                         streamSnackbar(context, '로그아웃에 실패했습니다.');
@@ -89,7 +91,7 @@ class SettingScreenState extends State<SettingScreen> {
                       return ButtonTheme(
                         minWidth: ScreenUtil.width*0.1,
                         child: RaisedButton(
-                          onPressed: () => BackButtonAction.terminateApp(context),
+                          onPressed: () => settingBloc.emitEvent(SettingEventLogOut()),
                           color: primaryBeige,
                           textColor: primaryBlue,
                           child: Text("로그아웃",style: TextStyle(fontWeight: FontWeight.w800),),

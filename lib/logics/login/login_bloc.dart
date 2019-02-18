@@ -15,7 +15,7 @@ class LoginBloc extends BlocEventStateBase<LoginEvent,LoginState> {
       yield LoginState.openDialogForPassword();
     }
     
-    if(event is LoginEventInitial){
+    if(event is LoginEventStateClear){
       yield LoginState.notAuthenticated();
     }
     
