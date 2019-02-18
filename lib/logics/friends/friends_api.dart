@@ -29,28 +29,29 @@ class FriendsAPI {
     QuerySnapshot chatRoomSnapshot = await sl.get<FirebaseAPI>().getFirestore().collection(firestoreFriendsMessageCollection)
       .where(firestoreChatUsersField, arrayContains: userToBlock).getDocuments();
 
-    DocumentReference realChatRoom;
-
-    for(DocumentSnapshot doc in chatRoomSnapshot.documents) {
-      if(doc.data[firestoreChatUsersField].contains(sl.get<CurrentUser>().uid)){
-        realChatRoom = doc.reference;
-        break;
-      }
-    }
-
     WriteBatch batch = sl.get<FirebaseAPI>().getFirestore().batch();
 
-    batch.delete(myselfDoc);
-    batch.delete(userToBlockDoc);
+    if(chatRoomSnapshot.documents.isNotEmpty) {
+      DocumentReference realChatRoom;
+      for(DocumentSnapshot doc in chatRoomSnapshot.documents) {
+        if(doc.data[firestoreChatUsersField].contains(sl.get<CurrentUser>().uid)){
+          realChatRoom = doc.reference;
+          break;
+        }
+      }
 
-    QuerySnapshot chatSnapshot = await realChatRoom
+      QuerySnapshot chatSnapshot = await realChatRoom
       .collection(realChatRoom.documentID)
       .getDocuments();
 
-    for(DocumentSnapshot chat in chatSnapshot.documents) {
-      batch.delete(chat.reference);
+      for(DocumentSnapshot chat in chatSnapshot.documents) {
+        batch.delete(chat.reference);
+      }
+      batch.delete(realChatRoom);
     }
-    batch.delete(realChatRoom);
+
+    batch.delete(myselfDoc);
+    batch.delete(userToBlockDoc);
 
     await batch.commit();
   }
