@@ -13,8 +13,8 @@ class FriendRequestAPI {
       .document(sl.get<CurrentUser>().uid);
 
     await sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async{
-      await tx.update(doc, {
-        firestoreFriendsField: true,
+      await tx.set(doc, {
+        firestoreFriendsField: false,
         uidCol: sl.get<CurrentUser>().uid
       });
     });
