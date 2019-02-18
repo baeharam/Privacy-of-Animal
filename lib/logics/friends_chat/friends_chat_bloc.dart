@@ -12,6 +12,17 @@ class FriendsChatBloc extends BlocEventStateBase<FriendsChatEvent,FriendsChatSta
 
   @override
   Stream<FriendsChatState> eventHandler(FriendsChatEvent event, FriendsChatState currentState) async*{
+
+    if(event is FriendsChatEventFetchTimestamp) {
+      try {
+        yield FriendsChatState.timeStampFetchSucceeded(
+          await _api.getDeleteTimestamp(event.chatRoomID));
+      } catch(exception) {
+        print(exception);
+        yield FriendsChatState.timeStampFetchFailed();
+      }
+    }
+
     if(event is FriendsChatEventMessageSend) {
       try {
         await _api.sendMessage(event.content, event.receiver, event.chatRoomID);

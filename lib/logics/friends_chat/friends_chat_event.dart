@@ -5,6 +5,11 @@ abstract class FriendsChatEvent extends BlocEvent{}
 
 class FriendsChatEventStateClear extends FriendsChatEvent {}
 
+class FriendsChatEventFetchTimestamp extends FriendsChatEvent {
+  final String chatRoomID;
+  FriendsChatEventFetchTimestamp({@required this.chatRoomID});
+}
+
 class FriendsChatEventMessageSend extends FriendsChatEvent {
   final String content;
   final String receiver;

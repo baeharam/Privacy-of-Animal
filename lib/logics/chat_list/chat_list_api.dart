@@ -13,7 +13,7 @@ class ChatListAPI {
     List<ChatListModel> result = List<ChatListModel>();
 
     for(DocumentSnapshot doc in documents) {
-      if(doc.data[firestoreChatDeleteField]){
+      if(doc.data[firestoreChatDeleteField][sl.get<CurrentUser>().uid]){
         continue;
       }
       String uid = sl.get<CurrentUser>().uid.compareTo(doc.data[firestoreChatUsersField][0])==0
@@ -47,9 +47,12 @@ class ChatListAPI {
       .collection(firestoreFriendsMessageCollection)
       .document(chatRoomID).get();
 
-    if(!doc.data[firestoreChatDeleteField]){
+    if(!doc.data[firestoreChatDeleteField][sl.get<CurrentUser>().uid]){
       await sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async{
-        await tx.update(doc.reference, {firestoreChatDeleteField: true});
+        await tx.update(doc.reference, {
+          '$firestoreChatDeleteField.${sl.get<CurrentUser>().uid}' : true,
+          '$firestoreChatOutField.${sl.get<CurrentUser>().uid}' : FieldValue.serverTimestamp()
+        });
       });
     } else {
       await sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async{

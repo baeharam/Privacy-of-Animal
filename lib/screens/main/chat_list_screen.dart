@@ -47,8 +47,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
       body: StreamBuilder<QuerySnapshot>(
         stream: sl.get<FirebaseAPI>().getFirestore()
           .collection(firestoreFriendsMessageCollection)
-          .where(firestoreChatUsersField,arrayContains: sl.get<CurrentUser>().uid)
-          .where(firestoreChatDeleteField, isEqualTo: false)
+          .where('$firestoreChatDeleteField.${sl.get<CurrentUser>().uid}',isEqualTo: false)
           .snapshots(),
         builder: (context, snapshot){
           if(snapshot.hasData && snapshot.data.documents.isNotEmpty){
@@ -56,6 +55,9 @@ class _ChatListScreenState extends State<ChatListScreen> {
             return BlocBuilder(
               bloc: chatListBloc,
               builder: (context, ChatListState state){
+                if(state.isFailed) {
+                  return Center(child: Text('채팅 목록을 불러오는데 실패했습니다.'));
+                }
                 if(state.isSucceeded) {
                   chatList = state.chatList;
                   return ListView.builder(

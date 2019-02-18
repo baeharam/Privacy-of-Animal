@@ -79,7 +79,14 @@ class FriendsAPI {
         .document();
       await sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async{
         await tx.set(doc, {
-          firestoreChatDeleteField: false,
+          firestoreChatOutField: {
+            sl.get<CurrentUser>().uid: Timestamp(0,0),
+            userToChat: Timestamp(0,0)
+          },
+          firestoreChatDeleteField: {
+            sl.get<CurrentUser>().uid: false,
+            userToChat: false
+          },
           firestoreChatUsersField: [userToChat, sl.get<CurrentUser>().uid]
         });
       });
