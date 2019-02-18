@@ -13,6 +13,11 @@ class FriendsBloc extends BlocEventStateBase<FriendsEvent,FriendsState>
 
   @override
   Stream<FriendsState> eventHandler(FriendsEvent event, FriendsState currentState) async*{
+
+    if(event is FriendsEventStateClear) {
+      yield FriendsState.initial();
+    }
+
     if(event is FriendsEventFetchFriendsList) {
       yield FriendsState.loading();
       try {
@@ -32,6 +37,16 @@ class FriendsBloc extends BlocEventStateBase<FriendsEvent,FriendsState>
       } catch(exception){
         print(exception);
         yield FriendsState.friendsRequestFetchFailed();
+      }
+    }
+
+    if(event is FriendsEventChat) {
+      try {
+        String chatRoomID = await _api.chatWithFriends(event.user.documentID);
+        yield FriendsState.friendsChatSucceeded(chatRoomID,event.user);
+      } catch(exception){
+        print(exception);
+        yield FriendsState.friendsChatFailed();
       }
     }
 

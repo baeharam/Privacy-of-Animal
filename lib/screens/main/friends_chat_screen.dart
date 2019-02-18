@@ -3,37 +3,37 @@ import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state_builder.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
-import 'package:privacy_of_animal/logics/random_chat/random_chat.dart';
+import 'package:privacy_of_animal/logics/friends_chat/friends_chat.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/screens/main/other_profile_screen.dart';
-import 'package:privacy_of_animal/utils/back_button_dialog.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:privacy_of_animal/widgets/progress_indicator.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
-class RandomChatScreen extends StatefulWidget {
+class FriendsChatScreen extends StatefulWidget {
 
   final String chatRoomID;
   final DocumentSnapshot receiver;
 
-  RandomChatScreen({@required this.chatRoomID,@required this.receiver});
+  FriendsChatScreen({@required this.chatRoomID,@required this.receiver});
 
   @override
-  _RandomChatScreenState createState() => _RandomChatScreenState();
+  _FriendsChatScreenState createState() => _FriendsChatScreenState();
 }
 
-class _RandomChatScreenState extends State<RandomChatScreen> {
+class _FriendsChatScreenState extends State<FriendsChatScreen> {
 
   final ScrollController scrollController = ScrollController();
   final TextEditingController messageController = TextEditingController();
   final FocusNode messageFocusNode = FocusNode();
-  final RandomChatBloc randomChatBloc = sl.get<RandomChatBloc>();
+  final FriendsChatBloc friendsChatBloc = sl.get<FriendsChatBloc>();
 
   // Cloud Firestore에서 불러와서 저장.
   List<DocumentSnapshot> messages = List<DocumentSnapshot>();
   bool isReceiverOut = false;
+  Timestamp outTimestamp =Timestamp(0, 0);
 
   @override
   void initState() {
@@ -64,105 +64,83 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
         elevation: 0.0,
         backgroundColor: primaryBlue
       ),
-      body: WillPopScope(
-        onWillPop: () { 
-          if(isReceiverOut) {
-            randomChatBloc.emitEvent(RandomChatEventOut(chatRoomID: widget.chatRoomID));
-            return Future.value(true);
-          } else {  
-            return BackButtonAction.dialogChatExit(context, widget.chatRoomID);
-          }
-        },
-        child: Column(
-          children: <Widget>[
-            Container(
-              padding: EdgeInsets.only(top: 10.0),
-              child: Text('낯선 상대와 연결되었습니다.'),
-            ),
-            Flexible(
-              child: StreamBuilder(
-                stream: sl.get<FirebaseAPI>().getFirestore()
-                  .collection(firestoreRandomMessageCollection)
-                  .document(widget.chatRoomID)
-                  .collection(widget.chatRoomID)
-                  .orderBy(firestoreChatTimestampField,descending: true)
-                  .snapshots(),
-                builder: (context, snapshot){
-                  if(!snapshot.hasData){
-                    return CustomProgressIndicator();
-                  } else {
-                    messages = snapshot.data.documents;
-                    return ListView.builder(
-                      padding: EdgeInsets.all(10.0),
-                      itemBuilder: (context,index) => _buildMessage(index,snapshot.data.documents[index]),
-                      itemCount: snapshot.data.documents.length,
-                      reverse: true,
-                      controller: scrollController,
-                    );
+      body: Column(
+        children: <Widget>[
+          Flexible(
+            child: BlocBuilder(
+              bloc: friendsChatBloc,
+              builder: (context, FriendsChatState state){
+                if(state.isInitial) {
+                  friendsChatBloc.emitEvent(FriendsChatEventFetchTimestamp(chatRoomID: widget.chatRoomID));
+                  return CustomProgressIndicator();
+                }
+                if(state.isTimestampFetchSucceeded){
+                  outTimestamp = state.timestamp;
+                }
+                return StreamBuilder<QuerySnapshot>(
+                  stream: sl.get<FirebaseAPI>().getFirestore()
+                    .collection(firestoreFriendsMessageCollection)
+                    .document(widget.chatRoomID)
+                    .collection(widget.chatRoomID)
+                    .orderBy(firestoreChatTimestampField,descending: true)
+                    .where(firestoreChatTimestampField, isGreaterThan: outTimestamp)
+                    .snapshots(),
+                  builder: (context, snapshot){
+                    if(!snapshot.hasData){
+                      return CustomProgressIndicator();
+                    } else {
+                      if(messages.length!=snapshot.data.documents.length){
+                        messages = snapshot.data.documents;
+                      }
+                      return ListView.builder(
+                        padding: EdgeInsets.all(10.0),
+                        itemBuilder: (context,index) => _buildMessage(index,messages[index]),
+                        itemCount: messages.length,
+                        reverse: true,
+                        controller: scrollController,
+                      );
+                    }
                   }
-                }
-              ),
-            ),
-            StreamBuilder(
-              stream: sl.get<FirebaseAPI>().getFirestore()
-                  .collection(firestoreRandomMessageCollection)
-                  .document(widget.chatRoomID)
-                  .snapshots(),
-              builder: (context, snapshot){
-                if(snapshot.hasData && snapshot.data.data!=null && snapshot.data.data[firestoreChatOutField]){
-                  randomChatBloc.emitEvent(RandomChatEventFinished());
-                  isReceiverOut = true;
-                  return Text('상대방이 나갔습니다.');
-                }
-                return Container();
-              },
-            ),
-            BlocBuilder(
-              bloc: randomChatBloc,
-              builder: (context, RandomChatState state){
-                if(state.isChatFinished){
-                  return Container(padding: const EdgeInsets.only(bottom: 10.0),);
-                }
-                return Row(
-                  children: <Widget>[
-                    Flexible(
-                      child: Container(
-                        padding: const EdgeInsets.all(10.0),
-                        child: TextField(
-                          style: TextStyle(color: primaryGreen, fontSize: 15.0),
-                          decoration: InputDecoration.collapsed(
-                            hintText: '메시지를 입력하세요.',
-                            hintStyle: TextStyle(color: Colors.grey)
-                          ),
-                          controller: messageController,
-                          focusNode: messageFocusNode,
-                        ),
-                      ),
-                    ),
-                    Material(
-                      child: Container(
-                        margin: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: IconButton(
-                          icon: Icon(Icons.send),
-                          onPressed: () {
-                            randomChatBloc.emitEvent(
-                              RandomChatEventMessageSend(
-                                content: messageController.text,
-                                receiver: widget.receiver.documentID,
-                                chatRoomID: widget.chatRoomID
-                              ));
-                              messageController.clear();
-                            },
-                          color: Colors.black,
-                        ),
-                      ),
-                    )
-                  ],
-                ); 
+                );
               }
             ),
-          ],
-        ),
+          ),
+          Row(
+            children: <Widget>[
+              Flexible(
+                child: Container(
+                  padding: const EdgeInsets.all(10.0),
+                  child: TextField(
+                    style: TextStyle(color: primaryGreen, fontSize: 15.0),
+                    decoration: InputDecoration.collapsed(
+                      hintText: '메시지를 입력하세요.',
+                      hintStyle: TextStyle(color: Colors.grey)
+                    ),
+                    controller: messageController,
+                    focusNode: messageFocusNode,
+                  ),
+                ),
+              ),
+              Material(
+                child: Container(
+                  margin: EdgeInsets.symmetric(horizontal: 8.0),
+                  child: IconButton(
+                    icon: Icon(Icons.send),
+                    onPressed: () {
+                      friendsChatBloc.emitEvent(FriendsChatEventMessageSend(
+                        content: messageController.text,
+                        receiver: widget.receiver.documentID,
+                        chatRoomID: widget.chatRoomID
+                      ));
+                      messageController.clear();
+                    },
+                    color: Colors.black,
+                  ),
+                ),
+              )
+            ],
+          )
+        ],
       ),
     );
   }

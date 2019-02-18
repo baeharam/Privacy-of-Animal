@@ -8,19 +8,20 @@ import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/models/chat_list_model.dart';
 import 'package:privacy_of_animal/resources/resources.dart';
+import 'package:privacy_of_animal/screens/main/friends_chat_screen.dart';
 import 'package:privacy_of_animal/screens/main/other_profile_screen.dart';
-import 'package:privacy_of_animal/screens/main/random_chat_screen.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:privacy_of_animal/widgets/progress_indicator.dart';
 
-class ChatRoomScreen extends StatefulWidget {
+class ChatListScreen extends StatefulWidget {
   @override
-  _ChatRoomScreenState createState() => _ChatRoomScreenState();
+  _ChatListScreenState createState() => _ChatListScreenState();
 }
 
-class _ChatRoomScreenState extends State<ChatRoomScreen> {
+class _ChatListScreenState extends State<ChatListScreen> {
 
   final ChatListBloc chatListBloc = sl.get<ChatListBloc>();
+  List<ChatListModel> chatList = List<ChatListModel>();
 
   @override
   void initState() {
@@ -41,30 +42,31 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
         ),
         centerTitle: true,
         elevation: 0.0,
-        backgroundColor: primaryBlue
+        backgroundColor: primaryBlue,
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: sl.get<FirebaseAPI>().getFirestore()
-          .collection(firestoreMessageCollection)
-          .where(firestoreChatUsersField,arrayContains: sl.get<CurrentUser>().uid)
+          .collection(firestoreFriendsMessageCollection)
+          .where('$firestoreChatDeleteField.${sl.get<CurrentUser>().uid}',isEqualTo: false)
           .snapshots(),
         builder: (context, snapshot){
-          if(snapshot.hasData && snapshot.data.documents.length!=0){
+          if(snapshot.hasData && snapshot.data.documents.isNotEmpty){
+            chatListBloc.emitEvent(ChatListEventFetchList(documents: snapshot.data.documents));
             return BlocBuilder(
               bloc: chatListBloc,
               builder: (context, ChatListState state){
-                if(state.isLoading){
-                  chatListBloc.emitEvent(ChatListEventFetchList(documents: snapshot.data.documents));
-                  return CustomProgressIndicator();
+                if(state.isFailed) {
+                  return Center(child: Text('채팅 목록을 불러오는데 실패했습니다.'));
                 }
-                if(state.isSucceeded){
+                if(state.isSucceeded) {
+                  chatList = state.chatList;
                   return ListView.builder(
                     padding: EdgeInsets.all(10.0),
-                    itemCount: state.chatList.length,
-                    itemBuilder: (context,index) => _buildChatRoom(state.chatList[index]),
+                    itemCount: chatList.length,
+                    itemBuilder: (context,index) => _buildChatRoom(chatList[index]),
                   );
                 }
-                return Container();
+                return CustomProgressIndicator();
               }
             );
           }
@@ -80,7 +82,8 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       == Duration(days: 0) ? true : false;
 
     return Dismissible(
-      key: Key(chatListModel.toString()),
+      key: Key(chatListModel.snapshot.documentID),
+      background: Container(color: Colors.black),
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 10.0,vertical: 10.0),
         child: Row(
@@ -137,7 +140,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                   ),
                 ),
                 onTap: () => Navigator.push(context, MaterialPageRoute(
-                  builder: (context) => RandomChatScreen(
+                  builder: (context) => FriendsChatScreen(
                     chatRoomID: chatListModel.chatRoomID,
                     receiver: chatListModel.snapshot,
                   )
@@ -147,9 +150,9 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
           ],
         )
       ),
-      onDismissed: sl.get<ChatListBloc>().emitEvent(ChatListEventDeleteChatRoom(
+      onDismissed: (direction) {sl.get<ChatListBloc>().emitEvent(ChatListEventDeleteChatRoom(
         chatRoomID: chatListModel.chatRoomID
-      )),
+      ));},
     );
   }
 }

@@ -13,12 +13,12 @@ class ChatListAPI {
     List<ChatListModel> result = List<ChatListModel>();
 
     for(DocumentSnapshot doc in documents) {
-      if(doc.data[firestoreChatDeleteField]){
+      if(doc.data[firestoreChatDeleteField][sl.get<CurrentUser>().uid]){
         continue;
       }
-      String uid = doc.data[firestoreChatUsersField][0]
-        ==sl.get<CurrentUser>().uid ? doc.data[firestoreChatUsersField][1] 
-        :doc.data[firestoreChatUsersField][1];
+      String uid = sl.get<CurrentUser>().uid.compareTo(doc.data[firestoreChatUsersField][0])==0
+        ? doc.data[firestoreChatUsersField][1] 
+        : doc.data[firestoreChatUsersField][0];
       DocumentSnapshot userData = await sl.get<FirebaseAPI>().getFirestore()
       .collection(firestoreUsersCollection)
       .document(uid).get();
@@ -44,12 +44,15 @@ class ChatListAPI {
   // 2. 두번째 사람이 삭제하는 경우는 delete 플래그가 true니까 아예 서버에서 삭제
   Future<void> deleteChatRoom(String chatRoomID) async {
     DocumentSnapshot doc = await sl.get<FirebaseAPI>().getFirestore()
-      .collection(firestoreMessageCollection)
+      .collection(firestoreFriendsMessageCollection)
       .document(chatRoomID).get();
 
-    if(!doc.data[firestoreChatDeleteField]){
+    if(!doc.data[firestoreChatDeleteField][sl.get<CurrentUser>().uid]){
       await sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async{
-        await tx.update(doc.reference, {firestoreChatDeleteField: true});
+        await tx.update(doc.reference, {
+          '$firestoreChatDeleteField.${sl.get<CurrentUser>().uid}' : true,
+          '$firestoreChatOutField.${sl.get<CurrentUser>().uid}' : FieldValue.serverTimestamp()
+        });
       });
     } else {
       await sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async{

@@ -5,18 +5,19 @@ import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/logics/friends/friends.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
+import 'package:privacy_of_animal/screens/main/friends_chat_screen.dart';
 import 'package:privacy_of_animal/screens/main/other_profile_screen.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:privacy_of_animal/widgets/progress_indicator.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
-class FriendScreen extends StatefulWidget {
+class FriendsScreen extends StatefulWidget {
   @override
-  _FriendScreenState createState() => _FriendScreenState();
+  _FriendsScreenState createState() => _FriendsScreenState();
 }
 
-class _FriendScreenState extends State<FriendScreen> with SingleTickerProviderStateMixin{
+class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProviderStateMixin{
 
   final FriendsBloc friendsBloc = sl.get<FriendsBloc>();
   TabController tabController;
@@ -79,37 +80,7 @@ class _FriendScreenState extends State<FriendScreen> with SingleTickerProviderSt
           backgroundColor: primaryBlue,
           bottom: TabBar(
             tabs: [
-              Tab(child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('친구'),
-                  SizedBox(width: 10.0),
-                  StreamBuilder<QuerySnapshot>(
-                    stream: sl.get<FirebaseAPI>().getFirestore()
-                      .collection(firestoreUsersCollection).document(sl.get<CurrentUser>().uid)
-                      .collection(firestoreFriendsSubCollection).where(firestoreFriendsField, isEqualTo: true)
-                      .snapshots(),
-                    builder: (context, snapshot){
-                      if(snapshot.hasData && snapshot.data.documents.isNotEmpty){
-                        if(friendsListLength==-1 || friendsListLength>snapshot.data.documents.length) {
-                          friendsListLength = snapshot.data.documents.length;
-                          return Container();
-                        }
-                        friendsListLength = snapshot.data.documents.length;
-                        return Container(
-                          padding: EdgeInsets.all(8.0),
-                          decoration: BoxDecoration(
-                            color: Colors.red,
-                            shape: BoxShape.circle
-                          ),
-                          child: Text('${snapshot.data.documentChanges.length}')
-                        );
-                      }
-                      return Container();
-                    },
-                  )
-                ],
-              )),
+              Tab(child: Text('친구')),
               Tab(child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -184,6 +155,17 @@ class _FriendScreenState extends State<FriendScreen> with SingleTickerProviderSt
             }
             if(state.isLoading) {
               return CustomProgressIndicator();
+            }
+            if(state.isFriendsChatSucceeded){
+              WidgetsBinding.instance.addPostFrameCallback((_){
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => FriendsChatScreen(
+                    chatRoomID: state.chatRoomID,
+                    receiver: state.receiver,
+                  )
+                ));
+              });
+              friendsBloc.emitEvent(FriendsEventStateClear());
             }
             if(state.isFriendsFetchSucceeded) {
               sl.get<CurrentUser>().friendsList = state.friends;
@@ -288,20 +270,23 @@ class _FriendScreenState extends State<FriendScreen> with SingleTickerProviderSt
               ],
             ),
           ),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 10.0,vertical: 5.0),
-            decoration: BoxDecoration(
-              border: Border.all(color: primaryGreen),
-              borderRadius: BorderRadius.circular(5.0)
-            ),
-            child: Text(
-              '대화',
-              style: TextStyle(
-                color: primaryGreen,
-                fontWeight: FontWeight.bold,
-                fontSize: 17.0
+          GestureDetector(
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 10.0,vertical: 5.0),
+              decoration: BoxDecoration(
+                border: Border.all(color: primaryGreen),
+                borderRadius: BorderRadius.circular(5.0)
+              ),
+              child: Text(
+                '대화',
+                style: TextStyle(
+                  color: primaryGreen,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 17.0
+                ),
               ),
             ),
+            onTap: () => friendsBloc.emitEvent(FriendsEventChat(user: user)),
           ),
           SizedBox(width: 10.0),
           GestureDetector(

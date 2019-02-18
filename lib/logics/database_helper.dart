@@ -47,5 +47,6 @@ class DatabaseHelper {
     await db.execute(tagTableCreationSQL);
     await db.execute(realProfileTableCreationSQL);
     await db.execute(fakeProfileTableCreationSQL);
+    await db.execute(friendsMessagesCreationSQL);
   }
 }
