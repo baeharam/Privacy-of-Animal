@@ -125,7 +125,11 @@ class SettingScreenState extends State<SettingScreen> {
                           color: items[index].titleColor
                         ),
                         ),
-                      onTap :() => print(items[index].routeName),
+                      onTap :() {
+                        if(index==4){
+                          settingBloc.emitEvent(SettingEventGetOut());
+                        }
+                      },
                       trailing: Icon(items[index].trailing),
                     ),
                     margin: EdgeInsets.only(left: ScreenUtil.width*0.07, right: ScreenUtil.width*0.07),
@@ -137,6 +141,27 @@ class SettingScreenState extends State<SettingScreen> {
                   );
                 },
               ),
+            ),
+            BlocBuilder(
+              bloc: settingBloc,
+              builder: (context, SettingState state){
+                if(state.isGetoutLoading){
+                  return Align(
+                    alignment: Alignment.bottomCenter,
+                    child: CircularProgressIndicator()
+                  );
+                }
+                if(state.isGetoutFailed){
+                  streamSnackbar(context, '회원탈퇴에 실패했습니다.');
+                  settingBloc.emitEvent(SettingEventStateClear());
+                }
+                if(state.isGetoutSucceeded){
+                  StreamNavigator.pushNamedAndRemoveAll(context, routeIntro);
+                  sl.get<LoginBloc>().emitEvent(LoginEventStateClear());
+                  settingBloc.emitEvent(SettingEventStateClear());
+                }
+                return Container();
+              },
             )
           ],
         ),

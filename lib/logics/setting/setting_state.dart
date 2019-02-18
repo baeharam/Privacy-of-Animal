@@ -6,11 +6,19 @@ class SettingState extends BlocState {
   final bool isLogoutSucceeded;
   final bool isLogoutFailed;
 
+  final bool isGetoutLoading;
+  final bool isGetoutSucceeded;
+  final bool isGetoutFailed;
+
   SettingState({
     this.isInitial: false,
     this.isLogoutLoading: false,
     this.isLogoutSucceeded: false,
-    this.isLogoutFailed: false
+    this.isLogoutFailed: false,
+
+    this.isGetoutLoading: false,
+    this.isGetoutSucceeded: false,
+    this.isGetoutFailed: false
   });
 
   factory SettingState.initial() {
@@ -34,6 +42,24 @@ class SettingState extends BlocState {
   factory SettingState.logoutFailed() {
     return SettingState(
       isLogoutFailed: true
+    );
+  }
+
+  factory SettingState.getoutLoading() {
+    return SettingState(
+      isGetoutLoading: true
+    );
+  }
+
+  factory SettingState.getoutSucceeded() {
+    return SettingState(
+      isGetoutSucceeded: true
+    );
+  }
+
+  factory SettingState.getoutFailed() {
+    return SettingState(
+      isGetoutFailed: true
     );
   }
 }

@@ -5,3 +5,5 @@ abstract class SettingEvent extends BlocEvent{}
 class SettingEventStateClear extends SettingEvent {}
 
 class SettingEventLogOut extends SettingEvent {}
+
+class SettingEventGetOut extends SettingEvent {}

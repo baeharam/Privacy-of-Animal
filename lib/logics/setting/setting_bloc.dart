@@ -16,6 +16,17 @@ class SettingBloc extends BlocEventStateBase<SettingEvent,SettingState>
       yield SettingState.initial();
     }
 
+    if(event is SettingEventGetOut) {
+      try {
+        yield SettingState.getoutLoading();
+        await _api.deleteAllInfoOfUser();
+        yield SettingState.getoutSucceeded();
+      } catch(exception) {
+        print(exception);
+        yield SettingState.getoutFailed();
+      }
+    }
+
     if(event is SettingEventLogOut) {
       try {
         yield SettingState.logoutLoading();
