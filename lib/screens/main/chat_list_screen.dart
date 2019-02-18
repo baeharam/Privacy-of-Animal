@@ -70,7 +70,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
               }
             );
           }
-          return Container();
+          return Center(child: Text('채팅이 없습니다.'),);
         },
       )
     );

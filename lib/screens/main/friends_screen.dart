@@ -21,7 +21,6 @@ class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProvider
 
   final FriendsBloc friendsBloc = sl.get<FriendsBloc>();
   TabController tabController;
-  int friendsListLength = -1;
   int friendsRequestListLength = -1;
 
   @override
@@ -93,7 +92,7 @@ class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProvider
                       .snapshots(),
                     builder: (context, snapshot){
                       if(snapshot.hasData && snapshot.data.documents.isNotEmpty){
-                        if(friendsRequestListLength==-1 || friendsRequestListLength>snapshot.data.documents.length) {
+                        if(friendsRequestListLength>snapshot.data.documents.length) {
                           friendsRequestListLength = snapshot.data.documents.length;
                           return Container();
                         }
