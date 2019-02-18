@@ -18,7 +18,6 @@ class HomeAPI {
       // 태그 정보 가져오기
       List<Map<String,dynamic>> tags = 
       await db.rawQuery('SELECT * FROM $tagTable WHERE $uidCol="$uid"');
-      print(tags.toString());
       sl.get<CurrentUser>().tagListModel.tagTitleList.add(tags[0][tagName1Col]);
       sl.get<CurrentUser>().tagListModel.tagTitleList.add(tags[0][tagName2Col]);
       sl.get<CurrentUser>().tagListModel.tagTitleList.add(tags[0][tagName3Col]);

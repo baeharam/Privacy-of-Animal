@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state_builder.dart';
-import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/home/home.dart';
 import 'package:privacy_of_animal/resources/constants.dart';
 import 'package:privacy_of_animal/screens/main/screen.dart';
@@ -21,9 +20,7 @@ class _HomeDecisionState extends State<HomeDecision> {
   @override
   Widget build(BuildContext context) {
 
-    if(sl.get<CurrentUser>().isDataFetched==false){
-      homeBloc.emitEvent(HomeEvent(index: 3));
-    }
+    homeBloc.emitEvent(HomeEvent(index: 3));
 
     return BlocBuilder(
       bloc: homeBloc,

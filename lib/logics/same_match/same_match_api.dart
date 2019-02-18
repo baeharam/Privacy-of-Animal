@@ -13,6 +13,7 @@ class SameMatchAPI {
 
   // 전체 사용자 중에서 관심사가 가장 잘 맞는 애 선정해서 넘겨주기
   Future<SameMatchModel> findUser() async {
+    print(sl.get<CurrentUser>().uid);
     SameMatchModel sameMatchModel =SameMatchModel();
     CurrentUser currentUser = sl.get<CurrentUser>();
 
