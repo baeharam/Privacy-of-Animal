@@ -16,10 +16,13 @@ class SettingAPI {
 
     CurrentUser currentUser = sl.get<CurrentUser>();
 
-    // 계정 삭제
-    await sl.get<FirebaseAPI>().deleteUserAccount(currentUser.uid);
-
     WriteBatch batch = sl.get<FirebaseAPI>().getFirestore().batch();
+
+    // 계정 삭제
+    DocumentReference deletedUser = sl.get<FirebaseAPI>().getFirestore()
+      .collection(firestoreDeletedUserListCollection).document(currentUser.uid);
+
+    batch.delete(deletedUser);
   
     // 친구 삭제
     QuerySnapshot friendsSnapshot = await sl.get<FirebaseAPI>().getFirestore()
@@ -33,7 +36,9 @@ class SettingAPI {
         .collection(firestoreFriendsSubCollection).where(uidCol, isEqualTo: currentUser.uid)
         .getDocuments();
       batch.delete(friends.reference);
-      batch.delete(otherSnapshot.documents[0].reference);
+      if(otherSnapshot.documents.isNotEmpty){
+        batch.delete(otherSnapshot.documents[0].reference);
+      }
     }
 
     // 친구 신청 삭제
@@ -53,7 +58,9 @@ class SettingAPI {
       QuerySnapshot otherFriendsRequestSnapshot
         = await user.reference.collection(firestoreFriendsSubCollection)
           .where(uidCol, isEqualTo: currentUser.uid).getDocuments();
-      batch.delete(otherFriendsRequestSnapshot.documents[0].reference);
+      if(otherFriendsRequestSnapshot.documents.isNotEmpty){
+        batch.delete(otherFriendsRequestSnapshot.documents[0].reference);
+      }
     }
 
     // 대화 삭제
