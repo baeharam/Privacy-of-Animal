@@ -149,7 +149,7 @@ const String firestoreUsersCollection = 'users';
 const String firestoreRandomChatCollection = 'random_chat';
 const String firestoreDeletedUserListCollection = 'deleted_user_list';
 const String firestoreRandomMessageCollection = 'random_messages';
-const String firestoreFriendsMessageCollection = 'friends_messages';
+const String firestoreFriendsMessageCollection = friendsMessagesTable;
 
 // Cloud Firestore 서브 컬렉션 이름
 const String firestoreFriendsSubCollection = 'friends';
@@ -205,10 +205,10 @@ const List<String> firestoreTagDetailList = tagDetailList;
 const String firestoreChatBeginField = 'begin';
 const String firestoreChatUsersField = 'users';
 const String firestoreChatOutField = 'out';
-const String firestoreChatFromField = 'from';
-const String firestoreChatToField = 'to';
-const String firestoreChatContentField = 'content';
-const String firestoreChatTimestampField = 'timestamp';
+const String firestoreChatFromField = fromCol;
+const String firestoreChatToField = toCol;
+const String firestoreChatContentField = contentCol;
+const String firestoreChatTimestampField = timeStampCol;
 
 // Cloud Firestore 친구 메시지 필드
 const String firestoreChatDeleteField = 'delete';
@@ -226,6 +226,7 @@ const String tagTable = 'tags';
 const String realProfileTable = 'real_profile';
 const String fakeProfileTable = 'fake_profile';
 const String celebrityUrlTable = 'celebrity_url';
+const String friendsMessagesTable = 'friends_messages';
 
 // 테이블 3개의 각 컬럼 이름
 // 공통 컬럼
@@ -267,6 +268,12 @@ const String celebrityCol = 'celebrity';
 const String celebrityConfidenceCol = 'celebrity_confidence';
 const String analyzedTimeCol = 'analyzed_time';
 
+// 채팅 내용 테이블
+const String fromCol = 'from';
+const String toCol = 'to';
+const String timeStampCol = 'timestamp';
+const String contentCol = 'content';
+
 // 태그 테이블 생성하는 SQL
 const String tagTableCreationSQL = 
   'CREATE TABLE $tagTable '
@@ -299,3 +306,9 @@ const String fakeProfileTableCreationSQL =
   '$fakeEmotionCol TEXT, $firestoreFakeEmotionConfidenceField REAL, '
   '$animalNameCol TEXT, $animalImageCol TEXT, $animalConfidenceCol REAL, '
   '$celebrityCol TEXT, $celebrityConfidenceCol REAL, $analyzedTimeCol INTEGER)';
+
+// 채팅 테이블 생성하는 SQL
+const String friendsMessagesCreationSQL = 
+  'CREATE TABLE $friendsMessagesTable'
+  '($id INTEGER PRIMARY KEY AUTOINCREMENT,'
+  '$fromCol TEXT, $toCol TEXT, $timeStampCol INTEGER, $contentCol TEXT)';

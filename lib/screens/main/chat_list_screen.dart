@@ -81,6 +81,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
 
     return Dismissible(
       key: Key(chatListModel.snapshot.documentID),
+      background: Container(color: Colors.black),
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 10.0,vertical: 10.0),
         child: Row(
