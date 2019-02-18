@@ -5,10 +5,15 @@ class FriendsChatState extends BlocState {
   final bool isSendSucceeded;
   final bool isSendFailed;
 
+  final bool isStoreSucceeded;
+  final bool isStoreFailed;
+
   FriendsChatState({
     this.isInitial: false,
     this.isSendSucceeded: false,
-    this.isSendFailed
+    this.isSendFailed: false,
+    this.isStoreSucceeded: false,
+    this.isStoreFailed
   });
 
   factory FriendsChatState.initial() {
@@ -26,6 +31,18 @@ class FriendsChatState extends BlocState {
   factory FriendsChatState.sendFailed() {
     return FriendsChatState(
       isSendFailed: true
+    );
+  }
+
+  factory FriendsChatState.storeSucceeded() {
+    return FriendsChatState(
+      isStoreSucceeded: true
+    );
+  }
+
+  factory FriendsChatState.storeFailed() {
+    return FriendsChatState(
+      isStoreFailed: true
     );
   }
 }

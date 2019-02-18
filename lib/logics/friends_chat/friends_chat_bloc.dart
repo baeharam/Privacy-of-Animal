@@ -21,5 +21,15 @@ class FriendsChatBloc extends BlocEventStateBase<FriendsChatEvent,FriendsChatSta
         yield FriendsChatState.sendFailed();
       }
     }
+
+    if(event is FriendsChatEventStoreMessages) {
+      try {
+        await _api.storeIntoLocalDB(event.from, event.to, event.timestamp, event.content);
+        yield FriendsChatState.storeSucceeded();
+      } catch(exception) {
+        print(exception);
+        yield FriendsChatState.storeFailed();
+      }
+    }
   }
 }

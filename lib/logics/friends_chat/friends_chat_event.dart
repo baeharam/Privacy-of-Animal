@@ -16,3 +16,17 @@ class FriendsChatEventMessageSend extends FriendsChatEvent {
     @required this.chatRoomID
   });
 }
+
+class FriendsChatEventStoreMessages extends FriendsChatEvent {
+  final String from;
+  final String to;
+  final int timestamp;
+  final String content;
+
+  FriendsChatEventStoreMessages({
+    @required this.from,
+    @required this.to,
+    @required this.timestamp,
+    @required this.content
+  });
+}
