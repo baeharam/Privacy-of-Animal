@@ -13,7 +13,8 @@ Future<void> main() async{
 
 class PrivacyOfAnimal extends StatelessWidget {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) 
+  {
     return MaterialApp(
       title: '동물의 사생활',
       home: IntroScreen(),

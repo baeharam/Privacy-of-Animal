@@ -4,6 +4,7 @@ import 'package:privacy_of_animal/decisions/decision.dart';
 import 'package:privacy_of_animal/resources/resources.dart';
 import 'package:privacy_of_animal/screens/main/screen.dart';
 
+
 Map<String, WidgetBuilder> routes =  {
   /// Screen
   routeIntro: (BuildContext context) => IntroScreen(),
@@ -13,6 +14,7 @@ Map<String, WidgetBuilder> routes =  {
   routePhoto: (BuildContext context) => PhotoScreen(),
   routeAnalyzeIntro: (BuildContext context) => AnalyzeIntroScreen(),
   routeRandomLoading: (BuildContext context) => RandomLoadingScreen(),
+  routeSetting: (BuildContext context) => SettingScreen(),
   routeSameMatch: (BuildContext context) => SameMatchScreen(),
 
   /// Decision

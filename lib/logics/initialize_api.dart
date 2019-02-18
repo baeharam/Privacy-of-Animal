@@ -3,13 +3,14 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/resources/config.dart';
 import 'package:privacy_of_animal/resources/constants.dart';
+import 'dart:async';
 
 class InitializeAPI {
 
   // 앱 시작 초기화
   Future<void> appInitialize() async {
     await FirebaseApp.configure(
-      name: 'Privacy of Animal',
+      name: 'PrivacyofAnimal',
       options: const FirebaseOptions(
         googleAppID: androidAppID,
         apiKey: appAPIKey,

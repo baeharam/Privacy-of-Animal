@@ -57,6 +57,7 @@ class _RandomLoadingScreenState extends State<RandomLoadingScreen> {
           builder: (context, RandomChatState state){
             if(state.isAPIFailed){
               streamSnackbar(context,state.errorMessage);
+              Navigator.pop(context);
             }
 
             if(state.isMatched){
