@@ -33,8 +33,17 @@ class SameMatchAPI {
     List<List<DocumentSnapshot>> matchedPeople = List<List<DocumentSnapshot>>(6);
     Map<String,List<List<String>>> matchedTags = Map<String,List<List<String>>>();
     for(DocumentSnapshot user in users.documents) {
-      // 친구관계이거나 자기 자신이라면 제외
-      if(!(friends.contains(user.documentID)) && user.documentID!=currentUser.uid){
+      QuerySnapshot friendsRequestSnapshot = await sl.get<FirebaseAPI>().getFirestore()
+        .collection(firestoreUsersCollection).document(user.documentID)
+        .collection(firestoreFriendsSubCollection).where(uidCol, isEqualTo: currentUser.uid)
+        .where(firestoreFriendsField, isEqualTo: false).getDocuments();
+
+      // 제외하는 경우
+      // 1. 친구
+      // 2. 자기자신
+      // 3. 내가 친구신청을 이미 한 사람
+      if(!(friends.contains(user.documentID)) && user.documentID!=currentUser.uid &&
+        friendsRequestSnapshot.documents.length==0){
         // 통과하면 매칭하는 태그 개수를 계산해서 해당하는 배열 인덱스에 넣는다.
         int matchNum = 0;       
         matchedTags[user.documentID] = List<List<String>>();
