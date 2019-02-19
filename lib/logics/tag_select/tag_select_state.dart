@@ -13,7 +13,7 @@ class TagSelectState extends BlocState {
   TagSelectState({
     this.isInitial: false,
     this.isTagActivated: false,
-    this.isTagDeactivated: true,
+    this.isTagDeactivated: false,
     this.tagIndex: 0,
     this.selectedTagsLength: 0,
     this.isTagCompleted: false,

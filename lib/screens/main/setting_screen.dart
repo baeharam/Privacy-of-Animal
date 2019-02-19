@@ -8,6 +8,7 @@ import 'package:privacy_of_animal/resources/resources.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:privacy_of_animal/utils/stream_navigator.dart';
 import 'package:privacy_of_animal/utils/stream_snackbar.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 class SettingScreen extends StatefulWidget {
 
@@ -19,6 +20,41 @@ class SettingScreenState extends State<SettingScreen> {
   final CurrentUser _user =sl.get<CurrentUser>();
   final List<SettingItem> items = SettingItem.items();
   final SettingBloc settingBloc = sl.get<SettingBloc>();
+
+  void _reallyDelteAccount() {
+    Alert(
+      title: '정말로 탈퇴하시겠습니까?',
+      type: AlertType.error,
+      context: context,
+      content: Text(
+        '모든 정보가 삭제됩니다.'
+      ),
+      buttons: [
+        DialogButton(
+          child: Text(
+            '예',
+            style: TextStyle(
+              color: Colors.white
+            ),
+          ),
+          color: Colors.red,
+          onPressed: () {
+            settingBloc.emitEvent(SettingEventGetOut());
+            Navigator.of(context).pop();
+          }
+        ),
+        DialogButton(
+          child: Text(
+            '아니오',
+            style: TextStyle(
+              color: Colors.white
+            ),
+          ),
+          onPressed: () => Navigator.of(context).pop()
+        )
+      ]
+    ).show();
+  }
 
   @override
   Widget build (BuildContext context){
@@ -127,7 +163,7 @@ class SettingScreenState extends State<SettingScreen> {
                         ),
                       onTap :() {
                         if(index==4){
-                          settingBloc.emitEvent(SettingEventGetOut());
+                          _reallyDelteAccount();
                         }
                       },
                       trailing: Icon(items[index].trailing),
@@ -146,7 +182,8 @@ class SettingScreenState extends State<SettingScreen> {
               bloc: settingBloc,
               builder: (context, SettingState state){
                 if(state.isGetoutLoading){
-                  return Align(
+                  return Container(
+                    padding: const EdgeInsets.only(bottom: 10.0),
                     alignment: Alignment.bottomCenter,
                     child: CircularProgressIndicator()
                   );
