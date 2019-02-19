@@ -8,7 +8,6 @@ List<Animal> animalList = [
   Animal.deer(),
   Animal.dolphin(),
   Animal.duck(),
-  Animal.duck(),
   Animal.eagle(),
   Animal.elephant(),
   Animal.fox(),
@@ -33,7 +32,38 @@ List<Animal> animalList = [
   Animal.tiger(),
   Animal.turtle(),
   Animal.whale(),
-  Animal.zebra()
+  Animal.zebra(),
+  Animal.alpaca(),
+  Animal.antelope(),
+  Animal.armadillo(),
+  Animal.baboon(),
+  Animal.beagle(),
+  Animal.brownbear(),
+  Animal.bulldog(),
+  Animal.catfish(),
+  Animal.dachshund(),
+  Animal.donkey(),
+  Animal.elephantseal(),
+  Animal.eurasianlynx(),
+  Animal.gazelle(),
+  Animal.giraffe(),
+  Animal.goose(),
+  Animal.hammerheadshark(),
+  Animal.kangarro(),
+  Animal.lemurmonkey(),
+  Animal.meerkat(),
+  Animal.otter(),
+  Animal.polarbear(),
+  Animal.polarfox(),
+  Animal.quokka(),
+  Animal.skunk(),
+  Animal.sloth(),
+  Animal.snowrabbit(),
+  Animal.squirrel(),
+  Animal.swan(),
+  Animal.toad(),
+  Animal.weasel(),
+  Animal.wolf()
 ];
 
 class Animal {
@@ -524,6 +554,392 @@ class Animal {
       lipLength: LENGTH.LONG
     );
   }
+
+  factory Animal.alpaca() {
+    return const Animal(
+      image: 'assets/images/animals/alpaca.jpg',
+      name: '알파카',
+      faceWidth: WIDTH.NORMAL,
+      faceLength: LENGTH.SHORT,
+      noseWidth: WIDTH.NARROW,
+      noseLength: LENGTH.LONG,
+      lipWidth: WIDTH.NARROW,
+      lipLength: LENGTH.LONG
+    );
+  }
+  factory Animal.antelope() {
+    return const Animal(
+      image: 'assets/images/animals/antelopes.jpg',
+      name: '영양',
+      faceWidth: WIDTH.NARROW,
+      faceLength: LENGTH.NORMAL,
+      noseWidth: WIDTH.NARROW,
+      noseLength: LENGTH.LONG,
+      lipWidth: WIDTH.NARROW,
+      lipLength: LENGTH.LONG
+    );
+  }
+  factory Animal.armadillo() {
+    return const Animal(
+      image: 'assets/images/animals/armadillo.jpg',
+      name: '아르마딜로',
+      faceWidth: WIDTH.NORMAL,
+      faceLength: LENGTH.SHORT,
+      noseWidth: WIDTH.NARROW,
+      noseLength: LENGTH.LONG,
+      lipWidth: WIDTH.NARROW,
+      lipLength: LENGTH.LONG
+    );
+  }
+  factory Animal.baboon() {
+    return const Animal(
+      image: 'assets/images/animals/baboon.jpg',
+      name: '개코원숭이',
+      faceWidth: WIDTH.NORMAL,
+      faceLength: LENGTH.LONG,
+      noseWidth: WIDTH.NORMAL,
+      noseLength: LENGTH.LONG,
+      lipWidth: WIDTH.NORMAL,
+      lipLength: LENGTH.LONG
+    );
+  }
+  factory Animal.beagle() {
+    return const Animal(
+      image: 'assets/images/animals/beagle.jpg',
+      name: '비글',
+      faceWidth: WIDTH.NORMAL,
+      faceLength: LENGTH.NORMAL,
+      noseWidth: WIDTH.NARROW,
+      noseLength: LENGTH.NORMAL,
+      lipWidth: WIDTH.WIDE,
+      lipLength: LENGTH.LONG
+    );
+  } 
+  factory Animal.brownbear() {
+    return const Animal(
+      image: 'assets/images/animals/brownbear.jpg',
+      name: '불곰',
+      faceWidth: WIDTH.WIDE,
+      faceLength: LENGTH.LONG,
+      noseWidth: WIDTH.NORMAL,
+      noseLength: LENGTH.LONG,
+      lipWidth: WIDTH.NORMAL,
+      lipLength: LENGTH.LONG
+    );
+  }
+  factory Animal.bulldog() {
+    return const Animal(
+      image: 'assets/images/animals/bulldog.jpg',
+      name: '불독',
+      faceWidth: WIDTH.WIDE,
+      faceLength: LENGTH.SHORT,
+      noseWidth: WIDTH.WIDE,
+      noseLength: LENGTH.SHORT,
+      lipWidth: WIDTH.WIDE,
+      lipLength: LENGTH.SHORT
+    );
+  }
+  factory Animal.catfish() {
+    return const Animal(
+      image: 'assets/images/animals/catfish.jpg',
+      name: '잉어',
+      faceWidth: WIDTH.WIDE,
+      faceLength: LENGTH.SHORT,
+      noseWidth: WIDTH.WIDE,
+      noseLength: LENGTH.SHORT,
+      lipWidth: WIDTH.WIDE,
+      lipLength: LENGTH.NORMAL
+    );
+  }
+  factory Animal.dachshund() {
+    return const Animal(
+      image: 'assets/images/animals/dachshund.jpg',
+      name: '닥스훈트',
+      faceWidth: WIDTH.NARROW,
+      faceLength: LENGTH.SHORT,
+      noseWidth: WIDTH.NARROW,
+      noseLength: LENGTH.LONG,
+      lipWidth: WIDTH.NORMAL,
+      lipLength: LENGTH.LONG
+    );
+  }
+  factory Animal.donkey() {
+    return const Animal(
+      image: 'assets/images/animals/donkey.jpg',
+      name: '당나귀',
+      faceWidth: WIDTH.NORMAL,
+      faceLength: LENGTH.LONG,
+      noseWidth: WIDTH.WIDE,
+      noseLength: LENGTH.LONG,
+      lipWidth: WIDTH.NORMAL,
+      lipLength: LENGTH.LONG
+    );
+  }
+  factory Animal.elephantseal() {
+    return const Animal(
+      image: 'assets/images/animals/elephantseal.jpg',
+      name: '바다코끼리',
+      faceWidth: WIDTH.WIDE,
+      faceLength: LENGTH.NORMAL,
+      noseWidth: WIDTH.NORMAL,
+      noseLength: LENGTH.SHORT,
+      lipWidth: WIDTH.WIDE,
+      lipLength: LENGTH.NORMAL
+    );
+  }
+  factory Animal.eurasianlynx() {
+    return const Animal(
+      image: 'assets/images/animals/eurasianlynx.jpg',
+      name: '스라소니',
+      faceWidth: WIDTH.NORMAL,
+      faceLength: LENGTH.SHORT,
+      noseWidth: WIDTH.NARROW,
+      noseLength: LENGTH.NORMAL,
+      lipWidth: WIDTH.NORMAL,
+      lipLength: LENGTH.LONG
+    );
+  }
+  factory Animal.gazelle() {
+    return const Animal(
+      image: 'assets/images/animals/gazelle.jpg',
+      name: '가젤',
+      faceWidth: WIDTH.NARROW,
+      faceLength: LENGTH.LONG,
+      noseWidth: WIDTH.NORMAL,
+      noseLength: LENGTH.LONG,
+      lipWidth: WIDTH.NORMAL,
+      lipLength: LENGTH.LONG
+    );
+  }
+  factory Animal.giraffe() {
+    return const Animal(
+      image: 'assets/images/animals/giraffe.jpg',
+      name: '기린',
+      faceWidth: WIDTH.NORMAL,
+      faceLength: LENGTH.LONG,
+      noseWidth: WIDTH.NARROW,
+      noseLength: LENGTH.LONG,
+      lipWidth: WIDTH.NARROW,
+      lipLength: LENGTH.LONG
+    );
+  }
+  factory Animal.goose() {
+    return const Animal(
+      image: 'assets/images/animals/goose.jpg',
+      name: '거위',
+      faceWidth: WIDTH.NARROW,
+      faceLength: LENGTH.NORMAL,
+      noseWidth: WIDTH.NARROW,
+      noseLength: LENGTH.NORMAL,
+      lipWidth: WIDTH.NORMAL,
+      lipLength: LENGTH.LONG
+    );
+  }
+  factory Animal.hammerheadshark() {
+    return const Animal(
+      image: 'assets/images/animals/hammerheadshark.jpg',
+      name: '귀상어',
+      faceWidth: WIDTH.WIDE,
+      faceLength: LENGTH.SHORT,
+      noseWidth: WIDTH.NORMAL,
+      noseLength: LENGTH.SHORT,
+      lipWidth: WIDTH.WIDE,
+      lipLength: LENGTH.SHORT
+    );
+  }
+  factory Animal.kangarro() {
+    return const Animal(
+      image: 'assets/images/animals/kangarro.jpg',
+      name: '캥거루',
+      faceWidth: WIDTH.NARROW,
+      faceLength: LENGTH.NORMAL,
+      noseWidth: WIDTH.WIDE,
+      noseLength: LENGTH.NORMAL,
+      lipWidth: WIDTH.NARROW,
+      lipLength: LENGTH.NORMAL
+    );
+  }
+  factory Animal.lemurmonkey() {
+    return const Animal(
+      image: 'assets/images/animals/lemurmonkey.jpg',
+      name: '여우원숭이',
+      faceWidth: WIDTH.NORMAL,
+      faceLength: LENGTH.SHORT,
+      noseWidth: WIDTH.NARROW,
+      noseLength: LENGTH.NORMAL,
+      lipWidth: WIDTH.NORMAL,
+      lipLength: LENGTH.NORMAL
+    );
+  }
+  factory Animal.meerkat() {
+    return const Animal(
+      image: 'assets/images/animals/meerkat.jpg',
+      name: '미어캣', 
+      faceWidth: WIDTH.NARROW,
+      faceLength: LENGTH.SHORT,
+      noseWidth: WIDTH.NARROW,
+      noseLength: LENGTH.NORMAL,
+      lipWidth: WIDTH.NARROW,
+      lipLength: LENGTH.SHORT
+    );
+  }
+  factory Animal.otter() {
+    return const Animal(
+      image: 'assets/images/animals/otter.jpg',
+      name: '수달',
+      faceWidth: WIDTH.NARROW,
+      faceLength: LENGTH.SHORT,
+      noseWidth: WIDTH.NARROW,
+      noseLength: LENGTH.SHORT,
+      lipWidth: WIDTH.NARROW,
+      lipLength: LENGTH.SHORT
+    );
+  }
+  factory Animal.polarbear() {
+    return const Animal(
+      image: 'assets/images/animals/polarbear.jpg',
+      name: '북극곰',
+      faceWidth: WIDTH.NORMAL,
+      faceLength: LENGTH.LONG,
+      noseWidth: WIDTH.NORMAL,
+      noseLength: LENGTH.LONG,
+      lipWidth: WIDTH.NORMAL,
+      lipLength: LENGTH.LONG
+    );
+  }
+  factory Animal.polarfox() {
+    return const Animal(
+      image: 'assets/images/animals/polarfox.jpg',
+      name: '북극여우',
+      faceWidth: WIDTH.NARROW,
+      faceLength: LENGTH.SHORT,
+      noseWidth: WIDTH.NARROW,
+      noseLength: LENGTH.SHORT,
+      lipWidth: WIDTH.NARROW,
+      lipLength: LENGTH.NORMAL
+    );
+  }
+  factory Animal.quokka() {
+    return const Animal(
+      image: 'assets/images/animals/quokka.jpg',
+      name: '쿼카',
+      faceWidth: WIDTH.NARROW,
+      faceLength: LENGTH.NORMAL,
+      noseWidth: WIDTH.NARROW,
+      noseLength: LENGTH.NORMAL,
+      lipWidth: WIDTH.NARROW,
+      lipLength: LENGTH.NORMAL
+    );
+  }
+  factory Animal.raccoon() {
+    return const Animal(
+      image: 'assets/images/animals/raccoon.jpg',
+      name: '라쿤',
+      faceWidth: WIDTH.WIDE,
+      faceLength: LENGTH.SHORT,
+      noseWidth: WIDTH.NARROW,
+      noseLength: LENGTH.NORMAL,
+      lipWidth: WIDTH.WIDE,
+      lipLength: LENGTH.NORMAL
+    );
+  }
+  factory Animal.skunk() {
+    return const Animal(
+      image: 'assets/images/animals/skunk.jpg',
+      name: '스컹크',
+      faceWidth: WIDTH.NARROW,
+      faceLength: LENGTH.NORMAL,
+      noseWidth: WIDTH.NARROW,
+      noseLength: LENGTH.NORMAL,
+      lipWidth: WIDTH.NARROW,
+      lipLength: LENGTH.NORMAL
+    );
+  }
+  factory Animal.sloth() {
+    return const Animal(
+      image: 'assets/images/animals/sloth.jpg',
+      name: '나무늘보',
+      faceWidth: WIDTH.WIDE,
+      faceLength: LENGTH.SHORT,
+      noseWidth: WIDTH.NORMAL,
+      noseLength: LENGTH.NORMAL,
+      lipWidth: WIDTH.NORMAL,
+      lipLength: LENGTH.NORMAL
+    );
+  }
+  factory Animal.snowrabbit() {
+    return const Animal(
+      image: 'assets/images/animals/snowrabbit.jpg',
+      name: '눈토끼',
+      faceWidth: WIDTH.NARROW,
+      faceLength: LENGTH.LONG,
+      noseWidth: WIDTH.NORMAL,
+      noseLength: LENGTH.NORMAL,
+      lipWidth: WIDTH.NARROW,
+      lipLength: LENGTH.NORMAL
+    );
+  }
+  factory Animal.squirrel() {
+    return const Animal(
+      image: 'assets/images/animals/squirrel.jpg',
+      name: '다람쥐',
+      faceWidth: WIDTH.NARROW,
+      faceLength: LENGTH.NORMAL,
+      noseWidth: WIDTH.NARROW,
+      noseLength: LENGTH.NORMAL,
+      lipWidth: WIDTH.NARROW,
+      lipLength: LENGTH.NORMAL
+    );
+  }
+  factory Animal.swan() {
+    return const Animal(
+      image: 'assets/images/animals/swan.jpg',
+      name: '백조',
+      faceWidth: WIDTH.NARROW,
+      faceLength: LENGTH.NORMAL,
+      noseWidth: WIDTH.NORMAL,
+      noseLength: LENGTH.LONG,
+      lipWidth: WIDTH.WIDE,
+      lipLength: LENGTH.LONG
+    );
+  }
+  factory Animal.toad() {
+    return const Animal(
+      image: 'assets/images/animals/toad.jpg',
+      name: '두꺼비',
+      faceWidth: WIDTH.WIDE,
+      faceLength: LENGTH.SHORT,
+      noseWidth: WIDTH.NORMAL,
+      noseLength: LENGTH.NORMAL,
+      lipWidth: WIDTH.WIDE,
+      lipLength: LENGTH.NORMAL
+    );
+  }
+  factory Animal.weasel() {
+    return const Animal(
+      image: 'assets/images/animals/weasel.jpg',
+      name: '족제비',
+      faceWidth: WIDTH.NORMAL,
+      faceLength: LENGTH.NORMAL,
+      noseWidth: WIDTH.NORMAL,
+      noseLength: LENGTH.NORMAL,
+      lipWidth: WIDTH.NARROW,
+      lipLength: LENGTH.NORMAL
+    );
+  }
+  factory Animal.wolf() {
+    return const Animal(
+      image: 'assets/images/animals/wolf.jpg',
+      name: '늑대',
+      faceWidth: WIDTH.NORMAL,
+      faceLength: LENGTH.LONG,
+      noseWidth: WIDTH.NORMAL,
+      noseLength: LENGTH.LONG,
+      lipWidth: WIDTH.WIDE,
+      lipLength: LENGTH.NORMAL
+    );
+  }
+
 }
 
 
