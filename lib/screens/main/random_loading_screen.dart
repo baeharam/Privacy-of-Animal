@@ -60,17 +60,6 @@ class _RandomLoadingScreenState extends State<RandomLoadingScreen> {
               Navigator.pop(context);
             }
 
-            if(state.isMatched){
-              WidgetsBinding.instance.addPostFrameCallback((_){
-                Navigator.pushReplacement(context, MaterialPageRoute(
-                  builder: (context) => RandomChatScreen(
-                    chatRoomID: state.chatRoomID,
-                    receiver: state.receiver,
-                  )
-                ));
-              });
-            }
-
             if(state.isChatRoomMade) {
               isChatRoomMaker = true;
               return StreamBuilder<DocumentSnapshot>(

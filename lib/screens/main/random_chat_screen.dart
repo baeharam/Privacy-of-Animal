@@ -62,7 +62,16 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
         ),
         centerTitle: true,
         elevation: 0.0,
-        backgroundColor: primaryBlue
+        backgroundColor: primaryBlue,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.refresh),
+            onPressed: () {
+              randomChatBloc.emitEvent(RandomChatEventOut(chatRoomID: widget.chatRoomID));
+              randomChatBloc.emitEvent(RandomChatEventMatchStart());
+            },
+          )
+        ],
       ),
       body: WillPopScope(
         onWillPop: () { 
