@@ -133,6 +133,7 @@ class _TagSelectScreenState extends State<TagSelectScreen> {
                   }
                   if(state.isTagFailed){
                     streamSnackbar(context,'태그등록에 실패했습니다.');
+                    _tagBloc.emitEvent(TagSelectEventStateClear());
                   }
                   return PrimaryButton(
                     text: '선택 완료',

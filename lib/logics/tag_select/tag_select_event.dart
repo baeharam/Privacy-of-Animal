@@ -3,6 +3,8 @@ import 'package:privacy_of_animal/bloc_helpers/bloc_event_state.dart';
 
 abstract class TagSelectEvent extends BlocEvent{}
 
+class TagSelectEventStateClear extends TagSelectEvent {}
+
 class TagSelectEventActivate extends TagSelectEvent {
   final int index;
   TagSelectEventActivate({
