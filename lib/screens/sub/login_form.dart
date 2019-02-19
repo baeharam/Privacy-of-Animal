@@ -55,21 +55,16 @@ class _LoginFormState extends State<LoginForm> {
                   if(state.isAuthenticationFailed){
                     _emailController.clear();
                   }
-                  return EnsureVisibleWhenFocused(
-                    focusNode: _emailFocusNode,
-                    curve: Curves.easeOut,
-                    duration: const Duration(milliseconds: 200),
-                    child: TextField(
-                      decoration: InputDecoration(
-                        labelText: '이메일',
-                        errorText: snapshot.error,
-                      ),
-                      onChanged: validationBloc.onEmailChanged,
-                      keyboardType: TextInputType.emailAddress,
-                      controller: _emailController,
-                      focusNode: _emailFocusNode,
-                      enabled: state.isAuthenticating ? false : true
+                  return TextField(
+                    decoration: InputDecoration(
+                      labelText: '이메일',
+                      errorText: snapshot.error,
                     ),
+                    onChanged: validationBloc.onEmailChanged,
+                    keyboardType: TextInputType.emailAddress,
+                    controller: _emailController,
+                    focusNode: _emailFocusNode,
+                    enabled: state.isAuthenticating ? false : true
                   );
                 } 
               );
@@ -86,22 +81,17 @@ class _LoginFormState extends State<LoginForm> {
                   if(state.isAuthenticationFailed){
                     _passwordController.clear();
                   }
-                  return EnsureVisibleWhenFocused(
-                    focusNode: _passwordFocusNode,
-                    curve: Curves.easeOut,
-                    duration: const Duration(milliseconds: 200),
-                    child: TextField(
-                      decoration: InputDecoration(
-                        labelText: '비밀번호',
-                        errorText: snapshot.error
-                      ),
-                      onChanged: validationBloc.onPasswordChanged,
-                      obscureText: true,
-                      keyboardType: TextInputType.emailAddress,
-                      controller: _passwordController,
-                      focusNode: _passwordFocusNode,
-                      enabled: state.isAuthenticating ? false : true,
+                  return TextField(
+                    decoration: InputDecoration(
+                      labelText: '비밀번호',
+                      errorText: snapshot.error
                     ),
+                    onChanged: validationBloc.onPasswordChanged,
+                    obscureText: true,
+                    keyboardType: TextInputType.emailAddress,
+                    controller: _passwordController,
+                    focusNode: _passwordFocusNode,
+                    enabled: state.isAuthenticating ? false : true,
                   );
                 } 
               );
