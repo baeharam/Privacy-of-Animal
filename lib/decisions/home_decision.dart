@@ -18,9 +18,13 @@ class _HomeDecisionState extends State<HomeDecision> {
   final List<Widget> homePage = [MatchScreen(),ChatListScreen(),FriendsScreen(),ProfileScreen()];
 
   @override
-  Widget build(BuildContext context) {
-
+  void initState() {
+    super.initState();
     homeBloc.emitEvent(HomeEvent(index: 3));
+  }
+
+  @override
+  Widget build(BuildContext context) {
 
     return BlocBuilder(
       bloc: homeBloc,
