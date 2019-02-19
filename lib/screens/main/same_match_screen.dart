@@ -159,7 +159,7 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
                       .where(uidCol, isEqualTo: sl.get<CurrentUser>().uid)
                       .where(firestoreFriendsField, isEqualTo: false).snapshots(),
                     builder: (context, snapshot){
-                      if(snapshot.hasData && snapshot.data.documents.length!=0){
+                      if(!snapshot.hasData || (snapshot.hasData && snapshot.data.documents.length==0)){
                         return RaisedButton(
                           color: primaryBlue,
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
