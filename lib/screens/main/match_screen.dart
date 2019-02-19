@@ -30,13 +30,7 @@ class _MatchScreenState extends State<MatchScreen> {
         ),
         centerTitle: true,
         elevation: 0.0,
-        backgroundColor: primaryBlue,
-        actions: [
-          IconButton(
-            icon: Icon(Icons.filter),
-            onPressed: (){},
-          )
-        ],
+        backgroundColor: primaryBlue
       ),
       body: Stack(
         children: <Widget>[
