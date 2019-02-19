@@ -308,9 +308,3 @@ const String fakeProfileTableCreationSQL =
   '$fakeEmotionCol TEXT, $firestoreFakeEmotionConfidenceField REAL, '
   '$animalNameCol TEXT, $animalImageCol TEXT, $animalConfidenceCol REAL, '
   '$celebrityCol TEXT, $celebrityConfidenceCol REAL, $analyzedTimeCol INTEGER)';
-
-// 채팅 테이블 생성하는 SQL
-const String friendsMessagesCreationSQL = 
-  'CREATE TABLE $friendsMessagesTable'
-  '($id INTEGER PRIMARY KEY AUTOINCREMENT,'
-  '$fromCol TEXT, $toCol TEXT, $timeStampCol INTEGER, $contentCol TEXT)';

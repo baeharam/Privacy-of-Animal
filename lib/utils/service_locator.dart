@@ -13,6 +13,7 @@ import 'package:privacy_of_animal/logics/login/login_bloc.dart';
 import 'package:privacy_of_animal/logics/profile/profile_bloc.dart';
 import 'package:privacy_of_animal/logics/random_chat/random_chat.dart';
 import 'package:privacy_of_animal/logics/same_match/same_match_bloc.dart';
+import 'package:privacy_of_animal/logics/setting/setting_bloc.dart';
 import 'package:privacy_of_animal/logics/signup/signup_bloc.dart';
 import 'package:privacy_of_animal/logics/tag_chat/tag_chat_bloc.dart';
 import 'package:privacy_of_animal/logics/tag_edit/tag_edit_bloc.dart';
@@ -44,4 +45,5 @@ void setup() {
   sl.registerLazySingleton<FriendsBloc>(() => FriendsBloc());
   sl.registerLazySingleton<FriendsChatBloc>(() => FriendsChatBloc());
   sl.registerLazySingleton<SameMatchBloc>(() => SameMatchBloc());
+  sl.registerLazySingleton<SettingBloc>(() => SettingBloc());
 }

@@ -4,8 +4,8 @@ import 'package:privacy_of_animal/resources/strings.dart';
 
 
 class FirebaseAPI {
-  FirebaseAuth _auth;
-  Firestore _firestore;
+  static FirebaseAuth _auth;
+  static Firestore _firestore;
 
   Firestore getFirestore() {
     _firestore ??= Firestore.instance;
@@ -23,10 +23,11 @@ class FirebaseAPI {
   }
 
   Future<void> deleteUserAccount(String uid) async {
-    CollectionReference col = _firestore.collection(firestoreDeletedUserListCollection);
+    CollectionReference col = getFirestore().collection(firestoreDeletedUserListCollection);
     DocumentReference doc = col.document(uid);
+    
     await _firestore.runTransaction((tx) async{
-      await doc.delete();
+      await tx.delete(doc);
     });
   }
 }

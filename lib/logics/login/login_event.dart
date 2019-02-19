@@ -3,7 +3,7 @@ import 'package:privacy_of_animal/bloc_helpers/bloc_event_state.dart';
 
 abstract class LoginEvent extends BlocEvent{}
 
-class LoginEventInitial extends LoginEvent {}
+class LoginEventStateClear extends LoginEvent {}
 
 class LoginEventLogin extends LoginEvent {
   final String email;
