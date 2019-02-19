@@ -80,7 +80,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
                       Expanded(child: image),
                       SizedBox(height: ScreenUtil.height/18),
                       RaisedButton(
-                        padding: EdgeInsets.symmetric(horizontal: ScreenUtil.width/3, vertical: ScreenUtil.height/40),
+                        padding: EdgeInsets.symmetric(horizontal: ScreenUtil.width/2.8, vertical: ScreenUtil.height/40),
                         color: primaryPink,
                         child: Text(
                           '갤러리',
