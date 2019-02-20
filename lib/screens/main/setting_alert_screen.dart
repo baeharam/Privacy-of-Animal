@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/resources/resources.dart';
-import 'package:privacy_of_animal/logics/initialize_api.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 
 class SettingAlertScreen extends StatefulWidget {
@@ -12,7 +11,6 @@ class _SettingAlertScreenState extends State<SettingAlertScreen> {
   final List<AlertItem> items = AlertItem.items();
   @override
   Widget build(BuildContext context) {
-    sl.get<InitializeAPI>().constantInitialize(context);
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
