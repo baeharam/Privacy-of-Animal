@@ -23,11 +23,18 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
   SameMatchModel sameMatchModel;
 
   Stream<QuerySnapshot> _getFriendsStream() {
-    Stream<QuerySnapshot> requestStream = sl.get<FirebaseAPI>().getFirestore()
+    Stream<QuerySnapshot> requestStream1 = sl.get<FirebaseAPI>().getFirestore()
       .collection(firestoreUsersCollection)
       .document(sameMatchModel.userInfo.documentID)
       .collection(firestoreFriendsSubCollection)
       .where(uidCol, isEqualTo: sl.get<CurrentUser>().uid)
+      .where(firestoreFriendsField, isEqualTo: false).snapshots();
+
+    Stream<QuerySnapshot> requestStream2 = sl.get<FirebaseAPI>().getFirestore()
+      .collection(firestoreUsersCollection)
+      .document(sl.get<CurrentUser>().uid)
+      .collection(firestoreFriendsSubCollection)
+      .where(uidCol, isEqualTo: sameMatchModel.userInfo.documentID)
       .where(firestoreFriendsField, isEqualTo: false).snapshots();
 
     Stream<QuerySnapshot> friendsStream = sl.get<FirebaseAPI>().getFirestore()
@@ -37,9 +44,9 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
       .where(uidCol, isEqualTo: sl.get<CurrentUser>().uid)
       .where(firestoreFriendsField, isEqualTo: true).snapshots();
 
-    return Observable.combineLatest2(requestStream, friendsStream, (s1,s2){
-      if((s1 as QuerySnapshot).documents.isNotEmpty || (s2 as QuerySnapshot).documents.isNotEmpty){
-        return (s1 as QuerySnapshot).documents.isNotEmpty ? s1 : s2;
+    return Observable.combineLatest3(requestStream1, friendsStream, requestStream2,(s1,s2, s3){
+      if(s1.documents.isNotEmpty || s2.documents.isNotEmpty || s3.documents.isNotEmpty){
+        return s1.documents.isNotEmpty ? s1 : (s2.documents.isNotEmpty ? s2 : s3);
       } else {
         return s1;
       }
@@ -213,7 +220,16 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
                             uid: sameMatchModel.userInfo.documentID)),
                       );
                     }
-                    return Container();
+                    return Padding(
+                      padding: EdgeInsets.only(top: 10.0),
+                      child: Text(
+                        '친구신청 승인 대기중입니다.',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold
+                        ),
+                      ),
+                    );
                   }
                 )
               ],

@@ -18,7 +18,7 @@ class ProfileBloc extends BlocEventStateBase<ProfileEvent,ProfileState>
     if(event is ProfileEventResetFakeProfile) {
       DateTime before = DateTime.fromMillisecondsSinceEpoch(sl.get<CurrentUser>().fakeProfileModel.analyzedTime);
       DateTime now = DateTime.now();
-      Duration diff = before.difference(now);
+      Duration diff = now.difference(before);
 
       if(diff<Duration(days: 2)){
         yield ProfileState.noReset('갱신가능까지 ${48-diff.inHours}시간 남았습니다.');

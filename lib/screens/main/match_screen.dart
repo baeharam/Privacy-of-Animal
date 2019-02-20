@@ -92,7 +92,7 @@ class _MatchScreenState extends State<MatchScreen> {
               ),
               onTap: () {
                 sl.get<RandomChatBloc>().emitEvent(RandomChatEventMatchStart());
-                Navigator.pushNamed(context, routeRandomLoading);
+                Navigator.pushNamed(context, routeRandomDecision);
               }
             )
           ),

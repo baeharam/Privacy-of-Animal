@@ -30,6 +30,7 @@ dependencies:
   flutter_webview_plugin: ^0.3.0+2
   path: ^1.6.2
   intl: ^0.15.7
+  flutter_local_notifications: ^0.5.1+2
 
 
 

@@ -15,6 +15,7 @@ const String routeLoginDecision = '/loginDecision';
 const String routeSignUpDecision = '/signUpDecision';
 const String routePhotoDecision = '/photoDecision';
 const String routeHomeDecision = '/homeDecision';
+const String routeRandomDecision = '/randomDecision';
 
 // IntroScreen
 const String introMessage1Above = '내 얼굴 사진을 바탕으로';
