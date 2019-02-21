@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state_builder.dart';
 import 'package:privacy_of_animal/logics/signup/signup.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
-import 'package:privacy_of_animal/widgets/focus_visible_maker.dart';
 
 class SignUpInput extends StatefulWidget {
 
@@ -51,22 +50,17 @@ class _SignUpInputState extends State<SignUpInput> {
         return StreamBuilder<String>(
           stream: widget.stream,
           builder: (BuildContext context, AsyncSnapshot<String> snapshot){
-            return EnsureVisibleWhenFocused(
-              focusNode: widget.focusNode,
-              curve: Curves.easeOut,
-              duration: const Duration(milliseconds: 200),
-              child: TextField(
-                decoration: InputDecoration(
-                  errorText: snapshot.error,
-                  hintText: widget.hintText
-                ),
-                onChanged: widget.onChanged,
-                keyboardType: TextInputType.emailAddress,
-                controller: widget.controller,
-                focusNode: widget.focusNode,
-                enabled: state.isRegistering?false:true,
-                obscureText: widget.obscureText,
+            return TextField(
+              decoration: InputDecoration(
+                errorText: snapshot.error,
+                hintText: widget.hintText
               ),
+              onChanged: widget.onChanged,
+              keyboardType: TextInputType.emailAddress,
+              controller: widget.controller,
+              focusNode: widget.focusNode,
+              enabled: state.isRegistering?false:true,
+              obscureText: widget.obscureText,
             );
           }
         );

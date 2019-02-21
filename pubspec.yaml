@@ -30,6 +30,7 @@ dependencies:
   flutter_webview_plugin: ^0.3.0+2
   path: ^1.6.2
   intl: ^0.15.7
+  flutter_local_notifications: ^0.5.1+2
 
 
 
@@ -86,6 +87,7 @@ flutter:
     - assets/images/animals/hippo.jpg
     - assets/images/animals/horse.jpg
     - assets/images/animals/koala.jpg
+    - assets/images/animals/iguana.jpg
     - assets/images/animals/lama.jpg
     - assets/images/animals/lion.jpg
     - assets/images/animals/monkey.jpg
@@ -103,6 +105,39 @@ flutter:
     - assets/images/animals/turtle.jpg
     - assets/images/animals/whale.jpg
     - assets/images/animals/zebra.jpg
+    - assets/images/animals/alpaca.jpg
+    - assets/images/animals/antelopes.jpg
+    - assets/images/animals/armadillo.jpg
+    - assets/images/animals/baboon.jpg
+    - assets/images/animals/brownbear.jpg
+    - assets/images/animals/bulldog.jpg
+    - assets/images/animals/catfish.jpg
+    - assets/images/animals/dachshund.jpg
+    - assets/images/animals/donkey.jpg
+    - assets/images/animals/elephantseal.jpg
+    - assets/images/animals/eurasianlynx.jpg
+    - assets/images/animals/gazelle.jpg
+    - assets/images/animals/giraffe.jpg
+    - assets/images/animals/goose.jpg
+    - assets/images/animals/hammerheadshark.jpg
+    - assets/images/animals/kangarro.jpg
+    - assets/images/animals/lemurmonkey.jpg
+    - assets/images/animals/meerkat.jpg
+    - assets/images/animals/otter.jpg
+    - assets/images/animals/polarbear.jpg
+    - assets/images/animals/polarfox.jpg
+    - assets/images/animals/quokka.jpg
+    - assets/images/animals/raccoon.jpg
+    - assets/images/animals/skunk.jpg
+    - assets/images/animals/sloth.jpg
+    - assets/images/animals/snowrabbit.jpg
+    - assets/images/animals/squirrel.jpg
+    - assets/images/animals/swan.jpg
+    - assets/images/animals/toad.jpg
+    - assets/images/animals/weasel.jpg
+    - assets/images/animals/wolf.jpg
+
+
 
 
   fonts:

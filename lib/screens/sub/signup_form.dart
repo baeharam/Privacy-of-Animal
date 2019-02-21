@@ -82,8 +82,10 @@ class _SignUpFormState extends State<SignUpForm> {
     SignUpModel signUpModel = SignUpModel();
 
     return SingleChildScrollView(
+      physics: ScrollPhysics(),
       child: Container(
         width: ScreenUtil.width/1.3,
+        padding: EdgeInsets.only(bottom: 20.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,

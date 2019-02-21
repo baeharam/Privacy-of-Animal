@@ -24,7 +24,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final FindPasswordBloc findPasswordBloc = sl<FindPasswordBloc>();
 
     return Scaffold(
-      
+      resizeToAvoidBottomPadding: true,
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
           child: Column(

@@ -11,15 +11,20 @@ class TagSelectBloc extends BlocEventStateBase<TagSelectEvent,TagSelectState> {
 
   @override
   Stream<TagSelectState> eventHandler(TagSelectEvent event, TagSelectState currentState) async*{
+
+    if(event is TagSelectEventStateClear) {
+      yield TagSelectState.initial();
+    }
+
     if(event is TagSelectEventActivate){
       if(selectedTags<5){
         selectedTags++;
-        yield TagSelectState.activated(event.index);
+        yield TagSelectState.activated(event.index,selectedTags);
       }
     }
     if(event is TagSelectEventDeactivate){
       selectedTags--;
-      yield TagSelectState.deactivated(event.index);
+      yield TagSelectState.deactivated(event.index,selectedTags);
     }
 
     if(event is TagSelectEventComplete){

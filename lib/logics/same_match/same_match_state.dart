@@ -3,17 +3,22 @@ import 'package:privacy_of_animal/models/same_match_model.dart';
 
 class SameMatchState extends BlocState {
   final bool isInitial;
-  final bool isLoading;
+  final bool isFindLoading;
   final bool isFindSucceeded;
   final bool isFindFailed;
+
+  final bool isRequestSucceeded;
+  final bool isRequestFailed;
 
   final SameMatchModel sameMatchModel;
 
   SameMatchState({
     this.isInitial: false,
-    this.isLoading: false,
+    this.isFindLoading: false,
     this.isFindSucceeded: false,
     this.isFindFailed: false,
+    this.isRequestSucceeded: false,
+    this.isRequestFailed: false,
 
     this.sameMatchModel
   });
@@ -26,7 +31,7 @@ class SameMatchState extends BlocState {
 
   factory SameMatchState.loading() {
     return SameMatchState(
-      isLoading: true
+      isFindLoading: true
     );
   }
 
@@ -40,6 +45,18 @@ class SameMatchState extends BlocState {
   factory SameMatchState.findFailed() {
     return SameMatchState(
       isFindFailed: true
+    );
+  }
+
+  factory SameMatchState.requestSucceeded() {
+    return SameMatchState(
+      isRequestSucceeded: true
+    );
+  }
+
+  factory SameMatchState.requestFailed() {
+    return SameMatchState(
+      isRequestFailed: true
     );
   }
 }

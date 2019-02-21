@@ -30,13 +30,7 @@ class _MatchScreenState extends State<MatchScreen> {
         ),
         centerTitle: true,
         elevation: 0.0,
-        backgroundColor: primaryBlue,
-        actions: [
-          IconButton(
-            icon: Icon(Icons.filter),
-            onPressed: (){},
-          )
-        ],
+        backgroundColor: primaryBlue
       ),
       body: Stack(
         children: <Widget>[
@@ -98,7 +92,7 @@ class _MatchScreenState extends State<MatchScreen> {
               ),
               onTap: () {
                 sl.get<RandomChatBloc>().emitEvent(RandomChatEventMatchStart());
-                Navigator.pushNamed(context, routeRandomLoading);
+                Navigator.pushNamed(context, routeRandomDecision);
               }
             )
           ),
@@ -163,24 +157,30 @@ class TagTitleForm extends StatelessWidget {
     return Positioned(
       left: left,
       top: top,
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 15.0,vertical: 5.0),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20.0),
-          border: Border.all(
-            color: primaryGreen,
-            width: 3.0
+      child: GestureDetector(
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 15.0,vertical: 5.0),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20.0),
+            border: Border.all(
+              color: primaryGreen,
+              width: 3.0
+            ),
+            color: Colors.white.withOpacity(0.2)
           ),
-          color: Colors.white.withOpacity(0.2)
-        ),
-        child: Text(
-          '# $content',
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.bold
+          child: Text(
+            '# $content',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Colors.black,
+              fontWeight: FontWeight.bold
+            ),
           ),
         ),
+        onTap: () {
+          sl.get<SameMatchBloc>().emitEvent(SameMatchEventFindUser());
+          Navigator.pushNamed(context, routeSameMatch);
+        }
       ),
     );
   }

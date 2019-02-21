@@ -37,7 +37,7 @@ class TagChatState extends BlocState {
       messageNPC: message??'',
       isBegin: isBegin??false,
       isInitial: isInitial??false,
-      isNPCDone: isNPCDone??false,
+      isNPCDone: isNPCDone??false
     );
   }
 
