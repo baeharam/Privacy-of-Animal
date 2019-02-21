@@ -5,6 +5,7 @@ import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart' as p;
 class DatabaseHelper {
   static DatabaseHelper _databaseHelper;
   static Database _database;
@@ -35,7 +36,8 @@ class DatabaseHelper {
 
   Future<Database> _initializeDatabase() async {
     Directory directory = await getApplicationDocumentsDirectory();
-    String path = directory.path + userDB;
+    // String path = directory.path + userDB;
+    String path = p.join(directory.path, userDB);
 
     Database database = await openDatabase(path, version: 1, onCreate: _createDB);
     return database;

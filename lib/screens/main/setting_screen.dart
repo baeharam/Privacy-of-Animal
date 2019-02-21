@@ -94,8 +94,8 @@ class SettingScreenState extends State<SettingScreen> {
                     ],
                   ),
                   Container(
-                    padding: EdgeInsets.only(left: 10.0,right: 6.0),
-                    width: ScreenUtil.width*0.51,
+                    padding: EdgeInsets.only(left: 10.0),
+                    width: ScreenUtil.width*0.47,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
@@ -168,7 +168,7 @@ class SettingScreenState extends State<SettingScreen> {
                       },
                       trailing: Icon(items[index].trailing),
                     ),
-                    margin: EdgeInsets.only(left: ScreenUtil.width*0.07, right: ScreenUtil.width*0.07),
+                    padding: EdgeInsets.only(left: ScreenUtil.width*0.07, right: ScreenUtil.width*0.07),
                     foregroundDecoration: BoxDecoration(
                       border: Border(
                         bottom: BorderSide(color: Colors.grey[300],width: 1.5)

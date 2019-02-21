@@ -14,6 +14,7 @@ class SignUpInput extends StatefulWidget {
   final TextInputType textInputType;
   final FOCUS_TYPE type;
   final bool obscureText;
+  final FocusNode nextFocusNode;
 
   SignUpInput({
     @required this.hintText,
@@ -24,7 +25,8 @@ class SignUpInput extends StatefulWidget {
     @required this.onChanged,
     @required this.textInputType,
     @required this.type,
-    this.obscureText: false
+    this.obscureText: false,
+    this.nextFocusNode
   });
 
   @override
@@ -61,6 +63,7 @@ class _SignUpInputState extends State<SignUpInput> {
               focusNode: widget.focusNode,
               enabled: state.isRegistering?false:true,
               obscureText: widget.obscureText,
+              onSubmitted: (String value) => FocusScope.of(context).requestFocus(widget.nextFocusNode)
             );
           }
         );
