@@ -12,7 +12,7 @@ class InitializeAPI {
     await FirebaseApp.configure(
       name: 'PrivacyofAnimal',
       options: const FirebaseOptions(
-        googleAppID: iosAppID,
+        googleAppID: androidAppID,
         apiKey: appAPIKey,
         projectID: projectID
       )
