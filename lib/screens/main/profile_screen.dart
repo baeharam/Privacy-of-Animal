@@ -7,6 +7,7 @@ import 'package:privacy_of_animal/logics/tag_edit/tag_edit.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/resources/constants.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
+import 'package:privacy_of_animal/utils/profile_hero.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:privacy_of_animal/utils/stream_dialog.dart';
 import 'package:privacy_of_animal/utils/stream_navigator.dart';
@@ -113,9 +114,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     lineWidth: 10.0,
                                     progressColor: primaryBeige,
                                   ),
-                                  CircleAvatar(
-                                    backgroundImage: AssetImage(_user.fakeProfileModel.animalImage),
-                                    radius: ScreenUtil.width/6.2,
+                                  Hero(
+                                    child: GestureDetector(
+                                      child: CircleAvatar(
+                                        backgroundImage: AssetImage(_user.fakeProfileModel.animalImage),
+                                        radius: ScreenUtil.width/6.2,
+                                      ),
+                                      onTap: () => profileHeroAnimation(
+                                        context: context,
+                                        image: _user.fakeProfileModel.animalImage
+                                      ),
+                                    ),
+                                    tag: _user.fakeProfileModel.animalImage,
                                   )
                                 ],
                               ),

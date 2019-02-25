@@ -8,6 +8,7 @@ import 'package:privacy_of_animal/logics/friend_request/friend_request.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/resources/constants.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
+import 'package:privacy_of_animal/utils/profile_hero.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:privacy_of_animal/utils/stream_snackbar.dart';
 import 'package:privacy_of_animal/widgets/progress_indicator.dart';
@@ -122,10 +123,19 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
                                     lineWidth: 10.0,
                                     progressColor: primaryBeige,
                                   ),
-                                  CircleAvatar(
-                                    backgroundImage: AssetImage(widget.user.data[firestoreFakeProfileField]
-                                      [firestoreAnimalImageField]),
-                                    radius: ScreenUtil.width/6.2,
+                                  Hero(
+                                    child: GestureDetector(
+                                      child: CircleAvatar(
+                                        backgroundImage: AssetImage(widget.user.data[firestoreFakeProfileField]
+                                          [firestoreAnimalImageField]),
+                                        radius: ScreenUtil.width/6.2,
+                                      ),
+                                      onTap: () => profileHeroAnimation(
+                                        context: context,
+                                        image: widget.user.data[firestoreFakeProfileField][firestoreAnimalImageField]
+                                      ),
+                                    ),
+                                    tag: widget.user.data[firestoreFakeProfileField][firestoreAnimalImageField],
                                   )
                                 ],
                               ),

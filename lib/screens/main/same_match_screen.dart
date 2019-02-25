@@ -8,6 +8,7 @@ import 'package:privacy_of_animal/logics/same_match/same_match.dart';
 import 'package:privacy_of_animal/models/same_match_model.dart';
 import 'package:privacy_of_animal/resources/resources.dart';
 import 'package:privacy_of_animal/screens/main/other_profile_screen.dart';
+import 'package:privacy_of_animal/utils/profile_hero.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:privacy_of_animal/utils/stream_snackbar.dart';
 import 'package:rxdart/rxdart.dart';
@@ -146,9 +147,18 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
                       lineWidth: 10.0,
                       progressColor: primaryBeige,
                     ),
-                    CircleAvatar(
-                      backgroundImage: AssetImage(sameMatchModel.profileImage),
-                      radius: ScreenUtil.width/4.2,
+                    Hero(
+                      child: GestureDetector(
+                        child: CircleAvatar(
+                          backgroundImage: AssetImage(sameMatchModel.profileImage),
+                          radius: ScreenUtil.width/4.2,
+                        ),
+                        onTap: () => profileHeroAnimation(
+                          context: context,
+                          image: sameMatchModel.profileImage
+                        ),
+                      ),
+                      tag: sameMatchModel.profileImage,
                     )
                   ],
                 ),
