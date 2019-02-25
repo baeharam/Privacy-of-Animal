@@ -6,7 +6,6 @@ import 'package:privacy_of_animal/logics/random_loading/random_loading.dart';
 import 'package:privacy_of_animal/resources/resources.dart';
 import 'package:privacy_of_animal/screens/main/random_chat_screen.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
-import 'package:privacy_of_animal/utils/stream_snackbar.dart';
 
 class RandomLoadingScreen extends StatefulWidget {
   @override

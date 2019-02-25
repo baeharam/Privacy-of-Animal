@@ -1,6 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:privacy_of_animal/logics/current_user.dart';
+import 'package:privacy_of_animal/logics/firebase_api.dart';
+import 'package:privacy_of_animal/utils/service_locator.dart';
+import 'package:privacy_of_animal/resources/strings.dart';
 
 class NotificationHelper {
   FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin;
@@ -44,11 +48,16 @@ class NotificationHelper {
     var iOS =IOSNotificationDetails();
     var platform =NotificationDetails(android,iOS);
 
-    String sender = friendsRequest.documentChanges[0].document.documentID;
+    if(sl.get<CurrentUser>().friendsRequestList.length <= friendsRequest.documents.length){
+      DocumentSnapshot senderSnapshot = await sl.get<FirebaseAPI>().getFirestore()
+        .collection(firestoreUsersCollection)
+        .document(friendsRequest.documentChanges[0].document.documentID).get();
+      String sender = senderSnapshot.data[firestoreFakeProfileField][firestoreNickNameField];
 
-    await _flutterLocalNotificationsPlugin.show(
-      0, '친구 신청','$sender 님으로부터 친구신청이 왔습니다.',platform,
-      payload: '친구 신청 알림'
-    );
+      await _flutterLocalNotificationsPlugin.show(
+        0, '친구 신청','$sender 님으로부터 친구신청이 왔습니다.',platform,
+        payload: '친구 신청 알림'
+      );
+    }
   }
 }
