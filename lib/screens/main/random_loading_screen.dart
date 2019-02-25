@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state_builder.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
-import 'package:privacy_of_animal/logics/random_chat/random_chat.dart';
+import 'package:privacy_of_animal/logics/random_loading/random_loading.dart';
 import 'package:privacy_of_animal/resources/resources.dart';
 import 'package:privacy_of_animal/screens/main/random_chat_screen.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
@@ -15,8 +15,9 @@ class RandomLoadingScreen extends StatefulWidget {
 
 class _RandomLoadingScreenState extends State<RandomLoadingScreen> {
 
-  final RandomChatBloc randomChatBloc = sl.get<RandomChatBloc>();
+  final RandomLoadingBloc randomLoadingBloc = sl.get<RandomLoadingBloc>();
   bool isChatRoomMaker = false;
+  String chatRoomID, receiver;
 
   Widget _loadingWidget() {
     return Center(
@@ -48,19 +49,15 @@ class _RandomLoadingScreenState extends State<RandomLoadingScreen> {
       body: WillPopScope(
         onWillPop: () {
           if(isChatRoomMaker){
-            randomChatBloc.emitEvent(RandomChatEventCancel());
+            randomLoadingBloc.emitEvent(RandomLoadingEventCancel());
           }
           return Future.value(true);
         },
         child: BlocBuilder(
-          bloc: randomChatBloc,
-          builder: (context, RandomChatState state){
-            if(state.isAPIFailed){
-              streamSnackbar(context,state.errorMessage);
-              Navigator.pop(context);
-            }
-
-            if(state.isChatRoomMade) {
+          bloc: randomLoadingBloc,
+          builder: (context, RandomLoadingState state){
+            // 채팅방 만드는데 성공함
+            if(state.isChatRoomMadeSucceeded) {
               isChatRoomMaker = true;
               return StreamBuilder<DocumentSnapshot>(
                 stream: sl.get<FirebaseAPI>().getFirestore()
@@ -69,7 +66,7 @@ class _RandomLoadingScreenState extends State<RandomLoadingScreen> {
                 .snapshots(),
                 builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot){
                   if(snapshot.hasData && snapshot.data.data!=null && snapshot.data.data[firestoreChatBeginField]){
-                    randomChatBloc.emitEvent(RandomChatEventUserEntered(
+                    randomLoadingBloc.emitEvent(RandomLoadingEventUserEntered(
                       receiver: snapshot.data.data[firestoreChatUsersField][1],
                       chatRoomID: snapshot.data.documentID)
                     );
@@ -79,7 +76,8 @@ class _RandomLoadingScreenState extends State<RandomLoadingScreen> {
               );
             }
 
-            if(state.isMatched){
+            // 매칭 성공
+            if(state.isMatchSucceeded){
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 Navigator.pushReplacement(context, MaterialPageRoute(
                   builder: (context) => RandomChatScreen(
@@ -88,6 +86,7 @@ class _RandomLoadingScreenState extends State<RandomLoadingScreen> {
                   )
                 ));
               });
+              randomLoadingBloc.emitEvent(RandomLoadingEventStateClear());
             }
 
             return _loadingWidget();

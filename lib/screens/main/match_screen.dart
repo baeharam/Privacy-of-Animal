@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
-import 'package:privacy_of_animal/logics/random_chat/random_chat.dart';
+import 'package:privacy_of_animal/logics/random_loading/random_loading.dart';
 import 'package:privacy_of_animal/logics/same_match/same_match.dart';
 import 'package:privacy_of_animal/models/tag_list_model.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
@@ -91,8 +91,8 @@ class _MatchScreenState extends State<MatchScreen> {
                 image: AssetImage('assets/images/components/match_random_circle.png'),
               ),
               onTap: () {
-                sl.get<RandomChatBloc>().emitEvent(RandomChatEventMatchStart());
-                Navigator.pushNamed(context, routeRandomDecision);
+                sl.get<RandomLoadingBloc>().emitEvent(RandomLoadingEventMatchStart());
+                Navigator.pushNamed(context, routeRandomLoading);
               }
             )
           ),

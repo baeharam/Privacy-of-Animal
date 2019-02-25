@@ -4,6 +4,7 @@ import 'package:privacy_of_animal/bloc_helpers/bloc_event_state_builder.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/logics/random_chat/random_chat.dart';
+import 'package:privacy_of_animal/logics/random_loading/random_loading.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/screens/main/other_profile_screen.dart';
 import 'package:privacy_of_animal/utils/back_button_dialog.dart';
@@ -29,7 +30,9 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
   final ScrollController scrollController = ScrollController();
   final TextEditingController messageController = TextEditingController();
   final FocusNode messageFocusNode = FocusNode();
+
   final RandomChatBloc randomChatBloc = sl.get<RandomChatBloc>();
+  final RandomLoadingBloc randomLoadingBloc = sl.get<RandomLoadingBloc>();
 
   // Cloud Firestore에서 불러와서 저장.
   List<DocumentSnapshot> messages = List<DocumentSnapshot>();
@@ -67,8 +70,10 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
           IconButton(
             icon: Icon(Icons.refresh),
             onPressed: () {
+              randomChatBloc.emitEvent(RandomChatEventStateClear());
               randomChatBloc.emitEvent(RandomChatEventOut(chatRoomID: widget.chatRoomID));
-              randomChatBloc.emitEvent(RandomChatEventMatchStart());
+              randomLoadingBloc.emitEvent(RandomLoadingEventMatchStart());
+              Navigator.pushReplacementNamed(context, routeRandomLoading);
             },
           )
         ],
@@ -77,8 +82,10 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
         onWillPop: () { 
           if(isReceiverOut) {
             randomChatBloc.emitEvent(RandomChatEventOut(chatRoomID: widget.chatRoomID));
+            randomChatBloc.emitEvent(RandomChatEventStateClear());
             return Future.value(true);
-          } else {  
+          } else {
+            randomChatBloc.emitEvent(RandomChatEventStateClear());
             return BackButtonAction.dialogChatExit(context, widget.chatRoomID);
           }
         },

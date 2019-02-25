@@ -5,17 +5,6 @@ abstract class RandomChatEvent extends BlocEvent{}
 
 class RandomChatEventStateClear extends RandomChatEvent {}
 
-class RandomChatEventMatchStart extends RandomChatEvent {}
-
-class RandomChatEventUserEntered extends RandomChatEvent {
-  final String receiver;
-  final String chatRoomID;
-
-  RandomChatEventUserEntered({@required this.receiver,@required this.chatRoomID});
-}
-
-class RandomChatEventCancel extends RandomChatEvent {}
-
 class RandomChatEventOut extends RandomChatEvent {
   final String chatRoomID;
 
@@ -23,8 +12,6 @@ class RandomChatEventOut extends RandomChatEvent {
     @required this.chatRoomID
   });
 }
-
-class RandomChatEventFinished extends RandomChatEvent {}
 
 class RandomChatEventMessageSend extends RandomChatEvent {
   final String content;
@@ -37,3 +24,5 @@ class RandomChatEventMessageSend extends RandomChatEvent {
     @required this.chatRoomID
   });
 }
+
+class RandomChatEventFinished extends RandomChatEvent {}

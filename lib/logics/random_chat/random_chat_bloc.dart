@@ -1,13 +1,11 @@
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state.dart';
 import 'package:privacy_of_animal/logics/random_chat/random_chat.dart';
 
 class RandomChatBloc extends BlocEventStateBase<RandomChatEvent,RandomChatState>
 {
   static final RandomChatAPI _api = RandomChatAPI();
-  String _chatRoomID = '';
 
   @override
   RandomChatState get initialState => RandomChatState.initial();
@@ -22,60 +20,25 @@ class RandomChatBloc extends BlocEventStateBase<RandomChatEvent,RandomChatState>
     if(event is RandomChatEventMessageSend){
       try {
         await _api.sendMessage(event.content, event.receiver, event.chatRoomID);
+        yield RandomChatState.sendMessageSucceeded();
       } catch(exception) {
-        print(exception);
-        yield RandomChatState.apiFailed();
+        print('메시지 전송 실패\n${exception.toString()}');
+        yield RandomChatState.sendMessageFailed();
       }
-    }
-
-    if(event is RandomChatEventMatchStart){
-      try {
-        _chatRoomID = await _api.getRoomID();
-        if(_chatRoomID.isEmpty){
-          _chatRoomID = await _api.makeChatRoom();
-          yield RandomChatState.madeChatRoom(_chatRoomID);
-        } else {
-          DocumentSnapshot receiver = await _api.enterChatRoom(_chatRoomID);
-          yield RandomChatState.matchSucceeded(
-            chatRoomID: _chatRoomID,
-            receiver: receiver
-          );
-        }
-      } catch(exception) {
-        print(exception);
-        yield RandomChatState.apiFailed();
-      }
-    }
-
-    if(event is RandomChatEventUserEntered) {
-      yield RandomChatState.matchSucceeded(
-        receiver: await _api.fetchUserData(event.receiver),
-        chatRoomID: event.chatRoomID
-      );
     }
 
     if(event is RandomChatEventOut) {
       try {
         await _api.getOutChatRoom(event.chatRoomID);
-        yield RandomChatState.initial();
+        yield RandomChatState.getOutSucceeded();
       } catch(exception) {
-        print(exception);
-        yield RandomChatState.apiFailed();
-      }
-    }
-
-    if(event is RandomChatEventCancel) {
-      try {
-        await _api.deleteMadeChatRoom();
-        yield RandomChatState.initial();
-      } catch(exception) {
-        print(exception);
-        yield RandomChatState.apiFailed();
+        print('채팅방 나가기 실패\n${exception.toString()}');
+        yield RandomChatState.getOutFailed();
       }
     }
 
     if(event is RandomChatEventFinished) {
-      yield RandomChatState.finished();
+      yield RandomChatState.chatFinished();
     }
   }
 }

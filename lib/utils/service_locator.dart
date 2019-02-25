@@ -13,6 +13,7 @@ import 'package:privacy_of_animal/logics/login/login_bloc.dart';
 import 'package:privacy_of_animal/logics/notification/notification_bloc.dart';
 import 'package:privacy_of_animal/logics/profile/profile_bloc.dart';
 import 'package:privacy_of_animal/logics/random_chat/random_chat.dart';
+import 'package:privacy_of_animal/logics/random_loading/random_loading_bloc.dart';
 import 'package:privacy_of_animal/logics/same_match/same_match_bloc.dart';
 import 'package:privacy_of_animal/logics/setting/setting_bloc.dart';
 import 'package:privacy_of_animal/logics/notification_helper.dart';
@@ -26,13 +27,11 @@ import 'package:privacy_of_animal/logics/photo/photo_bloc.dart';
 GetIt sl = GetIt();
 
 void setup() {
+  sl.registerSingleton(CurrentUser());
   sl.registerLazySingleton<InitializeAPI>(()=> InitializeAPI());
   sl.registerLazySingleton<DatabaseHelper>(() => DatabaseHelper());
   sl.registerLazySingleton<FirebaseAPI>(() => FirebaseAPI());
   sl.registerLazySingleton<NotificationHelper>(() => NotificationHelper());
-
-  sl..registerLazySingleton<RandomChatBloc>(() => RandomChatBloc());
-  sl.registerSingleton(CurrentUser());
   
   sl.registerLazySingleton<LoginBloc>(()=> LoginBloc());
   sl.registerLazySingleton<SignUpBloc>(()=> SignUpBloc());
@@ -46,6 +45,8 @@ void setup() {
   sl.registerLazySingleton<ProfileBloc>(() => ProfileBloc());
   sl.registerLazySingleton<FriendRequestBloc>(() => FriendRequestBloc());
   sl.registerLazySingleton<ChatListBloc>(() => ChatListBloc());
+  sl.registerLazySingleton<RandomChatBloc>(() => RandomChatBloc());
+  sl.registerLazySingleton<RandomLoadingBloc>(() => RandomLoadingBloc());
   sl.registerLazySingleton<FriendsBloc>(() => FriendsBloc());
   sl.registerLazySingleton<FriendsChatBloc>(() => FriendsChatBloc());
   sl.registerLazySingleton<SameMatchBloc>(() => SameMatchBloc());

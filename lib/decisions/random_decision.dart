@@ -18,9 +18,9 @@ class _RandomDecisionState extends State<RandomDecision> {
     return BlocBuilder(
       bloc: sl.get<RandomChatBloc>(),
       builder: (BuildContext context, RandomChatState state){
-        if(state.isMatched) {
-          return RandomChatScreen(chatRoomID: state.chatRoomID,receiver: state.receiver);
-        }
+        // if(state.isMatched) {
+        //   return RandomChatScreen(chatRoomID: state.chatRoomID,receiver: state.receiver);
+        // }
         return RandomLoadingScreen();
       },
     );

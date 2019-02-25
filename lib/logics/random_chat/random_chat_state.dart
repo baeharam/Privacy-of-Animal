@@ -1,28 +1,20 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state.dart';
 
 class RandomChatState extends BlocState {
   final bool isInitial;
-  final bool isMatched;
-  final bool isCanceled;
-  final bool isAPIFailed;
-  final bool isChatRoomMade;
+  final bool isSendMessageSucceeded;
+  final bool isSendMessageFailed;
+  final bool isGetOutSucceeded;
+  final bool isGetOutFailed;
   final bool isChatFinished;
-
-  final String errorMessage;
-  final String chatRoomID;
-  final DocumentSnapshot receiver;
 
   RandomChatState({
     this.isInitial:false,
-    this.isChatRoomMade: false,
-    this.isMatched: false,
-    this.isAPIFailed: false,
-    this.isCanceled: false,
-    this.isChatFinished: false,
-    this.chatRoomID: '',
-    this.errorMessage: '',
-    this.receiver
+    this.isSendMessageSucceeded: false,
+    this.isSendMessageFailed: false,
+    this.isGetOutSucceeded: false,
+    this.isGetOutFailed: false,
+    this.isChatFinished: false
   });
 
   factory RandomChatState.initial() {
@@ -31,35 +23,31 @@ class RandomChatState extends BlocState {
     );
   }
 
-  factory RandomChatState.madeChatRoom(String chatRoomID) {
+  factory RandomChatState.sendMessageSucceeded() {
     return RandomChatState(
-      isChatRoomMade: true,
-      chatRoomID: chatRoomID
+      isSendMessageSucceeded: true
     );
   }
 
-  factory RandomChatState.matchSucceeded({String chatRoomID, DocumentSnapshot receiver}) {
+  factory RandomChatState.sendMessageFailed() {
     return RandomChatState(
-      isMatched: true,
-      chatRoomID: chatRoomID,
-      receiver: receiver
+      isSendMessageFailed: true
     );
   }
 
-  factory RandomChatState.apiFailed() {
+  factory RandomChatState.getOutSucceeded() {
     return RandomChatState(
-      isAPIFailed: true,
-      errorMessage: '랜덤매칭에 실패했습니다.'
+      isGetOutSucceeded: true
     );
   }
 
-  factory RandomChatState.cancel() {
+  factory RandomChatState.getOutFailed() {
     return RandomChatState(
-      isCanceled: true
+      isGetOutFailed: true
     );
   }
 
-  factory RandomChatState.finished() {
+  factory RandomChatState.chatFinished() {
     return RandomChatState(
       isChatFinished: true
     );
