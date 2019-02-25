@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/resources/resources.dart';
-import 'package:privacy_of_animal/utils/service_locator.dart';
 
-class SettingAlertScreen extends StatefulWidget {
+class NotificationScreen extends StatefulWidget {
   @override
-  _SettingAlertScreenState createState() => _SettingAlertScreenState();
+  _NotificationScreenState createState() => _NotificationScreenState();
 }
 
-class _SettingAlertScreenState extends State<SettingAlertScreen> {
+class _NotificationScreenState extends State<NotificationScreen> {
   final List<AlertItem> items = AlertItem.items();
   @override
   Widget build(BuildContext context) {
@@ -63,7 +62,7 @@ class _SettingAlertScreenState extends State<SettingAlertScreen> {
               child: Switch(
                 //blocbuilder로 value는 blocstate를 stream 하면 될듯.
                 value: item.switchValue,
-                // onChanged: _bloc.emitEvent(items[index].blocEvent)
+                onChanged: (_){},
               ),
             )
           ],
@@ -125,41 +124,18 @@ class AlertItem {
   static List<AlertItem> items() {
     var box = new List<AlertItem>();
     box.add(new AlertItem(
-      title: "친구신청 알림",
+      title: "친구신청",
       titleSize: 19.0,
       switchValue: true,
       isSwitch: true,
       // blocEvent:/
     ));
     box.add(new AlertItem(
-      title: "메세지 알림",
+      title: "메시지",
       titleSize: 19.0,
       switchValue: false,
       isSwitch: true,
       // blocEvent: :
-    ));
-    box.add(new AlertItem(
-      title: "소리",
-      titleSize: 19.0,
-      switchValue: true,
-      isSwitch: true,
-      // blocEvent:
-    ));
-    box.add(new AlertItem(
-        title: "진동",
-        titleSize: 19.0,
-        switchValue: true,
-        isSwitch: false,
-        trailing: Icon(Icons.keyboard_arrow_right),
-        route: "."
-        // blocEvent:
-        ));
-    box.add(new AlertItem(
-      title: "실험",
-      titleSize: 19.0,
-      isSwitch: false,
-      trailing: null,
-      route: "",
     ));
     return box;
   }

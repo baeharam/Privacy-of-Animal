@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state_builder.dart';
 import 'package:privacy_of_animal/logics/home/home.dart';
-import 'package:privacy_of_animal/logics/settings_api.dart';
+import 'package:privacy_of_animal/logics/notification_api.dart';
 import 'package:privacy_of_animal/resources/constants.dart';
 import 'package:privacy_of_animal/screens/main/screen.dart';
 import 'package:privacy_of_animal/utils/back_button_dialog.dart';
@@ -21,7 +21,7 @@ class _HomeDecisionState extends State<HomeDecision> {
   @override
   void initState() {
     super.initState();
-    sl.get<SettingsAPI>().initializeNotification(context);
+    sl.get<NotificationAPI>().initializeNotification(context);
     homeBloc.emitEvent(HomeEvent(index: 3));
   }
 

@@ -26,14 +26,6 @@ class TagChatInputState extends State<TagChatInput> {
     super.dispose();
   }
 
-  void _moveUpScroll() {
-    widget.scrollController.animateTo(
-      widget.scrollController.position.maxScrollExtent+100.0,
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeOut
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(

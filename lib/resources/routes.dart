@@ -16,6 +16,7 @@ Map<String, WidgetBuilder> routes =  {
   routeRandomLoading: (BuildContext context) => RandomLoadingScreen(),
   routeSetting: (BuildContext context) => SettingScreen(),
   routeSameMatch: (BuildContext context) => SameMatchScreen(),
+  routeNotification: (BuildContext context) => NotificationScreen(),
 
   /// Decision
   routeLoginDecision: (BuildContext context) => LoginDecision(),

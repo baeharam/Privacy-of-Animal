@@ -10,6 +10,7 @@ const String routeRandomLoading = '/randomRandomLoading';
 const String routeRandomChat = '/randomRandomChat';
 const String routeSetting = '/setting';
 const String routeSameMatch = '/sameMatch';
+const String routeNotification = '/notification';
 
 const String routeLoginDecision = '/loginDecision';
 const String routeSignUpDecision = '/signUpDecision';

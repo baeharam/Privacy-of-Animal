@@ -162,7 +162,10 @@ class SettingScreenState extends State<SettingScreen> {
                         ),
                         ),
                       onTap :() {
-                        if(index==4){
+                        if(index==0){
+                          Navigator.pushNamed(context, routeNotification);
+                        }
+                        else if(index==4){
                           _reallyDelteAccount();
                         }
                       },
