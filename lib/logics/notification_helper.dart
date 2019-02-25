@@ -1,7 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-class NotificationAPI {
+class NotificationHelper {
   FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin;
   BuildContext _context;
 
@@ -33,15 +34,20 @@ class NotificationAPI {
   }
 
   // Notification 메시지
-  Future<void> showNotification() async {
+  Future<void> showFriendsRequestNotification(QuerySnapshot friendsRequest) async {
     var android =AndroidNotificationDetails(
-      'channel id','channel NAME','CHANNEL DESCRIPTION',
+      'FriendsRequest Notification ID',
+      'FriendsRequest Notification NAME',
+      'FriendsRequest Notification',
       priority: Priority.High, importance: Importance.Max
     );
     var iOS =IOSNotificationDetails();
     var platform =NotificationDetails(android,iOS);
+
+    String sender = friendsRequest.documentChanges[0].document.documentID;
+
     await _flutterLocalNotificationsPlugin.show(
-      0, '친구 신청이 왔습니다','플러터 알림',platform,
+      0, '친구 신청','$sender 님으로부터 친구신청이 왔습니다.',platform,
       payload: '친구 신청 알림'
     );
   }

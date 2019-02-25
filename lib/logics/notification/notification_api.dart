@@ -5,6 +5,7 @@ import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
+import 'package:privacy_of_animal/logics/notification_helper.dart';
 
 class NotificationAPI {
   
@@ -17,6 +18,9 @@ class NotificationAPI {
           .collection(firestoreUsersCollection).document(sl.get<CurrentUser>().uid)
           .collection(firestoreFriendsSubCollection).where(firestoreFriendsField, isEqualTo: false)
           .snapshots();
+      sl.get<CurrentUser>().friendsRequestStream.listen((data) async{
+        await sl.get<NotificationHelper>().showFriendsRequestNotification(data);
+      });
     } else {
       sl.get<CurrentUser>().friendsRequestStream = Stream.empty();
     }
