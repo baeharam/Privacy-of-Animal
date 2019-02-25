@@ -61,15 +61,21 @@ class HomeAPI {
         prefs.setBool(friendsRequestNotification, false);
         sl.get<CurrentUser>().friendsRequestNotification = false;
       } else {
-        sl.get<CurrentUser>().friendsRequestNotification 
-          = prefs.getBool(friendsRequestNotification);
+        sl.get<CurrentUser>().friendsRequestNotification = prefs.getBool(friendsRequestNotification);
+        sl.get<CurrentUser>().friendsRequestStream = sl.get<FirebaseAPI>().getFirestore()
+          .collection(firestoreUsersCollection).document(sl.get<CurrentUser>().uid)
+          .collection(firestoreFriendsSubCollection).where(firestoreFriendsField, isEqualTo: false)
+          .snapshots();
       }
       if(prefs.getBool(messageNotification)==null){
         prefs.setBool(messageNotification, true);
         sl.get<CurrentUser>().messageNotification = false;
       } else {
-        sl.get<CurrentUser>().messageNotification 
-          = prefs.getBool(messageNotification);
+        sl.get<CurrentUser>().messageNotification = prefs.getBool(messageNotification);
+        sl.get<CurrentUser>().messagesStream = sl.get<FirebaseAPI>().getFirestore()
+          .collection(firestoreFriendsMessageCollection)
+          .where(firestoreChatUsersField, arrayContains: sl.get<CurrentUser>().uid)
+          .snapshots();
       }
 
       // 데이터 가져왔다고 설정
