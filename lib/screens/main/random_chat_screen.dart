@@ -42,6 +42,7 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
   void initState() {
     super.initState();
     initializeDateFormatting();
+    randomChatBloc.emitEvent(RandomChatEventStateClear());
   }
 
   @override
@@ -70,7 +71,6 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
           IconButton(
             icon: Icon(Icons.refresh),
             onPressed: () {
-              randomChatBloc.emitEvent(RandomChatEventStateClear());
               randomChatBloc.emitEvent(RandomChatEventOut(chatRoomID: widget.chatRoomID));
               randomLoadingBloc.emitEvent(RandomLoadingEventMatchStart());
               Navigator.pushReplacementNamed(context, routeRandomLoading);
@@ -82,10 +82,8 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
         onWillPop: () { 
           if(isReceiverOut) {
             randomChatBloc.emitEvent(RandomChatEventOut(chatRoomID: widget.chatRoomID));
-            randomChatBloc.emitEvent(RandomChatEventStateClear());
             return Future.value(true);
           } else {
-            randomChatBloc.emitEvent(RandomChatEventStateClear());
             return BackButtonAction.dialogChatExit(context, widget.chatRoomID);
           }
         },
