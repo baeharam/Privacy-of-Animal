@@ -5,7 +5,7 @@ class SettingsAPI {
   FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin;
   BuildContext _context;
 
-  // 알림 초기화
+  // Notification 세팅/초기화
   void initializeNotification(BuildContext context) {
     var initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
     var initializationSettingsiOS =IOSInitializationSettings();
@@ -21,6 +21,7 @@ class SettingsAPI {
       onSelectNotification: _onSelectNotification);
   }
 
+  // Notification 눌렀을 때 나오는 메시지
   Future<void> _onSelectNotification(String payload) async {
     showDialog(
       context: _context,
@@ -31,6 +32,7 @@ class SettingsAPI {
     );
   }
 
+  // Notification 메시지
   Future<void> showNotification() async {
     var android =AndroidNotificationDetails(
       'channel id','channel NAME','CHANNEL DESCRIPTION',
