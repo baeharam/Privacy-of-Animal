@@ -63,7 +63,8 @@ class _LoginFormState extends State<LoginForm> {
                     keyboardType: TextInputType.emailAddress,
                     controller: _emailController,
                     focusNode: _emailFocusNode,
-                    enabled: state.isAuthenticating ? false : true
+                    enabled: state.isAuthenticating ? false : true,
+                    onSubmitted: (String value)=> FocusScope.of(context).requestFocus(_passwordFocusNode),
                   );
                 } 
               );
@@ -87,7 +88,7 @@ class _LoginFormState extends State<LoginForm> {
                     ),
                     onChanged: validationBloc.onPasswordChanged,
                     obscureText: true,
-                    keyboardType: TextInputType.emailAddress,
+                    keyboardType: TextInputType.text,
                     controller: _passwordController,
                     focusNode: _passwordFocusNode,
                     enabled: state.isAuthenticating ? false : true,

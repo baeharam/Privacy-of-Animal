@@ -65,7 +65,18 @@ class _TagChatScreenState extends State<TagChatScreen> {
                     physics: const AlwaysScrollableScrollPhysics(),
                     padding: const EdgeInsets.symmetric(horizontal: 20.0,vertical: 30.0),
                     itemCount: widgets.length,
-                    itemBuilder: (context,index) => widgets[index],
+                    itemBuilder: (context,index){ 
+                      if (index >5) 
+                      {
+                        _scrollController.animateTo(
+                          _scrollController.position.maxScrollExtent-10.0,
+                          curve: Curves.linear,
+                          duration: Duration(milliseconds: 100)
+                          );
+                      }
+                      
+                      return widgets[index];
+                    },
                     controller: _scrollController,
                   ),
                 ),
