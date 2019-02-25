@@ -203,32 +203,32 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
                 StreamBuilder<QuerySnapshot>(
                   stream: _getFriendsStream(),
                   builder: (context, snapshot){
-                    if((snapshot.hasData && snapshot.data.documents.length==0)){
-                      return RaisedButton(
-                        color: primaryBlue,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+                    if(snapshot.hasData && snapshot.data.documents.length>0){
+                      return Padding(
+                        padding: EdgeInsets.only(top: 10.0),
                         child: Text(
-                          '친구 신청하기',
+                          '친구신청 승인 대기중입니다.',
                           style: TextStyle(
-                            color: Colors.white,
+                            color: Colors.black,
                             fontWeight: FontWeight.bold
                           ),
                         ),
-                        elevation: 5.0,
-                        onPressed: () => sameMatchBloc
-                          .emitEvent(SameMatchEventSendRequest(
-                            uid: sameMatchModel.userInfo.documentID)),
                       );
                     }
-                    return Padding(
-                      padding: EdgeInsets.only(top: 10.0),
+                    return RaisedButton(
+                      color: primaryBlue,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
                       child: Text(
-                        '친구신청 승인 대기중입니다.',
+                        '친구 신청하기',
                         style: TextStyle(
-                          color: Colors.black,
+                          color: Colors.white,
                           fontWeight: FontWeight.bold
                         ),
                       ),
+                      elevation: 5.0,
+                      onPressed: () => sameMatchBloc
+                        .emitEvent(SameMatchEventSendRequest(
+                          uid: sameMatchModel.userInfo.documentID)),
                     );
                   }
                 )
