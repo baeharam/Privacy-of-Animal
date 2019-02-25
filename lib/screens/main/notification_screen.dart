@@ -23,17 +23,23 @@ class _NotificationScreenState extends State<NotificationScreen> {
           ),
         ),
         body: Container(
-          child: ListView.builder(
+          child: ListView(
             scrollDirection: Axis.vertical,
-            itemCount: items.length,
-            itemBuilder: (BuildContext context, int index) {
-              _buildSwitch(items[index]);
-            },
+            children: [
+              _buildSwitch(
+                item: items[0],
+                onChanged: () {}
+              ),
+              _buildSwitch(
+                item: items[1],
+                onChanged: () {}
+              ),
+            ],
           ),
         ));
   }
 
-  Widget _buildSwitch(AlertItem item) {
+  Widget _buildSwitch({AlertItem item, Function onChanged}) {
     return Container(
         height: ScreenUtil.height * 0.08,
         foregroundDecoration: BoxDecoration(
@@ -74,8 +80,7 @@ class AlertItem {
   final Icon trailing;
   final String route;
 
-  AlertItem(
-      {this.title,
+  AlertItem({this.title,
       this.titleSize,
       this.switchValue,
       this.trailing,

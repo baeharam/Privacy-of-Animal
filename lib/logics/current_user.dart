@@ -14,6 +14,9 @@ class CurrentUser {
   List<DocumentSnapshot> friendsList = List<DocumentSnapshot>();
   List<DocumentSnapshot> friendsRequestList = List<DocumentSnapshot>();
 
+  bool friendsRequestNotification;
+  bool messageNotification;
+
   bool isDataFetched = false;
 
   CurrentUser() : 
