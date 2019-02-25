@@ -5,6 +5,7 @@ import 'package:privacy_of_animal/logics/database_helper.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
 class HomeAPI {
@@ -54,6 +55,24 @@ class HomeAPI {
       sl.get<CurrentUser>().fakeProfileModel.celebrityConfidence = fakeProfile[0][celebrityConfidenceCol];
       sl.get<CurrentUser>().fakeProfileModel.analyzedTime = fakeProfile[0][analyzedTimeCol];
 
+      // 알림 설정 가져오기
+      SharedPreferences prefs = await sl.get<DatabaseHelper>().sharedPreferences;
+      if(prefs.getBool(friendsRequestNotification)==null){
+        prefs.setBool(friendsRequestNotification, false);
+        sl.get<CurrentUser>().friendsRequestNotification = false;
+      } else {
+        sl.get<CurrentUser>().friendsRequestNotification 
+          = prefs.getBool(friendsRequestNotification);
+      }
+      if(prefs.getBool(messageNotification)==null){
+        prefs.setBool(messageNotification, true);
+        sl.get<CurrentUser>().messageNotification = false;
+      } else {
+        sl.get<CurrentUser>().messageNotification 
+          = prefs.getBool(messageNotification);
+      }
+
+      // 데이터 가져왔다고 설정
       sl.get<CurrentUser>().isDataFetched = true;
     } catch(exception) {
       return FETCH_RESULT.FAILURE;

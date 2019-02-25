@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:privacy_of_animal/bloc_helpers/bloc_event_state_builder.dart';
+import 'package:privacy_of_animal/logics/current_user.dart';
+import 'package:privacy_of_animal/logics/notification/notification.dart';
 import 'package:privacy_of_animal/resources/resources.dart';
+import 'package:privacy_of_animal/utils/service_locator.dart';
 
 class NotificationScreen extends StatefulWidget {
   @override
@@ -7,7 +11,9 @@ class NotificationScreen extends StatefulWidget {
 }
 
 class _NotificationScreenState extends State<NotificationScreen> {
-  final List<AlertItem> items = AlertItem.items();
+  
+  final NotificationBloc bloc = sl.get<NotificationBloc>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,18 +29,31 @@ class _NotificationScreenState extends State<NotificationScreen> {
           ),
         ),
         body: Container(
-          child: ListView(
-            scrollDirection: Axis.vertical,
-            children: [
-              _buildSwitch(
-                item: items[0],
-                onChanged: () {}
-              ),
-              _buildSwitch(
-                item: items[1],
-                onChanged: () {}
-              ),
-            ],
+          child: BlocBuilder(
+            bloc: bloc,
+            builder: (context, NotificationState state){
+              return ListView(
+                scrollDirection: Axis.vertical,
+                children: [
+                  _buildSwitch(
+                    item: AlertItem(
+                      title: '친구신청',
+                      titleSize: 19.0,
+                      switchValue: sl.get<CurrentUser>().friendsRequestNotification
+                    ),
+                    onChanged: (value) => bloc.emitEvent(NotificationEventFriendsRequest(value: value))
+                  ),
+                  _buildSwitch(
+                    item: AlertItem(
+                      title: '메시지',
+                      titleSize: 19.0,
+                      switchValue: sl.get<CurrentUser>().messageNotification
+                    ),
+                    onChanged: (value) => bloc.emitEvent(NotificationEventMessages(value: value))
+                  ),
+                ],
+              );
+            }
           ),
         ));
   }
@@ -64,7 +83,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
               padding: EdgeInsets.only(right: ScreenUtil.width * 0.06),
               child: Switch(
                 value: item.switchValue,
-                onChanged: (_){},
+                onChanged: onChanged,
               ),
             )
           ],
@@ -80,25 +99,11 @@ class AlertItem {
   final Icon trailing;
   final String route;
 
-  AlertItem({this.title,
-      this.titleSize,
-      this.switchValue,
-      this.trailing,
-      this.route
-      });
-
-  static List<AlertItem> items() {
-    var box = List<AlertItem>();
-    box.add(AlertItem(
-      title: "친구신청",
-      titleSize: 19.0,
-      switchValue: true,
-    ));
-    box.add(AlertItem(
-      title: "메시지",
-      titleSize: 19.0,
-      switchValue: false,
-    ));
-    return box;
-  }
+  AlertItem({
+    this.title,
+    this.titleSize,
+    this.switchValue,
+    this.trailing,
+    this.route
+  });
 }
