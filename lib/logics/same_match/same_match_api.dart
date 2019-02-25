@@ -28,7 +28,11 @@ class SameMatchAPI {
     
     // 사용자 전체 목록 받아오기
     QuerySnapshot users = await sl.get<FirebaseAPI>().getFirestore()
-      .collection(firestoreUsersCollection).getDocuments();
+      .collection(firestoreUsersCollection)
+      .where(firestoreIsFaceAnalyzedField, isEqualTo: true)
+      .where(firestoreIsTagChattedField, isEqualTo: true)
+      .where(firestoreIsTagSelectedField, isEqualTo: true)
+      .getDocuments();
 
     List<List<DocumentSnapshot>> matchedPeople = List<List<DocumentSnapshot>>(6);
     Map<String,List<List<String>>> matchedTags = Map<String,List<List<String>>>();
