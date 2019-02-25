@@ -27,16 +27,13 @@ class _NotificationScreenState extends State<NotificationScreen> {
             scrollDirection: Axis.vertical,
             itemCount: items.length,
             itemBuilder: (BuildContext context, int index) {
-              if (items[index].isSwitch)
-                return _containSwitch(items[index]);
-              else
-                return _uncontainSwitch(items[index]);
+              _buildSwitch(items[index]);
             },
           ),
         ));
   }
 
-  Widget _containSwitch(AlertItem item) {
+  Widget _buildSwitch(AlertItem item) {
     return Container(
         height: ScreenUtil.height * 0.08,
         foregroundDecoration: BoxDecoration(
@@ -60,7 +57,6 @@ class _NotificationScreenState extends State<NotificationScreen> {
             Container(
               padding: EdgeInsets.only(right: ScreenUtil.width * 0.06),
               child: Switch(
-                //blocbuilder로 value는 blocstate를 stream 하면 될듯.
                 value: item.switchValue,
                 onChanged: (_){},
               ),
@@ -69,73 +65,34 @@ class _NotificationScreenState extends State<NotificationScreen> {
         ));
   }
 
-  Widget _uncontainSwitch(AlertItem item) {
-    return Container(
-        height: ScreenUtil.height * 0.08,
-        foregroundDecoration: BoxDecoration(
-            border: Border(
-                bottom: BorderSide(color: Colors.grey[300], width: 1.1))),
-        margin: EdgeInsets.fromLTRB(
-            0.0, ScreenUtil.width * 0.001, .0, ScreenUtil.width * 0.002),
-        child: ListTile(
-          contentPadding: EdgeInsets.all(0.0),
-          title: Container(
-            padding: EdgeInsets.only(left: ScreenUtil.width * 0.08),
-            child: Text(
-              item.title,
-              style: TextStyle(
-                fontSize: item.titleSize,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-          trailing: Container(
-            child: item.trailing != null ? item.trailing : SizedBox(width: 10.0,),
-            padding: EdgeInsets.only(right: ScreenUtil.width * 0.08),
-          ),
-          onTap: () {
-            if (item.route.trim() != "")
-              return print("hi");
-            else
-              return null;
-          },
-        ));
-  }
 }
 
 class AlertItem {
   final String title;
   final double titleSize;
-  final bool switchValue; // blocState의 boolean 값
-  final bool isSwitch;
+  final bool switchValue;
   final Icon trailing;
   final String route;
-  // final BlocEvent blocEvent; //blocEvent 넣으면 좋을듯
+
   AlertItem(
       {this.title,
       this.titleSize,
       this.switchValue,
-      this.isSwitch,
       this.trailing,
       this.route
-      // this.blocEvent
       });
 
   static List<AlertItem> items() {
-    var box = new List<AlertItem>();
-    box.add(new AlertItem(
+    var box = List<AlertItem>();
+    box.add(AlertItem(
       title: "친구신청",
       titleSize: 19.0,
       switchValue: true,
-      isSwitch: true,
-      // blocEvent:/
     ));
-    box.add(new AlertItem(
+    box.add(AlertItem(
       title: "메시지",
       titleSize: 19.0,
       switchValue: false,
-      isSwitch: true,
-      // blocEvent: :
     ));
     return box;
   }
