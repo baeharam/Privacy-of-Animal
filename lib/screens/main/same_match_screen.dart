@@ -74,6 +74,49 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
     );
   }
 
+  Widget _buildTag(String text, Color color) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 15.0,vertical: 5.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20.0),
+        border: Border.all(
+          color: color,
+          width: 3.0
+        ),
+        color: Colors.white.withOpacity(0.2)
+      ),
+      child: Text(
+        '# $text',
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          color: Colors.black,
+          fontWeight: FontWeight.bold
+        ),
+      ),
+    );
+  }
+
+  Widget _buildProfileInfo(String text) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 15.0,vertical: 5.0),
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: Colors.black,
+          width: 3.0
+        ),
+        color: Colors.white.withOpacity(0.2)
+      ),
+      child: Text(
+        text,
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          color: Colors.black,
+          fontWeight: FontWeight.bold
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -137,7 +180,7 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
                     ),
                   ),
                 ),
-                SizedBox(height: ScreenUtil.height/20),
+                SizedBox(height: 10.0),
                 Stack(
                   alignment: Alignment.center,
                   children: <Widget>[
@@ -172,25 +215,26 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
                   ),
                 ),
                 SizedBox(height: 10.0),
-                Text(
-                  '#${sameMatchModel.tagTitle} '
-                  '#${sameMatchModel.tagDetail}',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 20.0
-                  ),
-                  textAlign: TextAlign.center,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _buildTag(sameMatchModel.tagTitle, primaryBlue),
+                    SizedBox(width: 10.0),
+                    _buildTag(sameMatchModel.tagDetail, primaryGreen)
+                  ],
                 ),
                 SizedBox(height: 10.0),
-                Text(
-                  '${sameMatchModel.animalName} 얼굴형 / '
-                  '${sameMatchModel.emotion} / '
-                  '${sameMatchModel.age}살 / ${sameMatchModel.gender}',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 20.0
-                  ),
-                  textAlign: TextAlign.center,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _buildProfileInfo(sameMatchModel.animalName),
+                    SizedBox(width: 10.0),
+                    _buildProfileInfo(sameMatchModel.emotion),
+                    SizedBox(width: 10.0),
+                    _buildProfileInfo(sameMatchModel.age+'살'),
+                    SizedBox(width: 10.0),
+                    _buildProfileInfo(sameMatchModel.gender)
+                  ],
                 ),
                 SizedBox(height: 10.0),
                 RaisedButton(

@@ -92,6 +92,6 @@ class _RandomLoadingScreenState extends State<RandomLoadingScreen> {
           }
         )
       ),
-    );
+    );  
   }
 }
