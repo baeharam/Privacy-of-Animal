@@ -11,7 +11,7 @@ class ProfileBloc extends BlocEventStateBase<ProfileEvent,ProfileState>
   @override
   Stream<ProfileState> eventHandler(ProfileEvent event, ProfileState currentState) async*{
 
-    if(event is ProfileEventInitial) {
+    if(event is ProfileEventStateClear) {
       yield ProfileState.initial();
     }
 

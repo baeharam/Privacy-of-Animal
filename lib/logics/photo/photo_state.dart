@@ -21,7 +21,7 @@ class PhotoState extends BlocState {
     this.path: '',
   });
 
-  factory PhotoState.noTake() {
+  factory PhotoState.initial() {
     return PhotoState(
       isInitial: true
     );

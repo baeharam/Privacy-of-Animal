@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state_builder.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
+import 'package:privacy_of_animal/logics/photo/photo.dart';
 import 'package:privacy_of_animal/logics/profile/profile.dart';
 import 'package:privacy_of_animal/logics/tag_edit/tag_edit.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
@@ -227,10 +228,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
               builder: (context, ProfileState state){
                 if(state.isResetImpossible){
                   streamSnackbar(context,state.remainedTime);
-                  sl.get<ProfileBloc>().emitEvent(ProfileEventInitial());
+                  sl.get<ProfileBloc>().emitEvent(ProfileEventStateClear());
                 }
                 if(state.isResetPossible){
                   StreamNavigator.pushNamed(context, routePhotoDecision);
+                  sl.get<ProfileBloc>().emitEvent(ProfileEventStateClear());
+                  sl.get<PhotoBloc>().emitEvent(PhotoEventStateClear());
                 }
                 return Container();
               },

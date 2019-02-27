@@ -8,10 +8,14 @@ class PhotoBloc extends BlocEventStateBase<PhotoEvent,PhotoState>
   static final PhotoAPI _api = PhotoAPI();
 
   @override
-  PhotoState get initialState => PhotoState.noTake();
+  PhotoState get initialState => PhotoState.initial();
 
   @override
   Stream<PhotoState> eventHandler(PhotoEvent event, PhotoState currentState) async*{
+
+    if(event is PhotoEventStateClear) {
+      yield PhotoState.initial();
+    }
 
     if(event is PhotoEventEmitLoading){
       yield PhotoState.loading(event.percentage);
