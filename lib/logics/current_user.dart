@@ -14,7 +14,7 @@ class CurrentUser {
   List<DocumentSnapshot> friendsList = List<DocumentSnapshot>();
   List<DocumentSnapshot> friendsRequestList = List<DocumentSnapshot>();
 
-  Stream<QuerySnapshot> friendsRequestStream =  Stream.empty();
+  Stream<DocumentSnapshot> friendsRequestStream =  Stream.empty();
   Stream<QuerySnapshot> messagesStream = Stream.empty();
 
   bool friendsRequestNotification;

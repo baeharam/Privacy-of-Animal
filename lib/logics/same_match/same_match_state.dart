@@ -7,6 +7,7 @@ class SameMatchState extends BlocState {
   final bool isFindSucceeded;
   final bool isFindFailed;
 
+  final bool isRequestLoading;
   final bool isRequestSucceeded;
   final bool isRequestFailed;
 
@@ -17,6 +18,7 @@ class SameMatchState extends BlocState {
     this.isFindLoading: false,
     this.isFindSucceeded: false,
     this.isFindFailed: false,
+    this.isRequestLoading: false,
     this.isRequestSucceeded: false,
     this.isRequestFailed: false,
 
@@ -29,7 +31,7 @@ class SameMatchState extends BlocState {
     );
   }
 
-  factory SameMatchState.loading() {
+  factory SameMatchState.findLoading() {
     return SameMatchState(
       isFindLoading: true
     );
@@ -45,6 +47,12 @@ class SameMatchState extends BlocState {
   factory SameMatchState.findFailed() {
     return SameMatchState(
       isFindFailed: true
+    );
+  }
+
+  factory SameMatchState.requestLoading() {
+    return SameMatchState(
+      isRequestLoading: true
     );
   }
 

@@ -24,20 +24,30 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
   SameMatchModel sameMatchModel;
 
   Stream<QuerySnapshot> _getFriendsStream() {
-    Stream<QuerySnapshot> requestStream1 = sl.get<FirebaseAPI>().getFirestore()
+    // 친구신청을 보냈는지 판단하는 Stream
+    Stream<QuerySnapshot> requestStreamTo = sl.get<FirebaseAPI>().getFirestore()
       .collection(firestoreUsersCollection)
       .document(sameMatchModel.userInfo.documentID)
       .collection(firestoreFriendsSubCollection)
       .where(uidCol, isEqualTo: sl.get<CurrentUser>().uid)
       .where(firestoreFriendsField, isEqualTo: false).snapshots();
 
-    Stream<QuerySnapshot> requestStream2 = sl.get<FirebaseAPI>().getFirestore()
+    // 친구신청을 받았는지 판단하는 Stream
+    Stream<QuerySnapshot> requestStreamFrom = sl.get<FirebaseAPI>().getFirestore()
       .collection(firestoreUsersCollection)
       .document(sl.get<CurrentUser>().uid)
       .collection(firestoreFriendsSubCollection)
       .where(uidCol, isEqualTo: sameMatchModel.userInfo.documentID)
       .where(firestoreFriendsField, isEqualTo: false).snapshots();
 
+    requestStreamFrom.listen((querySnapshot){
+      // 친구신청 받았으면 추가
+      if(querySnapshot.documentChanges.isNotEmpty){
+        sl.get<CurrentUser>().friendsRequestList.add(querySnapshot.documentChanges[0].document);
+      }
+    });
+
+    // 친구인지 판단하는 Stream
     Stream<QuerySnapshot> friendsStream = sl.get<FirebaseAPI>().getFirestore()
       .collection(firestoreUsersCollection)
       .document(sameMatchModel.userInfo.documentID)
@@ -45,7 +55,7 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
       .where(uidCol, isEqualTo: sl.get<CurrentUser>().uid)
       .where(firestoreFriendsField, isEqualTo: true).snapshots();
 
-    return Observable.combineLatest3(requestStream1, friendsStream, requestStream2,(s1,s2, s3){
+    return Observable.combineLatest3(requestStreamTo, friendsStream, requestStreamFrom,(s1,s2, s3){
       if(s1.documents.isNotEmpty || s2.documents.isNotEmpty || s3.documents.isNotEmpty){
         return s1.documents.isNotEmpty ? s1 : (s2.documents.isNotEmpty ? s2 : s3);
       } else {
@@ -215,13 +225,16 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
                   ),
                 ),
                 SizedBox(height: 10.0),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _buildTag(sameMatchModel.tagTitle, primaryBlue),
-                    SizedBox(width: 10.0),
-                    _buildTag(sameMatchModel.tagDetail, primaryGreen)
-                  ],
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _buildTag(sameMatchModel.tagTitle, primaryBlue),
+                      SizedBox(width: 10.0),
+                      _buildTag(sameMatchModel.tagDetail, primaryGreen)
+                    ],
+                  ),
                 ),
                 SizedBox(height: 10.0),
                 Row(
@@ -269,20 +282,32 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
                         ),
                       );
                     }
-                    return RaisedButton(
-                      color: primaryBlue,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
-                      child: Text(
-                        '친구 신청하기',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold
-                        ),
-                      ),
-                      elevation: 5.0,
-                      onPressed: () => sameMatchBloc
-                        .emitEvent(SameMatchEventSendRequest(
-                          uid: sameMatchModel.userInfo.documentID)),
+                    return BlocBuilder(
+                      bloc: sameMatchBloc,
+                      builder: (context,SameMatchState state){
+                        if(state.isRequestLoading || state.isRequestSucceeded) {
+                          return CircularProgressIndicator();
+                        }
+                        if(state.isRequestFailed) {
+                          streamSnackbar(context, '친구신청에 실패했습니다.');
+                          sameMatchBloc.emitEvent(SameMatchEventStateClear());
+                        }
+                        return RaisedButton(
+                          color: primaryBlue,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+                          child: Text(
+                            '친구 신청하기',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold
+                            ),
+                          ),
+                          elevation: 5.0,
+                          onPressed: () => sameMatchBloc
+                            .emitEvent(SameMatchEventSendRequest(
+                              uid: sameMatchModel.userInfo.documentID)),
+                        );
+                      }
                     );
                   }
                 )

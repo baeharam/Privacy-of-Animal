@@ -38,7 +38,7 @@ class NotificationHelper {
   }
 
   // Notification 메시지
-  Future<void> showFriendsRequestNotification(QuerySnapshot friendsRequest) async {
+  Future<void> showFriendsRequestNotification(DocumentSnapshot friendsRequest) async {
     var android =AndroidNotificationDetails(
       'FriendsRequest Notification ID',
       'FriendsRequest Notification NAME',
@@ -48,11 +48,8 @@ class NotificationHelper {
     var iOS =IOSNotificationDetails();
     var platform =NotificationDetails(android,iOS);
 
-    if(sl.get<CurrentUser>().friendsRequestList.length <= friendsRequest.documents.length){
-      DocumentSnapshot senderSnapshot = await sl.get<FirebaseAPI>().getFirestore()
-        .collection(firestoreUsersCollection)
-        .document(friendsRequest.documentChanges[0].document.documentID).get();
-      String sender = senderSnapshot.data[firestoreFakeProfileField][firestoreNickNameField];
+    if(sl.get<CurrentUser>().friendsRequestList.contains(friendsRequest)){
+      String sender = friendsRequest.data[firestoreFakeProfileField][firestoreNickNameField];
 
       await _flutterLocalNotificationsPlugin.show(
         0, '친구 신청','$sender 님으로부터 친구신청이 왔습니다.',platform,
