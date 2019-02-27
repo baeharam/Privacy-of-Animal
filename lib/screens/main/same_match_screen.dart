@@ -40,13 +40,6 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
       .where(uidCol, isEqualTo: sameMatchModel.userInfo.documentID)
       .where(firestoreFriendsField, isEqualTo: false).snapshots();
 
-    requestStreamFrom.listen((querySnapshot){
-      // 친구신청 받았으면 추가
-      if(querySnapshot.documentChanges.isNotEmpty){
-        sl.get<CurrentUser>().friendsRequestList.add(querySnapshot.documentChanges[0].document);
-      }
-    });
-
     // 친구인지 판단하는 Stream
     Stream<QuerySnapshot> friendsStream = sl.get<FirebaseAPI>().getFirestore()
       .collection(firestoreUsersCollection)
@@ -285,7 +278,7 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
                     return BlocBuilder(
                       bloc: sameMatchBloc,
                       builder: (context,SameMatchState state){
-                        if(state.isRequestLoading || state.isRequestSucceeded) {
+                        if(state.isRequestLoading) {
                           return CircularProgressIndicator();
                         }
                         if(state.isRequestFailed) {

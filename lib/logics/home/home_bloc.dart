@@ -23,6 +23,7 @@ class HomeBloc extends BlocEventStateBase<HomeEvent,HomeState> {
     }
     else if(event.index==3){
       if(sl.get<CurrentUser>().isDataFetched==false){
+        yield HomeState.loading(3);
         FETCH_RESULT result = await _api.fetchUserData();
         if(result == FETCH_RESULT.SUCCESS){
           yield HomeState.profile(event.index);
