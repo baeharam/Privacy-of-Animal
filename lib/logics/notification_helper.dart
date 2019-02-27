@@ -48,7 +48,8 @@ class NotificationHelper {
     var iOS =IOSNotificationDetails();
     var platform =NotificationDetails(android,iOS);
 
-    if(data.documents.isNotEmpty && data.documentChanges.isNotEmpty) {
+    if(data.documents.isNotEmpty && data.documentChanges.isNotEmpty 
+      && sl.get<CurrentUser>().friendsRequestList.length < data.documents.length) {
       String requestCandidate = data.documentChanges[0].document.documentID;
       QuerySnapshot checkRequest = await sl.get<FirebaseAPI>().getFirestore()
         .collection(firestoreUsersCollection).document(sl.get<CurrentUser>().uid)

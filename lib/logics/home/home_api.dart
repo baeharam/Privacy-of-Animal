@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/database_helper.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
+import 'package:privacy_of_animal/logics/notification_helper.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -62,22 +63,6 @@ class HomeAPI {
         sl.get<CurrentUser>().friendsRequestNotification = false;
       } else {
         sl.get<CurrentUser>().friendsRequestNotification = prefs.getBool(friendsRequestNotification);
-        if(sl.get<CurrentUser>().friendsRequestNotification==true) {
-          sl.get<CurrentUser>().friendsRequestStream = sl.get<FirebaseAPI>().getFirestore()
-            .collection(firestoreUsersCollection).document(sl.get<CurrentUser>().uid)
-            .collection(firestoreFriendsSubCollection)
-            .where(firestoreFriendsField, isEqualTo: false).snapshots();
-        }
-      }
-      if(prefs.getBool(messageNotification)==null){
-        prefs.setBool(messageNotification, true);
-        sl.get<CurrentUser>().messageNotification = false;
-      } else {
-        sl.get<CurrentUser>().messageNotification = prefs.getBool(messageNotification);
-        sl.get<CurrentUser>().messagesStream = sl.get<FirebaseAPI>().getFirestore()
-          .collection(firestoreFriendsMessageCollection)
-          .where(firestoreChatUsersField, arrayContains: sl.get<CurrentUser>().uid)
-          .snapshots();
       }
 
       // 데이터 가져왔다고 설정
