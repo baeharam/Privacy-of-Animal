@@ -62,7 +62,12 @@ class HomeAPI {
         sl.get<CurrentUser>().friendsRequestNotification = false;
       } else {
         sl.get<CurrentUser>().friendsRequestNotification = prefs.getBool(friendsRequestNotification);
-        sl.get<CurrentUser>().friendsRequestStream = Stream.fromIterable(sl.get<CurrentUser>().friendsList);
+        if(sl.get<CurrentUser>().friendsRequestNotification==true) {
+          sl.get<CurrentUser>().friendsRequestStream = sl.get<FirebaseAPI>().getFirestore()
+            .collection(firestoreUsersCollection).document(sl.get<CurrentUser>().uid)
+            .collection(firestoreFriendsSubCollection)
+            .where(firestoreFriendsField, isEqualTo: false).snapshots();
+        }
       }
       if(prefs.getBool(messageNotification)==null){
         prefs.setBool(messageNotification, true);

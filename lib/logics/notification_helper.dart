@@ -38,7 +38,7 @@ class NotificationHelper {
   }
 
   // Notification 메시지
-  Future<void> showFriendsRequestNotification(DocumentSnapshot friendsRequest) async {
+  Future<void> showFriendsRequestNotification(QuerySnapshot data) async {
     var android =AndroidNotificationDetails(
       'FriendsRequest Notification ID',
       'FriendsRequest Notification NAME',
@@ -48,13 +48,20 @@ class NotificationHelper {
     var iOS =IOSNotificationDetails();
     var platform =NotificationDetails(android,iOS);
 
-    if(sl.get<CurrentUser>().friendsRequestList.contains(friendsRequest)){
-      String sender = friendsRequest.data[firestoreFakeProfileField][firestoreNickNameField];
-
-      await _flutterLocalNotificationsPlugin.show(
-        0, '친구 신청','$sender 님으로부터 친구신청이 왔습니다.',platform,
-        payload: '친구 신청 알림'
-      );
+    if(data.documents.isNotEmpty && data.documentChanges.isNotEmpty) {
+      String requestCandidate = data.documentChanges[0].document.documentID;
+      QuerySnapshot checkRequest = await sl.get<FirebaseAPI>().getFirestore()
+        .collection(firestoreUsersCollection).document(sl.get<CurrentUser>().uid)
+        .collection(firestoreFriendsSubCollection)
+        .where(uidCol, isEqualTo: requestCandidate).getDocuments();
+      if(checkRequest.documents.isNotEmpty){
+        String sender = data.documentChanges[0]
+          .document[firestoreFakeProfileField][firestoreNickNameField];
+        await _flutterLocalNotificationsPlugin.show(
+          0, '친구 신청','$sender 님으로부터 친구신청이 왔습니다.',platform,
+          payload: '친구 신청 알림'
+        );
+      }
     }
   }
 }
