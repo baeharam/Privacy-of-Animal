@@ -64,6 +64,7 @@ class BackButtonAction {
       ),
       buttons: [
         DialogButton(
+          color: Colors.red,
           child: Text(
             '예',
             style: TextStyle(
