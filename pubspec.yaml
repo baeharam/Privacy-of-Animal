@@ -32,11 +32,15 @@ dependencies:
   intl: ^0.15.7
   flutter_local_notifications: ^0.5.1+2
 
-
-
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons: ^0.7.0
+
+flutter_icons:
+  android: true
+  ios: false
+  image_path: 'assets/images/components/icon.png'
 
 flutter:
 
@@ -52,6 +56,7 @@ flutter:
     - assets/images/components/setting.png
     - assets/images/components/match_tag_circle.png
     - assets/images/components/match_random_circle.png
+    - assets/images/components/icon.png
 
     - assets/images/tags/art.png
     - assets/images/tags/book.png
