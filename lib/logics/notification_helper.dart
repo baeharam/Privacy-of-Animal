@@ -55,8 +55,10 @@ class NotificationHelper {
         .collection(firestoreFriendsSubCollection)
         .where(uidCol, isEqualTo: requestCandidate).getDocuments();
       if(checkRequest.documents.isNotEmpty){
-        String sender = data.documentChanges[0]
-          .document[firestoreFakeProfileField][firestoreNickNameField];
+        DocumentSnapshot userSnapshot = await sl.get<FirebaseAPI>().getFirestore()
+          .collection(firestoreUsersCollection)
+          .document(data.documentChanges[0].document.data[uidCol]).get();
+        String sender = userSnapshot.data[firestoreFakeProfileField][firestoreNickNameField];
         await _flutterLocalNotificationsPlugin.show(
           0, '친구 신청','$sender 님으로부터 친구신청이 왔습니다.',platform,
           payload: '친구 신청 알림'
