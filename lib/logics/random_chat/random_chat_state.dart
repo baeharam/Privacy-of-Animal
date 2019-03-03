@@ -8,18 +8,30 @@ class RandomChatState extends BlocState {
   final bool isGetOutFailed;
   final bool isChatFinished;
 
+  final String sendingMessage;
+  final DateTime sendingTimestamp;
+
   RandomChatState({
     this.isInitial:false,
     this.isSendMessageSucceeded: false,
     this.isSendMessageFailed: false,
     this.isGetOutSucceeded: false,
     this.isGetOutFailed: false,
-    this.isChatFinished: false
+    this.isChatFinished: false,
+    this.sendingMessage: '',
+    this.sendingTimestamp
   });
 
   factory RandomChatState.initial() {
     return RandomChatState(
       isInitial: true
+    );
+  }
+
+  factory RandomChatState.showMessageFirst(String content, DateTime timestamp) {
+    return RandomChatState(
+      sendingMessage: content,
+      sendingTimestamp: timestamp
     );
   }
 

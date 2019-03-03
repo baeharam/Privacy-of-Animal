@@ -39,7 +39,7 @@ class RandomChatAPI {
   }
 
   // 메시지 보내기
-  Future<void> sendMessage(String content,String receiver,String chatRoomID) async{
+  Future<void> sendMessage(String content,String receiver,String chatRoomID, DateTime timestamp) async{
     DocumentReference doc = sl.get<FirebaseAPI>().getFirestore()
       .collection(firestoreRandomMessageCollection)
       .document(chatRoomID)
@@ -50,7 +50,7 @@ class RandomChatAPI {
       await tx.set(doc,{
         firestoreChatFromField: sl.get<CurrentUser>().uid,
         firestoreChatToField: receiver,
-        firestoreChatTimestampField: FieldValue.serverTimestamp(),
+        firestoreChatTimestampField: timestamp,
         firestoreChatContentField: content
       });
     });

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state.dart';
 import 'package:privacy_of_animal/logics/random_chat/random_chat.dart';
 
@@ -19,7 +20,14 @@ class RandomChatBloc extends BlocEventStateBase<RandomChatEvent,RandomChatState>
 
     if(event is RandomChatEventMessageSend){
       try {
-        await _api.sendMessage(event.content, event.receiver, event.chatRoomID);
+        DateTime timestamp = DateTime.now();
+        yield RandomChatState.showMessageFirst(event.content, timestamp);
+        await _api.sendMessage(
+          event.content, 
+          event.receiver, 
+          event.chatRoomID,
+          timestamp
+        );
         yield RandomChatState.sendMessageSucceeded();
       } catch(exception) {
         print('메시지 전송 실패\n${exception.toString()}');

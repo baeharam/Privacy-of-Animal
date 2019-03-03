@@ -9,7 +9,6 @@ import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/screens/main/other_profile_screen.dart';
 import 'package:privacy_of_animal/utils/back_button_dialog.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
-import 'package:privacy_of_animal/widgets/progress_indicator.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -94,26 +93,36 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
               child: Text('낯선 상대와 연결되었습니다.'),
             ),
             Flexible(
-              child: StreamBuilder(
-                stream: sl.get<FirebaseAPI>().getFirestore()
-                  .collection(firestoreRandomMessageCollection)
-                  .document(widget.chatRoomID)
-                  .collection(widget.chatRoomID)
-                  .orderBy(firestoreChatTimestampField,descending: true)
-                  .snapshots(),
-                builder: (context, snapshot){
-                  if(!snapshot.hasData){
-                    return CustomProgressIndicator();
-                  } else {
-                    messages = snapshot.data.documents;
-                    return ListView.builder(
-                      padding: EdgeInsets.all(10.0),
-                      itemBuilder: (context,index) => _buildMessage(index,snapshot.data.documents[index]),
-                      itemCount: snapshot.data.documents.length,
-                      reverse: true,
-                      controller: scrollController,
-                    );
-                  }
+              child: BlocBuilder(
+                bloc: randomChatBloc,
+                builder: (blocContext, RandomChatState state){
+                  return StreamBuilder(
+                    stream: sl.get<FirebaseAPI>().getFirestore()
+                      .collection(firestoreRandomMessageCollection)
+                      .document(widget.chatRoomID)
+                      .collection(widget.chatRoomID)
+                      .orderBy(firestoreChatTimestampField,descending: true)
+                      .snapshots(),
+                    builder: (context, AsyncSnapshot<QuerySnapshot> snapshot){
+                      if(snapshot.hasData){
+                        messages = snapshot.data.documents;
+                      }
+                      return ListView.builder(
+                        padding: EdgeInsets.all(10.0),
+                        itemBuilder: (context,index) {
+                          if(index==messages.length){
+                            return state.sendingMessage.isNotEmpty ?
+                            _buildMyMessage(index, state.sendingMessage, state.sendingTimestamp)
+                            : Container();
+                          }
+                          return _buildMessage(index,messages[index]);
+                        },
+                        itemCount: messages.length+1,
+                        reverse: true,
+                        controller: scrollController,
+                      );
+                    }
+                  );
                 }
               ),
             ),
@@ -181,25 +190,58 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
     );
   }
 
-  Widget _buildMessage(int index, DocumentSnapshot document) {
+  Widget _buildMyMessage(int index, String content, DateTime timestamp) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        _isLastRight(index) ?
+        Container(
+          margin: EdgeInsets.only(right: 10.0),
+          child: Text(
+            DateFormat('kk:mm','ko')
+              .format(DateTime.fromMillisecondsSinceEpoch(
+                timestamp.millisecondsSinceEpoch)),
+              style: TextStyle(color: Colors.grey,fontSize: 12.0),
+          ),
+        ) : Container(),
+        Container(
+          child: Text(
+            content,
+            style: TextStyle(
+              color: Colors.black
+            ),
+          ),
+          padding: EdgeInsets.fromLTRB(15.0,10.0,15.0,10.0),
+          decoration: BoxDecoration(
+            color: primaryBeige,
+            borderRadius: BorderRadius.circular(3.0)
+          ),
+          margin: EdgeInsets.only(bottom: 10.0, right: 10.0),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMessage(int index, DocumentSnapshot chatData) {
+
     // 내가 보내는 메시지
-    if(document[firestoreChatFromField] == sl.get<CurrentUser>().uid){
+    if(chatData.data[firestoreChatFromField] == sl.get<CurrentUser>().uid){
       return Row(
         mainAxisAlignment: MainAxisAlignment.end,
-        children: <Widget>[
+        children: [
           _isLastRight(index) ?
           Container(
             margin: EdgeInsets.only(right: 10.0),
             child: Text(
               DateFormat('kk:mm','ko')
                 .format(DateTime.fromMillisecondsSinceEpoch(
-                  (document[firestoreChatTimestampField] as Timestamp).millisecondsSinceEpoch)),
+                  (chatData.data[firestoreChatTimestampField] as Timestamp).millisecondsSinceEpoch)),
                 style: TextStyle(color: Colors.grey,fontSize: 12.0),
             ),
           ) : Container(),
           Container(
             child: Text(
-              document[firestoreChatContentField],
+              chatData.data[firestoreChatContentField],
               style: TextStyle(
                 color: Colors.black
               ),
@@ -240,7 +282,7 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
           ),
           Container(
             child: Text(
-              document[firestoreChatContentField],
+              chatData.data[firestoreChatContentField],
               style: TextStyle(color: Colors.black),
             ),
             padding: EdgeInsets.fromLTRB(15.0,10.0,15.0,10.0),
@@ -256,7 +298,7 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
             child: Text(
               DateFormat('kk:mm','ko')
                 .format(DateTime.fromMillisecondsSinceEpoch(
-                  (document[firestoreChatTimestampField] as Timestamp).millisecondsSinceEpoch)),
+                  (chatData.data[firestoreChatTimestampField] as Timestamp).millisecondsSinceEpoch)),
                 style: TextStyle(color: Colors.grey,fontSize: 12.0),
             ),
           ) : Container()
