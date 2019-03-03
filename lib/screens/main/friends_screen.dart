@@ -4,6 +4,7 @@ import 'package:privacy_of_animal/bloc_helpers/bloc_event_state_builder.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/logics/friends/friends.dart';
+import 'package:privacy_of_animal/logics/home/home_api.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/screens/main/friends_chat_screen.dart';
 import 'package:privacy_of_animal/screens/main/other_profile_screen.dart';
@@ -21,7 +22,6 @@ class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProvider
 
   final FriendsBloc friendsBloc = sl.get<FriendsBloc>();
   TabController tabController;
-  int friendsRequestListLength = 1000000;
 
   @override
   void initState() {
@@ -92,11 +92,11 @@ class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProvider
                       .snapshots(),
                     builder: (context, snapshot){
                       if(snapshot.hasData && snapshot.data.documents.isNotEmpty){
-                        if(friendsRequestListLength>snapshot.data.documents.length) {
-                          friendsRequestListLength = snapshot.data.documents.length;
+                        if(HomeAPI.friendsRequestListLength>snapshot.data.documents.length) {
+                          HomeAPI.friendsRequestListLength = snapshot.data.documents.length;
                           return Container();
                         }
-                        friendsRequestListLength = snapshot.data.documents.length;
+                        HomeAPI.friendsRequestListLength = snapshot.data.documents.length;
                         return Container(
                           padding: EdgeInsets.all(8.0),
                           decoration: BoxDecoration(

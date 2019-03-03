@@ -267,7 +267,7 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
                       return Padding(
                         padding: EdgeInsets.only(top: 10.0),
                         child: Text(
-                          '친구신청 승인 대기중입니다.',
+                          '친구신청 승인 대기중이거나 이미 친구입니다.',
                           style: TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.bold
