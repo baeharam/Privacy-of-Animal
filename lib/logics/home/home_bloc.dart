@@ -12,25 +12,30 @@ class HomeBloc extends BlocEventStateBase<HomeEvent,HomeState> {
 
   @override
   Stream<HomeState> eventHandler(HomeEvent event, HomeState currentState) async*{
-    if(event.index==0){
-      yield HomeState.match(event.index);
+    if(event is HomeEventSetFriendsRequestNotification) {
+      _api.setNotificationOfFriendsRequest();
     }
-    else if(event.index==1){
-      yield HomeState.chat(event.index);
-    }
-    else if(event.index==2){
-      yield HomeState.friend(event.index);
-    }
-    else if(event.index==3){
-      if(sl.get<CurrentUser>().isDataFetched==false){
-        yield HomeState.loading(3);
-        FETCH_RESULT result = await _api.fetchUserData();
-        if(result == FETCH_RESULT.SUCCESS){
+    if(event is HomeEventNavigate) {
+      if(event.index==0){
+        yield HomeState.match(event.index);
+      }
+      else if(event.index==1){
+        yield HomeState.chat(event.index);
+      }
+      else if(event.index==2){
+        yield HomeState.friend(event.index);
+      }
+      else if(event.index==3){
+        if(sl.get<CurrentUser>().isDataFetched==false){
+          yield HomeState.loading(3);
+          FETCH_RESULT result = await _api.fetchUserData();
+          if(result == FETCH_RESULT.SUCCESS){
+            yield HomeState.profile(event.index);
+          }
+        }
+        else {
           yield HomeState.profile(event.index);
         }
-      }
-      else {
-        yield HomeState.profile(event.index);
       }
     }
   }

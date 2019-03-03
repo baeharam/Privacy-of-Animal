@@ -22,7 +22,8 @@ class _HomeDecisionState extends State<HomeDecision> {
   void initState() {
     super.initState();
     sl.get<NotificationHelper>().initializeNotification(context);
-    homeBloc.emitEvent(HomeEvent(index: 3));
+    homeBloc.emitEvent(HomeEventNavigate(index: 3));
+    homeBloc.emitEvent(HomeEventSetFriendsRequestNotification());
   }
 
   @override
@@ -37,7 +38,7 @@ class _HomeDecisionState extends State<HomeDecision> {
             body: state.isLoading ? CustomProgressIndicator() : homePage[state.activeIndex],
             bottomNavigationBar: BottomNavigationBar(
               currentIndex: state.activeIndex,
-              onTap: (index) => homeBloc.emitEvent(HomeEvent(index: index)),
+              onTap: (index) => homeBloc.emitEvent(HomeEventNavigate(index: index)),
               items: [
                 BottomNavigationBarItem(
                   title: Text(''),

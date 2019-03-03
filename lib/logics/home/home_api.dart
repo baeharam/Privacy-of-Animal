@@ -10,6 +10,29 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
 class HomeAPI {
+
+  static Stream<QuerySnapshot> friendsRequestStream = Stream.empty();
+  static int friendsRequestListLength = 0;
+
+  void setNotificationOfFriendsRequest() {
+    friendsRequestStream = sl.get<FirebaseAPI>().getFirestore()
+      .collection(firestoreUsersCollection).document(sl.get<CurrentUser>().uid)
+      .collection(firestoreFriendsSubCollection).where(firestoreFriendsField, isEqualTo: false)
+      .snapshots();
+    friendsRequestStream.listen((snapshot){
+      if(snapshot.documents.isNotEmpty){
+        if(friendsRequestListLength>snapshot.documents.length){
+          friendsRequestListLength = snapshot.documents.length;
+        }
+        friendsRequestListLength = snapshot.documents.length;
+        if(sl.get<CurrentUser>().friendsRequestNotification) {
+          sl.get<NotificationHelper>().showFriendsRequestNotification(snapshot);
+        }
+      }
+    });
+  }
+
+
   // 바로 홈 화면으로 갈 경우 그에 해당하는 데이터를 가져옴
   Future<FETCH_RESULT> fetchUserData() async {
     try {

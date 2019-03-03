@@ -18,13 +18,5 @@ class NotificationBloc extends BlocEventStateBase<NotificationEvent,Notification
         print(exception);
       }
     }
-    if(event is NotificationEventMessages){
-      try {
-        await _api.setMessages(event.value);
-        yield NotificationState.messagesToggled();
-      } catch (exception) {
-        print(exception);
-      }
-    }
   }
 }

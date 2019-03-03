@@ -8,7 +8,3 @@ class NotificationEventFriendsRequest extends NotificationEvent {
   final bool value;
   NotificationEventFriendsRequest({@required this.value});
 }
-class NotificationEventMessages extends NotificationEvent {
-  final bool value;
-  NotificationEventMessages({@required this.value});
-}

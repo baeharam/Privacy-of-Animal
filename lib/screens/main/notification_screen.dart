@@ -49,7 +49,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                       titleSize: 19.0,
                       switchValue: sl.get<CurrentUser>().messageNotification
                     ),
-                    onChanged: (value) => bloc.emitEvent(NotificationEventMessages(value: value))
+                    onChanged: (value) => {}
                   ),
                 ],
               );

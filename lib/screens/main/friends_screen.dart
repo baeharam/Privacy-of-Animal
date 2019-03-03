@@ -4,7 +4,6 @@ import 'package:privacy_of_animal/bloc_helpers/bloc_event_state_builder.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/logics/friends/friends.dart';
-import 'package:privacy_of_animal/logics/notification_helper.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/screens/main/friends_chat_screen.dart';
 import 'package:privacy_of_animal/screens/main/other_profile_screen.dart';
@@ -98,9 +97,6 @@ class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProvider
                           return Container();
                         }
                         friendsRequestListLength = snapshot.data.documents.length;
-                        if(sl.get<CurrentUser>().friendsRequestNotification) {
-                          sl.get<NotificationHelper>().showFriendsRequestNotification(snapshot.data);
-                        }
                         return Container(
                           padding: EdgeInsets.all(8.0),
                           decoration: BoxDecoration(

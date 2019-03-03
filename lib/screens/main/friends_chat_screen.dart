@@ -62,6 +62,12 @@ class _FriendsChatScreenState extends State<FriendsChatScreen> {
             fontWeight: FontWeight.bold
           ),
         ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.notifications),
+            onPressed: (){},
+          )
+        ],
         centerTitle: true,
         elevation: 0.0,
         backgroundColor: primaryBlue
