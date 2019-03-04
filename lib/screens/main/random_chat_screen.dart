@@ -208,12 +208,12 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
           child: Text(
             content,
             style: TextStyle(
-              color: Colors.black
+              color: Colors.white
             ),
           ),
           padding: EdgeInsets.fromLTRB(15.0,10.0,15.0,10.0),
           decoration: BoxDecoration(
-            color: primaryBeige,
+            color: Colors.grey,
             borderRadius: BorderRadius.circular(3.0)
           ),
           margin: EdgeInsets.only(bottom: 10.0, right: 10.0),
@@ -243,12 +243,12 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
             child: Text(
               chatData.data[firestoreChatContentField],
               style: TextStyle(
-                color: Colors.black
+                color: Colors.white
               ),
             ),
             padding: EdgeInsets.fromLTRB(15.0,10.0,15.0,10.0),
             decoration: BoxDecoration(
-              color: primaryBeige,
+              color: Colors.grey,
               borderRadius: BorderRadius.circular(3.0)
             ),
             margin: EdgeInsets.only(bottom: 10.0, right: 10.0),
@@ -283,11 +283,11 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
           Container(
             child: Text(
               chatData.data[firestoreChatContentField],
-              style: TextStyle(color: Colors.black),
+              style: TextStyle(color: Colors.white),
             ),
             padding: EdgeInsets.fromLTRB(15.0,10.0,15.0,10.0),
             decoration: BoxDecoration(
-              color: primaryBeige,
+              color: Colors.black,
               borderRadius: BorderRadius.circular(8.0)
             ),
             margin: EdgeInsets.only(left: 10.0)

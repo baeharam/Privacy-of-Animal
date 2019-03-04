@@ -23,22 +23,27 @@ class LoginBloc extends BlocEventStateBase<LoginEvent,LoginState> {
       yield LoginState.authenticating();
       LOGIN_RESULT result = await _api.login(event.email, event.password);
       if(result == LOGIN_RESULT.SUCCESS){
-        USER_CONDITION condition = await _api.checkUserCondition();
-        switch(condition){
-          case USER_CONDITION.NONE:
-            yield LoginState.authenticatedNormal();
-            break;
-          case USER_CONDITION.TAG_SELECTED:
-            yield LoginState.authenticatedTagSelected();
-            break;
-          case USER_CONDITION.TAG_CHATTED:
-            yield LoginState.authenticatedTagChatted();
-            break;
-          // 모든 작업을 끝낸 경우, 데이터를 가져온 상태일 수도 있고
-          // 아닌 상태일 수도 있으므로 데이터를 가져온다.
-          case USER_CONDITION.FACE_ANALYZED:
-            yield LoginState.authenticatedFaceAnalyzed();
-            break;
+        try {
+          USER_CONDITION condition = await _api.checkUserCondition();
+          switch(condition){
+            case USER_CONDITION.NONE:
+              yield LoginState.authenticatedNormal();
+              break;
+            case USER_CONDITION.TAG_SELECTED:
+              yield LoginState.authenticatedTagSelected();
+              break;
+            case USER_CONDITION.TAG_CHATTED:
+              yield LoginState.authenticatedTagChatted();
+              break;
+            // 모든 작업을 끝낸 경우, 데이터를 가져온 상태일 수도 있고
+            // 아닌 상태일 수도 있으므로 데이터를 가져온다.
+            case USER_CONDITION.FACE_ANALYZED:
+              yield LoginState.authenticatedFaceAnalyzed();
+              break;
+          }
+        } catch(exception) {
+          print('사용자 조건 체크 실패: ${exception.toString()}');
+          yield LoginState.authenticationFailed();
         }
       }
       else if(result == LOGIN_RESULT.FAILURE){

@@ -46,7 +46,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
                           color: Colors.black,
                           fontWeight: FontWeight.bold,
                           fontSize: 20.0
-                        ),
+                        ),  
                       )
                     ],
                   ),

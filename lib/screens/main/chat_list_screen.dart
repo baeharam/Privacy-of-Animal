@@ -116,6 +116,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Text(
                             chatListModel.nickName,
