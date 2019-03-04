@@ -33,25 +33,39 @@ class PhotoBloc extends BlocEventStateBase<PhotoEvent,PhotoState>
 
     if (event is PhotoEventGotoAnalysis){
       yield PhotoState.loading(0.0);
-      ANALYZE_RESULT analyzeResultKakao = await _api.analyzeFaceKakao(event.photoPath);
-      if(analyzeResultKakao==ANALYZE_RESULT.FAILURE){
-        yield PhotoState.failed();
-      }else{
-        ANALYZE_RESULT analyzeResultNaver = await _api.analyzeFaceNaver(event.photoPath);
-        analyzeResultNaver = await _api.analyzeCelebrityNaver(event.photoPath);
-        if(analyzeResultNaver==ANALYZE_RESULT.FAILURE){
-          yield PhotoState.failed();
-        }else{
-          await _api.detectAnimal(sl.get<CurrentUser>().kakaoMLModel);
-          ANALYZE_RESULT storeResult = await _api.storeProfile();
-          if(storeResult==ANALYZE_RESULT.FAILURE){
+      await _api.analyzeFaceKakao(event.photoPath);
+      try {
+         await _api.analyzeFaceKakao(event.photoPath);
+         try {
+            await _api.analyzeFaceNaver(event.photoPath);
+            try {
+              await _api.analyzeCelebrityNaver(event.photoPath);
+              await _api.detectAnimal(sl.get<CurrentUser>().kakaoMLModel);
+              try {
+                await _api.storeProfile();
+                try {
+                  yield PhotoState.loading(1.0);
+                  await _api.setFlags();
+                  yield PhotoState.succeeded();
+                } catch(exception) {
+                  print('설정 초기화 실패 ${exception.toString()}');
+                  yield PhotoState.failed();
+                }
+              } catch(exception) {
+                print('프로필 저장 실패 ${exception.toString()}');
+                yield PhotoState.failed();
+              }
+            } catch(exception) {
+              print('네이버 유명인인식 실패 ${exception.toString()}');
+              yield PhotoState.failed();
+            }
+         } catch(exception) {
+            print('네이버 얼굴분석실패 ${exception.toString()}');
             yield PhotoState.failed();
-          }else{
-            yield PhotoState.loading(1.0);
-            await _api.setFlags();
-            yield PhotoState.succeeded();
-          }
-        }
+         }
+      } catch(exception) {
+        print('카카오 얼굴분석실패 ${exception.toString()}');
+        yield PhotoState.failed();
       }
     }
   }

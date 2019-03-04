@@ -73,18 +73,12 @@ class PhotoAPI {
     sl.get<CurrentUser>().fakeProfileModel.analyzedTime = now;
   }
 
-  Future<ANALYZE_RESULT> storeProfile() async {
-    try{
-      await _storeProfileIntoFirestore();
-      sl.get<PhotoBloc>().emitEvent(PhotoEventEmitLoading(percentage: 0.82));
-      await _storeProfileIntoLocalDB();
-      sl.get<PhotoBloc>().emitEvent(PhotoEventEmitLoading(percentage: 0.84));
-      sl.get<PhotoBloc>().emitEvent(PhotoEventEmitLoading(percentage: 0.9));
-      
-    } catch(exception){
-      return ANALYZE_RESULT.FAILURE;
-    } 
-    return ANALYZE_RESULT.SUCCESS;
+  Future<void> storeProfile() async {
+    await _storeProfileIntoFirestore();
+    sl.get<PhotoBloc>().emitEvent(PhotoEventEmitLoading(percentage: 0.82));
+    await _storeProfileIntoLocalDB();
+    sl.get<PhotoBloc>().emitEvent(PhotoEventEmitLoading(percentage: 0.84));
+    sl.get<PhotoBloc>().emitEvent(PhotoEventEmitLoading(percentage: 0.9));
   }
 
   Future<void> _storeProfileIntoFirestore() async {
@@ -116,7 +110,7 @@ class PhotoAPI {
     String nickName = doc[firestoreFakeProfileField][firestoreNickNameField];
     Database db = await sl.get<DatabaseHelper>().database;
     FakeProfileModel fakeProfileModel = sl.get<CurrentUser>().fakeProfileModel;
-    int result = await db.rawInsert(
+    await db.rawInsert(
       'INSERT INTO $fakeProfileTable'
       '($uidCol,$nickNameCol,$fakeGenderCol,$fakeGenderConfidenceCol,'
       '$fakeAgeCol,$fakeAgeConfidenceCol,$fakeEmotionCol,$fakeEmotionConfidenceCol,'
@@ -135,11 +129,10 @@ class PhotoAPI {
       '"${fakeProfileModel.celebrity}",'
       '"${fakeProfileModel.celebrityConfidence}")'
     );
-    print(result);
   }
 
   // 카카오 얼굴인식
-  Future<ANALYZE_RESULT> analyzeFaceKakao(String photoPath) async {
+  Future<void> analyzeFaceKakao(String photoPath) async {
     final Uri uri = Uri.parse(kakaoAPIurl);
     final http.MultipartRequest request = http.MultipartRequest('POST',uri);
     request.headers['Authorization'] = 'KakaoAK $kakaoAPIKey';
@@ -151,17 +144,14 @@ class PhotoAPI {
     Map<String,dynamic> firstJson = json.decode(response.body);
     sl.get<PhotoBloc>().emitEvent(PhotoEventEmitLoading(percentage: 0.2));
 
-    if(firstJson['result']['faces']==null){
-      return ANALYZE_RESULT.FAILURE;
-    }
+    if(firstJson['result']['faces']==null) throw Exception();
 
     Map<String,dynamic> realJson = firstJson['result']['faces'][0]['facial_points'];
     sl.get<CurrentUser>().kakaoMLModel = KakaoMLModel.fromJson(realJson);
-    return ANALYZE_RESULT.SUCCESS;
   }
 
   // 네이버 얼굴인식
-  Future<ANALYZE_RESULT> analyzeFaceNaver(String photoPath) async {
+  Future<void> analyzeFaceNaver(String photoPath) async {
     final Uri uri = Uri.parse(naverFaceAPIurl);
     final http.MultipartRequest request = http.MultipartRequest('POST',uri);
     request.headers['X-Naver-Client-Id'] = naverClientID;
@@ -174,9 +164,7 @@ class PhotoAPI {
     Map<String,dynamic> resultJson = json.decode(response.body);
     sl.get<PhotoBloc>().emitEvent(PhotoEventEmitLoading(percentage: 0.4));
 
-    if((resultJson['faces'] as List).length==0){
-      return ANALYZE_RESULT.FAILURE;
-    }
+    if((resultJson['faces'] as List).length==0) throw Exception();
 
     NaverMLModel naverMLModel = NaverMLModel.fromJson(resultJson['faces'][0]);
     sl.get<CurrentUser>().fakeProfileModel.age = naverMLModel.age;
@@ -200,11 +188,10 @@ class PhotoAPI {
     }
     sl.get<CurrentUser>().fakeProfileModel.emotion = emotion;
     sl.get<CurrentUser>().fakeProfileModel.emotionConfidence = naverMLModel.emotionConfidence;
-    return ANALYZE_RESULT.SUCCESS;
   }
 
   // 네이버 유명인 인식
-  Future<ANALYZE_RESULT> analyzeCelebrityNaver(String photoPath) async {
+  Future<void> analyzeCelebrityNaver(String photoPath) async {
     final Uri uri = Uri.parse(naverCelebrityAPIurl);
     final http.MultipartRequest request = http.MultipartRequest('POST',uri);
     request.headers['X-Naver-Client-Id'] = naverClientID;
@@ -217,14 +204,10 @@ class PhotoAPI {
     Map<String,dynamic> resultJson = json.decode(response.body);
     sl.get<PhotoBloc>().emitEvent(PhotoEventEmitLoading(percentage: 0.6));
 
-    if((resultJson['faces'] as List).length==0){
-      return ANALYZE_RESULT.FAILURE;
-    }
+    if((resultJson['faces'] as List).length==0) throw Exception();
 
     sl.get<CurrentUser>().fakeProfileModel.celebrity = resultJson['faces'][0]['celebrity']['value'];
     sl.get<CurrentUser>().fakeProfileModel.celebrityConfidence = resultJson['faces'][0]['celebrity']['confidence'];
-
-    return ANALYZE_RESULT.SUCCESS;
   }
 
   Future<void> detectAnimal(KakaoMLModel data) async {
@@ -298,14 +281,4 @@ class PhotoAPI {
     if(sl.get<CurrentUser>().fakeProfileModel.animalConfidence>1.0)
       sl.get<CurrentUser>().fakeProfileModel.animalConfidence = 1.0;
   }
-}
-
-enum ANALYZE_RESULT {
-  SUCCESS,
-  FAILURE
-}
-
-enum GET_IMAGE_RESULT {
-  SUCCESS,
-  FAILURE
 }
