@@ -1,81 +1,87 @@
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state.dart';
 
 class TagChatState extends BlocState {
-
-  final bool isNPC;
-  final String messageNPC;
-  final bool isBegin;
   final bool isInitial;
 
-  final bool isUser;
-  final String messageUser;
+  final bool isFetchTagsFailed;
 
-  final bool isNPCDone;
-  final bool showSubmitButton;
+  final bool isIntroChat;
+  final bool isIntroChatBegin;
+  final bool isIntroChatEnd;
+  final String introChat;
 
-  final bool isDetailStoreLoading;
-  final bool isDetailStoreSucceeded;
-  final bool isDetailStoreFailed;
+  final bool isNPCChatFinished;
+  final String npcChat;
+
+  final bool isUserChatFinished;
+  final String userChat;
+
+  final bool isSendEnable;
+
+  final bool isProcessFinished;
+
+  final bool isSubmitLoading;
+  final bool isSubmitSucceeded;
+  final bool isSubmitFailed;
 
   TagChatState({
-    this.isNPC: false,
-    this.messageNPC: '',
-    this.isBegin: false,
     this.isInitial: false,
-    this.isUser: false,
-    this.messageUser: '',
-    this.isNPCDone: false,
-    this.showSubmitButton: false,
-    this.isDetailStoreLoading: false,
-    this.isDetailStoreSucceeded: false,
-    this.isDetailStoreFailed: false
+
+    this.isFetchTagsFailed: false,
+
+    this.isIntroChat: false,
+    this.isIntroChatBegin: false,
+    this.isIntroChatEnd: false,
+    this.introChat: '',
+
+    this.isNPCChatFinished: false,
+    this.npcChat: '',
+
+    this.isUserChatFinished: false,
+    this.userChat: '',
+
+    this.isSendEnable: false,
+
+    this.isProcessFinished: false,
+
+    this.isSubmitLoading: false,
+    this.isSubmitSucceeded: false,
+    this.isSubmitFailed: false
   });
 
-  factory TagChatState.npcMessage({String message, bool isBegin, bool isInitial, bool isNPCDone}) {
+  factory TagChatState.cleanState() => TagChatState(isSendEnable: true);
+
+  factory TagChatState.initial() => TagChatState(isInitial: true);
+
+  factory TagChatState.fetchTagsFailed() => TagChatState(isFetchTagsFailed: true);
+
+  
+  factory TagChatState.introChat(String message, {bool begin: false, bool end: false}) {
     return TagChatState(
-      isNPC: true,
-      messageNPC: message??'',
-      isBegin: isBegin??false,
-      isInitial: isInitial??false,
-      isNPCDone: isNPCDone??false
+      isIntroChat: true,
+      introChat: message,
+      isIntroChatBegin: begin,
+      isIntroChatEnd: end
     );
   }
 
-  factory TagChatState.userMessage(String message) {
+  factory TagChatState.npcChatFinished(String message) {
     return TagChatState(
-      isUser: true,
-      messageUser: message
+      isNPCChatFinished: true,
+      npcChat: message
     );
   }
 
-  factory TagChatState.nothing(bool isNPCDone) {
+  factory TagChatState.userChatFinished(String message) {
     return TagChatState(
-      isNPCDone: isNPCDone
+      isUserChatFinished: true,
+      userChat: message
     );
   }
 
-  factory TagChatState.showButton() {
-    return TagChatState(
-      showSubmitButton: true
-    );
-  }
+  factory TagChatState.processFinished() => TagChatState(isProcessFinished: true);
 
-  factory TagChatState.loading() {
-    return TagChatState(
-      isDetailStoreLoading: true
-    );
-  }
-
-  factory TagChatState.succeeded() {
-    return TagChatState(
-      isDetailStoreSucceeded: true
-    );
-  }
-
-  factory TagChatState.failed() {
-    return TagChatState(
-      isDetailStoreFailed: true,
-      showSubmitButton: true
-    );
-  }
+  factory TagChatState.submitLoading() => TagChatState(isSubmitLoading: true);
+  factory TagChatState.submitSucceeded() => TagChatState(isSubmitSucceeded: true);
+  factory TagChatState.submitFailed() => TagChatState(isSubmitFailed: true);
 }

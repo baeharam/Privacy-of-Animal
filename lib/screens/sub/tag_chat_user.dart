@@ -1,21 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/resources/resources.dart';
 
-class TagChatUser extends StatefulWidget {
+class TagChatUser extends StatelessWidget {
 
   final String message;
 
-  TagChatUser({
-    @required this.message
-  });
-
-  @override
-  TagChatUserState createState() {
-    return new TagChatUserState();
-  }
-}
-
-class TagChatUserState extends State<TagChatUser> {
+  TagChatUser({@required this.message});
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +21,7 @@ class TagChatUserState extends State<TagChatUser> {
             borderRadius: BorderRadius.circular(3.0)
           ),
           child: Text(
-            widget.message
+            message
           ),
         )
       ],

@@ -22,7 +22,7 @@ class _TagChatScreenState extends State<TagChatScreen> {
 
   final TagChatBloc _tagChatBloc = sl.get<TagChatBloc>();
   final ScrollController _scrollController = ScrollController();
-  List<Widget> widgets = [];
+  List<Widget> chatWidgets = [];
 
   @override
   void dispose() {
@@ -32,7 +32,7 @@ class _TagChatScreenState extends State<TagChatScreen> {
 
   // 채팅이 입력될 때마다 스크롤이 내려가는 원리
   void _moveScroll(int index) {
-    if(index==widgets.length-1 && _scrollController.position.maxScrollExtent!=null){
+    if(index==chatWidgets.length-1 && _scrollController.position.maxScrollExtent!=null){
       WidgetsBinding.instance.addPostFrameCallback((_){
         _scrollController.animateTo(
           _scrollController.position.maxScrollExtent,
@@ -52,24 +52,23 @@ class _TagChatScreenState extends State<TagChatScreen> {
         child: BlocBuilder(
           bloc: _tagChatBloc,
           builder: (context, TagChatState state){
-            if(state.isDetailStoreSucceeded){
-              StreamNavigator.pushNamedAndRemoveAll(context, routeAnalyzeIntro);
+            if(state.isInitial) {
+              _tagChatBloc.emitEvent(TagChatEventBeginChat());
             }
-            if(state.isDetailStoreFailed){
-              streamSnackbar(context,'제출에 실패했습니다.');
-            }
-            if(state.isNPC){
-              if(state.isInitial && state.isBegin){
-                _tagChatBloc.emitEvent(TagChatEventNPC(isInitial: true));
+            if(state.isIntroChat) {
+              chatWidgets.add(TagChatNPC(isBegin: state.isIntroChatBegin, message: state.introChat));
+              if(state.isIntroChatEnd) {
+                _tagChatBloc.emitEvent(TagChatEventStateClear());
               }
-              widgets.add(TagChatNPC(message: state.messageNPC,isBegin: state.isBegin));
-              _tagChatBloc.emitEvent(TagChatEventNothing(isNPCDone: false));
             }
-            if(state.isUser){
-              widgets.add(TagChatUser(message: state.messageUser));
-              _tagChatBloc.emitEvent(TagChatEventNothing(isNPCDone: false));
-              _tagChatBloc.emitEvent(TagChatEventNPC(isInitial: false));
+            if(state.isNPCChatFinished) {
+              chatWidgets.add(TagChatNPC(isBegin: true, message: state.npcChat));
+              _tagChatBloc.emitEvent(TagChatEventStateClear());
             }
+            if(state.isUserChatFinished) {
+              chatWidgets.add(TagChatUser(message: state.userChat));
+            }
+
             return Column(
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[
@@ -78,15 +77,15 @@ class _TagChatScreenState extends State<TagChatScreen> {
                     scrollDirection: Axis.vertical,
                     physics: const AlwaysScrollableScrollPhysics(),
                     padding: const EdgeInsets.symmetric(horizontal: 20.0,vertical: 30.0),
-                    itemCount: widgets.length,
+                    itemCount: chatWidgets.length,
                     itemBuilder: (context,index) {
                       _moveScroll(index);
-                      return widgets[index];
+                      return chatWidgets[index];
                     },
                     controller: _scrollController,
                   ),
                 ),  
-                state.showSubmitButton 
+                state.isProcessFinished 
                 ? Padding(
                   padding: const EdgeInsets.only(bottom: 20.0),
                   child: PrimaryButton(
@@ -95,7 +94,7 @@ class _TagChatScreenState extends State<TagChatScreen> {
                     callback: ()=>_tagChatBloc.emitEvent(TagChatEventComplete())
                   )
                 )
-                : (state.isDetailStoreLoading 
+                : (state.isSubmitLoading 
                   ? Padding(  
                       padding: const EdgeInsets.only(bottom: 20.0),
                       child: CustomProgressIndicator()

@@ -6,77 +6,57 @@ import 'package:privacy_of_animal/utils/service_locator.dart';
 
 class TagChatBloc extends BlocEventStateBase<TagChatEvent,TagChatState> {
 
-  final TagChatAPI _tagChatAPI = TagChatAPI();
-  static const int _chatDuration = 1000;
-  static const int _maxTagNum = 5;
-  int order = 0;
+  static TagChatAPI _api = TagChatAPI();
 
   @override
-    TagChatState get initialState 
-      => TagChatState.npcMessage(message: tagChatNPCIntro[0],isBegin: true,isInitial: true,isNPCDone: false);
+    TagChatState get initialState => TagChatState.initial();
 
   @override
   Stream<TagChatState> eventHandler(TagChatEvent event, TagChatState currentState) async*{
 
-    if(event is TagChatEventNothing){
-      yield TagChatState.nothing(event.isNPCDone);
+    if(event is TagChatEventStateClear) {
+      yield TagChatState.cleanState();
     }
 
-    // NPC가 채팅을 보낸 경우
-    if(event is TagChatEventNPC){
-      // 제일 처음인 경우, 일정 시간간격을 두고 보내야함.
-      if(event.isInitial){
-        await Future.delayed(const Duration(milliseconds: _chatDuration));
-        yield TagChatState.npcMessage(message: tagChatNPCIntro[1],isBegin: false,isInitial: true,isNPCDone: false);
-        await Future.delayed(const Duration(milliseconds: _chatDuration));
-        yield TagChatState.npcMessage(message: tagChatNPCIntro[2],isBegin: false,isInitial: true,isNPCDone: false);
-
-        // 처음 인트로 메시지 3개 보내면 DB체크해서 태그 5가지 데이터 가져오기
-        TAG_CHECK_RESULT checkResult = await _tagChatAPI.checkLoaclDB();
-
-        if(checkResult==TAG_CHECK_RESULT.SUCCESS){
-          await Future.delayed(const Duration(milliseconds: _chatDuration));
-          yield TagChatState.npcMessage(
-            message: tagToMessage[sl.get<CurrentUser>().tagListModel.tagTitleList[order]],
-            isBegin: false,
-            isInitial: true,
-            isNPCDone: true
-          );
-        } else if(checkResult == TAG_CHECK_RESULT.FAILURE){
-          yield TagChatState.failed();
-        }
-      }
-      // 제일 처음이 아닌 경우는 그냥 보내도 된다.
-      else{
-        order = sl.get<CurrentUser>().tagListModel.tagDetailList.length;
-        if(order<_maxTagNum){
-          await Future.delayed(const Duration(milliseconds: _chatDuration-500));
-          yield TagChatState.npcMessage(
-            message: tagToMessage[sl.get<CurrentUser>().tagListModel.tagTitleList[order]],
-            isBegin: true,
-            isInitial: false,
-            isNPCDone: true
-          );
-        } else if(order==_maxTagNum){
-          yield TagChatState.showButton();
-        }
+    // 처음 채팅 시작
+    if(event is TagChatEventBeginChat) {
+      try {
+        await _api.checkLoaclDBandFetch();
+        yield TagChatState.introChat(tagChatNPCIntro[0],begin: true);
+        await Future.delayed(const Duration(milliseconds: TagChatAPI.introDelayTime));
+        yield TagChatState.introChat(tagChatNPCIntro[1]);
+        await Future.delayed(const Duration(milliseconds: TagChatAPI.introDelayTime));
+        yield TagChatState.introChat(tagChatNPCIntro[2],end: true);
+        await Future.delayed(const Duration(milliseconds: TagChatAPI.introDelayTime));
+        yield TagChatState.introChat(
+          tagToMessage[sl.get<CurrentUser>().tagListModel.tagTitleList[_api.npcChatListIndex++]],
+          end: true
+        );
+      } catch(exception) {
+        print('태그정보 가져오기 실패: ${exception.toString()}');
+        yield TagChatState.fetchTagsFailed();
       }
     }
 
-    // 사용자가 채팅을 보낸 경우
-    if(event is TagChatEventUser){
-      sl.get<CurrentUser>().tagListModel.tagDetailList.add(event.message);
-      yield TagChatState.userMessage(event.message);
+    if(event is TagChatEventUserChat) {
+      yield TagChatState.userChatFinished(event.message);
+      await Future.delayed(const Duration(milliseconds: TagChatAPI.chatDelayTime));
+      if(_api.npcChatListIndex<5) {
+        yield TagChatState.npcChatFinished(
+          tagToMessage[sl.get<CurrentUser>().tagListModel.tagTitleList[_api.npcChatListIndex++]]);
+      } else {
+        yield TagChatState.processFinished();
+      }
     }
 
-    // 완료 버튼을 누른 경우
-    if(event is TagChatEventComplete){
-      yield TagChatState.loading();
-      TAG_DETAIL_STORE_RESULT storeResult = await _tagChatAPI.storeTagDetail();
-      if(storeResult == TAG_DETAIL_STORE_RESULT.FAILURE){
-        yield TagChatState.failed();
-      } else if(storeResult == TAG_DETAIL_STORE_RESULT.SUCCESS){
-        yield TagChatState.succeeded();
+    if(event is TagChatEventComplete) {
+      try {
+        yield TagChatState.submitLoading();
+        await _api.storeTagDetail();
+        yield TagChatState.submitSucceeded();
+      } catch(exception) {
+        print('태그 상세정보 저장 실패: ${exception.toString()}');
+        yield TagChatState.submitFailed();
       }
     }
   }

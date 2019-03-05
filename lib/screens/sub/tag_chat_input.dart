@@ -4,15 +4,13 @@ import 'package:privacy_of_animal/logics/tag_chat/tag_chat.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 
 class TagChatInput extends StatefulWidget {
-
   @override
-  TagChatInputState createState() {
-    return new TagChatInputState();
-  }
+  TagChatInputState createState() => TagChatInputState();
 }
 
 class TagChatInputState extends State<TagChatInput> {
   final TextEditingController _textEditingController = TextEditingController();
+  final TagChatBloc _tagChatBloc = sl.get<TagChatBloc>();
 
   @override
   void dispose() {
@@ -38,15 +36,15 @@ class TagChatInputState extends State<TagChatInput> {
             child: Container(
               padding: const EdgeInsets.only(left: 20.0),
               child: BlocBuilder(
-                bloc: sl.get<TagChatBloc>(),
+                bloc: _tagChatBloc,
                 builder: (context, TagChatState state){
-                  if(state.isNPCDone) sl.get<TagChatBloc>().emitEvent(TagChatEventNothing(isNPCDone: true));
                   return TextField(
                     decoration: InputDecoration.collapsed(
                       hintText: '답변을 입력하세요.',
                       hintStyle: TextStyle(color: Colors.grey),
                     ),
-                    controller: _textEditingController
+                    controller: _textEditingController,
+                    enableInteractiveSelection: state.isSendEnable?true:false,
                   );
                 }
               ),
@@ -58,12 +56,12 @@ class TagChatInputState extends State<TagChatInput> {
             child: Container(
               margin: EdgeInsets.symmetric(horizontal: 8.0),
               child: BlocBuilder(
-                bloc: sl.get<TagChatBloc>(),
+                bloc: _tagChatBloc,
                 builder: (context, TagChatState state){
                   return IconButton(
                     icon: Icon(Icons.send),
-                    onPressed: state.isNPCDone ? () {
-                      sl.get<TagChatBloc>().emitEvent(TagChatEventUser(message: _textEditingController.text));
+                    onPressed: (state.isSendEnable) ? () {
+                      _tagChatBloc.emitEvent(TagChatEventUserChat(message: _textEditingController.text));
                       _textEditingController.clear();
                     } : null
                   );

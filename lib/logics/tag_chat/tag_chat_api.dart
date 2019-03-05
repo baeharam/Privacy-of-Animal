@@ -8,19 +8,16 @@ import 'package:sqflite/sqflite.dart';
 
 class TagChatAPI {
 
+  static const int introDelayTime = 600;
+  static const int chatDelayTime = 400;
+  int npcChatListIndex = 0;
   List<String> _tagDetails;
 
-  Future<TAG_DETAIL_STORE_RESULT> storeTagDetail() async {
-    try{
-      SharedPreferences sharedPreferences = await sl.get<DatabaseHelper>().sharedPreferences;
-      sharedPreferences.setBool(sl.get<CurrentUser>().uid+isTagChatted, true);
-      await _storeTagDetailIntoFirestore();
-      await _storeTagDetailIntoLocalDB();
-    }catch(exception){
-      print(exception);
-      return TAG_DETAIL_STORE_RESULT.FAILURE;
-    }
-    return TAG_DETAIL_STORE_RESULT.SUCCESS;
+  Future<void> storeTagDetail() async {
+    await _storeTagDetailIntoFirestore();
+    await _storeTagDetailIntoLocalDB();
+    SharedPreferences sharedPreferences = await sl.get<DatabaseHelper>().sharedPreferences;
+    sharedPreferences.setBool(sl.get<CurrentUser>().uid+isTagChatted, true);
   }
 
   // Cloud Firestore에 태그 상세 저장
@@ -54,10 +51,8 @@ class TagChatAPI {
 
   // 현재 사용자가 태그 이름 정보를 가지고 있는지 체크한 후 없으면
   // 로컬 DB에서 가져와서 세팅.
-  Future<TAG_CHECK_RESULT> checkLoaclDB() async {
-    if(sl.get<CurrentUser>().tagListModel.tagTitleList.length!=0)
-      return TAG_CHECK_RESULT.SUCCESS;
-    try {
+  Future<void> checkLoaclDBandFetch() async {
+    if(sl.get<CurrentUser>().tagListModel.tagTitleList.length!=5) {
       Database db = await sl.get<DatabaseHelper>().database;
       db = await sl.get<DatabaseHelper>().database;
 
@@ -70,25 +65,11 @@ class TagChatAPI {
         queryResult[0][tagName4Col],
         queryResult[0][tagName5Col]
       ]);
-    } catch(exception){
-      print(exception);
-      return TAG_CHECK_RESULT.FAILURE;
     }
-    return TAG_CHECK_RESULT.SUCCESS;
   }
 
   // 현재 사용자에 태그 상세 저장
   void _setCurrentUserTagTitle(List<String> tags){
     sl.get<CurrentUser>().tagListModel.tagTitleList.addAll(tags);
   }
-}
-
-enum TAG_CHECK_RESULT{
-  SUCCESS,
-  FAILURE
-}
-
-enum TAG_DETAIL_STORE_RESULT{
-  SUCCESS,
-  FAILURE
 }
