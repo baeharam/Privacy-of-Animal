@@ -8,7 +8,7 @@ import 'package:privacy_of_animal/screens/sub/signup_form.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:privacy_of_animal/utils/stream_dialog.dart';
 import 'package:privacy_of_animal/widgets/arc_background.dart';
-import 'package:privacy_of_animal/widgets/progress_indicator.dart';
+import 'package:privacy_of_animal/widgets/modal_popup.dart';
 
 class SignUpScreen extends StatefulWidget {
   @override
@@ -40,12 +40,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 builder: (context, SignUpState state){
                   List<Widget> widgets = [SignUpForm()];
                   if(state.isRegistering){
-                    widgets.add(
-                      Positioned(
-                        bottom: ScreenUtil.height/13,
-                        child: CustomProgressIndicator(),
-                      )
-                    );
+                    widgets.add(ModalProgress());
                   }
                   return Stack(
                     alignment: Alignment.center,
