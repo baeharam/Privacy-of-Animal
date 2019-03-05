@@ -13,6 +13,10 @@ class TagChatAPI {
   int npcChatListIndex = 0;
   List<String> _tagDetails;
 
+  void saveUserAnswer(String answer) {
+    sl.get<CurrentUser>().tagListModel.tagDetailList.add(answer);
+  }
+
   Future<void> storeTagDetail() async {
     await _storeTagDetailIntoFirestore();
     await _storeTagDetailIntoLocalDB();

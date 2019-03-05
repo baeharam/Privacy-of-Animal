@@ -68,6 +68,17 @@ class _TagChatScreenState extends State<TagChatScreen> {
             if(state.isUserChatFinished) {
               chatWidgets.add(TagChatUser(message: state.userChat));
             }
+            if(state.isSubmitSucceeded) {
+              StreamNavigator.pushReplacementNamed(context, routePhotoDecision);
+            }
+            if(state.isSubmitFailed) {
+              streamSnackbar(context, '제출에 실패했습니다.');
+              _tagChatBloc.emitEvent(TagChatEventStateClear());
+            }
+            if(state.isFetchTagsFailed) {
+              streamSnackbar(context, '태그정보를 가져오는데 실패했습니다.');
+              _tagChatBloc.emitEvent(TagChatEventStateClear());
+            }
 
             return Column(
               mainAxisSize: MainAxisSize.max,
@@ -85,7 +96,7 @@ class _TagChatScreenState extends State<TagChatScreen> {
                     controller: _scrollController,
                   ),
                 ),  
-                state.isProcessFinished 
+                state.isProcessFinished || state.isSubmitFailed 
                 ? Padding(
                   padding: const EdgeInsets.only(bottom: 20.0),
                   child: PrimaryButton(
@@ -94,7 +105,7 @@ class _TagChatScreenState extends State<TagChatScreen> {
                     callback: ()=>_tagChatBloc.emitEvent(TagChatEventComplete())
                   )
                 )
-                : (state.isSubmitLoading 
+                : (state.isSubmitLoading || state.isSubmitSucceeded
                   ? Padding(  
                       padding: const EdgeInsets.only(bottom: 20.0),
                       child: CustomProgressIndicator()
