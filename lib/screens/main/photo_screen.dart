@@ -55,6 +55,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
               if(state.isAnalyzeFailed){
                 streamSnackbar(context,'분석에 실패했습니다.');
                 image = Center(child: Text('사진이 없습니다.'));
+                _photoBloc.emitEvent(PhotoEventStateClear());
               }
               if(state.isPhotoDone){
                 if(state.path.isEmpty){
