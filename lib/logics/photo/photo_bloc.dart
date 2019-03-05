@@ -17,10 +17,6 @@ class PhotoBloc extends BlocEventStateBase<PhotoEvent,PhotoState>
       yield PhotoState.initial();
     }
 
-    if(event is PhotoEventEmitLoading){
-      yield PhotoState.loading(event.percentage);
-    }
-
     if (event is PhotoEventFetching) {
       String path = await _api.getImageFromGallery();
       yield PhotoState.take(path);
@@ -32,15 +28,18 @@ class PhotoBloc extends BlocEventStateBase<PhotoEvent,PhotoState>
     }
 
     if (event is PhotoEventGotoAnalysis){
-      yield PhotoState.loading(0.0);
-      await _api.analyzeFaceKakao(event.photoPath);
       try {
+        yield PhotoState.loading(0.0);
          await _api.analyzeFaceKakao(event.photoPath);
          try {
+           yield PhotoState.loading(0.3);
             await _api.analyzeFaceNaver(event.photoPath);
             try {
+              yield PhotoState.loading(0.5);
               await _api.analyzeCelebrityNaver(event.photoPath);
+              yield PhotoState.loading(0.7);
               await _api.detectAnimal(sl.get<CurrentUser>().kakaoMLModel);
+              yield PhotoState.loading(0.9);
               try {
                 await _api.storeProfile();
                 try {

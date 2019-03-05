@@ -11,7 +11,7 @@ class PhotoState extends BlocState {
   final String path;
   
   PhotoState({
-    this.isInitial,
+    this.isInitial: false,
     this.isPhotoDone: false,
     this.isAnalyzeSucceeded: false,
     this.isAnalyzeFailed: false,

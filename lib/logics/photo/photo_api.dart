@@ -75,10 +75,7 @@ class PhotoAPI {
 
   Future<void> storeProfile() async {
     await _storeProfileIntoFirestore();
-    sl.get<PhotoBloc>().emitEvent(PhotoEventEmitLoading(percentage: 0.82));
     await _storeProfileIntoLocalDB();
-    sl.get<PhotoBloc>().emitEvent(PhotoEventEmitLoading(percentage: 0.84));
-    sl.get<PhotoBloc>().emitEvent(PhotoEventEmitLoading(percentage: 0.9));
   }
 
   Future<void> _storeProfileIntoFirestore() async {
@@ -137,12 +134,10 @@ class PhotoAPI {
     final http.MultipartRequest request = http.MultipartRequest('POST',uri);
     request.headers['Authorization'] = 'KakaoAK $kakaoAPIKey';
     request.files.add(await http.MultipartFile.fromPath('file', photoPath));
-    sl.get<PhotoBloc>().emitEvent(PhotoEventEmitLoading(percentage: 0.1));
 
     http.StreamedResponse streamedResponse = await request.send();
     final http.Response response = await http.Response.fromStream(streamedResponse);
     Map<String,dynamic> firstJson = json.decode(response.body);
-    sl.get<PhotoBloc>().emitEvent(PhotoEventEmitLoading(percentage: 0.2));
 
     if(firstJson['result']['faces']==null) throw Exception();
 
@@ -157,12 +152,10 @@ class PhotoAPI {
     request.headers['X-Naver-Client-Id'] = naverClientID;
     request.headers['X-Naver-Client-Secret'] = naverClientSecret;
     request.files.add(await http.MultipartFile.fromPath('image', photoPath));
-    sl.get<PhotoBloc>().emitEvent(PhotoEventEmitLoading(percentage: 0.3));
 
     http.StreamedResponse streamedResponse = await request.send();
     final http.Response response = await http.Response.fromStream(streamedResponse);
     Map<String,dynamic> resultJson = json.decode(response.body);
-    sl.get<PhotoBloc>().emitEvent(PhotoEventEmitLoading(percentage: 0.4));
 
     if((resultJson['faces'] as List).length==0) throw Exception();
 
@@ -197,12 +190,10 @@ class PhotoAPI {
     request.headers['X-Naver-Client-Id'] = naverClientID;
     request.headers['X-Naver-Client-Secret'] = naverClientSecret;
     request.files.add(await http.MultipartFile.fromPath('image', photoPath));
-    sl.get<PhotoBloc>().emitEvent(PhotoEventEmitLoading(percentage: 0.5));
 
     http.StreamedResponse streamedResponse = await request.send();
     final http.Response response = await http.Response.fromStream(streamedResponse);
     Map<String,dynamic> resultJson = json.decode(response.body);
-    sl.get<PhotoBloc>().emitEvent(PhotoEventEmitLoading(percentage: 0.6));
 
     if((resultJson['faces'] as List).length==0) throw Exception();
 
