@@ -23,7 +23,6 @@ class _TagChatScreenState extends State<TagChatScreen> {
   final TagChatBloc _tagChatBloc = sl.get<TagChatBloc>();
   final ScrollController _scrollController = ScrollController();
   List<Widget> widgets = [];
-  Widget bottomWidget = Container();
 
   @override
   void dispose() {
@@ -31,9 +30,23 @@ class _TagChatScreenState extends State<TagChatScreen> {
     super.dispose();
   }
 
+  // 채팅이 입력될 때마다 스크롤이 내려가는 원리
+  void _moveScroll(int index) {
+    if(index==widgets.length-1 && _scrollController.position.maxScrollExtent!=null){
+      WidgetsBinding.instance.addPostFrameCallback((_){
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut
+        );
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       body: WillPopScope(
         onWillPop: () => BackButtonAction.stopInMiddle(context),
         child: BlocBuilder(
@@ -58,43 +71,36 @@ class _TagChatScreenState extends State<TagChatScreen> {
               _tagChatBloc.emitEvent(TagChatEventNPC(isInitial: false));
             }
             return Column(
+              mainAxisSize: MainAxisSize.max,
               children: <Widget>[
-                Flexible(
+                Expanded(
                   child: ListView.builder(
                     scrollDirection: Axis.vertical,
                     physics: const AlwaysScrollableScrollPhysics(),
                     padding: const EdgeInsets.symmetric(horizontal: 20.0,vertical: 30.0),
                     itemCount: widgets.length,
-                    itemBuilder: (context,index){ 
-                      if (index >5) 
-                      {
-                        _scrollController.animateTo(
-                          _scrollController.position.maxScrollExtent-10.0,
-                          curve: Curves.linear,
-                          duration: Duration(milliseconds: 100)
-                          );
-                      }
-                      
+                    itemBuilder: (context,index) {
+                      _moveScroll(index);
                       return widgets[index];
                     },
                     controller: _scrollController,
                   ),
-                ),
+                ),  
                 state.showSubmitButton 
                 ? Padding(
-                    padding: const EdgeInsets.only(bottom: 20.0),
-                    child: PrimaryButton(
-                      color: primaryBeige,
-                      text: '제출 하기',
-                      callback: ()=>_tagChatBloc.emitEvent(TagChatEventComplete())
-                    )
-                  ) 
+                  padding: const EdgeInsets.only(bottom: 20.0),
+                  child: PrimaryButton(
+                    color: primaryBeige,
+                    text: '제출 하기',
+                    callback: ()=>_tagChatBloc.emitEvent(TagChatEventComplete())
+                  )
+                )
                 : (state.isDetailStoreLoading 
-                  ? Padding(
+                  ? Padding(  
                       padding: const EdgeInsets.only(bottom: 20.0),
                       child: CustomProgressIndicator()
                     )
-                  : TagChatInput(scrollController: _scrollController)
+                  : TagChatInput()
                 )
               ],
             );

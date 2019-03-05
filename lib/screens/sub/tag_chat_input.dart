@@ -5,12 +5,6 @@ import 'package:privacy_of_animal/utils/service_locator.dart';
 
 class TagChatInput extends StatefulWidget {
 
-  final ScrollController scrollController;
-
-  TagChatInput({
-    @required this.scrollController
-  });
-
   @override
   TagChatInputState createState() {
     return new TagChatInputState();
@@ -46,7 +40,6 @@ class TagChatInputState extends State<TagChatInput> {
               child: BlocBuilder(
                 bloc: sl.get<TagChatBloc>(),
                 builder: (context, TagChatState state){
-                  // if(state.isNPC && !state.isInitial) _moveUpScroll();
                   if(state.isNPCDone) sl.get<TagChatBloc>().emitEvent(TagChatEventNothing(isNPCDone: true));
                   return TextField(
                     decoration: InputDecoration.collapsed(
@@ -72,7 +65,6 @@ class TagChatInputState extends State<TagChatInput> {
                     onPressed: state.isNPCDone ? () {
                       sl.get<TagChatBloc>().emitEvent(TagChatEventUser(message: _textEditingController.text));
                       _textEditingController.clear();
-                      // _moveUpScroll();
                     } : null
                   );
                 }
