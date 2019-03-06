@@ -53,9 +53,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 builder: (context, SignUpState state){
                   if(state.isAccountRegisterFailed){
                     streamDialogSignUpFailed(context,signUpAccountFailedTitle,signUpAccountFailedMessage,FAIL_TYPE.ACCOUNT_FAIL);
+                    signUpBloc.emitEvent(SignUpEventStateClear());
                   }
                   if(state.isProfileRegisterFailed){
                     streamDialogSignUpFailed(context,signUpProfileFailedTitle,signUpProfileFailedMessage,FAIL_TYPE.PROFILE_FAIL);
+                    signUpBloc.emitEvent(SignUpEventStateClear());
                   }
                   return Container();
                 },

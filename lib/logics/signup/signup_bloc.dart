@@ -6,17 +6,13 @@ class SignUpBloc extends BlocEventStateBase<SignUpEvent,SignUpState> {
   static final SignUpAPI _api = SignUpAPI();
   
   @override
-  SignUpState get initialState => SignUpState();
+  SignUpState get initialState => SignUpState.initial();
 
   @override
   Stream<SignUpState> eventHandler(SignUpEvent event, SignUpState currentState) async*{
 
-    if(event is SignUpEventInitial){
+    if(event is SignUpEventStateClear){
       yield SignUpState();
-    }
-
-    if(event is SignUpEventClear){
-      yield SignUpState.finished();
     }
 
     if(event is SignUpEventAgeSelect){

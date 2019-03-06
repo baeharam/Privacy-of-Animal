@@ -1,6 +1,7 @@
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state.dart';
 
 class SignUpState extends BlocState {
+  final bool isInitial;
   final bool isRegistered;
   final bool isRegistering;
   final bool isAccountRegisterFailed;
@@ -10,9 +11,9 @@ class SignUpState extends BlocState {
   final bool isMaleSelected;
   final bool isFemaleSelected;
   final String gender;
-  final bool isFinished;
 
   SignUpState({
+    this.isInitial: false,
     this.isRegistered: false,
     this.isRegistering: false,
     this.isAccountRegisterFailed: false,
@@ -22,14 +23,9 @@ class SignUpState extends BlocState {
     this.isMaleSelected: false,
     this.isFemaleSelected: false,
     this.gender: '',
-    this.isFinished: false,
   });
-  
-  factory SignUpState.finished() {
-    return SignUpState(
-      isFinished: true
-    );
-  }
+
+  factory SignUpState.initial() => SignUpState(isInitial: true);
 
   factory SignUpState.registered() {
     return SignUpState(

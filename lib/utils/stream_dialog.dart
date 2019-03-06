@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state_builder.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/find_password/find_password.dart';
-import 'package:privacy_of_animal/logics/signup/signup.dart';
 import 'package:privacy_of_animal/logics/tag_edit/tag_edit.dart';
 import 'package:privacy_of_animal/logics/validation/validation_bloc.dart';
 import 'package:privacy_of_animal/resources/resources.dart';
@@ -147,7 +146,6 @@ void streamDialogForgotPassword(BuildContext context) {
 void streamDialogSignUpFailed(BuildContext context,String title,String message,FAIL_TYPE type) {
 
   final ValidationBloc validationBloc = sl.get<ValidationBloc>();
-  final SignUpBloc signUpBloc = sl.get<SignUpBloc>();
   
   WidgetsBinding.instance.addPostFrameCallback((_){
     Alert(
@@ -159,7 +157,6 @@ void streamDialogSignUpFailed(BuildContext context,String title,String message,F
         DialogButton(
           onPressed: (){
             type==FAIL_TYPE.ACCOUNT_FAIL ? validationBloc.onAccountFailed() : validationBloc.onProfileFailed();
-            signUpBloc.emitEvent(SignUpEventInitial());
             Navigator.pop(context);
           },
           child: Text(

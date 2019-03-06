@@ -22,7 +22,7 @@ class _SignUpDecisionState extends State<SignUpDecision> {
       builder: (BuildContext context, SignUpState state){
         if(state.isRegistered){
           StreamNavigator.pushReplacementNamed(context, routeLoginDecision);
-          sl.get<SignUpBloc>().emitEvent(SignUpEventClear());
+          sl.get<SignUpBloc>().emitEvent(SignUpEventStateClear());
         }
         return SignUpScreen();
       },

@@ -4,8 +4,7 @@ import 'package:privacy_of_animal/models/signup_model.dart';
 
 abstract class SignUpEvent extends BlocEvent{}
 
-class SignUpEventClear extends SignUpEvent {}
-class SignUpEventInitial extends SignUpEvent {}
+class SignUpEventStateClear extends SignUpEvent {}
 
 class SignUpEventAgeSelect extends SignUpEvent {
   final int age;
