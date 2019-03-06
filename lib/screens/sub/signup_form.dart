@@ -85,9 +85,9 @@ class _SignUpFormState extends State<SignUpForm> {
       physics: ScrollPhysics(),
       child: Container(
         width: ScreenUtil.width/1.3,
+        height: ScreenUtil.height*1.3,
         padding: EdgeInsets.only(bottom: 20.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             _buildIntroduction('계정을 입력해주세요.', EdgeInsets.only(bottom: 20.0)),

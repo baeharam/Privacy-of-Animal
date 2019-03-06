@@ -32,6 +32,7 @@ dependencies:
   intl: ^0.15.7
   flutter_local_notifications: ^0.5.1+2
 
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
