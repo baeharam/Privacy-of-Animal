@@ -29,15 +29,22 @@ class SignUpBloc extends BlocEventStateBase<SignUpEvent,SignUpState> {
     
     if(event is SignUpEventComplete){
       yield SignUpState.registering();
-      SIGNUP_RESULT signupResult = await _api.registerAccount(event.data);
-      if(signupResult == SIGNUP_RESULT.SUCCESS){
-        PROFILE_RESULT profileResult = await _api.registerProfile(event.data);
-        if(profileResult == PROFILE_RESULT.SUCCESS){
+      try {
+        await _api.registerAccount(event.data);
+        try {
+          await _api.registerProfile(event.data);
           yield SignUpState.registered();
-        } else if(profileResult == PROFILE_RESULT.FAILURE){
+        } catch(exception) {
+          print('프로필등록 실패: ${exception.toString()}');
+          try {
+            await _api.deleteUser();
+          } catch(exception) {
+            print('프로필등록 실패로 인한 계정삭제 실패: ${exception.toString()}');
+          }
           yield SignUpState.profileRegisterFailed();
         }
-      } else if(signupResult == SIGNUP_RESULT.FAILURE){
+      } catch(exception) {
+        print('계정등록 실패: ${exception.toString()}');
         yield SignUpState.accountRegisterFailed();
       }
     }

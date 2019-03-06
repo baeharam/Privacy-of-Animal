@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/database_helper.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
@@ -12,36 +11,29 @@ import 'package:sqflite/sqflite.dart';
 
 class SignUpAPI {
   // 회원가입
-  Future<SIGNUP_RESULT> registerAccount(SignUpModel data) async {
-    try {
-      await sl.get<FirebaseAPI>().getAuth().createUserWithEmailAndPassword(
-        email: data.email,
-        password: data.password
-      ).then((user) => sl.get<CurrentUser>().uid = user.uid);
+  Future<void> registerAccount(SignUpModel data) async {
+    await sl.get<FirebaseAPI>().getAuth().createUserWithEmailAndPassword(
+      email: data.email,
+      password: data.password
+    ).then((user) => sl.get<CurrentUser>().uid = user.uid);
 
-      await sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async{
-        CollectionReference col = sl.get<FirebaseAPI>().getFirestore().collection(firestoreDeletedUserListCollection);
-        DocumentReference doc = col.document(sl.get<CurrentUser>().uid);
-        await tx.set(doc,{
-          'delete': true
-        });
-      }); 
-    } catch(exception){
-      return SIGNUP_RESULT.FAILURE;
-    }
-    return SIGNUP_RESULT.SUCCESS;
+    await sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async{
+      CollectionReference col = sl.get<FirebaseAPI>().getFirestore().collection(firestoreDeletedUserListCollection);
+      DocumentReference doc = col.document(sl.get<CurrentUser>().uid);
+      await tx.set(doc,{
+        'delete': true
+      });
+    }); 
+  }
+
+  Future<void> deleteUser() async {
+    await sl.get<FirebaseAPI>().deleteUserAccount(sl.get<CurrentUser>().uid);
   }
 
   // 프로필 등록
-  Future<PROFILE_RESULT> registerProfile(SignUpModel data) async {
-    try {
-      await registerProfileIntoFirestore(data);
-      await registerProfileIntoLocalDB(data);
-    } catch(exception){
-      await sl.get<FirebaseAPI>().deleteUserAccount(sl.get<CurrentUser>().uid);
-      return PROFILE_RESULT.FAILURE;
-    }
-    return PROFILE_RESULT.SUCCESS;
+  Future<void> registerProfile(SignUpModel data) async {
+    await registerProfileIntoFirestore(data);
+    await registerProfileIntoLocalDB(data);
   }
 
   // Cloud Firestore에 저장
@@ -75,20 +67,4 @@ class SignUpAPI {
       '"${data.realProfileModel.name}","${data.realProfileModel.age}",'
       '"${data.realProfileModel.job}","${data.realProfileModel.gender}")');
   }
-
-  // 실패한 부분에 포커싱
-  void requestFocusOnRetry(BuildContext context, FocusNode focusNode){
-    FocusScope.of(context).requestFocus(focusNode);
-  }
-
-}
-
-enum SIGNUP_RESULT {
-  SUCCESS,
-  FAILURE
-}
-
-enum PROFILE_RESULT {
-  SUCCESS,
-  FAILURE
 }
