@@ -1,9 +1,10 @@
-import 'package:privacy_of_animal/bloc_helpers/bloc_provider.dart';
 import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 
 abstract class BlocEvent extends Object {}
 abstract class BlocState extends Object {}
+
+abstract class BlocBase { void dispose(); }
 
 abstract class BlocEventStateBase<BlocEvent, BlocState> implements BlocBase {
   PublishSubject<BlocEvent> _eventController = PublishSubject<BlocEvent>();
