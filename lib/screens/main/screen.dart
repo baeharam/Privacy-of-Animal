@@ -10,7 +10,6 @@ export './random_chat_screen.dart';
 export './other_profile_screen.dart';
 export './setting_screen.dart';
 export './same_match_screen.dart';
-export './notification_screen.dart';
 
 export './match_screen.dart';
 export './chat_list_screen.dart';

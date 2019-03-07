@@ -230,7 +230,6 @@ class SettingItem {
 
   static List<SettingItem> items(){
     var box = new List<SettingItem>();
-    box.add(new SettingItem(title: '알림설정', routeName: "", titleSize: 14.0, titleColor: Colors.black, fontWeight: FontWeight.w600, trailing: Icons.keyboard_arrow_right));
     box.add(new SettingItem(title: '서비스 이용안내', routeName:"", titleSize: 14.0, titleColor: Colors.black, fontWeight: FontWeight.w600, trailing: Icons.keyboard_arrow_right));
     box.add(new SettingItem(title: '이용약관', routeName: "", titleSize: 14.0, titleColor: Colors.black, fontWeight: FontWeight.w600, trailing: Icons.keyboard_arrow_right));
     box.add(new SettingItem(title: '개인정보 처리방침',routeName:"", titleSize: 14.0, titleColor: Colors.black, fontWeight: FontWeight.w600, trailing: Icons.keyboard_arrow_right));
