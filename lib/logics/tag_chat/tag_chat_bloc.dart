@@ -39,15 +39,15 @@ class TagChatBloc extends BlocEventStateBase<TagChatEvent,TagChatState> {
     }
 
     if(event is TagChatEventUserChat) {
-      yield TagChatState.userChatFinished(event.message);
-      _api.saveUserAnswer(event.message);
       if(_api.npcChatListIndex<5) {
+        yield TagChatState.userChatFinished(event.message);
         await Future.delayed(const Duration(milliseconds: TagChatAPI.chatDelayTime));
         yield TagChatState.npcChatFinished(
           tagToMessage[sl.get<CurrentUser>().tagListModel.tagTitleList[_api.npcChatListIndex++]]);
       } else {
-        yield TagChatState.processFinished();
+        yield TagChatState.userChatFinished(event.message,end: true);
       }
+      _api.saveUserAnswer(event.message);
     }
 
     if(event is TagChatEventComplete) {

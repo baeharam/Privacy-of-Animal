@@ -72,14 +72,13 @@ class TagChatState extends BlocState {
     );
   }
 
-  factory TagChatState.userChatFinished(String message) {
+  factory TagChatState.userChatFinished(String message,{bool end: false}) {
     return TagChatState(
       isUserChatFinished: true,
-      userChat: message
+      userChat: message,
+      isProcessFinished: end
     );
   }
-
-  factory TagChatState.processFinished() => TagChatState(isProcessFinished: true);
 
   factory TagChatState.submitLoading() => TagChatState(isSubmitLoading: true);
   factory TagChatState.submitSucceeded() => TagChatState(isSubmitSucceeded: true);
