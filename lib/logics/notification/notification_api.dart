@@ -9,9 +9,9 @@ import 'package:privacy_of_animal/resources/strings.dart';
 
 class NotificationAPI {
   
-  Future<void> setFriendsRequest(bool value) async {
+  Future<void> setFriendsNotification(bool value) async {
     SharedPreferences prefs = await sl.get<DatabaseHelper>().sharedPreferences;
-    prefs.setBool(friendsRequestNotification, value);
-    sl.get<CurrentUser>().friendsRequestNotification = value;
+    prefs.setBool(friendsNotification, value);
+    sl.get<CurrentUser>().friendsNotification = value;
   }
 }

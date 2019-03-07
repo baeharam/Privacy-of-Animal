@@ -39,9 +39,9 @@ class _NotificationScreenState extends State<NotificationScreen> {
                     item: AlertItem(
                       title: '친구신청',
                       titleSize: 19.0,
-                      switchValue: sl.get<CurrentUser>().friendsRequestNotification
+                      switchValue: sl.get<CurrentUser>().friendsNotification
                     ),
-                    onChanged: (value) => bloc.emitEvent(NotificationEventFriendsRequest(value: value))
+                    onChanged: (value) => bloc.emitEvent(NotificationEventFriends(value: value))
                   ),
                   _buildSwitch(
                     item: AlertItem(

@@ -17,7 +17,7 @@ class CurrentUser {
   Stream<QuerySnapshot> friendsRequestStream =  Stream.empty();
   Stream<QuerySnapshot> messagesStream = Stream.empty();
 
-  bool friendsRequestNotification;
+  bool friendsNotification;
   bool messageNotification;
 
   bool isDataFetched = false;

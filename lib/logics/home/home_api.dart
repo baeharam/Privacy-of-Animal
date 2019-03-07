@@ -14,7 +14,7 @@ class HomeAPI {
   static Stream<QuerySnapshot> friendsRequestStream = Stream.empty();
   static int friendsRequestListLength = 0;
 
-  void setNotificationOfFriendsRequest() {
+  void setFriendsNotification() {
     friendsRequestStream = sl.get<FirebaseAPI>().getFirestore()
       .collection(firestoreUsersCollection).document(sl.get<CurrentUser>().uid)
       .collection(firestoreFriendsSubCollection).where(firestoreFriendsField, isEqualTo: false)
@@ -25,7 +25,7 @@ class HomeAPI {
           friendsRequestListLength = snapshot.documents.length;
         }
         friendsRequestListLength = snapshot.documents.length;
-        if(sl.get<CurrentUser>().friendsRequestNotification) {
+        if(sl.get<CurrentUser>().friendsNotification) {
           sl.get<NotificationHelper>().showFriendsRequestNotification(snapshot);
         }
       }
@@ -81,11 +81,11 @@ class HomeAPI {
 
       // 알림 설정 가져오기
       SharedPreferences prefs = await sl.get<DatabaseHelper>().sharedPreferences;
-      if(prefs.getBool(friendsRequestNotification)==null){
-        prefs.setBool(friendsRequestNotification, false);
-        sl.get<CurrentUser>().friendsRequestNotification = false;
+      if(prefs.getBool(friendsNotification)==null){
+        prefs.setBool(friendsNotification, false);
+        sl.get<CurrentUser>().friendsNotification = false;
       } else {
-        sl.get<CurrentUser>().friendsRequestNotification = prefs.getBool(friendsRequestNotification);
+        sl.get<CurrentUser>().friendsNotification = prefs.getBool(friendsNotification);
       }
 
       // 데이터 가져왔다고 설정

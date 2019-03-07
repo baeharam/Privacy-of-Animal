@@ -223,7 +223,7 @@ const String isTagChatted = 'is_tag_chatted';
 const String isFaceAnalyzed = 'is_face_analyzed';
 
 // SharedPreferences 알림 key 값
-const String friendsRequestNotification = 'friends_request_notification';
+const String friendsNotification = 'friends_notification';
 const String messageNotification = 'message_notification';
 
 // 로컬 DB 이름

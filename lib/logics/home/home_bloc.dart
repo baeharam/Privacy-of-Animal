@@ -13,7 +13,7 @@ class HomeBloc extends BlocEventStateBase<HomeEvent,HomeState> {
   @override
   Stream<HomeState> eventHandler(HomeEvent event, HomeState currentState) async*{
     if(event is HomeEventSetFriendsRequestNotification) {
-      _api.setNotificationOfFriendsRequest();
+      _api.setFriendsNotification();
     }
     if(event is HomeEventNavigate) {
       if(event.index==0){

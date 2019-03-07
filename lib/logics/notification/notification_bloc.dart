@@ -3,17 +3,19 @@ import 'package:privacy_of_animal/logics/notification/notification.dart';
 
 class NotificationBloc extends BlocEventStateBase<NotificationEvent,NotificationState> {
 
-  final NotificationAPI _api = NotificationAPI();
+  static final NotificationAPI _api = NotificationAPI();
 
   @override
     NotificationState get initialState => NotificationState.initial();
 
   @override
   Stream<NotificationState> eventHandler(NotificationEvent event, NotificationState currentState) async*{
-    if(event is NotificationEventFriendsRequest){
+    if(event is NotificationEventFriends){
       try {
-        await _api.setFriendsRequest(event.value);
-        yield NotificationState.friendsRequestToggled();
+        await _api.setFriendsNotification(event.value);
+        yield event.value 
+          ? NotificationState.friendsNotificationOnSucceeded()
+          : NotificationState.friendsNotificationOffSucceeded();
       } catch (exception) {
         print(exception);
       }

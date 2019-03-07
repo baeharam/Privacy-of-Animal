@@ -5,6 +5,7 @@ import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/logics/friends/friends.dart';
 import 'package:privacy_of_animal/logics/home/home_api.dart';
+import 'package:privacy_of_animal/logics/notification/notification.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/screens/main/friends_chat_screen.dart';
 import 'package:privacy_of_animal/screens/main/other_profile_screen.dart';
@@ -21,6 +22,7 @@ class FriendsScreen extends StatefulWidget {
 class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProviderStateMixin{
 
   final FriendsBloc friendsBloc = sl.get<FriendsBloc>();
+  final NotificationBloc notificationBloc = sl.get<NotificationBloc>();
   TabController tabController;
 
   @override
@@ -77,6 +79,19 @@ class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProvider
         appBar: AppBar(
           elevation: 0.0,
           backgroundColor: primaryBlue,
+          actions: [
+            BlocBuilder(
+              bloc: notificationBloc,
+              builder: (context, NotificationState state){
+                return IconButton(
+                  icon: Icon(state.isFriendsNotificationOnSucceeded 
+                    ? Icons.notifications
+                    : Icons.notifications_off),
+                  onPressed: (){},
+                );
+              }
+            )
+          ],
           bottom: TabBar(
             tabs: [
               Tab(child: Text('친구')),
