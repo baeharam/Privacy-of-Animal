@@ -37,6 +37,33 @@ class NotificationHelper {
     );
   }
 
+  Future<void> showFriendsNotification(QuerySnapshot data) async {
+    var android =AndroidNotificationDetails(
+      'Friends Notification ID',
+      'Friends Notification NAME',
+      'Friends Notification',
+      priority: Priority.High, importance: Importance.Max
+    );
+    var iOS =IOSNotificationDetails();
+    var platform =NotificationDetails(android,iOS);
+
+    if(data.documents.isNotEmpty && data.documentChanges.isNotEmpty 
+      && sl.get<CurrentUser>().friendsList.length < data.documents.length) {
+      String friendsCandidate = data.documentChanges[0].document.documentID;
+      QuerySnapshot checkFriends = await sl.get<FirebaseAPI>().getFirestore()
+        .collection(firestoreUsersCollection).document(sl.get<CurrentUser>().uid)
+        .collection(firestoreFriendsSubCollection)
+        .where(uidCol, isEqualTo: friendsCandidate).getDocuments();
+      if(checkFriends.documents.isNotEmpty){
+        String newFriends = checkFriends.documentChanges[0].document.data[uidCol];
+        await _flutterLocalNotificationsPlugin.show(
+          0, '친구','$newFriends 님이 친구신청을 수락했습니다.',platform,
+          payload: '친구 알림'
+        );
+      }
+    }
+  }
+
   // Notification 메시지
   Future<void> showFriendsRequestNotification(QuerySnapshot data) async {
     var android =AndroidNotificationDetails(

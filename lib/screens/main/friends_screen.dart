@@ -87,7 +87,11 @@ class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProvider
                   icon: Icon(state.isFriendsNotificationOnSucceeded 
                     ? Icons.notifications
                     : Icons.notifications_off),
-                  onPressed: (){},
+                  onPressed: () => notificationBloc.emitEvent(
+                    state.isFriendsNotificationOnSucceeded
+                    ? NotificationEventFriends(value: false)
+                    : NotificationEventFriends(value: true)
+                  )
                 );
               }
             )

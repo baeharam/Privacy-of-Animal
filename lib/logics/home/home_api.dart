@@ -12,9 +12,16 @@ import 'package:sqflite/sqflite.dart';
 class HomeAPI {
 
   static Stream<QuerySnapshot> friendsRequestStream = Stream.empty();
+  static Stream<QuerySnapshot> friendsStream = Stream.empty();
   static int friendsRequestListLength = 0;
+  static int friendsListLength = 0;
 
   void setFriendsNotification() {
+    _addListenerToFriendsRequest();
+    _addListenerToFriends();
+  }
+
+  void _addListenerToFriendsRequest() {
     friendsRequestStream = sl.get<FirebaseAPI>().getFirestore()
       .collection(firestoreUsersCollection).document(sl.get<CurrentUser>().uid)
       .collection(firestoreFriendsSubCollection).where(firestoreFriendsField, isEqualTo: false)
@@ -25,6 +32,24 @@ class HomeAPI {
           friendsRequestListLength = snapshot.documents.length;
         }
         friendsRequestListLength = snapshot.documents.length;
+        if(sl.get<CurrentUser>().friendsNotification) {
+          sl.get<NotificationHelper>().showFriendsRequestNotification(snapshot);
+        }
+      }
+    });
+  }
+
+  void _addListenerToFriends() {
+    friendsStream = sl.get<FirebaseAPI>().getFirestore()
+      .collection(firestoreUsersCollection).document(sl.get<CurrentUser>().uid)
+      .collection(firestoreFriendsSubCollection).where(firestoreFriendsField, isEqualTo: true)
+      .snapshots();
+    friendsStream.listen((snapshot){
+      if(snapshot.documents.isNotEmpty){
+        if(friendsListLength>snapshot.documents.length){
+          friendsListLength = snapshot.documents.length;
+        }
+        friendsListLength = snapshot.documents.length;
         if(sl.get<CurrentUser>().friendsNotification) {
           sl.get<NotificationHelper>().showFriendsRequestNotification(snapshot);
         }
