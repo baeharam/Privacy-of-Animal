@@ -63,15 +63,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           '가상프로필',
                           style: primaryTextStyle,
                         ),
-                        GestureDetector(
-                          child: Image(
-                            image: AssetImage('assets/images/components/modify.png'),
-                            width: 50.0,
-                            height: 50.0,
-                          ),
-                          onTap: (){
-                            sl.get<ProfileBloc>().emitEvent(ProfileEventResetFakeProfile());
-                          }
+                        IconButton(
+                          icon: Icon(Icons.update,color: Colors.red),
+                          tooltip: '가상 프로필을 갱신할 수 있습니다.',
+                          onPressed: () => sl.get<ProfileBloc>().emitEvent(ProfileEventResetFakeProfile())
                         ),
                         Spacer(),
                         GestureDetector(
