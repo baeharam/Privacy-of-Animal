@@ -13,7 +13,7 @@ class HomeAPI {
 
   static Stream<QuerySnapshot> friendsRequestStream = Stream.empty();
   static Stream<QuerySnapshot> friendsStream = Stream.empty();
-  static int friendsRequestListLength = 0;
+  static int friendsRequestListLength = -1;
   static int friendsListLength = 0;
 
   void setFriendsNotification() {
@@ -21,19 +21,35 @@ class HomeAPI {
     _addListenerToFriends();
   }
 
+  /*
+    친구신청 목록을 스트림으로 듣고 있음
+    현재 친구 신청목록보다 더 많은 신청목록이 있는 경우가 친구신청이 온 경우
+  */
+
   void _addListenerToFriendsRequest() {
     friendsRequestStream = sl.get<FirebaseAPI>().getFirestore()
       .collection(firestoreUsersCollection).document(sl.get<CurrentUser>().uid)
       .collection(firestoreFriendsSubCollection).where(firestoreFriendsField, isEqualTo: false)
       .snapshots();
     friendsRequestStream.listen((snapshot){
-      if(snapshot.documents.isNotEmpty){
-        if(friendsRequestListLength>snapshot.documents.length){
-          friendsRequestListLength = snapshot.documents.length;
+      if(snapshot.documents.isNotEmpty && snapshot.documentChanges.isNotEmpty){
+        // 스트림으로 처음 들을 때만 초기화시켜준다.
+        if(sl.get<CurrentUser>().friendsRequestListLength==-1) {
+          sl.get<CurrentUser>().friendsRequestListLength = snapshot.documents.length;
         }
-        friendsRequestListLength = snapshot.documents.length;
-        if(sl.get<CurrentUser>().friendsNotification) {
-          sl.get<NotificationHelper>().showFriendsRequestNotification(snapshot);
+
+        /*
+          문서에 변화가 1개만 있어야 친구신청이 와서 알림을 보내줘야 함
+          하지만 예외의 경우가 존재
+          1. 이미 친구신청이 1개 있는 경우
+          2. 친구신청이 처음으로 와서 일반문서의 길이 == 변화문서의 길이인 경우
+          따라서 이 예외처리를 해주어야 한다.
+        */
+        else if(snapshot.documentChanges.length==1 
+          && sl.get<CurrentUser>().friendsRequestListLength < snapshot.documents.length
+          && sl.get<CurrentUser>().friendsNotification) {
+            sl.get<CurrentUser>().friendsRequestListLength = snapshot.documents.length;
+            sl.get<NotificationHelper>().showFriendsRequestNotification(snapshot);
         }
       }
     });
@@ -48,7 +64,7 @@ class HomeAPI {
       .snapshots();
     friendsStream.listen((snapshot){
       if(snapshot.documents.isNotEmpty){
-        if(friendsListLength>snapshot.documents.length){
+        if(friendsListLength>=snapshot.documents.length){
           friendsListLength = snapshot.documents.length;
         }
         friendsListLength = snapshot.documents.length;

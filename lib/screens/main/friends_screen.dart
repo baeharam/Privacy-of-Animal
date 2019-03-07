@@ -78,14 +78,10 @@ class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProvider
         .collection(firestoreFriendsSubCollection).where(firestoreFriendsField, isEqualTo: false)
         .snapshots(),
       builder: (context, snapshot){
-        if(snapshot.hasData 
-          && snapshot.data.documents.isNotEmpty
-          && snapshot.data.documentChanges.isNotEmpty){
-          if(HomeAPI.friendsRequestListLength>snapshot.data.documents.length) {
-            HomeAPI.friendsRequestListLength = snapshot.data.documents.length;
+        if(snapshot.hasData && snapshot.data.documents.isNotEmpty){
+          if(snapshot.data.documents.length==0) {
             return Container();
           }
-          HomeAPI.friendsRequestListLength = snapshot.data.documents.length;
           return Container(
             padding: EdgeInsets.all(8.0),
             decoration: BoxDecoration(
@@ -112,7 +108,7 @@ class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProvider
         if(snapshot.hasData 
           && snapshot.data.documents.isNotEmpty
           && snapshot.data.documentChanges.isNotEmpty){
-          if(HomeAPI.friendsListLength>snapshot.data.documents.length) {
+          if(HomeAPI.friendsListLength>=snapshot.data.documents.length) {
             HomeAPI.friendsListLength = snapshot.data.documents.length;
             return Container();
           }

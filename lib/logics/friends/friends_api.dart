@@ -83,6 +83,7 @@ class FriendsAPI {
     await sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async{
       await tx.delete(doc);
     });
+    sl.get<CurrentUser>().friendsRequestListLength--;
   }
 
   // 친구랑 대화하기
