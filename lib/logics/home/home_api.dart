@@ -42,7 +42,9 @@ class HomeAPI {
   void _addListenerToFriends() {
     friendsStream = sl.get<FirebaseAPI>().getFirestore()
       .collection(firestoreUsersCollection).document(sl.get<CurrentUser>().uid)
-      .collection(firestoreFriendsSubCollection).where(firestoreFriendsField, isEqualTo: true)
+      .collection(firestoreFriendsSubCollection)
+      .where(firestoreFriendsField, isEqualTo: true)
+      .where(firestoreFriendsAccepted, isEqualTo: true)
       .snapshots();
     friendsStream.listen((snapshot){
       if(snapshot.documents.isNotEmpty){

@@ -160,6 +160,8 @@ const String firestoreFriendsSubCollection = 'friends';
 
 // Cloud Firestore 친구 필드
 const String firestoreFriendsField = 'is_friends';
+const String firestoreFriendsAccepted = 'is_accepted';
+const String firestoreFriendsUID = uidCol;
 
 // Cloud Firestore 실제 프로필 필드
 const String firestoreRealProfileField = realProfileTable;

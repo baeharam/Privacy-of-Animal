@@ -69,7 +69,8 @@ class FriendsAPI {
     batch.setData(myselfDoc, {firestoreFriendsField: true},merge: true);
     batch.setData(requestingUserDoc, {
       firestoreFriendsField: true,
-      uidCol: sl.get<CurrentUser>().uid
+      firestoreFriendsAccepted: true,
+      firestoreFriendsUID: sl.get<CurrentUser>().uid
     });
 
     await batch.commit();

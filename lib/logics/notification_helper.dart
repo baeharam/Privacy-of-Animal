@@ -37,6 +37,7 @@ class NotificationHelper {
     );
   }
 
+  // 상대방이 친구신청을 수락했을 시 알림
   Future<void> showFriendsNotification(QuerySnapshot data) async {
     var android =AndroidNotificationDetails(
       'Friends Notification ID',
@@ -53,18 +54,22 @@ class NotificationHelper {
       QuerySnapshot checkFriends = await sl.get<FirebaseAPI>().getFirestore()
         .collection(firestoreUsersCollection).document(sl.get<CurrentUser>().uid)
         .collection(firestoreFriendsSubCollection)
-        .where(uidCol, isEqualTo: friendsCandidate).getDocuments();
+        .where(firestoreFriendsUID, isEqualTo: friendsCandidate)
+        .getDocuments();
       if(checkFriends.documents.isNotEmpty){
-        String newFriends = checkFriends.documentChanges[0].document.data[uidCol];
+        DocumentSnapshot userSnapshot = await sl.get<FirebaseAPI>().getFirestore()
+          .collection(firestoreUsersCollection)
+          .document(data.documentChanges[0].document.data[firestoreFriendsUID]).get();
+        String friends = userSnapshot.data[firestoreFakeProfileField][firestoreNickNameField];
         await _flutterLocalNotificationsPlugin.show(
-          0, '친구','$newFriends 님이 친구신청을 수락했습니다.',platform,
-          payload: '친구 알림'
+          0, '친구','$friends 님이 친구신청을 수락하였습니다.',platform,
+          payload: '친구'
         );
       }
     }
   }
 
-  // Notification 메시지
+  // 상대방이 친구 신청 보냈을 시 알림
   Future<void> showFriendsRequestNotification(QuerySnapshot data) async {
     var android =AndroidNotificationDetails(
       'FriendsRequest Notification ID',
