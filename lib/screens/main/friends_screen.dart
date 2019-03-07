@@ -71,6 +71,66 @@ class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProvider
     ).show();
   }
 
+  Widget _buildFriendsRequestNotification() {
+    return StreamBuilder<QuerySnapshot>(
+      stream: sl.get<FirebaseAPI>().getFirestore()
+        .collection(firestoreUsersCollection).document(sl.get<CurrentUser>().uid)
+        .collection(firestoreFriendsSubCollection).where(firestoreFriendsField, isEqualTo: false)
+        .snapshots(),
+      builder: (context, snapshot){
+        if(snapshot.hasData 
+          && snapshot.data.documents.isNotEmpty
+          && snapshot.data.documentChanges.isNotEmpty){
+          if(HomeAPI.friendsRequestListLength>snapshot.data.documents.length) {
+            HomeAPI.friendsRequestListLength = snapshot.data.documents.length;
+            return Container();
+          }
+          HomeAPI.friendsRequestListLength = snapshot.data.documents.length;
+          return Container(
+            padding: EdgeInsets.all(8.0),
+            decoration: BoxDecoration(
+              color: Colors.red,
+              shape: BoxShape.circle
+            ),
+            child: Text('${snapshot.data.documentChanges.length}')
+          );
+        }
+        return Container();
+      },
+    );
+  }
+
+  Widget _buildFriendsNotification() {
+    return StreamBuilder<QuerySnapshot>(
+      stream: sl.get<FirebaseAPI>().getFirestore()
+        .collection(firestoreUsersCollection).document(sl.get<CurrentUser>().uid)
+        .collection(firestoreFriendsSubCollection)
+        .where(firestoreFriendsField, isEqualTo: true)
+        .where(firestoreFriendsAccepted, isEqualTo: true)
+        .snapshots(),
+      builder: (context, snapshot){
+        if(snapshot.hasData 
+          && snapshot.data.documents.isNotEmpty
+          && snapshot.data.documentChanges.isNotEmpty){
+          if(HomeAPI.friendsListLength>snapshot.data.documents.length) {
+            HomeAPI.friendsListLength = snapshot.data.documents.length;
+            return Container();
+          }
+          HomeAPI.friendsListLength = snapshot.data.documents.length;
+          return Container(
+            padding: EdgeInsets.all(8.0),
+            decoration: BoxDecoration(
+              color: Colors.red,
+              shape: BoxShape.circle
+            ),
+            child: Text('${snapshot.data.documentChanges.length}')
+          );
+        }
+        return Container();
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -98,36 +158,20 @@ class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProvider
           ],
           bottom: TabBar(
             tabs: [
-              Tab(child: Text('친구')),
+              Tab(child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('친구'),
+                  SizedBox(width: 10.0),
+                  _buildFriendsNotification()
+                ],
+              )),
               Tab(child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text('친구신청'),
                   SizedBox(width: 10.0),
-                  StreamBuilder<QuerySnapshot>(
-                    stream: sl.get<FirebaseAPI>().getFirestore()
-                      .collection(firestoreUsersCollection).document(sl.get<CurrentUser>().uid)
-                      .collection(firestoreFriendsSubCollection).where(firestoreFriendsField, isEqualTo: false)
-                      .snapshots(),
-                    builder: (context, snapshot){
-                      if(snapshot.hasData && snapshot.data.documents.isNotEmpty){
-                        if(HomeAPI.friendsRequestListLength>snapshot.data.documents.length) {
-                          HomeAPI.friendsRequestListLength = snapshot.data.documents.length;
-                          return Container();
-                        }
-                        HomeAPI.friendsRequestListLength = snapshot.data.documents.length;
-                        return Container(
-                          padding: EdgeInsets.all(8.0),
-                          decoration: BoxDecoration(
-                            color: Colors.red,
-                            shape: BoxShape.circle
-                          ),
-                          child: Text('${snapshot.data.documentChanges.length}')
-                        );
-                      }
-                      return Container();
-                    },
-                  )
+                  _buildFriendsRequestNotification()
                 ],
               ))
             ],
