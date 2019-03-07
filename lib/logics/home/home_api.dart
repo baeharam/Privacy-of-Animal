@@ -53,7 +53,7 @@ class HomeAPI {
         }
         friendsListLength = snapshot.documents.length;
         if(sl.get<CurrentUser>().friendsNotification) {
-          sl.get<NotificationHelper>().showFriendsRequestNotification(snapshot);
+          sl.get<NotificationHelper>().showFriendsNotification(snapshot);
         }
       }
     });
