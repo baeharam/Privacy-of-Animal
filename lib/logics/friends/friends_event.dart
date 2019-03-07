@@ -35,3 +35,5 @@ class FriendsEventRequestReject extends FriendsEvent {
   final String user;
   FriendsEventRequestReject({@required this.user});
 }
+
+class FriendsEventFriendsAccepted extends FriendsEvent {}

@@ -18,6 +18,8 @@ class FriendsState extends BlocState {
   final bool isFriendsRejectSucceeded;
   final bool isFriendsRejectFailed;
 
+  final bool isFriendsAcceptedNotification;
+
   final List<DocumentSnapshot> friends;
   final List<DocumentSnapshot> friendsRequest;
   final String chatRoomID;
@@ -40,10 +42,12 @@ class FriendsState extends BlocState {
     this.isFriendsRejectSucceeded: false,
     this.isFriendsRejectFailed: false,
 
+    this.isFriendsAcceptedNotification: false,
+
     this.friends,
     this.friendsRequest,
     this.chatRoomID: '',
-    this.receiver
+    this.receiver,
   });
 
   factory FriendsState.initial() {
@@ -131,6 +135,12 @@ class FriendsState extends BlocState {
   factory FriendsState.friendsRejectFailed() {
     return FriendsState(
       isFriendsRejectFailed: true
+    );
+  }
+
+  factory FriendsState.friendsAcceptedNotify() {
+    return FriendsState(
+      isFriendsAcceptedNotification: true
     );
   }
   

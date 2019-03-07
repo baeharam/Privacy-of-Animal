@@ -6,6 +6,8 @@ import 'package:privacy_of_animal/resources/strings.dart';
 
 class FriendsAPI {
 
+  bool isFriendsScreenReset = false;
+
   // 친구정보 가져오기
   Future<List<DocumentSnapshot>> fetchFriendsList(List<dynamic> friends) async {
     List<DocumentSnapshot> friendsList = List<DocumentSnapshot>();
@@ -54,6 +56,9 @@ class FriendsAPI {
     batch.delete(userToBlockDoc);
 
     await batch.commit();
+    if(sl.get<CurrentUser>().friendsListLength!=0) {
+      sl.get<CurrentUser>().friendsListLength--;
+    }
   }
 
   // 친구신청 수락하기

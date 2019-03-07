@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/database_helper.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
+import 'package:privacy_of_animal/logics/friends/friends.dart';
 import 'package:privacy_of_animal/logics/notification_helper.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
@@ -13,8 +14,6 @@ class HomeAPI {
 
   static Stream<QuerySnapshot> friendsRequestStream = Stream.empty();
   static Stream<QuerySnapshot> friendsStream = Stream.empty();
-  static int friendsRequestListLength = -1;
-  static int friendsListLength = 0;
 
   void setFriendsNotification() {
     _addListenerToFriendsRequest();
@@ -55,6 +54,7 @@ class HomeAPI {
     });
   }
 
+
   void _addListenerToFriends() {
     friendsStream = sl.get<FirebaseAPI>().getFirestore()
       .collection(firestoreUsersCollection).document(sl.get<CurrentUser>().uid)
@@ -63,14 +63,19 @@ class HomeAPI {
       .where(firestoreFriendsAccepted, isEqualTo: true)
       .snapshots();
     friendsStream.listen((snapshot){
-      if(snapshot.documents.isNotEmpty){
-        if(friendsListLength>=snapshot.documents.length){
-          friendsListLength = snapshot.documents.length;
+      if(snapshot.documents.isNotEmpty && snapshot.documentChanges.isNotEmpty){
+        if(sl.get<CurrentUser>().friendsListLength==-1) {
+          sl.get<CurrentUser>().friendsListLength = snapshot.documents.length;
         }
-        friendsListLength = snapshot.documents.length;
-        if(sl.get<CurrentUser>().friendsNotification) {
-          sl.get<NotificationHelper>().showFriendsNotification(snapshot);
-        }
+        else if(snapshot.documentChanges.length==1
+          && sl.get<CurrentUser>().friendsListLength < snapshot.documents.length
+          && sl.get<CurrentUser>().friendsNotification) {
+            sl.get<CurrentUser>().friendsListLength =snapshot.documents.length;
+            FriendsBloc.api.isFriendsScreenReset = true;
+            sl.get<NotificationHelper>().showFriendsNotification(snapshot);
+          }
+      } else {
+        sl.get<CurrentUser>().friendsListLength = 0;
       }
     });
   }

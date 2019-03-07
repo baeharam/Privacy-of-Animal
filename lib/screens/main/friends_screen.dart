@@ -4,7 +4,6 @@ import 'package:privacy_of_animal/bloc_helpers/bloc_event_state_builder.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/logics/friends/friends.dart';
-import 'package:privacy_of_animal/logics/home/home_api.dart';
 import 'package:privacy_of_animal/logics/notification/notification.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/screens/main/friends_chat_screen.dart';
@@ -97,34 +96,18 @@ class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProvider
   }
 
   Widget _buildFriendsNotification() {
-    return StreamBuilder<QuerySnapshot>(
-      stream: sl.get<FirebaseAPI>().getFirestore()
-        .collection(firestoreUsersCollection).document(sl.get<CurrentUser>().uid)
-        .collection(firestoreFriendsSubCollection)
-        .where(firestoreFriendsField, isEqualTo: true)
-        .where(firestoreFriendsAccepted, isEqualTo: true)
-        .snapshots(),
-      builder: (context, snapshot){
-        if(snapshot.hasData 
-          && snapshot.data.documents.isNotEmpty
-          && snapshot.data.documentChanges.isNotEmpty){
-          if(HomeAPI.friendsListLength>=snapshot.data.documents.length) {
-            HomeAPI.friendsListLength = snapshot.data.documents.length;
-            return Container();
-          }
-          HomeAPI.friendsListLength = snapshot.data.documents.length;
-          return Container(
-            padding: EdgeInsets.all(8.0),
-            decoration: BoxDecoration(
-              color: Colors.red,
-              shape: BoxShape.circle
-            ),
-            child: Text('${snapshot.data.documentChanges.length}')
-          );
-        }
-        return Container();
-      },
-    );
+    if(FriendsBloc.api.isFriendsScreenReset) {
+      return Container(
+        padding: EdgeInsets.all(8.0),
+        decoration: BoxDecoration(
+          color: Colors.red,
+          shape: BoxShape.circle
+        ),
+        child: Text(sl.get<CurrentUser>().friendsListLength.toString())
+      );
+    } else {
+      return Container();
+    }
   }
 
   @override
