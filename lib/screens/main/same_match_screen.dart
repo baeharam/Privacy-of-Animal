@@ -22,6 +22,7 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
 
   final SameMatchBloc sameMatchBloc = sl.get<SameMatchBloc>();
   SameMatchModel sameMatchModel;
+  bool isSnackbarAppeared = false;
 
   Stream<QuerySnapshot> _getFriendsStream() {
     // 친구신청을 보냈는지 판단하는 Stream
@@ -151,14 +152,6 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
             streamSnackbar(context,'데이터를 불러오는데 실패했습니다.');
             sameMatchBloc.emitEvent(SameMatchEventStateClear());
           }
-          if(state.isRequestSucceeded){
-            streamSnackbar(context,'친구신청에 성공했습니다.');
-            sameMatchBloc.emitEvent(SameMatchEventStateClear());
-          }
-          if(state.isRequestFailed){
-            streamSnackbar(context,'친구신청에 실패했습니다.');
-            sameMatchBloc.emitEvent(SameMatchEventStateClear());
-          }
           if(state.isFindSucceeded) {
             if(state.sameMatchModel.tagTitle==null){
               return Center(child: Text('아직까지 맞는 상대가 없습니다.'));
@@ -263,21 +256,26 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
                 StreamBuilder<QuerySnapshot>(
                   stream: _getFriendsStream(),
                   builder: (context, snapshot){
-                    if(snapshot.hasData && snapshot.data.documents.length>0){
-                      return Padding(
-                        padding: EdgeInsets.only(top: 10.0),
-                        child: Text(
-                          '친구신청 승인 대기중이거나 이미 친구입니다.',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold
-                          ),
-                        ),
-                      );
-                    }
                     return BlocBuilder(
                       bloc: sameMatchBloc,
                       builder: (context,SameMatchState state){
+                        if(state.isRequestSucceeded && !isSnackbarAppeared) {
+                          streamSnackbar(context,'친구신청에 성공했습니다.');
+                          isSnackbarAppeared = true;
+                        }
+                        if(state.isRequestSucceeded ||
+                          (snapshot.hasData && snapshot.data.documents.length>0)){
+                          return Padding(
+                            padding: EdgeInsets.only(top: 10.0),
+                            child: Text(
+                              '친구신청 승인 대기중이거나 이미 친구입니다.',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold
+                              ),
+                            ),
+                          );
+                        }
                         if(state.isRequestLoading) {
                           return CircularProgressIndicator();
                         }
