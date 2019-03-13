@@ -1,40 +1,33 @@
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state.dart';
-import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/home/home.dart';
-import 'package:privacy_of_animal/utils/service_locator.dart';
 
 class HomeBloc extends BlocEventStateBase<HomeEvent,HomeState> {
 
-  final HomeAPI _api = HomeAPI();
+  static final HomeAPI _api = HomeAPI();
 
   @override
     HomeState get initialState => HomeState.loading(3);
 
   @override
   Stream<HomeState> eventHandler(HomeEvent event, HomeState currentState) async*{
-    if(event is HomeEventSetFriendsRequestNotification) {
-      _api.setFriendsNotification();
-    }
     if(event is HomeEventNavigate) {
-      if(event.index==0){
+      if(event.index==TAB.MATCH.index){
         yield HomeState.match(event.index);
       }
-      else if(event.index==1){
+      else if(event.index==TAB.CHAT.index){
         yield HomeState.chat(event.index);
       }
-      else if(event.index==2){
+      else if(event.index==TAB.FRIENDS.index){
         yield HomeState.friend(event.index);
       }
-      else if(event.index==3){
-        if(sl.get<CurrentUser>().isDataFetched==false){
-          yield HomeState.loading(3);
-          FETCH_RESULT result = await _api.fetchUserData();
-          if(result == FETCH_RESULT.SUCCESS){
-            yield HomeState.profile(event.index);
-          }
-        }
-        else {
+      else if(event.index==TAB.PROFILE.index){
+        yield HomeState.loading(event.index);
+        try {
+          await _api.fetchUserData();
           yield HomeState.profile(event.index);
+        } catch(exception) {
+          print('사용자 데이터 가져오기 에러: ${exception.toString()}');
+          yield HomeState.failed();
         }
       }
     }

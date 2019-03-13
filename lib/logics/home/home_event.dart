@@ -10,5 +10,3 @@ class HomeEventNavigate extends HomeEvent{
     this.index
   });
 }
-
-class HomeEventSetFriendsRequestNotification extends HomeEvent {}

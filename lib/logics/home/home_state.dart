@@ -6,7 +6,9 @@ class HomeState extends BlocState {
   final bool isChatClicked;
   final bool isFriendClicked;
   final bool isProfileClicked;
-  final bool isLoading;
+  final bool isFetchLoading;
+  final bool isFetchFailed;
+
   final int activeIndex;
 
   HomeState({
@@ -14,7 +16,8 @@ class HomeState extends BlocState {
     this.isChatClicked: false,
     this.isFriendClicked: false,
     this.isProfileClicked: false,
-    this.isLoading: false,
+    this.isFetchLoading: false,
+    this.isFetchFailed: false,
     this.activeIndex: 0
   });
 
@@ -48,8 +51,10 @@ class HomeState extends BlocState {
 
   factory HomeState.loading(int index) {
     return HomeState(
-      isLoading: true,
+      isFetchLoading: true,
       activeIndex: index
     );
   }
+
+  factory HomeState.failed() => HomeState(isFetchFailed: true);
 }

@@ -14,15 +14,10 @@ class HomeAPI {
   static Stream<QuerySnapshot> friendsRequestStream = Stream.empty();
   static Stream<QuerySnapshot> friendsStream = Stream.empty();
 
-  void setFriendsNotification() {
+  void _setFriendsNotification() {
     _addListenerToFriendsRequest();
     _addListenerToFriends();
   }
-
-  /*
-    친구신청 목록을 스트림으로 듣고 있음
-    현재 친구 신청목록보다 더 많은 신청목록이 있는 경우가 친구신청이 온 경우
-  */
 
   void _addListenerToFriendsRequest() {
     friendsRequestStream = sl.get<FirebaseAPI>().getFirestore()
@@ -31,18 +26,9 @@ class HomeAPI {
       .snapshots();
     friendsRequestStream.listen((snapshot){
       if(snapshot.documents.isNotEmpty && snapshot.documentChanges.isNotEmpty){
-        // 스트림으로 처음 들을 때만 초기화시켜준다.
         if(sl.get<CurrentUser>().friendsRequestListLength==-1) {
           sl.get<CurrentUser>().friendsRequestListLength = snapshot.documents.length;
         }
-
-        /*
-          문서에 변화가 1개만 있어야 친구신청이 와서 알림을 보내줘야 함
-          하지만 예외의 경우가 존재
-          1. 이미 친구신청이 1개 있는 경우
-          2. 친구신청이 처음으로 와서 일반문서의 길이 == 변화문서의 길이인 경우
-          따라서 이 예외처리를 해주어야 한다.
-        */
         else if(snapshot.documentChanges.length==1 
           && sl.get<CurrentUser>().friendsRequestListLength < snapshot.documents.length
           && sl.get<CurrentUser>().friendsNotification) {
@@ -52,7 +38,6 @@ class HomeAPI {
       }
     });
   }
-
 
   void _addListenerToFriends() {
     friendsStream = sl.get<FirebaseAPI>().getFirestore()
@@ -79,69 +64,77 @@ class HomeAPI {
 
 
   // 바로 홈 화면으로 갈 경우 그에 해당하는 데이터를 가져옴
-  Future<FETCH_RESULT> fetchUserData() async {
-    try {
-      await _checkDBAndCallFirestore();
-      String uid = sl.get<CurrentUser>().uid;
-      Database db = await sl.get<DatabaseHelper>().database;
+  Future<void> fetchUserData() async {
+    if(sl.get<CurrentUser>().isDataFetched) { return; }
 
-      // 태그 정보 가져오기
-      List<Map<String,dynamic>> tags = 
-      await db.rawQuery('SELECT * FROM $tagTable WHERE $uidCol="$uid"');
-      sl.get<CurrentUser>().tagListModel.tagTitleList.add(tags[0][tagName1Col]);
-      sl.get<CurrentUser>().tagListModel.tagTitleList.add(tags[0][tagName2Col]);
-      sl.get<CurrentUser>().tagListModel.tagTitleList.add(tags[0][tagName3Col]);
-      sl.get<CurrentUser>().tagListModel.tagTitleList.add(tags[0][tagName4Col]);
-      sl.get<CurrentUser>().tagListModel.tagTitleList.add(tags[0][tagName5Col]);
-      sl.get<CurrentUser>().tagListModel.tagDetailList.add(tags[0][tagDetail1Col]);
-      sl.get<CurrentUser>().tagListModel.tagDetailList.add(tags[0][tagDetail2Col]);
-      sl.get<CurrentUser>().tagListModel.tagDetailList.add(tags[0][tagDetail3Col]);
-      sl.get<CurrentUser>().tagListModel.tagDetailList.add(tags[0][tagDetail4Col]);
-      sl.get<CurrentUser>().tagListModel.tagDetailList.add(tags[0][tagDetail5Col]);
+    await _checkDBAndCallFirestore();
+    String uid = sl.get<CurrentUser>().uid;
+    Database db = await sl.get<DatabaseHelper>().database;
 
-      // 실제 프로필 정보 가져오기
-      List<Map<String,dynamic>> realProfile = 
-      await db.rawQuery('SELECT * FROM $realProfileTable WHERE $uidCol="$uid"');
-      sl.get<CurrentUser>().realProfileModel.name = realProfile[0][nameCol];
-      sl.get<CurrentUser>().realProfileModel.age = realProfile[0][ageCol];
-      sl.get<CurrentUser>().realProfileModel.gender = realProfile[0][genderCol];
-      sl.get<CurrentUser>().realProfileModel.job = realProfile[0][jobCol];
+    // 태그 정보 가져오기
+    var tags = await db.rawQuery('SELECT * FROM $tagTable WHERE $uidCol="$uid"');
+    _setTagData(tags);
 
-      // 가상 프로필 정보 가져오기
-      List<Map<String,dynamic>> fakeProfile = 
-      await db.rawQuery('SELECT * FROM $fakeProfileTable WHERE $uidCol="$uid"');
-      sl.get<CurrentUser>().fakeProfileModel.nickName = fakeProfile[0][nickNameCol];
-      sl.get<CurrentUser>().fakeProfileModel.age = fakeProfile[0][fakeAgeCol];
-      sl.get<CurrentUser>().fakeProfileModel.gender = fakeProfile[0][fakeGenderCol];
-      sl.get<CurrentUser>().fakeProfileModel.emotion = fakeProfile[0][fakeEmotionCol];
-      sl.get<CurrentUser>().fakeProfileModel.ageConfidence = fakeProfile[0][fakeAgeConfidenceCol];
-      sl.get<CurrentUser>().fakeProfileModel.genderConfidence = fakeProfile[0][fakeGenderConfidenceCol];
-      sl.get<CurrentUser>().fakeProfileModel.emotionConfidence = fakeProfile[0][fakeEmotionConfidenceCol];
-      sl.get<CurrentUser>().fakeProfileModel.animalName = fakeProfile[0][animalNameCol];
-      sl.get<CurrentUser>().fakeProfileModel.animalImage = fakeProfile[0][animalImageCol];
-      sl.get<CurrentUser>().fakeProfileModel.animalConfidence = fakeProfile[0][animalConfidenceCol];
-      sl.get<CurrentUser>().fakeProfileModel.celebrity = fakeProfile[0][celebrityCol];
-      sl.get<CurrentUser>().fakeProfileModel.celebrityConfidence = fakeProfile[0][celebrityConfidenceCol];
-      sl.get<CurrentUser>().fakeProfileModel.analyzedTime = fakeProfile[0][analyzedTimeCol];
+    // 실제 프로필 정보 가져오기
+    var realProfile = await db.rawQuery('SELECT * FROM $realProfileTable WHERE $uidCol="$uid"');
+    _setRealProfile(realProfile);
 
-      // 알림 설정 가져오기
-      SharedPreferences prefs = await sl.get<DatabaseHelper>().sharedPreferences;
-      if(prefs.getBool(friendsNotification)==null){
-        prefs.setBool(friendsNotification, false);
-        sl.get<CurrentUser>().friendsNotification = false;
-      } else {
-        sl.get<CurrentUser>().friendsNotification = prefs.getBool(friendsNotification);
-      }
+    // 가상 프로필 정보 가져오기
+    var fakeProfile = await db.rawQuery('SELECT * FROM $fakeProfileTable WHERE $uidCol="$uid"');
+    _setFakeProfile(fakeProfile);
 
-      sl.get<CurrentUser>().friendsList = [];
-      sl.get<CurrentUser>().friendsRequestList = [];
+    // 알림 설정 가져오기
+    await _setNotification(uid);
+    _setFriendsNotification();
 
-      // 데이터 가져왔다고 설정
-      sl.get<CurrentUser>().isDataFetched = true;
-    } catch(exception) {
-      return FETCH_RESULT.FAILURE;
+    // 데이터 가져왔다고 설정
+    sl.get<CurrentUser>().isDataFetched = true;
+  }
+
+  void _setTagData(List<Map<String,dynamic>> tags) {
+    sl.get<CurrentUser>().tagListModel.tagTitleList.add(tags[0][tagName1Col]);
+    sl.get<CurrentUser>().tagListModel.tagTitleList.add(tags[0][tagName2Col]);
+    sl.get<CurrentUser>().tagListModel.tagTitleList.add(tags[0][tagName3Col]);
+    sl.get<CurrentUser>().tagListModel.tagTitleList.add(tags[0][tagName4Col]);
+    sl.get<CurrentUser>().tagListModel.tagTitleList.add(tags[0][tagName5Col]);
+    sl.get<CurrentUser>().tagListModel.tagDetailList.add(tags[0][tagDetail1Col]);
+    sl.get<CurrentUser>().tagListModel.tagDetailList.add(tags[0][tagDetail2Col]);
+    sl.get<CurrentUser>().tagListModel.tagDetailList.add(tags[0][tagDetail3Col]);
+    sl.get<CurrentUser>().tagListModel.tagDetailList.add(tags[0][tagDetail4Col]);
+    sl.get<CurrentUser>().tagListModel.tagDetailList.add(tags[0][tagDetail5Col]);
+  }
+
+  void _setRealProfile(List<Map<String,dynamic>> realProfile) {
+    sl.get<CurrentUser>().realProfileModel.name = realProfile[0][nameCol];
+    sl.get<CurrentUser>().realProfileModel.age = realProfile[0][ageCol];
+    sl.get<CurrentUser>().realProfileModel.gender = realProfile[0][genderCol];
+    sl.get<CurrentUser>().realProfileModel.job = realProfile[0][jobCol];
+  }
+
+  void _setFakeProfile(List<Map<String,dynamic>> fakeProfile) {
+    sl.get<CurrentUser>().fakeProfileModel.nickName = fakeProfile[0][nickNameCol];
+    sl.get<CurrentUser>().fakeProfileModel.age = fakeProfile[0][fakeAgeCol];
+    sl.get<CurrentUser>().fakeProfileModel.gender = fakeProfile[0][fakeGenderCol];
+    sl.get<CurrentUser>().fakeProfileModel.emotion = fakeProfile[0][fakeEmotionCol];
+    sl.get<CurrentUser>().fakeProfileModel.ageConfidence = fakeProfile[0][fakeAgeConfidenceCol];
+    sl.get<CurrentUser>().fakeProfileModel.genderConfidence = fakeProfile[0][fakeGenderConfidenceCol];
+    sl.get<CurrentUser>().fakeProfileModel.emotionConfidence = fakeProfile[0][fakeEmotionConfidenceCol];
+    sl.get<CurrentUser>().fakeProfileModel.animalName = fakeProfile[0][animalNameCol];
+    sl.get<CurrentUser>().fakeProfileModel.animalImage = fakeProfile[0][animalImageCol];
+    sl.get<CurrentUser>().fakeProfileModel.animalConfidence = fakeProfile[0][animalConfidenceCol];
+    sl.get<CurrentUser>().fakeProfileModel.celebrity = fakeProfile[0][celebrityCol];
+    sl.get<CurrentUser>().fakeProfileModel.celebrityConfidence = fakeProfile[0][celebrityConfidenceCol];
+    sl.get<CurrentUser>().fakeProfileModel.analyzedTime = fakeProfile[0][analyzedTimeCol];
+  }
+
+  Future<void> _setNotification(String uid) async{
+    SharedPreferences prefs = await sl.get<DatabaseHelper>().sharedPreferences;
+    if(prefs.getBool(uid+friendsNotification)==null){
+      prefs.setBool(uid+friendsNotification, false);
+      sl.get<CurrentUser>().friendsNotification = false;
+    } else {
+      sl.get<CurrentUser>().friendsNotification = prefs.getBool(uid+friendsNotification);
     }
-    return FETCH_RESULT.SUCCESS;
   }
 
   // 로컬 DB체크한 후에 없으면 서버에서 가져옴
@@ -211,7 +204,9 @@ class HomeAPI {
   }
 }
 
-enum FETCH_RESULT {
-  SUCCESS,
-  FAILURE
+enum TAB {
+  MATCH,
+  CHAT,
+  FRIENDS,
+  PROFILE
 }
