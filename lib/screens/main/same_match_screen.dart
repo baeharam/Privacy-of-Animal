@@ -24,14 +24,11 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
   SameMatchModel sameMatchModel;
   bool isSnackbarAppeared = false;
 
-  Stream<QuerySnapshot> _getFriendsStream() {
-    // 친구신청을 보냈는지 판단하는 Stream
-    Stream<QuerySnapshot> requestStreamTo = sl.get<FirebaseAPI>().getFirestore()
-      .collection(firestoreUsersCollection)
-      .document(sameMatchModel.userInfo.documentID)
-      .collection(firestoreFriendsSubCollection)
-      .where(uidCol, isEqualTo: sl.get<CurrentUser>().uid)
-      .where(firestoreFriendsField, isEqualTo: false).snapshots();
+  bool isFriendsRequestReceived = false;
+  bool isFriendsRequestSent = false;
+  bool isFriends = false;
+
+  Stream<bool> _getFriendsStream() {
 
     // 친구신청을 받았는지 판단하는 Stream
     Stream<QuerySnapshot> requestStreamFrom = sl.get<FirebaseAPI>().getFirestore()
@@ -49,12 +46,9 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
       .where(uidCol, isEqualTo: sl.get<CurrentUser>().uid)
       .where(firestoreFriendsField, isEqualTo: true).snapshots();
 
-    return Observable.combineLatest3(requestStreamTo, friendsStream, requestStreamFrom,(s1,s2, s3){
-      if(s1.documents.isNotEmpty || s2.documents.isNotEmpty || s3.documents.isNotEmpty){
-        return s1.documents.isNotEmpty ? s1 : (s2.documents.isNotEmpty ? s2 : s3);
-      } else {
-        return s1;
-      }
+    return Observable.combineLatest2(friendsStream, requestStreamFrom,(s1,s2){
+      return (s1.documents.isNotEmpty || s2.documents.isNotEmpty)
+      ? true : false;
     });
   }
 
@@ -118,6 +112,23 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
           fontWeight: FontWeight.bold
         ),
       ),
+    );
+  }
+
+  Widget _buildButton({Color color, String title, Function onPressed}) {
+    return RaisedButton(
+      color: color,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+      child: Text(
+        title,
+        style: TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+          fontSize: 15.0
+        ),
+      ),
+      elevation: 5.0,
+      onPressed: onPressed
     );
   }
 
@@ -235,25 +246,17 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
                     _buildProfileInfo(sameMatchModel.gender)
                   ],
                 ),
-                SizedBox(height: 10.0),
-                RaisedButton(
-                  color: Color(0xFFff647f),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
-                  child: Text(
-                    '★ 프로필 보기',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold
-                    ),
-                  ),
-                  elevation: 5.0,
+                SizedBox(height: 20.0),
+                _buildButton(
+                  color: sameMatchRedColor,
+                  title: '★ 프로필 보기',
                   onPressed: () => WidgetsBinding.instance.addPostFrameCallback((_){
                     Navigator.push(context, MaterialPageRoute(
                       builder: (context) => OtherProfileScreen(user:sameMatchModel.userInfo)
                     ));
-                  }),
+                  })
                 ),
-                StreamBuilder<QuerySnapshot>(
+                StreamBuilder<bool>(
                   stream: _getFriendsStream(),
                   builder: (context, snapshot){
                     return BlocBuilder(
@@ -263,8 +266,7 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
                           streamSnackbar(context,'친구신청에 성공했습니다.');
                           isSnackbarAppeared = true;
                         }
-                        if(state.isRequestSucceeded ||
-                          (snapshot.hasData && snapshot.data.documents.length>0)){
+                        if(snapshot.hasData && snapshot.data){
                           return Padding(
                             padding: EdgeInsets.only(top: 10.0),
                             child: Text(
@@ -276,27 +278,38 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
                             ),
                           );
                         }
-                        if(state.isRequestLoading) {
-                          return CircularProgressIndicator();
-                        }
                         if(state.isRequestFailed) {
                           streamSnackbar(context, '친구신청에 실패했습니다.');
                           sameMatchBloc.emitEvent(SameMatchEventStateClear());
                         }
-                        return RaisedButton(
-                          color: primaryBlue,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
-                          child: Text(
-                            '친구 신청하기',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold
-                            ),
-                          ),
-                          elevation: 5.0,
-                          onPressed: () => sameMatchBloc
-                            .emitEvent(SameMatchEventSendRequest(
-                              uid: sameMatchModel.userInfo.documentID)),
+                        return StreamBuilder<QuerySnapshot>(
+                          stream: sl.get<FirebaseAPI>().getFirestore()
+                            .collection(firestoreUsersCollection)
+                            .document(sameMatchModel.userInfo.documentID)
+                            .collection(firestoreFriendsSubCollection)
+                            .where(uidCol, isEqualTo: sl.get<CurrentUser>().uid)
+                            .where(firestoreFriendsField, isEqualTo: false).snapshots(),
+                          builder: (context, snapshot2){
+                            if(snapshot2.hasData && snapshot2.data.documents.isNotEmpty){
+                              isSnackbarAppeared = false;
+                              sameMatchBloc.emitEvent(SameMatchEventStateClear());
+                              return _buildButton(
+                                color: primaryGreen,
+                                title: '친구 신청취소',
+                                onPressed: (){}
+                              );
+                            }
+                            if(state.isRequestLoading || state.isRequestSucceeded) {
+                              return CircularProgressIndicator();
+                            }
+                            return _buildButton( 
+                              color: primaryBlue,
+                              title: '친구 신청하기',
+                              onPressed: () => sameMatchBloc
+                                .emitEvent(SameMatchEventSendRequest(
+                                  uid: sameMatchModel.userInfo.documentID))
+                            );
+                          }
                         );
                       }
                     );

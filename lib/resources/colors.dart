@@ -6,3 +6,4 @@ const Color primaryBlue = Color(0xFF3F4FA5);
 const Color primaryBeige = Color(0xFFFFE5A8);
 const Color primaryGrey = Color(0xFFFBF8F8);
 const Color introButtonTextColor = Color(0xFF3F4FA5);
+const Color sameMatchRedColor = Color(0xFFff647f);
