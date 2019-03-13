@@ -220,6 +220,7 @@ class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProvider
             }
             if(state.isFriendsFetchSucceeded) {
               sl.get<CurrentUser>().friendsList = state.friends;
+              friendsBloc.emitEvent(FriendsEventStateClear());
             }
             if(sl.get<CurrentUser>().friendsList.length!=0) {
               return ListView.builder(

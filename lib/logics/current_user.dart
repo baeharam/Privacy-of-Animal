@@ -24,7 +24,7 @@ class CurrentUser {
   void clear() {
     uid = '';
     realProfileModel = RealProfileModel();
-    tagListModel = TagListModel(tagTitleList: List<String>(), tagDetailList: List<String>());
+    tagListModel = TagListModel(tagTitleList: [], tagDetailList: []);
     fakeProfileModel = FakeProfileModel();
 
     friendsList = friendsRequestList = [];

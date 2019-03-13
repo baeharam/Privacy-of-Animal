@@ -133,6 +133,9 @@ class HomeAPI {
         sl.get<CurrentUser>().friendsNotification = prefs.getBool(friendsNotification);
       }
 
+      sl.get<CurrentUser>().friendsList = [];
+      sl.get<CurrentUser>().friendsRequestList = [];
+
       // 데이터 가져왔다고 설정
       sl.get<CurrentUser>().isDataFetched = true;
     } catch(exception) {
