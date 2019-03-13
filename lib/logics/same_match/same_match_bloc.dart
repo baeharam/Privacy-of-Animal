@@ -41,5 +41,16 @@ class SameMatchBloc extends BlocEventStateBase<SameMatchEvent,SameMatchState>
         yield SameMatchState.requestFailed();
       }
     }
+
+    if(event is SameMatchEventCancelRequest) {
+      try {
+        yield SameMatchState.cancelLoading();
+        await _friendRequestAPI.cancelRequest(event.uid);
+        yield SameMatchState.cancelSucceeded();
+      } catch(exception) {
+        print('친구신청 취소 실패\n${exception.toString()}');
+        yield SameMatchState.cancelFailed();
+      }
+    }
   }
 }

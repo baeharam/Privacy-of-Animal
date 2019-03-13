@@ -20,4 +20,18 @@ class FriendRequestAPI {
     });
   }
 
+  Future<void> cancelRequest(String receiver) async {
+    QuerySnapshot requestSnapshot = await sl.get<FirebaseAPI>().getFirestore()
+      .collection(firestoreUsersCollection)
+      .document(receiver)
+      .collection(firestoreFriendsSubCollection)
+      .where(firestoreFriendsField,isEqualTo: false)
+      .where(firestoreFriendsUID,isEqualTo: sl.get<CurrentUser>().uid)
+      .getDocuments();
+
+    await sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async {
+      await tx.delete(requestSnapshot.documents[0].reference);
+    });
+  }
+
 }

@@ -11,6 +11,10 @@ class SameMatchState extends BlocState {
   final bool isRequestSucceeded;
   final bool isRequestFailed;
 
+  final bool isCancelLoading;
+  final bool isCancelSucceeded;
+  final bool isCancelFailed;
+
   final SameMatchModel sameMatchModel;
 
   SameMatchState({
@@ -21,6 +25,9 @@ class SameMatchState extends BlocState {
     this.isRequestLoading: false,
     this.isRequestSucceeded: false,
     this.isRequestFailed: false,
+    this.isCancelLoading: false,
+    this.isCancelSucceeded: false,
+    this.isCancelFailed: false,
 
     this.sameMatchModel
   });
@@ -67,4 +74,8 @@ class SameMatchState extends BlocState {
       isRequestFailed: true
     );
   }
+
+  factory SameMatchState.cancelLoading() => SameMatchState(isCancelLoading: true);
+  factory SameMatchState.cancelSucceeded() => SameMatchState(isCancelSucceeded: true);
+  factory SameMatchState.cancelFailed() => SameMatchState(isCancelFailed: true);
 }

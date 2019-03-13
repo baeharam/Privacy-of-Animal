@@ -12,3 +12,9 @@ class SameMatchEventSendRequest extends SameMatchEvent {
 
   SameMatchEventSendRequest({@required this.uid});
 }
+
+class SameMatchEventCancelRequest extends SameMatchEvent {
+  final String uid;
+
+  SameMatchEventCancelRequest({@required this.uid});
+}

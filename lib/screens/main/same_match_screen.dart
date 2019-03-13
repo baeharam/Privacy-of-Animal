@@ -266,6 +266,10 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
                           streamSnackbar(context,'친구신청에 성공했습니다.');
                           isSnackbarAppeared = true;
                         }
+                        if(state.isCancelSucceeded && !isSnackbarAppeared) {
+                          streamSnackbar(context, '친구신청을 취소하였습니다.');
+                          isSnackbarAppeared = true;
+                        }
                         if(snapshot.hasData && snapshot.data){
                           return Padding(
                             padding: EdgeInsets.only(top: 10.0),
@@ -291,17 +295,24 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
                             .where(firestoreFriendsField, isEqualTo: false).snapshots(),
                           builder: (context, snapshot2){
                             if(snapshot2.hasData && snapshot2.data.documents.isNotEmpty){
+                              if(state.isCancelLoading || state.isCancelSucceeded) {
+                                return CircularProgressIndicator();
+                              }
                               isSnackbarAppeared = false;
                               sameMatchBloc.emitEvent(SameMatchEventStateClear());
                               return _buildButton(
                                 color: primaryGreen,
                                 title: '친구 신청취소',
-                                onPressed: (){}
+                                onPressed: () => sameMatchBloc
+                                .emitEvent(SameMatchEventCancelRequest(
+                                  uid: sameMatchModel.userInfo.documentID))
                               );
                             }
                             if(state.isRequestLoading || state.isRequestSucceeded) {
                               return CircularProgressIndicator();
                             }
+                            isSnackbarAppeared = false;
+                            sameMatchBloc.emitEvent(SameMatchEventStateClear());
                             return _buildButton( 
                               color: primaryBlue,
                               title: '친구 신청하기',
