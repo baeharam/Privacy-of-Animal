@@ -11,18 +11,30 @@ class CurrentUser {
   KakaoMLModel kakaoMLModel;
   FakeProfileModel fakeProfileModel;
 
-  List<DocumentSnapshot> friendsList = List<DocumentSnapshot>();
-  List<DocumentSnapshot> friendsRequestList = List<DocumentSnapshot>();
-  int friendsListLength = -1;
-  int friendsRequestListLength = -1;
+  List<DocumentSnapshot> friendsList;
+  List<DocumentSnapshot> friendsRequestList;
+  int friendsListLength;
+  int friendsRequestListLength;
 
   bool friendsNotification;
   bool messageNotification;
 
-  bool isDataFetched = false;
+  bool isDataFetched;
 
-  CurrentUser() : 
-    realProfileModel = RealProfileModel(), 
-    tagListModel = TagListModel(tagTitleList: List<String>(), tagDetailList: List<String>()),
+  void clear() {
+    uid = '';
+    realProfileModel = RealProfileModel();
+    tagListModel = TagListModel(tagTitleList: List<String>(), tagDetailList: List<String>());
     fakeProfileModel = FakeProfileModel();
+
+    friendsList = friendsRequestList = [];
+    friendsListLength =friendsRequestListLength = -1;
+
+    friendsNotification =messageNotification = false;
+    isDataFetched = false;
+  }
+
+  CurrentUser() {
+    clear();
+  }
 }

@@ -3,7 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/database_helper.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
-import 'package:privacy_of_animal/logics/friends/friends.dart';
 import 'package:privacy_of_animal/logics/notification_helper.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
@@ -70,8 +69,6 @@ class HomeAPI {
         else if(snapshot.documentChanges.length==1
           && sl.get<CurrentUser>().friendsListLength < snapshot.documents.length
           && sl.get<CurrentUser>().friendsNotification) {
-            sl.get<CurrentUser>().friendsListLength =snapshot.documents.length;
-            FriendsBloc.api.isFriendsScreenReset = true;
             sl.get<NotificationHelper>().showFriendsNotification(snapshot);
           }
       } else {

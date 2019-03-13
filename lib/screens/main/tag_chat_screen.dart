@@ -20,6 +20,7 @@ class TagChatScreen extends StatefulWidget {
 
 class _TagChatScreenState extends State<TagChatScreen> {
 
+  static const int maxChatNum = 13;
   final TagChatBloc _tagChatBloc = sl.get<TagChatBloc>();
   final ScrollController _scrollController = ScrollController();
   List<Widget> chatWidgets = [];
@@ -65,7 +66,7 @@ class _TagChatScreenState extends State<TagChatScreen> {
               chatWidgets.add(TagChatNPC(isBegin: true, message: state.npcChat));
               _tagChatBloc.emitEvent(TagChatEventStateClear());
             }
-            if(state.isUserChatFinished) {
+            if(state.isUserChatFinished && chatWidgets.length<maxChatNum) {
               chatWidgets.add(TagChatUser(message: state.userChat));
               _tagChatBloc.emitEvent(TagChatEventStateClear());
             }

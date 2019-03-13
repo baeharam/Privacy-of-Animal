@@ -78,9 +78,6 @@ class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProvider
         .snapshots(),
       builder: (context, snapshot){
         if(snapshot.hasData && snapshot.data.documents.isNotEmpty){
-          if(snapshot.data.documents.length==0) {
-            return Container();
-          }
           return Container(
             padding: EdgeInsets.all(8.0),
             decoration: BoxDecoration(
@@ -96,18 +93,31 @@ class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProvider
   }
 
   Widget _buildFriendsNotification() {
-    if(FriendsBloc.api.isFriendsScreenReset) {
-      return Container(
-        padding: EdgeInsets.all(8.0),
-        decoration: BoxDecoration(
-          color: Colors.red,
-          shape: BoxShape.circle
-        ),
-        child: Text(sl.get<CurrentUser>().friendsListLength.toString())
-      );
-    } else {
-      return Container();
-    }
+    return StreamBuilder<QuerySnapshot>(
+      stream: sl.get<FirebaseAPI>().getFirestore()
+        .collection(firestoreUsersCollection).document(sl.get<CurrentUser>().uid)
+        .collection(firestoreFriendsSubCollection)
+        .where(firestoreFriendsField, isEqualTo: true)
+        .where(firestoreFriendsAccepted, isEqualTo: true)
+        .snapshots(),
+      builder: (context, snapshot){
+        if(snapshot.hasData && snapshot.data.documents.isNotEmpty){
+          if(sl.get<CurrentUser>().friendsListLength < snapshot.data.documents.length) {
+            int newFriends = snapshot.data.documents.length - sl.get<CurrentUser>().friendsListLength;
+            sl.get<CurrentUser>().friendsListLength = snapshot.data.documents.length;
+            return Container(
+              padding: EdgeInsets.all(8.0),
+              decoration: BoxDecoration(
+                color: Colors.red,
+                shape: BoxShape.circle
+              ),
+              child: Text('$newFriends')
+            ); 
+          }
+        }
+        return Container();
+      },
+    );
   }
 
   @override
