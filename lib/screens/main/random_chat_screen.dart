@@ -29,6 +29,7 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
   final ScrollController scrollController = ScrollController();
   final TextEditingController messageController = TextEditingController();
   final FocusNode messageFocusNode = FocusNode();
+  final GlobalKey<ScaffoldState> scaffoldKey =GlobalKey<ScaffoldState>();
 
   final RandomChatBloc randomChatBloc = sl.get<RandomChatBloc>();
   final RandomLoadingBloc randomLoadingBloc = sl.get<RandomLoadingBloc>();
@@ -55,6 +56,7 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: scaffoldKey,
       appBar: AppBar(
         title: Text(
           '채팅',
@@ -110,6 +112,7 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
                       return ListView.builder(
                         padding: EdgeInsets.all(10.0),
                         itemBuilder: (context,index) {
+                          print('message:'+ messages.length.toString());
                           if(index==messages.length){
                             return state.sendingMessage.isNotEmpty ?
                             _buildMyMessage(index, state.sendingMessage, state.sendingTimestamp)
@@ -117,7 +120,7 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
                           }
                           return _buildMessage(index,messages[index]);
                         },
-                        itemCount: messages.length+1,
+                        itemCount: messages.length+1  ,
                         reverse: true,
                         controller: scrollController,
                       );
@@ -168,14 +171,21 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
                         child: IconButton(
                           icon: Icon(Icons.send),
                           onPressed: () {
-                            randomChatBloc.emitEvent(
+                            if(messageController.text.isEmpty) {
+                              scaffoldKey.currentState.showSnackBar(SnackBar(
+                                content: Text('메시지를 입력하세요.'),
+                                duration: const Duration(milliseconds: 100),
+                              ));
+                            } else {
+                              randomChatBloc.emitEvent(
                               RandomChatEventMessageSend(
                                 content: messageController.text,
                                 receiver: widget.receiver.documentID,
                                 chatRoomID: widget.chatRoomID
                               ));
                               messageController.clear();
-                            },
+                            }
+                          },
                           color: Colors.black,
                         ),
                       ),

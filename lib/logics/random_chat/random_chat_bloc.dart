@@ -14,7 +14,7 @@ class RandomChatBloc extends BlocEventStateBase<RandomChatEvent,RandomChatState>
   Stream<RandomChatState> eventHandler(RandomChatEvent event, RandomChatState currentState) async*{
     
     if(event is RandomChatEventStateClear) {
-      yield RandomChatState.initial();
+      yield RandomChatState();
     }
 
     if(event is RandomChatEventMessageSend){
