@@ -29,7 +29,7 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
 
   final FriendRequestBloc friendRequestBloc = sl.get<FriendRequestBloc>();
 
-  Stream<QuerySnapshot> _getRequestStream() {
+  Stream<bool> _getRequestStream() {
     Stream<QuerySnapshot> stream1 = sl.get<FirebaseAPI>().getFirestore().collection(firestoreUsersCollection)
       .document(widget.user.uid).collection(firestoreFriendsSubCollection)
       .where(uidCol,isEqualTo:sl.get<CurrentUser>().uid)
@@ -39,11 +39,7 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
       .where(uidCol,isEqualTo:widget.user.uid)
       .where(firestoreFriendsField,isEqualTo: false).snapshots();
     return Observable.combineLatest2(stream1, stream2, (s1,s2){
-      if((s1 as QuerySnapshot).documents.isNotEmpty || (s2 as QuerySnapshot).documents.isNotEmpty){
-        return (s1 as QuerySnapshot).documents.isNotEmpty ? s1 : s2;
-      } else {
-        return s1;
-      }
+      return (s1.documents.isNotEmpty || s2.documents.isNotEmpty) ? true : false;
     });
   }
 
@@ -216,10 +212,10 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
                           ]
                         ),
                         SizedBox(height: 10.0),
-                        StreamBuilder<QuerySnapshot>(
+                        StreamBuilder<bool>(
                           stream: _getRequestStream(),
                           builder: (context, snapshot){
-                            if(snapshot.hasData && snapshot.data.documents.length!=0){
+                            if(snapshot.hasData && snapshot.data){
                               return Text(
                                 '친구신청 승인 대기중입니다.',
                                 style: TextStyle(
