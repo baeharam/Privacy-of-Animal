@@ -1,5 +1,5 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:privacy_of_animal/models/user_model.dart';
 
 class ChatListModel {
   String chatRoomID;
@@ -7,7 +7,7 @@ class ChatListModel {
   String nickName;
   String lastMessage;
   Timestamp lastTimestamp;
-  DocumentSnapshot snapshot;
+  UserModel user;
 
   ChatListModel({
     this.chatRoomID,
@@ -15,6 +15,6 @@ class ChatListModel {
     this.nickName,
     this.lastMessage,
     this.lastTimestamp,
-    this.snapshot
+    this.user
   });
 }

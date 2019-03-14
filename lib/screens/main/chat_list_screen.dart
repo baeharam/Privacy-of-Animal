@@ -82,7 +82,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
       == Duration(days: 0) ? true : false;
 
     return Dismissible(
-      key: Key(chatListModel.snapshot.documentID),
+      key: Key(chatListModel.user.uid),
       background: Container(color: Colors.black),
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 10.0,vertical: 10.0),
@@ -102,7 +102,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
                 ),
               ),
               onTap: () => Navigator.push(context, MaterialPageRoute(
-                builder: (context) => OtherProfileScreen(user: chatListModel.snapshot)
+                builder: (context) => OtherProfileScreen(user: chatListModel.user)
               )),
             ),
             SizedBox(width: 20.0),
@@ -143,7 +143,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
                 onTap: () => Navigator.push(context, MaterialPageRoute(
                   builder: (context) => FriendsChatScreen(
                     chatRoomID: chatListModel.chatRoomID,
-                    receiver: chatListModel.snapshot,
+                    receiver: chatListModel.user,
                   )
                 )),
               ),

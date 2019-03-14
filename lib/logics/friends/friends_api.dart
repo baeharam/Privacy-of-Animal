@@ -1,20 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
+import 'package:privacy_of_animal/models/user_model.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
 
 class FriendsAPI {
 
   // 친구정보 가져오기
-  Future<List<DocumentSnapshot>> fetchFriendsList(List<dynamic> friends) async {
-    List<DocumentSnapshot> friendsList = List<DocumentSnapshot>();
+  Future<List<UserModel>> fetchFriendsList(List<dynamic> friends) async {
+    List<UserModel> friendsList = List<UserModel>();
     if(friends.length==0) return friendsList;
     for(var user in friends) {
       DocumentSnapshot userInfo = await sl.get<FirebaseAPI>().getFirestore()
         .collection(firestoreUsersCollection)
         .document((user as DocumentSnapshot).documentID).get();
-      friendsList.add(userInfo);
+      friendsList.add(UserModel.fromSnapshot(snapshot: userInfo));
     }
     return friendsList;
   }

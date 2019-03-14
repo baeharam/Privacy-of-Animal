@@ -1,6 +1,7 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
+
+import 'package:meta/meta.dart';
 
 class FakeProfileModel {
   String animalImage;
@@ -20,7 +21,7 @@ class FakeProfileModel {
 
   int analyzedTime;
 
-  FakeProfileModel.fromSnapshot(DocumentSnapshot snapshot) {
+  FakeProfileModel.fromSnapshot({@required DocumentSnapshot snapshot}) {
     animalImage = snapshot.data[firestoreFakeProfileField][firestoreAnimalImageField];
     animalName = snapshot.data[firestoreFakeProfileField][firestoreAnimalNameField];
     animalConfidence = snapshot.data[firestoreFakeProfileField][firestoreAnimalConfidenceField];

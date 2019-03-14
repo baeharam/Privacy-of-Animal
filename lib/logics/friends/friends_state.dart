@@ -1,5 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state.dart';
+import 'package:privacy_of_animal/models/user_model.dart';
 
 class FriendsState extends BlocState {
   final bool isInitial;
@@ -20,10 +20,10 @@ class FriendsState extends BlocState {
 
   final bool isFriendsAcceptedNotification;
 
-  final List<DocumentSnapshot> friends;
-  final List<DocumentSnapshot> friendsRequest;
+  final List<UserModel> friends;
+  final List<UserModel> friendsRequest;
   final String chatRoomID;
-  final DocumentSnapshot receiver;
+  final UserModel receiver;
 
   FriendsState({
     this.isInitial: false,
@@ -62,7 +62,7 @@ class FriendsState extends BlocState {
     );
   }
 
-  factory FriendsState.friendsFetchSuceeded(List<DocumentSnapshot> friends) {
+  factory FriendsState.friendsFetchSuceeded(List<UserModel> friends) {
     return FriendsState(
       isFriendsFetchSucceeded: true,
       friends: friends
@@ -75,7 +75,7 @@ class FriendsState extends BlocState {
     );
   }
 
-  factory FriendsState.friendsChatSucceeded(String chatRoomID, DocumentSnapshot receiver) {
+  factory FriendsState.friendsChatSucceeded(String chatRoomID, UserModel receiver) {
     return FriendsState(
       isFriendsChatSucceeded: true,
       chatRoomID: chatRoomID,
@@ -101,7 +101,7 @@ class FriendsState extends BlocState {
     );
   }
 
-  factory FriendsState.friendsRequestFetchSucceeded(List<DocumentSnapshot> friendsRequest) {
+  factory FriendsState.friendsRequestFetchSucceeded(List<UserModel> friendsRequest) {
     return FriendsState(
       isFriendsRequestFetchSucceeded: true,
       friendsRequest: friendsRequest

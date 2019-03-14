@@ -5,6 +5,7 @@ import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/logics/friends/friends.dart';
 import 'package:privacy_of_animal/logics/notification/notification.dart';
+import 'package:privacy_of_animal/models/user_model.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/screens/main/friends_chat_screen.dart';
 import 'package:privacy_of_animal/screens/main/other_profile_screen.dart';
@@ -275,7 +276,7 @@ class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProvider
     );
   }
 
-  Widget _buildFriendsItem(DocumentSnapshot user) {
+  Widget _buildFriendsItem(UserModel user) {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 0.0),
@@ -287,7 +288,7 @@ class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProvider
               height: 60.0,
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage(user.data[firestoreFakeProfileField][firestoreAnimalImageField]),
+                  image: AssetImage(user.fakeProfileModel.animalImage),
                   fit: BoxFit.cover
                 ),
                 borderRadius: BorderRadius.circular(5.0)
@@ -303,7 +304,7 @@ class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProvider
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  user.data[firestoreFakeProfileField][firestoreNickNameField],
+                  user.fakeProfileModel.nickName,
                   style: TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.bold,
@@ -312,7 +313,7 @@ class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProvider
                 ),
                 SizedBox(height: 10.0),
                 Text(
-                  user.data[firestoreRealProfileField][firestoreNameField],
+                  user.realProfileModel.name,
                   style: TextStyle(
                     color: Colors.grey,
                     fontWeight: FontWeight.bold,
@@ -357,14 +358,14 @@ class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProvider
                 ),
               ),
             ),
-            onTap: () { _showAlertForBlock(user.documentID); }
+            onTap: () { _showAlertForBlock(user.uid); }
           )
         ],
       ),
     );
   }
 
-  Widget _buildFriendsRequestItem(DocumentSnapshot user) {
+  Widget _buildFriendsRequestItem(UserModel user) {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 0.0),
@@ -376,7 +377,7 @@ class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProvider
               height: 60.0,
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage(user.data[firestoreFakeProfileField][firestoreAnimalImageField]),
+                  image: AssetImage(user.fakeProfileModel.animalImage),
                   fit: BoxFit.cover
                 ),
                 borderRadius: BorderRadius.circular(5.0)
@@ -392,7 +393,7 @@ class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProvider
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  user.data[firestoreFakeProfileField][firestoreNickNameField],
+                  user.fakeProfileModel.nickName,
                   style: TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.bold,
@@ -401,7 +402,7 @@ class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProvider
                 ),
                 SizedBox(height: 10.0),
                 Text(
-                  user.data[firestoreRealProfileField][firestoreNameField],
+                  user.realProfileModel.name,
                   style: TextStyle(
                     color: Colors.grey,
                     fontWeight: FontWeight.bold,
@@ -427,7 +428,7 @@ class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProvider
                 ),
               ),
             ),
-            onTap: () => friendsBloc.emitEvent(FriendsEventRequestAccept(user: user.documentID)),
+            onTap: () => friendsBloc.emitEvent(FriendsEventRequestAccept(user: user.uid)),
           ),
           SizedBox(width: 10.0),
           GestureDetector(
@@ -446,7 +447,7 @@ class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProvider
                 ),
               ),
             ),
-            onTap: () => friendsBloc.emitEvent(FriendsEventRequestReject(user: user.documentID)),
+            onTap: () => friendsBloc.emitEvent(FriendsEventRequestReject(user: user.uid)),
           )
         ],
       ),

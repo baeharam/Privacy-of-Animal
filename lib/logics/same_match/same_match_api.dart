@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/models/same_match_model.dart';
+import 'package:privacy_of_animal/models/user_model.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
 
@@ -122,14 +123,17 @@ class SameMatchAPI {
         int randomIndex = Random().nextInt(tags.length);
         sameMatchModel.tagTitle = tags[randomIndex][0];
         sameMatchModel.tagDetail = tags[randomIndex][1];
-        sameMatchModel.userInfo = matchedPeople[i][index];
-        sameMatchModel.profileImage = sameMatchModel.userInfo.data[firestoreFakeProfileField][firestoreAnimalImageField];
-        sameMatchModel.confidence =sameMatchModel.userInfo.data[firestoreFakeProfileField][firestoreAnimalConfidenceField];
-        sameMatchModel.nickName =sameMatchModel.userInfo.data[firestoreFakeProfileField][firestoreNickNameField];
-        sameMatchModel.age =sameMatchModel.userInfo.data[firestoreFakeProfileField][firestoreFakeAgeField];
-        sameMatchModel.gender =sameMatchModel.userInfo.data[firestoreFakeProfileField][firestoreFakeGenderField];
-        sameMatchModel.emotion =sameMatchModel.userInfo.data[firestoreFakeProfileField][firestoreFakeEmotionField];
-        sameMatchModel.animalName=sameMatchModel.userInfo.data[firestoreFakeProfileField][firestoreAnimalNameField];
+
+        UserModel userInfo = UserModel.fromSnapshot(snapshot: matchedPeople[i][index]);
+
+        sameMatchModel.userInfo = userInfo;
+        sameMatchModel.profileImage = userInfo.fakeProfileModel.animalImage;
+        sameMatchModel.confidence = userInfo.fakeProfileModel.animalConfidence;
+        sameMatchModel.nickName = userInfo.fakeProfileModel.nickName;
+        sameMatchModel.age = userInfo.fakeProfileModel.age;
+        sameMatchModel.gender = userInfo.fakeProfileModel.gender;
+        sameMatchModel.emotion = userInfo.fakeProfileModel.emotion;
+        sameMatchModel.animalName =  userInfo.fakeProfileModel.animalName;
         break;
       }
     }

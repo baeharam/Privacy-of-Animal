@@ -1,8 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:privacy_of_animal/models/fake_profile_model.dart';
 import 'package:privacy_of_animal/models/kakao_ml_model.dart';
 import 'package:privacy_of_animal/models/real_profile_model.dart';
 import 'package:privacy_of_animal/models/tag_list_model.dart';
+import 'package:privacy_of_animal/models/user_model.dart';
 
 class CurrentUser {
   String uid;
@@ -11,8 +11,8 @@ class CurrentUser {
   KakaoMLModel kakaoMLModel;
   FakeProfileModel fakeProfileModel;
 
-  List<DocumentSnapshot> friendsList;
-  List<DocumentSnapshot> friendsRequestList;
+  List<UserModel> friendsList;
+  List<UserModel> friendsRequestList;
   int friendsListLength;
   int friendsRequestListLength;
 

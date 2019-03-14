@@ -1,5 +1,4 @@
-
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:privacy_of_animal/models/user_model.dart';
 
 class SameMatchModel {
   String nickName;
@@ -11,7 +10,7 @@ class SameMatchModel {
   String tagDetail;
   String profileImage;
   double confidence;
-  DocumentSnapshot userInfo;
+  UserModel userInfo;
 
   SameMatchModel({
     this.nickName,

@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/models/chat_list_model.dart';
+import 'package:privacy_of_animal/models/user_model.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
 
@@ -32,7 +33,7 @@ class ChatListAPI {
         nickName: userData.data[firestoreFakeProfileField][firestoreNickNameField],
         lastMessage: chatData.documents[0].data[firestoreChatContentField],
         lastTimestamp: chatData.documents[0].data[firestoreChatTimestampField],
-        snapshot: userData
+        user: UserModel.fromSnapshot(snapshot: userData)
       );
       result.add(chatListModel);
     }

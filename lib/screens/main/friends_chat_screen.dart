@@ -4,6 +4,7 @@ import 'package:privacy_of_animal/bloc_helpers/bloc_event_state_builder.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/logics/friends_chat/friends_chat.dart';
+import 'package:privacy_of_animal/models/user_model.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/screens/main/other_profile_screen.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
@@ -15,7 +16,7 @@ import 'package:intl/date_symbol_data_local.dart';
 class FriendsChatScreen extends StatefulWidget {
 
   final String chatRoomID;
-  final DocumentSnapshot receiver;
+  final UserModel receiver;
 
   FriendsChatScreen({@required this.chatRoomID,@required this.receiver});
 
@@ -144,7 +145,7 @@ class _FriendsChatScreenState extends State<FriendsChatScreen> {
                       else {
                         friendsChatBloc.emitEvent(FriendsChatEventMessageSend(
                           content: messageController.text,
-                          receiver: widget.receiver.documentID,
+                          receiver: widget.receiver.uid,
                           chatRoomID: widget.chatRoomID
                         ));
                         messageController.clear();
@@ -203,7 +204,7 @@ class _FriendsChatScreenState extends State<FriendsChatScreen> {
               GestureDetector(
                 child: CircleAvatar(
                   backgroundImage: _isFirstLeft(index)
-                  ? AssetImage(widget.receiver.data[firestoreFakeProfileField][firestoreAnimalImageField])
+                  ? AssetImage(widget.receiver.fakeProfileModel.animalImage)
                   : null,
                   backgroundColor: Colors.transparent,
                 ),
@@ -213,7 +214,7 @@ class _FriendsChatScreenState extends State<FriendsChatScreen> {
               ),
               Text(
                 _isFirstLeft(index) ? 
-                widget.receiver.data[firestoreFakeProfileField][firestoreNickNameField]
+                widget.receiver.fakeProfileModel.nickName
                 :''
               )
             ],

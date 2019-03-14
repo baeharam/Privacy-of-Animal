@@ -35,13 +35,13 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
       .collection(firestoreUsersCollection)
       .document(sl.get<CurrentUser>().uid)
       .collection(firestoreFriendsSubCollection)
-      .where(uidCol, isEqualTo: sameMatchModel.userInfo.documentID)
+      .where(uidCol, isEqualTo: sameMatchModel.userInfo.uid)
       .where(firestoreFriendsField, isEqualTo: false).snapshots();
 
     // 친구인지 판단하는 Stream
     Stream<QuerySnapshot> friendsStream = sl.get<FirebaseAPI>().getFirestore()
       .collection(firestoreUsersCollection)
-      .document(sameMatchModel.userInfo.documentID)
+      .document(sameMatchModel.userInfo.uid)
       .collection(firestoreFriendsSubCollection)
       .where(uidCol, isEqualTo: sl.get<CurrentUser>().uid)
       .where(firestoreFriendsField, isEqualTo: true).snapshots();
@@ -289,7 +289,7 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
                         return StreamBuilder<QuerySnapshot>(
                           stream: sl.get<FirebaseAPI>().getFirestore()
                             .collection(firestoreUsersCollection)
-                            .document(sameMatchModel.userInfo.documentID)
+                            .document(sameMatchModel.userInfo.uid)
                             .collection(firestoreFriendsSubCollection)
                             .where(uidCol, isEqualTo: sl.get<CurrentUser>().uid)
                             .where(firestoreFriendsField, isEqualTo: false).snapshots(),
@@ -305,7 +305,7 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
                                 title: '친구 신청취소',
                                 onPressed: () => sameMatchBloc
                                 .emitEvent(SameMatchEventCancelRequest(
-                                  uid: sameMatchModel.userInfo.documentID))
+                                  uid: sameMatchModel.userInfo.uid))
                               );
                             }
                             if(state.isRequestLoading || state.isRequestSucceeded) {
@@ -318,7 +318,7 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
                               title: '친구 신청하기',
                               onPressed: () => sameMatchBloc
                                 .emitEvent(SameMatchEventSendRequest(
-                                  uid: sameMatchModel.userInfo.documentID))
+                                  uid: sameMatchModel.userInfo.uid))
                             );
                           }
                         );
