@@ -5,6 +5,7 @@ import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/logics/random_chat/random_chat.dart';
 import 'package:privacy_of_animal/logics/random_loading/random_loading.dart';
+import 'package:privacy_of_animal/models/chat_model.dart';
 import 'package:privacy_of_animal/models/user_model.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/screens/main/other_profile_screen.dart';
@@ -36,7 +37,7 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
   final RandomLoadingBloc randomLoadingBloc = sl.get<RandomLoadingBloc>();
 
   // Cloud Firestore에서 불러와서 저장.
-  List<DocumentSnapshot> messages = List<DocumentSnapshot>();
+  List<ChatModel> messages = List<ChatModel>();
   bool isReceiverOut = false;
 
   @override
@@ -108,7 +109,9 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
                       .snapshots(),
                     builder: (context, AsyncSnapshot<QuerySnapshot> snapshot){
                       if(snapshot.hasData){
-                        messages = snapshot.data.documents;
+                        snapshot.data.documents.map((documentSnapshot){
+                          messages.add(ChatModel.fromSnapshot(snapshot: documentSnapshot));
+                        });
                       }
                       return ListView.builder(
                         padding: EdgeInsets.all(10.0),
@@ -233,10 +236,10 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
     );
   }
 
-  Widget _buildMessage(int index, DocumentSnapshot chatData) {
+  Widget _buildMessage(int index, ChatModel chatData) {
 
     // 내가 보내는 메시지
-    if(chatData.data[firestoreChatFromField] == sl.get<CurrentUser>().uid){
+    if(chatData.fromUID == sl.get<CurrentUser>().uid){
       return Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
@@ -246,13 +249,13 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
             child: Text(
               DateFormat('kk:mm','ko')
                 .format(DateTime.fromMillisecondsSinceEpoch(
-                  (chatData.data[firestoreChatTimestampField] as Timestamp).millisecondsSinceEpoch)),
+                  (chatData.timeStamp as Timestamp).millisecondsSinceEpoch)),
                 style: TextStyle(color: Colors.grey,fontSize: 12.0),
             ),
           ) : Container(),
           Container(
             child: Text(
-              chatData.data[firestoreChatContentField],
+              chatData.content,
               style: TextStyle(
                 color: Colors.white
               ),
@@ -293,7 +296,7 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
           ),
           Container(
             child: Text(
-              chatData.data[firestoreChatContentField],
+              chatData.content,
               style: TextStyle(color: Colors.white),
             ),
             padding: EdgeInsets.fromLTRB(15.0,10.0,15.0,10.0),
@@ -309,7 +312,7 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
             child: Text(
               DateFormat('kk:mm','ko')
                 .format(DateTime.fromMillisecondsSinceEpoch(
-                  (chatData.data[firestoreChatTimestampField] as Timestamp).millisecondsSinceEpoch)),
+                  (chatData.timeStamp as Timestamp).millisecondsSinceEpoch)),
                 style: TextStyle(color: Colors.grey,fontSize: 12.0),
             ),
           ) : Container()
@@ -319,8 +322,7 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
   }
 
   bool _isFirstLeft(int index) {
-    if((index<messages.length-1 && messages!=null && messages[index+1][firestoreChatFromField] 
-      != messages[index][firestoreChatFromField])
+    if((index<messages.length-1 && messages!=null && messages[index+1].fromUID!= messages[index].fromUID)
      || index == messages.length-1) {
        return true;
      } else {
@@ -329,7 +331,7 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
   }
 
   bool _isLastLeft(int index) {
-    if((index>0 && messages!=null && messages[index-1][firestoreChatFromField] == sl.get<CurrentUser>().uid) 
+    if((index>0 && messages!=null && messages[index-1].fromUID == sl.get<CurrentUser>().uid) 
       || index==0){
         return true;
     } else {
@@ -338,7 +340,7 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
   }
 
   bool _isLastRight(int index) {
-    if((index>0 && messages!=null && messages[index-1][firestoreChatToField] == sl.get<CurrentUser>().uid) 
+    if((index>0 && messages!=null && messages[index-1].toUID == sl.get<CurrentUser>().uid) 
       || index==0){
         return true;
     } else {
