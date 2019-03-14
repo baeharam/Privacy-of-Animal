@@ -7,7 +7,7 @@ class ChatListState extends BlocState {
   final bool isSucceeded;
   final bool isFailed;
 
-  final List<ChatListModel> chatList;
+  final ChatListModel chatList;
 
   ChatListState({
     this.isInitial: false,
@@ -29,7 +29,7 @@ class ChatListState extends BlocState {
     );
   }
 
-  factory ChatListState.fetchSucceeded(List<ChatListModel> chatList) {
+  factory ChatListState.fetchSucceeded(ChatListModel chatList) {
     return ChatListState(
       isSucceeded: true,
       chatList: chatList

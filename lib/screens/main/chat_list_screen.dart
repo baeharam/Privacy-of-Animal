@@ -26,6 +26,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
   @override
   void initState() {
     super.initState();
+    chatListBloc.emitEvent(ChatListEventConnectServer());
     initializeDateFormatting('ko');
   }
 
@@ -44,34 +45,12 @@ class _ChatListScreenState extends State<ChatListScreen> {
         elevation: 0.0,
         backgroundColor: primaryBlue,
       ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: sl.get<FirebaseAPI>().getFirestore()
-          .collection(firestoreFriendsMessageCollection)
-          .where('$firestoreChatDeleteField.${sl.get<CurrentUser>().uid}',isEqualTo: false)
-          .snapshots(),
-        builder: (context, snapshot){
-          if(snapshot.hasData && snapshot.data.documents.isNotEmpty){
-            chatListBloc.emitEvent(ChatListEventFetchList(documents: snapshot.data.documents));
-            return BlocBuilder(
-              bloc: chatListBloc,
-              builder: (context, ChatListState state){
-                if(state.isFailed) {
-                  return Center(child: Text('채팅 목록을 불러오는데 실패했습니다.'));
-                }
-                if(state.isSucceeded) {
-                  chatList = state.chatList;
-                  return ListView.builder(
-                    padding: EdgeInsets.all(10.0),
-                    itemCount: chatList.length,
-                    itemBuilder: (context,index) => _buildChatRoom(chatList[index]),
-                  );
-                }
-                return CustomProgressIndicator();
-              }
-            );
-          }
-          return Center(child: Text('채팅이 없습니다.'),);
-        },
+      body: ListView.builder(
+        padding: EdgeInsets.all(10.0),
+        itemCount: chatList.length,
+        itemBuilder: (context,index) {
+          return _buildChatRoom(chatList[index]);
+        }
       )
     );
   }

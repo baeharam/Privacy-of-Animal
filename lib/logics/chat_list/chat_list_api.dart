@@ -1,43 +1,59 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:privacy_of_animal/logics/chat_list/chat_list.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/models/chat_list_model.dart';
 import 'package:privacy_of_animal/models/user_model.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
+import 'package:rxdart/rxdart.dart';
 
 class ChatListAPI {
 
-  // 채팅방 리스트 불러오기
-  Future<List<ChatListModel>> fetchUserData(List<DocumentSnapshot> documents) async {
-    List<ChatListModel> result = List<ChatListModel>();
+  static Observable<QuerySnapshot> chatRoomListStream = Stream.empty();
+  static PublishSubject<QuerySnapshot> chatRoomStreamController = PublishSubject();
 
-    for(DocumentSnapshot doc in documents) {
-      if(doc.data[firestoreChatDeleteField][sl.get<CurrentUser>().uid]){
-        continue;
-      }
-      String uid = sl.get<CurrentUser>().uid.compareTo(doc.data[firestoreChatUsersField][0])==0
-        ? doc.data[firestoreChatUsersField][1] 
-        : doc.data[firestoreChatUsersField][0];
-      DocumentSnapshot userData = await sl.get<FirebaseAPI>().getFirestore()
-      .collection(firestoreUsersCollection)
-      .document(uid).get();
+  void connectToFirebase() {
+    chatRoomListStream = sl.get<FirebaseAPI>().getFirestore()
+      .collection(firestoreFriendsMessageCollection)
+      .where('$firestoreChatDeleteField.${sl.get<CurrentUser>().uid}',isEqualTo: false)
+      .snapshots();
+    chatRoomListStream.listen((chatRoomList){
+      chatRoomList.documents.map((chatRoom){
+        Observable<QuerySnapshot> chatRoomStream = sl.get<FirebaseAPI>().getFirestore()
+            .collection(firestoreFriendsMessageCollection)
+            .document(chatRoom.documentID)
+            .collection(chatRoom.documentID)
+            .orderBy(firestoreChatTimestampField,descending: true)
+            .limit(1)
+            .snapshots();
+        chatRoomStream.listen((snapshot) 
+          => sl.get<ChatListBloc>().emitEvent(ChatListEventFetch(newMessage: snapshot.documents[0])));
+        chatRoomStreamController.addStream(chatRoomStream);
+      });
+    });
+  }
 
-      QuerySnapshot chatData = await doc.reference.collection(doc.documentID)
-      .orderBy(firestoreChatTimestampField,descending: true).limit(1).getDocuments();
+  Future<ChatListModel> fetchUserData(DocumentSnapshot newMessage) async {
 
-      ChatListModel chatListModel = ChatListModel(
-        chatRoomID: doc.documentID,
-        profileImage: userData.data[firestoreFakeProfileField][firestoreAnimalImageField],
-        nickName: userData.data[firestoreFakeProfileField][firestoreNickNameField],
-        lastMessage: chatData.documents[0].data[firestoreChatContentField],
-        lastTimestamp: chatData.documents[0].data[firestoreChatTimestampField],
-        user: UserModel.fromSnapshot(snapshot: userData)
-      );
-      result.add(chatListModel);
-    }
-    return result;
+    String uid = sl.get<CurrentUser>().uid.compareTo(newMessage.data[firestoreChatUsersField][0])==0
+      ? newMessage.data[firestoreChatUsersField][1] 
+      : newMessage.data[firestoreChatUsersField][0];
+    DocumentSnapshot userData = await sl.get<FirebaseAPI>().getFirestore()
+    .collection(firestoreUsersCollection)
+    .document(uid).get();
+
+    QuerySnapshot chatData = await newMessage.reference.collection(newMessage.documentID)
+    .orderBy(firestoreChatTimestampField,descending: true).limit(1).getDocuments();
+
+    return ChatListModel(
+      chatRoomID: newMessage.documentID,
+      profileImage: userData.data[firestoreFakeProfileField][firestoreAnimalImageField],
+      nickName: userData.data[firestoreFakeProfileField][firestoreNickNameField],
+      lastMessage: chatData.documents[0].data[firestoreChatContentField],
+      lastTimestamp: chatData.documents[0].data[firestoreChatTimestampField],
+      user: UserModel.fromSnapshot(snapshot: userData)
+    );
   }
 
   // 채팅방 삭제

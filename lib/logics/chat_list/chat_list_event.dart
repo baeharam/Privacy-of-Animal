@@ -6,10 +6,12 @@ abstract class ChatListEvent extends BlocEvent {}
 
 class ChatListEventStateClear extends ChatListEvent {}
 
-class ChatListEventFetchList extends ChatListEvent{
-  final List<DocumentSnapshot> documents;
+class ChatListEventConnectServer extends ChatListEvent {}
 
-  ChatListEventFetchList({@required this.documents });
+class ChatListEventFetch extends ChatListEvent{
+  final DocumentSnapshot newMessage;
+
+  ChatListEventFetch({@required this.newMessage});
 }
 
 class ChatListEventDeleteChatRoom extends ChatListEvent {

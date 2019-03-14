@@ -1,16 +1,19 @@
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state.dart';
 import 'package:privacy_of_animal/logics/chat_list/chat_list.dart';
-import 'package:privacy_of_animal/models/chat_list_model.dart';
 
 class ChatListBloc extends BlocEventStateBase<ChatListEvent,ChatListState> {
 
-  final ChatListAPI _api = ChatListAPI();
+  static final ChatListAPI _api = ChatListAPI();
 
   @override
     ChatListState get initialState => ChatListState.fetchLoading();
 
   @override
   Stream<ChatListState> eventHandler(ChatListEvent event, ChatListState currentState) async*{
+
+    if(event is ChatListEventConnectServer) {
+      _api.connectToFirebase();
+    }
 
     if(event is ChatListEventDeleteChatRoom) {
       try {
@@ -21,11 +24,9 @@ class ChatListBloc extends BlocEventStateBase<ChatListEvent,ChatListState> {
       }
     }
     
-    if(event is ChatListEventFetchList) {
-      List<ChatListModel> chatListModels = List<ChatListModel>();
+    if(event is ChatListEventFetch) {
       try { 
-        chatListModels = await _api.fetchUserData(event.documents);
-        yield ChatListState.fetchSucceeded(chatListModels);
+        yield ChatListState.fetchSucceeded(await _api.fetchUserData(event.newMessage));
       } catch(exception){
         print(exception);
         yield ChatListState.fetchFailed();

@@ -31,12 +31,12 @@ class FakeProfileModel {
     genderConfidence = snapshot.data[firestoreFakeProfileField][firestoreFakeGenderConfidenceField];
     age = snapshot.data[firestoreFakeProfileField][firestoreFakeAgeField];
     ageConfidence = snapshot.data[firestoreFakeProfileField][firestoreFakeAgeConfidenceField];
-    emotion = snapshot.data[firestoreFakeProfileField][firestoreFakeEmotionConfidenceField];
+    emotion = snapshot.data[firestoreFakeProfileField][firestoreFakeEmotionField];
 
     celebrity = snapshot.data[firestoreFakeProfileField][firestoreCelebrityField];
     celebrityConfidence = snapshot.data[firestoreFakeProfileField][firestoreCelebrityConfidenceField];
 
-    analyzedTime = snapshot.data[firestoreFakeProfileField][firestoreAnalyzedTimeField]; 
+    analyzedTime = snapshot.data[firestoreFakeProfileField][firestoreAnalyzedTimeField];
   }
 
   FakeProfileModel({
