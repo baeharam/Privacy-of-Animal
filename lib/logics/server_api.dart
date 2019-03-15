@@ -29,9 +29,14 @@ class ServerAPI {
         .snapshots());
     friendsListSubscription = friendsListServer.listen((snapshot) {
       if(snapshot.documentChanges.isNotEmpty) {
+
+        // 각 친구의 대화방 연결
         snapshot.documentChanges.map((change) async{
           await connectChatRoom(otherUser: UserModel.fromSnapshot(snapshot: change.document));
         });
+
+
+        // 친구목록 캐싱
         List<UserModel> friendsList = List<UserModel>();
         snapshot.documents.map((friends){
           friendsList.add(UserModel.fromSnapshot(snapshot: friends));
