@@ -15,6 +15,10 @@ class ChatListBloc extends BlocEventStateBase<ChatListEvent,ChatListState> {
       _api.connectToFirebase();
     }
 
+    if(event is ChatListEventDisconnectServer) {
+      _api.disconnectToFirebase();
+    }
+
     if(event is ChatListEventDeleteChatRoom) {
       try {
         await _api.deleteChatRoom(event.chatRoomID);

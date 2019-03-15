@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
+import 'package:privacy_of_animal/logics/server_api.dart';
 import 'package:privacy_of_animal/models/user_model.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
@@ -58,15 +59,36 @@ class FriendsAPI {
     if(sl.get<CurrentUser>().friendsListLength!=0) {
       sl.get<CurrentUser>().friendsListLength--;
     }
+
+    _cancelOtherUser(userToBlock);
+  }
+
+  void _cancelOtherUser(String userToBlock) {
+    sl.get<ServerAPI>().disconnectChatRoom(otherUserUID: userToBlock);
   }
 
   // 친구신청 수락하기
   // 친구 신청 목록에서 삭제 + 현재유저 친구목록에 넣기 + 신청유저 친구목록에 넣기 = 일괄작업 batch로
+  // 대화방 까지 만들기
   Future<void> acceptFriendsRequest(String requestingUser) async {
-    DocumentReference myselfDoc = sl.get<FirebaseAPI>().getFirestore().collection(firestoreUsersCollection)
-      .document(sl.get<CurrentUser>().uid).collection(firestoreFriendsSubCollection).document(requestingUser);
-    DocumentReference requestingUserDoc = sl.get<FirebaseAPI>().getFirestore().collection(firestoreUsersCollection)
-      .document(requestingUser).collection(firestoreFriendsSubCollection).document(sl.get<CurrentUser>().uid);
+
+    String currentUser = sl.get<CurrentUser>().uid;
+
+    DocumentReference myselfDoc = sl.get<FirebaseAPI>().getFirestore()
+      .collection(firestoreUsersCollection)
+      .document(currentUser)
+      .collection(firestoreFriendsSubCollection)
+      .document(requestingUser);
+
+    DocumentReference requestingUserDoc = sl.get<FirebaseAPI>().getFirestore()
+      .collection(firestoreUsersCollection)
+      .document(requestingUser)
+      .collection(firestoreFriendsSubCollection)
+      .document(currentUser);
+
+    DocumentReference chatDoc = sl.get<FirebaseAPI>().getFirestore()
+      .collection(firestoreFriendsMessageCollection)
+      .document();
     
     WriteBatch batch = sl.get<FirebaseAPI>().getFirestore().batch();
 
@@ -74,10 +96,38 @@ class FriendsAPI {
     batch.setData(requestingUserDoc, {
       firestoreFriendsField: true,
       firestoreFriendsAccepted: true,
-      firestoreFriendsUID: sl.get<CurrentUser>().uid
+      firestoreFriendsUID: currentUser
+    });
+
+    List<String> users = List<String>();
+    if(currentUser.compareTo(requestingUser)<0) {
+      users.add(currentUser);
+      users.add(requestingUser);
+    } else {
+      users.add(requestingUser);
+      users.add(currentUser);
+    }
+
+    batch.setData(chatDoc, {
+      firestoreChatOutField: {
+        currentUser: Timestamp(0,0),
+        requestingUser: Timestamp(0,0)
+      },
+      firestoreChatDeleteField: {
+        currentUser: false,
+        requestingUser: false
+      },
+      firestoreChatUsersField: users
     });
 
     await batch.commit();
+    await _listenOtherUser(requestingUser);
+  }
+
+  Future<void> _listenOtherUser(String requestingUser) async{
+    DocumentSnapshot snapshot = await sl.get<FirebaseAPI>().getFirestore()
+      .collection(firestoreUsersCollection).document(requestingUser).get();
+    sl.get<ServerAPI>().connectChatRoom(otherUser: UserModel.fromSnapshot(snapshot: snapshot));
   }
 
   // 친구신청 삭제하기

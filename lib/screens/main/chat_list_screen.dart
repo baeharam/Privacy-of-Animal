@@ -31,6 +31,12 @@ class _ChatListScreenState extends State<ChatListScreen> {
   }
 
   @override
+  void dispose() {
+    chatListBloc.emitEvent(ChatListEventDisconnectServer());
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -49,7 +55,20 @@ class _ChatListScreenState extends State<ChatListScreen> {
         padding: EdgeInsets.all(10.0),
         itemCount: chatList.length,
         itemBuilder: (context,index) {
-          return _buildChatRoom(chatList[index]);
+          return BlocBuilder(
+            bloc: chatListBloc,
+            builder: (context, ChatListState state){
+              if(state.isLoading) {
+                return CircularProgressIndicator();
+              }
+              if(state.isFailed) {
+                return Text('로딩 실패');
+              }
+              if(state.isSucceeded) {
+                return _buildChatRoom(state.chatList);
+              }
+            }
+          );
         }
       )
     );

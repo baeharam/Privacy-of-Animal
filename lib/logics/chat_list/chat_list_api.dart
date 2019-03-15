@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:privacy_of_animal/logics/chat_list/chat_list.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
@@ -13,13 +15,23 @@ class ChatListAPI {
   static Observable<QuerySnapshot> chatRoomListStream = Stream.empty();
   static PublishSubject<QuerySnapshot> chatRoomStreamController = PublishSubject();
 
+  List<StreamSubscription> chatRoomSubscriptions = List<StreamSubscription>();
+  StreamSubscription chatRoomListSubscription;
+
+  void disconnectToFirebase() {
+    chatRoomSubscriptions.map((sub) => sub.cancel());
+    chatRoomListSubscription.cancel();
+    chatRoomStreamController.close();
+  }
+
   void connectToFirebase() {
-    chatRoomListStream = sl.get<FirebaseAPI>().getFirestore()
+    chatRoomListStream = Observable(sl.get<FirebaseAPI>().getFirestore()
       .collection(firestoreFriendsMessageCollection)
       .where('$firestoreChatDeleteField.${sl.get<CurrentUser>().uid}',isEqualTo: false)
-      .snapshots();
-    chatRoomListStream.listen((chatRoomList){
+      .snapshots());
+    chatRoomListSubscription = chatRoomListStream.listen((chatRoomList){
       chatRoomList.documents.map((chatRoom){
+        print(chatRoom.documentID);
         Observable<QuerySnapshot> chatRoomStream = sl.get<FirebaseAPI>().getFirestore()
             .collection(firestoreFriendsMessageCollection)
             .document(chatRoom.documentID)
@@ -27,8 +39,9 @@ class ChatListAPI {
             .orderBy(firestoreChatTimestampField,descending: true)
             .limit(1)
             .snapshots();
-        chatRoomStream.listen((snapshot) 
+        StreamSubscription subscription = chatRoomStream.listen((snapshot) 
           => sl.get<ChatListBloc>().emitEvent(ChatListEventFetch(newMessage: snapshot.documents[0])));
+        chatRoomSubscriptions.add(subscription);
         chatRoomStreamController.addStream(chatRoomStream);
       });
     });

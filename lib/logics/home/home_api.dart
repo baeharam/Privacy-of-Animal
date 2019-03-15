@@ -4,6 +4,7 @@ import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/database_helper.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/logics/notification_helper.dart';
+import 'package:privacy_of_animal/logics/server_api.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -86,6 +87,10 @@ class HomeAPI {
     // 알림 설정 가져오기
     await _setNotification(uid);
     _setFriendsNotification();
+
+    // 친구목록, 친구신청목록과의 스트림 연결작업
+    await sl.get<ServerAPI>().connectFriendsList();
+    await sl.get<ServerAPI>().connectFriendsRequestList();
 
     // 데이터 가져왔다고 설정
     sl.get<CurrentUser>().isDataFetched = true;
