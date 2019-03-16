@@ -40,14 +40,14 @@ class ServerAPI {
     friendsListSnapshot.documents.map((friends) async{
       DocumentSnapshot friendsInfo = await sl.get<FirebaseAPI>().getFirestore()
         .collection(firestoreUsersCollection).document(friends.documentID).get();
-      connectChatRoom(otherUser: UserModel.fromSnapshot(snapshot: friendsInfo));
+      await connectChatRoom(otherUser: UserModel.fromSnapshot(snapshot: friendsInfo));
     });
   }
 
   /// [로그아웃 → 모든 채팅방 해제]
   Future<void> disconnectAllChatRoom() async {
-    sl.get<CurrentUser>().friendsList.map((friends){
-      disconnectChatRoom(otherUserUID: friends.uid);
+    sl.get<CurrentUser>().friendsList.map((friends) async{
+      await disconnectChatRoom(otherUserUID: friends.uid);
     });
   }
 

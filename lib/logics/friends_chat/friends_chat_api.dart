@@ -10,7 +10,8 @@ import 'package:sqflite/sqflite.dart';
 class FriendsChatAPI {
 
   Future<Timestamp> getDeleteTimestamp(String chatroomID) async {
-    DocumentSnapshot doc = await sl.get<FirebaseAPI>().getFirestore().collection(firestoreFriendsMessageCollection)
+    DocumentSnapshot doc = await sl.get<FirebaseAPI>().getFirestore()
+      .collection(firestoreFriendsMessageCollection)
       .document(chatroomID).get();
     return doc.data[firestoreChatOutField][sl.get<CurrentUser>().uid];
   }
@@ -19,16 +20,19 @@ class FriendsChatAPI {
 
     DocumentSnapshot flagDoc = await sl.get<FirebaseAPI>().getFirestore()
       .collection(firestoreFriendsMessageCollection)
-      .document(chatRoomID).get();
+      .document(chatRoomID)
+      .get();
 
     DocumentReference chatDoc = sl.get<FirebaseAPI>().getFirestore()
       .collection(firestoreFriendsMessageCollection)
-      .document(chatRoomID).collection(chatRoomID).document();
+      .document(chatRoomID)
+      .collection(chatRoomID)
+      .document();
 
     await sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async{
       await tx.update(flagDoc.reference, {
-        '$firestoreChatDeleteField.${flagDoc.data[firestoreChatUsersField][0]}': false,
-        '$firestoreChatDeleteField.${flagDoc.data[firestoreChatUsersField][1]}': false
+        '$firestoreChatDeleteField.$receiver': false,
+        '$firestoreChatDeleteField.${sl.get<CurrentUser>().uid}': false
       });
     });
 

@@ -138,44 +138,22 @@ class FriendsAPI {
 
   /// [친구와 대화]
   Future<String> chatWithFriends(String userToChat) async {
-    QuerySnapshot snapshot = await sl.get<FirebaseAPI>().getFirestore().collection(firestoreFriendsMessageCollection)
-      .where(firestoreChatUsersField, arrayContains: sl.get<CurrentUser>().uid).getDocuments();
+    String currentUser = sl.get<CurrentUser>().uid;
 
-    String chatRoomID = '';
-    for(DocumentSnapshot doc in snapshot.documents) {
-      if((doc.data[firestoreChatUsersField] as List).contains(userToChat)){
-        chatRoomID = doc.documentID;
-      }
-    }
+    QuerySnapshot snapshot = await sl.get<FirebaseAPI>().getFirestore()
+      .collection(firestoreFriendsMessageCollection)
+      .where('$firestoreChatUsersField.$currentUser',isEqualTo: true)
+      .where('$firestoreChatUsersField.$userToChat',isEqualTo: true)
+      .getDocuments();
 
-    if(chatRoomID.isEmpty) {
-      DocumentReference doc = sl.get<FirebaseAPI>().getFirestore()
-        .collection(firestoreFriendsMessageCollection)
-        .document();
-      await sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async{
-        await tx.set(doc, {
-          firestoreChatOutField: {
-            sl.get<CurrentUser>().uid: Timestamp(0,0),
-            userToChat: Timestamp(0,0)
-          },
-          firestoreChatDeleteField: {
-            sl.get<CurrentUser>().uid: false,
-            userToChat: false
-          },
-          firestoreChatUsersField: [userToChat, sl.get<CurrentUser>().uid]
-        });
-      });
-      return doc.documentID;
-    } else {
-      return chatRoomID;
-    }
+    return snapshot.documents[0].documentID;
   }
 
-  void _cancelOtherUser(String userToBlock) {
-    sl.get<ServerAPI>().disconnectChatRoom(otherUserUID: userToBlock);
+  Future<void> _cancelOtherUser(String userToBlock) async{
+    await sl.get<ServerAPI>().disconnectChatRoom(otherUserUID: userToBlock);
   }
 
   Future<void> _listenOtherUser(UserModel requestingUser) async{
-    sl.get<ServerAPI>().connectChatRoom(otherUser: requestingUser);
+    await sl.get<ServerAPI>().connectChatRoom(otherUser: requestingUser);
   }
 }
