@@ -41,13 +41,24 @@ class SameMatchAPI {
         .collection(firestoreFriendsSubCollection).where(uidCol, isEqualTo: currentUser.uid)
         .where(firestoreFriendsField, isEqualTo: false).getDocuments();
 
-      // 제외하는 경우
-      // 1. 친구
-      // 2. 자기자신
-      // 3. 내가 친구신청을 이미 한 사람
-      if(!(friends.contains(user.documentID)) && user.documentID!=currentUser.uid &&
-        friendsRequestSnapshot.documents.length==0){
-        // 통과하면 매칭하는 태그 개수를 계산해서 해당하는 배열 인덱스에 넣는다.
+      /// [제외하는 경우]
+      /// [1. 친구]
+      /// [2. 자기자신]
+      /// [3. 내가 친구신청을 이미 한 사람]
+      /// [4. 친구신청을 받은 경우의 사람]
+      
+      bool isRequestingUser = false;
+      for(UserModel userModel in sl.get<CurrentUser>().friendsRequestList) {
+        if(userModel.uid.compareTo(user.documentID)==0){
+          isRequestingUser = true;
+          break;
+        }
+      }
+
+      if(!(friends.contains(user.documentID)) 
+        && user.documentID!=currentUser.uid 
+        && friendsRequestSnapshot.documents.length==0
+        && !isRequestingUser){
         int matchNum = 0;       
         matchedTags[user.documentID] = List<List<String>>();
 
