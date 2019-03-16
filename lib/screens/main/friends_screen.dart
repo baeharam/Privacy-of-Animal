@@ -5,6 +5,7 @@ import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/logics/friends/friends.dart';
 import 'package:privacy_of_animal/logics/notification/notification.dart';
+import 'package:privacy_of_animal/logics/server_api.dart';
 import 'package:privacy_of_animal/models/user_model.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/screens/main/friends_chat_screen.dart';
@@ -71,56 +72,6 @@ class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProvider
     ).show();
   }
 
-  Widget _buildFriendsRequestNotification() {
-    return StreamBuilder<QuerySnapshot>(
-      stream: sl.get<FirebaseAPI>().getFirestore()
-        .collection(firestoreUsersCollection).document(sl.get<CurrentUser>().uid)
-        .collection(firestoreFriendsSubCollection).where(firestoreFriendsField, isEqualTo: false)
-        .snapshots(),
-      builder: (context, snapshot){
-        if(snapshot.hasData && snapshot.data.documents.isNotEmpty){
-          return Container(
-            padding: EdgeInsets.all(8.0),
-            decoration: BoxDecoration(
-              color: Colors.red,
-              shape: BoxShape.circle
-            ),
-            child: Text('${snapshot.data.documentChanges.length}')
-          );
-        }
-        return Container();
-      },
-    );
-  }
-
-  Widget _buildFriendsNotification() {
-    return StreamBuilder<QuerySnapshot>(
-      stream: sl.get<FirebaseAPI>().getFirestore()
-        .collection(firestoreUsersCollection).document(sl.get<CurrentUser>().uid)
-        .collection(firestoreFriendsSubCollection)
-        .where(firestoreFriendsField, isEqualTo: true)
-        .where(firestoreFriendsAccepted, isEqualTo: true)
-        .snapshots(),
-      builder: (context, snapshot){
-        if(snapshot.hasData && snapshot.data.documents.isNotEmpty){
-          if(sl.get<CurrentUser>().friendsListLength < snapshot.data.documents.length) {
-            int newFriends = snapshot.data.documents.length - sl.get<CurrentUser>().friendsListLength;
-            sl.get<CurrentUser>().friendsListLength = snapshot.data.documents.length;
-            return Container(
-              padding: EdgeInsets.all(8.0),
-              decoration: BoxDecoration(
-                color: Colors.red,
-                shape: BoxShape.circle
-              ),
-              child: Text('$newFriends')
-            ); 
-          }
-        }
-        return Container();
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -152,16 +103,14 @@ class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProvider
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text('친구'),
-                  SizedBox(width: 10.0),
-                  _buildFriendsNotification()
+                  SizedBox(width: 10.0)
                 ],
               )),
               Tab(child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text('친구신청'),
-                  SizedBox(width: 10.0),
-                  _buildFriendsRequestNotification()
+                  SizedBox(width: 10.0)
                 ],
               ))
             ],
@@ -187,91 +136,56 @@ class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProvider
   }
 
   Widget _buildFriendsList() {
-    return StreamBuilder<QuerySnapshot>(
-      stream: sl.get<FirebaseAPI>().getFirestore()
-        .collection(firestoreUsersCollection).document(sl.get<CurrentUser>().uid)
-        .collection(firestoreFriendsSubCollection).where(firestoreFriendsField, isEqualTo: true)
-        .snapshots(),
-      builder: (context, snapshot) {
-        if(snapshot.hasData && snapshot.data.documentChanges.length!=0){
-          if(sl.get<CurrentUser>().friendsList.length==0 
-          || sl.get<CurrentUser>().friendsList.length!=snapshot.data.documents.length){
-            friendsBloc.emitEvent(FriendsEventFetchFriendsList( friends: snapshot.data.documents));
-          }
+    return BlocBuilder(
+      bloc: friendsBloc,
+      builder: (context, FriendsState state){
+        if(state.isFriendsFetchFailed){
+          return Center(child: Text('친구목록을 불러오는데 실패했습니다.'));
         }
-        return BlocBuilder(
-          bloc: friendsBloc,
-          builder: (context, FriendsState state){
-            if(state.isFriendsFetchFailed){
-              return Center(child: Text('친구목록을 불러오는데 실패했습니다.'));
-            }
-            if(state.isLoading) {
-              return CustomProgressIndicator();
-            }
-            if(state.isFriendsChatSucceeded){
-              WidgetsBinding.instance.addPostFrameCallback((_){
-                Navigator.push(context, MaterialPageRoute(
-                  builder: (context) => FriendsChatScreen(
-                    chatRoomID: state.chatRoomID,
-                    receiver: state.receiver,
-                  )
-                ));
-              });
-              friendsBloc.emitEvent(FriendsEventStateClear());
-            }
-            if(state.isFriendsFetchSucceeded) {
-              sl.get<CurrentUser>().friendsList = state.friends;
-              friendsBloc.emitEvent(FriendsEventStateClear());
-            }
-            if(sl.get<CurrentUser>().friendsList.length!=0) {
-              return ListView.builder(
-                scrollDirection: Axis.vertical,
-                itemCount: sl.get<CurrentUser>().friendsList.length,
-                itemBuilder: (context,index) => _buildFriendsItem(sl.get<CurrentUser>().friendsList[index]),
-              );
-            }
-            return Center(child: Text('친구가 없습니다.'));
-          }
-        );
+        if(state.isLoading) {
+          return CustomProgressIndicator();
+        }
+        if(state.isFriendsChatSucceeded){
+          WidgetsBinding.instance.addPostFrameCallback((_){
+            Navigator.push(context, MaterialPageRoute(
+              builder: (context) => FriendsChatScreen(
+                chatRoomID: state.chatRoomID,
+                receiver: state.receiver,
+              )
+            ));
+          });
+          friendsBloc.emitEvent(FriendsEventStateClear());
+        }
+        if(sl.get<CurrentUser>().friendsList.isNotEmpty) {
+          return ListView.builder(
+            scrollDirection: Axis.vertical,
+            itemCount: sl.get<CurrentUser>().friendsList.length,
+            itemBuilder: (context,index) => _buildFriendsItem(sl.get<CurrentUser>().friendsList[index]),
+          );
+        }
+        return Center(child: Text('친구가 없습니다.'));
       }
     );
   }
 
   Widget _buildFriendsRequestList() {
-    return StreamBuilder<QuerySnapshot>(
-      stream: sl.get<FirebaseAPI>().getFirestore()
-        .collection(firestoreUsersCollection).document(sl.get<CurrentUser>().uid)
-        .collection(firestoreFriendsSubCollection).where(firestoreFriendsField, isEqualTo: false)
-        .snapshots(),
-      builder: (context, snapshot) {
-        if(snapshot.hasData && snapshot.data.documentChanges.length!=0){
-          if(sl.get<CurrentUser>().friendsRequestList.length==0 
-          || sl.get<CurrentUser>().friendsRequestList.length!=snapshot.data.documents.length){
-            friendsBloc.emitEvent(FriendsEventFetchFriendsRequestList( friendsRequest: snapshot.data.documents));
-          }
+    return BlocBuilder(
+      bloc: friendsBloc,
+      builder: (context, FriendsState state){
+        if(state.isFriendsRequestFetchFailed){
+          return Center(child: Text('친구 신청 목록을 불러오는데 실패했습니다.'));
         }
-        return BlocBuilder(
-          bloc: friendsBloc,
-          builder: (context, FriendsState state){
-            if(state.isFriendsRequestFetchFailed){
-              return Center(child: Text('친구 신청 목록을 불러오는데 실패했습니다.'));
-            }
-            if(state.isLoading) {
-              return CustomProgressIndicator();
-            }
-            if(state.isFriendsRequestFetchSucceeded) {
-              sl.get<CurrentUser>().friendsRequestList = state.friendsRequest;
-            }
-            if(sl.get<CurrentUser>().friendsRequestList.length!=0) {
-              return ListView.builder(
-                scrollDirection: Axis.vertical,
-                itemCount: sl.get<CurrentUser>().friendsRequestList.length,
-                itemBuilder: (context,index) => _buildFriendsRequestItem(sl.get<CurrentUser>().friendsRequestList[index]),
-              );
-            }
-            return Center(child: Text('친구신청이 없습니다.'));
-          }
-        );
+        if(state.isLoading) {
+          return CustomProgressIndicator();
+        }
+        if(sl.get<CurrentUser>().friendsRequestList.isNotEmpty) {
+          return ListView.builder(
+            scrollDirection: Axis.vertical,
+            itemCount: sl.get<CurrentUser>().friendsRequestList.length,
+            itemBuilder: (context,index) => _buildFriendsRequestItem(sl.get<CurrentUser>().friendsRequestList[index]),
+          );
+        }
+        return Center(child: Text('친구신청이 없습니다.'));
       }
     );
   }

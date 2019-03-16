@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meta/meta.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
+import 'package:privacy_of_animal/logics/friends/friends.dart';
 import 'package:privacy_of_animal/models/chat_list_model.dart';
 import 'package:privacy_of_animal/models/user_model.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
@@ -21,27 +22,49 @@ class ServerAPI {
   Observable<QuerySnapshot> friendsRequestListServer;
   StreamSubscription friendsRequestListSubscription;
 
+  Observable<QuerySnapshot> friendsAcceptServer;
+  StreamSubscription friendsAcceptSubscription;
+
+  /// [로그인 → 친구수락 여부 연결]
+  Future<void> connectFriendsAccept() async {
+    friendsAcceptServer =Observable(sl.get<FirebaseAPI>().getFirestore()
+      .collection(firestoreUsersCollection)
+      .document(sl.get<CurrentUser>().uid)
+      .collection(firestoreFriendsSubCollection)
+      .where(firestoreFriendsField, isEqualTo: true)
+      .where(firestoreFriendsAccepted, isEqualTo: true)
+      .snapshots());
+
+    friendsAcceptSubscription =friendsAcceptServer.listen((snapshot){
+      if(snapshot.documentChanges.isNotEmpty) {
+        snapshot.documents.map((userDoc) async{
+          String user = userDoc.documentID;
+          if(chatRoomListServer[user]==null){
+            DocumentSnapshot userInfoSnapshot = await _getUserInfo(user);
+            await connectChatRoom(otherUser: UserModel.fromSnapshot(snapshot: userInfoSnapshot));
+          }
+        });
+      }
+    });
+  }
+
+  /// [로그아웃 → 친구수락 여부 해제]
+  Future<void> disconnectFriendsAccept() async {
+    await friendsAcceptSubscription.cancel();
+  }
+
+
   /// [로그인 → 친구목록 연결]
   Future<void> connectFriendsList() async {
     friendsListServer = Observable(sl.get<FirebaseAPI>().getFirestore()
-        .collection(firestoreUsersCollection).document(sl.get<CurrentUser>().uid)
-        .collection(firestoreFriendsSubCollection).where(firestoreFriendsField, isEqualTo: true)
+        .collection(firestoreUsersCollection)
+        .document(sl.get<CurrentUser>().uid)
+        .collection(firestoreFriendsSubCollection)
+        .where(firestoreFriendsField, isEqualTo: true)
         .snapshots());
     friendsListSubscription = friendsListServer.listen((snapshot) {
       if(snapshot.documentChanges.isNotEmpty) {
-
-        // 각 친구의 대화방 연결
-        snapshot.documentChanges.map((change) async{
-          await connectChatRoom(otherUser: UserModel.fromSnapshot(snapshot: change.document));
-        });
-
-
-        // 친구목록 캐싱
-        List<UserModel> friendsList = List<UserModel>();
-        snapshot.documents.map((friends){
-          friendsList.add(UserModel.fromSnapshot(snapshot: friends));
-        });
-        sl.get<CurrentUser>().friendsList = friendsList;
+        sl.get<FriendsBloc>().emitEvent(FriendsEventFetchFriendsList(friends: snapshot.documents));
       }
     });
   }
@@ -59,11 +82,7 @@ class ServerAPI {
         .snapshots());
     friendsRequestListSubscription = friendsRequestListServer.listen((snapshot) {
       if(snapshot.documentChanges.isNotEmpty) {
-        List<UserModel> friendsRequestList = List<UserModel>();
-        snapshot.documents.map((friends){
-          friendsRequestList.add(UserModel.fromSnapshot(snapshot: friends));
-        });
-        sl.get<CurrentUser>().friendsRequestList = friendsRequestList;
+        sl.get<FriendsBloc>().emitEvent(FriendsEventFetchFriendsRequestList(friendsRequest: snapshot.documents));
       }
     });
   }
@@ -89,14 +108,16 @@ class ServerAPI {
       .snapshots()
     );
 
-    StreamSubscription subscription = chatRoomListServer[otherUser].listen((snapshot){
-      sl.get<CurrentUser>().chatList.add(ChatListModel(
-        chatRoomID: chatRoomID,
-        profileImage: otherUser.fakeProfileModel.animalImage,
-        nickName: otherUser.fakeProfileModel.nickName,
-        lastTimestamp: snapshot.documents[0][firestoreChatTimestampField],
-        user: otherUser
-      ));
+    StreamSubscription subscription = chatRoomListServer[otherUser.uid].listen((snapshot){
+      if(snapshot.documents.isNotEmpty) {
+        sl.get<CurrentUser>().chatList.add(ChatListModel(
+          chatRoomID: chatRoomID,
+          profileImage: otherUser.fakeProfileModel.animalImage,
+          nickName: otherUser.fakeProfileModel.nickName,
+          lastTimestamp: snapshot.documents[0].data[firestoreChatTimestampField],
+          user: otherUser
+        ));
+      }
     });
 
     chatRoomListSubscriptions[otherUser.uid] = subscription;
@@ -106,26 +127,25 @@ class ServerAPI {
   Future<void> disconnectChatRoom({@required String otherUserUID}) async{
     await chatRoomListSubscriptions[otherUserUID].cancel();
     chatRoomListServer.remove(otherUserUID);
-  } 
+  }
+
+  Future<DocumentSnapshot> _getUserInfo(String user) async {
+    return await sl.get<FirebaseAPI>().getFirestore()
+      .collection(firestoreUsersCollection)
+      .document(user).get();
+  }
 
 
   Future<String> _getChatRoomID(String otherUser) async {
     String currentUser = sl.get<CurrentUser>().uid;
-    String user0,user1;
-
-    if(currentUser.compareTo(otherUser)<0) {
-      user0 = currentUser;
-      user1 = otherUser;
-    } else {
-      user0 = otherUser;
-      user1 = currentUser;
-    }
 
     QuerySnapshot querySnapshot = await sl.get<FirebaseAPI>().getFirestore()
       .collection(firestoreFriendsMessageCollection)
-      .where(firestoreChatUsersField[0], isEqualTo: user0)
-      .where(firestoreChatUsersField[1], isEqualTo: user1)
+      .where('$firestoreChatUsersField.$currentUser', isEqualTo: true)
+      .where('$firestoreChatUsersField.$otherUser', isEqualTo: true)
       .getDocuments();
+
+    print(querySnapshot.documents.length);
     
     return querySnapshot.documents[0].documentID;
   }

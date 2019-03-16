@@ -20,8 +20,6 @@ class FriendsState extends BlocState {
 
   final bool isFriendsAcceptedNotification;
 
-  final List<UserModel> friends;
-  final List<UserModel> friendsRequest;
   final String chatRoomID;
   final UserModel receiver;
 
@@ -44,8 +42,6 @@ class FriendsState extends BlocState {
 
     this.isFriendsAcceptedNotification: false,
 
-    this.friends,
-    this.friendsRequest,
     this.chatRoomID: '',
     this.receiver,
   });
@@ -62,10 +58,9 @@ class FriendsState extends BlocState {
     );
   }
 
-  factory FriendsState.friendsFetchSuceeded(List<UserModel> friends) {
+  factory FriendsState.friendsFetchSuceeded() {
     return FriendsState(
-      isFriendsFetchSucceeded: true,
-      friends: friends
+      isFriendsFetchSucceeded: true
     );
   }
 
@@ -101,10 +96,9 @@ class FriendsState extends BlocState {
     );
   }
 
-  factory FriendsState.friendsRequestFetchSucceeded(List<UserModel> friendsRequest) {
+  factory FriendsState.friendsRequestFetchSucceeded() {
     return FriendsState(
-      isFriendsRequestFetchSucceeded: true,
-      friendsRequest: friendsRequest
+      isFriendsRequestFetchSucceeded: true
     );
   }
 

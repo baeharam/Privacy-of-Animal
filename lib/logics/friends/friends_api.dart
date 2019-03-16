@@ -74,8 +74,6 @@ class FriendsAPI {
   }
 
   // 친구신청 수락하기
-  // 친구 신청 목록에서 삭제 + 현재유저 친구목록에 넣기 + 신청유저 친구목록에 넣기 = 일괄작업 batch로
-  // 대화방 까지 만들기
   Future<void> acceptFriendsRequest(String requestingUser) async {
 
     String currentUser = sl.get<CurrentUser>().uid;
