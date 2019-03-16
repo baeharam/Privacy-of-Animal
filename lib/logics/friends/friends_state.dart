@@ -3,18 +3,28 @@ import 'package:privacy_of_animal/models/user_model.dart';
 
 class FriendsState extends BlocState {
   final bool isInitial;
-  final bool isLoading;
+
+  final bool isFriendsFetchLoading;
   final bool isFriendsFetchSucceeded;
   final bool isFriendsFetchFailed;
-  final bool isFriendsBlockSucceeded;
-  final bool isFriendsBlockFailed;
+  
+  final bool isFriendsChatLoading;
   final bool isFriendsChatSucceeded;
   final bool isFriendsChatFailed;
 
+  final bool isFriendsBlockLoading;
+  final bool isFriendsBlockSucceeded;
+  final bool isFriendsBlockFailed;
+
+  final bool isFriendsRequestFetchLoading;
   final bool isFriendsRequestFetchSucceeded;
   final bool isFriendsRequestFetchFailed;
+
+  final bool isFriendsAcceptLoading;
   final bool isFriendsAcceptSucceeded;
   final bool isFriendsAcceptFailed;
+
+  final bool isFriendsRejectLoading;
   final bool isFriendsRejectSucceeded;
   final bool isFriendsRejectFailed;
 
@@ -25,18 +35,28 @@ class FriendsState extends BlocState {
 
   FriendsState({
     this.isInitial: false,
-    this.isLoading: false,
+
+    this.isFriendsFetchLoading: false,
     this.isFriendsFetchSucceeded: false,
     this.isFriendsFetchFailed: false,
-    this.isFriendsBlockSucceeded: false,
-    this.isFriendsBlockFailed: false,
+    
+    this.isFriendsChatLoading: false,
     this.isFriendsChatSucceeded: false,
     this.isFriendsChatFailed: false,
 
+    this.isFriendsBlockLoading: false,
+    this.isFriendsBlockSucceeded: false,
+    this.isFriendsBlockFailed: false,
+
+    this.isFriendsRequestFetchLoading: false,
     this.isFriendsRequestFetchSucceeded: false,
     this.isFriendsRequestFetchFailed: false,
+
+    this.isFriendsAcceptLoading: false,
     this.isFriendsAcceptSucceeded: false,
     this.isFriendsAcceptFailed: false,
+
+    this.isFriendsRejectLoading: false,
     this.isFriendsRejectSucceeded: false,
     this.isFriendsRejectFailed: false,
 
@@ -51,25 +71,12 @@ class FriendsState extends BlocState {
       isInitial: true
     );
   }
+  
+  factory FriendsState.friendsFetchLoading()  => FriendsState(isFriendsFetchLoading: true);
+  factory FriendsState.friendsFetchSuceeded()  => FriendsState(isFriendsFetchSucceeded: true);
+  factory FriendsState.friendsFetchFailed()  => FriendsState(isFriendsFetchFailed: true);
 
-  factory FriendsState.loading() {
-    return FriendsState(
-      isLoading: true
-    );
-  }
-
-  factory FriendsState.friendsFetchSuceeded() {
-    return FriendsState(
-      isFriendsFetchSucceeded: true
-    );
-  }
-
-  factory FriendsState.friendsFetchFailed() {
-    return FriendsState(
-      isFriendsFetchFailed: true
-    );
-  }
-
+  factory FriendsState.friendsChatLoading() => FriendsState(isFriendsChatLoading: true);
   factory FriendsState.friendsChatSucceeded(String chatRoomID, UserModel receiver) {
     return FriendsState(
       isFriendsChatSucceeded: true,
@@ -77,60 +84,23 @@ class FriendsState extends BlocState {
       receiver: receiver
     );
   }
+  factory FriendsState.friendsChatFailed() => FriendsState(isFriendsChatFailed: true);
 
-  factory FriendsState.friendsChatFailed() {
-    return FriendsState(
-      isFriendsChatFailed: true
-    );
-  }
+  factory FriendsState.friendsBlockLoading() => FriendsState(isFriendsBlockLoading: true);
+  factory FriendsState.friendsBlockSucceeded() => FriendsState(isFriendsBlockSucceeded: true);
+  factory FriendsState.friendsBlockFailed() => FriendsState(isFriendsBlockFailed: true);
 
-  factory FriendsState.friendsBlockSucceeded() {
-    return FriendsState(
-      isFriendsBlockSucceeded: true
-    );
-  }
+  factory FriendsState.friendsRequestFetchLoading() => FriendsState(isFriendsRequestFetchLoading: true);
+  factory FriendsState.friendsRequestFetchSucceeded() => FriendsState(isFriendsRequestFetchSucceeded: true);
+  factory FriendsState.friendsRequestFetchFailed() => FriendsState(isFriendsRequestFetchFailed: true);
 
-  factory FriendsState.friendsBlockFailed() {
-    return FriendsState(
-      isFriendsBlockFailed: true
-    );
-  }
+  factory FriendsState.friendsAcceptLoading() => FriendsState(isFriendsAcceptLoading: true);
+  factory FriendsState.friendsAcceptSucceeded() => FriendsState(isFriendsAcceptSucceeded: true);
+  factory FriendsState.friendsAcceptFailed() => FriendsState(isFriendsAcceptFailed: true);
 
-  factory FriendsState.friendsRequestFetchSucceeded() {
-    return FriendsState(
-      isFriendsRequestFetchSucceeded: true
-    );
-  }
-
-  factory FriendsState.friendsRequestFetchFailed() {
-    return FriendsState(
-      isFriendsRequestFetchFailed: true
-    );
-  }
-
-  factory FriendsState.friendsAcceptSucceeded() {
-    return FriendsState(
-      isFriendsAcceptSucceeded: true
-    );
-  }
-
-  factory FriendsState.friendsAcceptFailed() {
-    return FriendsState(
-      isFriendsAcceptSucceeded: true
-    );
-  }
-
-  factory FriendsState.friendsRejectSucceeded() {
-    return FriendsState(
-      isFriendsRejectSucceeded: true
-    );
-  }
-
-  factory FriendsState.friendsRejectFailed() {
-    return FriendsState(
-      isFriendsRejectFailed: true
-    );
-  }
+  factory FriendsState.friendsRejectLoading() => FriendsState(isFriendsRejectLoading: true);
+  factory FriendsState.friendsRejectSucceeded() => FriendsState(isFriendsRejectSucceeded: true);
+  factory FriendsState.friendsRejectFailed() => FriendsState(isFriendsRejectFailed: true);
 
   factory FriendsState.friendsAcceptedNotify() {
     return FriendsState(

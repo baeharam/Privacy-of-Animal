@@ -32,7 +32,7 @@ class FriendsEventRequestAccept extends FriendsEvent {
 }
 
 class FriendsEventRequestReject extends FriendsEvent {
-  final String user;
+  final UserModel user;
   FriendsEventRequestReject({@required this.user});
 }
 

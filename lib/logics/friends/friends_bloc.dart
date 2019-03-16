@@ -18,7 +18,7 @@ class FriendsBloc extends BlocEventStateBase<FriendsEvent,FriendsState>
     }
 
     if(event is FriendsEventFetchFriendsList) {
-      yield FriendsState.loading();
+      yield FriendsState.friendsFetchLoading();
       try {
         await _api.fetchFriendsList(event.friends,isFriendsList: true);
         yield FriendsState.friendsFetchSuceeded();
@@ -29,7 +29,7 @@ class FriendsBloc extends BlocEventStateBase<FriendsEvent,FriendsState>
     }
 
     if(event is FriendsEventFetchFriendsRequestList) {
-      yield FriendsState.loading();
+      yield FriendsState.friendsRequestFetchLoading();
       try {
         await _api.fetchFriendsList(event.friendsRequest,isFriendsList: false);
         yield FriendsState.friendsRequestFetchSucceeded();
@@ -41,6 +41,7 @@ class FriendsBloc extends BlocEventStateBase<FriendsEvent,FriendsState>
 
     if(event is FriendsEventChat) {
       try {
+        yield FriendsState.friendsChatLoading();
         String chatRoomID = await _api.chatWithFriends(event.user.uid);
         yield FriendsState.friendsChatSucceeded(chatRoomID,event.user);
       } catch(exception){
@@ -51,6 +52,7 @@ class FriendsBloc extends BlocEventStateBase<FriendsEvent,FriendsState>
 
     if(event is FriendsEventBlock) {
       try {
+        yield FriendsState.friendsBlockLoading();
         await _api.blockFriends(event.user);
         yield FriendsState.friendsBlockSucceeded();
       } catch(exception) {
@@ -61,6 +63,7 @@ class FriendsBloc extends BlocEventStateBase<FriendsEvent,FriendsState>
 
     if(event is FriendsEventRequestAccept) {
       try {
+        yield FriendsState.friendsAcceptLoading();
         await _api.acceptFriendsRequest(event.user);
         yield FriendsState.friendsAcceptSucceeded();
       } catch(exception) {
@@ -71,6 +74,7 @@ class FriendsBloc extends BlocEventStateBase<FriendsEvent,FriendsState>
 
     if(event is FriendsEventRequestReject) {
       try {
+        yield FriendsState.friendsRejectLoading();
         await _api.rejectFriendsRequest(event.user);
         yield FriendsState.friendsRejectSucceeded();
       } catch(exception) {

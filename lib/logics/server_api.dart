@@ -100,15 +100,15 @@ class ServerAPI {
 
     chatRoomListServer[otherUser.uid] = Observable(
       sl.get<FirebaseAPI>().getFirestore()
-      .collection(firestoreFriendsMessageCollection)
-      .document(chatRoomID)
-      .collection(chatRoomID)
-      .orderBy(firestoreChatTimestampField,descending: true)
-      .limit(1)
-      .snapshots()
+        .collection(firestoreFriendsMessageCollection)
+        .document(chatRoomID)
+        .collection(chatRoomID)
+        .orderBy(firestoreChatTimestampField,descending: true)
+        .limit(1)
+        .snapshots()
     );
 
-    StreamSubscription subscription = chatRoomListServer[otherUser.uid].listen((snapshot){
+    chatRoomListSubscriptions[otherUser.uid] = chatRoomListServer[otherUser.uid].listen((snapshot){
       if(snapshot.documents.isNotEmpty) {
         sl.get<CurrentUser>().chatList.add(ChatListModel(
           chatRoomID: chatRoomID,
@@ -120,12 +120,16 @@ class ServerAPI {
       }
     });
 
-    chatRoomListSubscriptions[otherUser.uid] = subscription;
+    print(chatRoomListSubscriptions[otherUser.uid].toString());
   }
 
   /// [친구차단 → 채팅방 해제]
   Future<void> disconnectChatRoom({@required String otherUserUID}) async{
-    await chatRoomListSubscriptions[otherUserUID].cancel();
+    print(chatRoomListSubscriptions);
+
+    if(chatRoomListSubscriptions[otherUserUID]!=null){
+      await chatRoomListSubscriptions[otherUserUID].cancel();
+    }
     chatRoomListServer.remove(otherUserUID);
   }
 

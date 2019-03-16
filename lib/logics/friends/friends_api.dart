@@ -9,17 +9,18 @@ import 'package:privacy_of_animal/resources/strings.dart';
 
 class FriendsAPI {
 
-  // 친구정보 가져오기
+  /// [친구목록] 및 [친구신청 목록] 가져오기
   Future<void> fetchFriendsList(List<dynamic> friends, {@required bool isFriendsList}) async {
+    print("Update Friends List");
     List<UserModel> userList = List<UserModel>();
-    if(friends.length==0) return;
-    for(var user in friends) {
-      DocumentSnapshot userInfo = await sl.get<FirebaseAPI>().getFirestore()
-        .collection(firestoreUsersCollection)
-        .document((user as DocumentSnapshot).documentID).get();
-      userList.add(UserModel.fromSnapshot(snapshot: userInfo));
+    if(friends.isNotEmpty) {
+      for(var user in friends) {
+        DocumentSnapshot userInfo = await sl.get<FirebaseAPI>().getFirestore()
+          .collection(firestoreUsersCollection)
+          .document((user as DocumentSnapshot).documentID).get();
+        userList.add(UserModel.fromSnapshot(snapshot: userInfo));
+      }
     }
-
     if(isFriendsList) {
       sl.get<CurrentUser>().friendsList = userList;
     } else {
@@ -27,7 +28,7 @@ class FriendsAPI {
     }
   }
 
-  // 친구 차단하기
+  /// [친구 삭제]
   Future<void> blockFriends(UserModel userToBlock) async {
     String currentUser = sl.get<CurrentUser>().uid;
 
@@ -73,11 +74,7 @@ class FriendsAPI {
     _cancelOtherUser(userToBlock.uid);
   }
 
-  void _cancelOtherUser(String userToBlock) {
-    sl.get<ServerAPI>().disconnectChatRoom(otherUserUID: userToBlock);
-  }
-
-  // 친구신청 수락하기
+  /// [친구신청 수락]
   Future<void> acceptFriendsRequest(UserModel requestingUser) async {
 
     String currentUser = sl.get<CurrentUser>().uid;
@@ -123,30 +120,24 @@ class FriendsAPI {
     });
 
     await batch.commit();
-
-    sl.get<CurrentUser>().friendsList.add(requestingUser);
-    await _listenOtherUser(requestingUser.uid);
+    sl.get<CurrentUser>().friendsRequestList.remove(requestingUser);
+    await _listenOtherUser(requestingUser);
   }
 
-  Future<void> _listenOtherUser(String requestingUser) async{
-    DocumentSnapshot snapshot = await sl.get<FirebaseAPI>().getFirestore()
-      .collection(firestoreUsersCollection).document(requestingUser).get();
-    sl.get<ServerAPI>().connectChatRoom(otherUser: UserModel.fromSnapshot(snapshot: snapshot));
-  }
-
-  // 친구신청 삭제하기
-  Future<void> rejectFriendsRequest(String requestingUser) async {
-    DocumentReference doc = sl.get<FirebaseAPI>().getFirestore().collection(firestoreUsersCollection)
-      .document(sl.get<CurrentUser>().uid).collection(firestoreFriendsSubCollection).document(requestingUser);
+  /// [친구신청 삭제]
+  Future<void> rejectFriendsRequest(UserModel requestingUser) async {
+    DocumentReference doc = sl.get<FirebaseAPI>().getFirestore()
+      .collection(firestoreUsersCollection)
+      .document(sl.get<CurrentUser>().uid)
+      .collection(firestoreFriendsSubCollection)
+      .document(requestingUser.uid);
     await sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async{
       await tx.delete(doc);
     });
-    sl.get<CurrentUser>().friendsRequestListLength--;
+    sl.get<CurrentUser>().friendsRequestList.remove(requestingUser);
   }
 
-  // 친구랑 대화하기
-  // 1. 대화한 내용이 서버에 없으면 방을 생성한다.
-  // 2. 대화한 내용이 서버에 있으면 해당 방에 입장한다.
+  /// [친구와 대화]
   Future<String> chatWithFriends(String userToChat) async {
     QuerySnapshot snapshot = await sl.get<FirebaseAPI>().getFirestore().collection(firestoreFriendsMessageCollection)
       .where(firestoreChatUsersField, arrayContains: sl.get<CurrentUser>().uid).getDocuments();
@@ -181,4 +172,11 @@ class FriendsAPI {
     }
   }
 
+  void _cancelOtherUser(String userToBlock) {
+    sl.get<ServerAPI>().disconnectChatRoom(otherUserUID: userToBlock);
+  }
+
+  Future<void> _listenOtherUser(UserModel requestingUser) async{
+    sl.get<ServerAPI>().connectChatRoom(otherUser: requestingUser);
+  }
 }

@@ -12,6 +12,7 @@ import 'package:privacy_of_animal/screens/main/friends_chat_screen.dart';
 import 'package:privacy_of_animal/screens/main/other_profile_screen.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
+import 'package:privacy_of_animal/utils/stream_snackbar.dart';
 import 'package:privacy_of_animal/widgets/progress_indicator.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
@@ -142,7 +143,7 @@ class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProvider
         if(state.isFriendsFetchFailed){
           return Center(child: Text('친구목록을 불러오는데 실패했습니다.'));
         }
-        if(state.isLoading) {
+        if(state.isFriendsFetchLoading) {
           return CustomProgressIndicator();
         }
         if(state.isFriendsChatSucceeded){
@@ -156,11 +157,15 @@ class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProvider
           });
           friendsBloc.emitEvent(FriendsEventStateClear());
         }
+        if(state.isFriendsBlockSucceeded) {
+          streamSnackbar(context, '친구를 삭제하였습니다.');
+          friendsBloc.emitEvent(FriendsEventStateClear());
+        }
         if(sl.get<CurrentUser>().friendsList.isNotEmpty) {
           return ListView.builder(
             scrollDirection: Axis.vertical,
             itemCount: sl.get<CurrentUser>().friendsList.length,
-            itemBuilder: (context,index) => _buildFriendsItem(sl.get<CurrentUser>().friendsList[index]),
+            itemBuilder: (context,index) => _buildFriendsItem(sl.get<CurrentUser>().friendsList[index],state),
           );
         }
         return Center(child: Text('친구가 없습니다.'));
@@ -175,14 +180,23 @@ class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProvider
         if(state.isFriendsRequestFetchFailed){
           return Center(child: Text('친구 신청 목록을 불러오는데 실패했습니다.'));
         }
-        if(state.isLoading) {
+        if(state.isFriendsFetchLoading) {
           return CustomProgressIndicator();
+        }
+        if(state.isFriendsAcceptSucceeded){
+          streamSnackbar(context, '친구를 수락하였습니다.');
+          friendsBloc.emitEvent(FriendsEventStateClear());
+        }
+        if(state.isFriendsRejectSucceeded){
+          streamSnackbar(context, '친구를 거절하였습니다.');
+          friendsBloc.emitEvent(FriendsEventStateClear());
         }
         if(sl.get<CurrentUser>().friendsRequestList.isNotEmpty) {
           return ListView.builder(
             scrollDirection: Axis.vertical,
             itemCount: sl.get<CurrentUser>().friendsRequestList.length,
-            itemBuilder: (context,index) => _buildFriendsRequestItem(sl.get<CurrentUser>().friendsRequestList[index]),
+            itemBuilder: (context,index) 
+              => _buildFriendsRequestItem(sl.get<CurrentUser>().friendsRequestList[index], state),
           );
         }
         return Center(child: Text('친구신청이 없습니다.'));
@@ -190,7 +204,7 @@ class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProvider
     );
   }
 
-  Widget _buildFriendsItem(UserModel user) {
+  Widget _buildFriendsItem(UserModel user, FriendsState state) {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 0.0),
@@ -253,7 +267,8 @@ class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProvider
                 ),
               ),
             ),
-            onTap: () => friendsBloc.emitEvent(FriendsEventChat(user: user)),
+            onTap: () => (state.isFriendsChatLoading || state.isFriendsBlockLoading) ? null :
+              friendsBloc.emitEvent(FriendsEventChat(user: user)),
           ),
           SizedBox(width: 10.0),
           GestureDetector(
@@ -272,14 +287,15 @@ class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProvider
                 ),
               ),
             ),
-            onTap: () { _showAlertForBlock(user); }
+            onTap: ()  => (state.isFriendsChatLoading || state.isFriendsBlockLoading) ? null :
+              _showAlertForBlock(user)
           )
         ],
       ),
     );
   }
 
-  Widget _buildFriendsRequestItem(UserModel user) {
+  Widget _buildFriendsRequestItem(UserModel user, FriendsState state) {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 0.0),
@@ -342,7 +358,8 @@ class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProvider
                 ),
               ),
             ),
-            onTap: () => friendsBloc.emitEvent(FriendsEventRequestAccept(user: user)),
+            onTap: () => (state.isFriendsAcceptLoading || state.isFriendsRejectLoading) ? null :
+              friendsBloc.emitEvent(FriendsEventRequestAccept(user: user)),
           ),
           SizedBox(width: 10.0),
           GestureDetector(
@@ -361,7 +378,8 @@ class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProvider
                 ),
               ),
             ),
-            onTap: () => friendsBloc.emitEvent(FriendsEventRequestReject(user: user.uid)),
+            onTap: () => (state.isFriendsAcceptLoading || state.isFriendsRejectLoading) ? null :
+              friendsBloc.emitEvent(FriendsEventRequestReject(user: user)),
           )
         ],
       ),
