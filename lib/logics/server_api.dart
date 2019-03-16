@@ -119,17 +119,11 @@ class ServerAPI {
         ));
       }
     });
-
-    print(chatRoomListSubscriptions[otherUser.uid].toString());
   }
 
   /// [친구차단 → 채팅방 해제]
   Future<void> disconnectChatRoom({@required String otherUserUID}) async{
-    print(chatRoomListSubscriptions);
-
-    if(chatRoomListSubscriptions[otherUserUID]!=null){
-      await chatRoomListSubscriptions[otherUserUID].cancel();
-    }
+    await chatRoomListSubscriptions[otherUserUID].cancel();
     chatRoomListServer.remove(otherUserUID);
   }
 

@@ -11,7 +11,6 @@ class FriendsAPI {
 
   /// [친구목록] 및 [친구신청 목록] 가져오기
   Future<void> fetchFriendsList(List<dynamic> friends, {@required bool isFriendsList}) async {
-    print("Update Friends List");
     List<UserModel> userList = List<UserModel>();
     if(friends.isNotEmpty) {
       for(var user in friends) {
