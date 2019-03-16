@@ -44,7 +44,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
       body: BlocBuilder(
         bloc: chatListBloc,
         builder: (context, ChatListState state){
-          if(state.isNewMessage) {
+          if(state.isNewMessage || state.isFriendsDeleted) {
             chatList = sl.get<CurrentUser>().chatHistory.values.toList();
           }
           if(chatList.isEmpty) {

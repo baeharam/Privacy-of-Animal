@@ -21,6 +21,11 @@ class ChatListBloc extends BlocEventStateBase<ChatListEvent,ChatListState> {
         yield ChatListState.deleteFailed();
       }
     }
+
+    if(event is ChatListEventFriendsDeleted) {
+      _api.deleteChatHistory(event.friends);
+      yield ChatListState.friendsDeleted();
+    }
     
     if(event is ChatListEventNew) {
       _api.addChatHistory(event.newMessage);

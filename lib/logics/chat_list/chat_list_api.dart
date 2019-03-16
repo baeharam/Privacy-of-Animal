@@ -9,6 +9,11 @@ import 'package:privacy_of_animal/resources/strings.dart';
 
 class ChatListAPI {
 
+  /// [채팅 삭제]
+  void deleteChatHistory(String user) {
+    sl.get<CurrentUser>().chatHistory.remove(user);
+  }
+
   /// [채팅 추가]
   void addChatHistory(ChatListModel chat) {
     sl.get<CurrentUser>().chatHistory[chat.user.uid] = chat;

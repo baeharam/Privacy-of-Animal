@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meta/meta.dart';
+import 'package:privacy_of_animal/logics/chat_list/chat_list.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/logics/server_api.dart';
@@ -69,7 +70,7 @@ class FriendsAPI {
     await batch.commit();
 
     sl.get<CurrentUser>().friendsList.remove(userToBlock);
-    sl.get<CurrentUser>().chatHistory.remove(userToBlock);
+    sl.get<ChatListBloc>().emitEvent(ChatListEventFriendsDeleted(friends: userToBlock.uid));
 
     _cancelOtherUser(userToBlock.uid);
   }

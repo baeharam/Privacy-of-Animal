@@ -6,6 +6,12 @@ abstract class ChatListEvent extends BlocEvent {}
 
 class ChatListEventStateClear extends ChatListEvent {}
 
+class ChatListEventFriendsDeleted extends ChatListEvent {
+  final String friends;
+
+  ChatListEventFriendsDeleted({@required this.friends});
+}
+
 class ChatListEventNew extends ChatListEvent{
   final ChatListModel newMessage;
 
