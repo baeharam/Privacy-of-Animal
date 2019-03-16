@@ -37,11 +37,13 @@ class ServerAPI {
       .where(firestoreFriendsField,isEqualTo: true)
       .getDocuments();
 
-    friendsListSnapshot.documents.map((friends) async{
+    for(DocumentSnapshot friends in friendsListSnapshot.documents) {
       DocumentSnapshot friendsInfo = await sl.get<FirebaseAPI>().getFirestore()
-        .collection(firestoreUsersCollection).document(friends.documentID).get();
+        .collection(firestoreUsersCollection)
+        .document(friends.documentID)
+        .get();
       await connectChatRoom(otherUser: UserModel.fromSnapshot(snapshot: friendsInfo));
-    });
+    }
   }
 
   /// [로그아웃 → 모든 채팅방 해제]
@@ -61,15 +63,15 @@ class ServerAPI {
       .where(firestoreFriendsAccepted, isEqualTo: true)
       .snapshots());
 
-    friendsAcceptSubscription =friendsAcceptServer.listen((snapshot){
+    friendsAcceptSubscription =friendsAcceptServer.listen((snapshot) async{
       if(snapshot.documentChanges.isNotEmpty) {
-        snapshot.documents.map((userDoc) async{
+        for(DocumentSnapshot userDoc in snapshot.documents) {
           String user = userDoc.documentID;
           if(chatRoomListServer[user]==null){
             DocumentSnapshot userInfoSnapshot = await _getUserInfo(user);
             await connectChatRoom(otherUser: UserModel.fromSnapshot(snapshot: userInfoSnapshot));
           }
-        });
+        }
       }
     });
   }
@@ -122,8 +124,6 @@ class ServerAPI {
   /// [친구수락 → 채팅방 연결]
   Future<void> connectChatRoom({@required UserModel otherUser}) async{
 
-    print("Connect to ChatRoom with ${otherUser.uid}");
-
     String chatRoomID = await _getChatRoomID(otherUser.uid);
 
     chatRoomListServer[otherUser.uid] = Observable(
@@ -144,6 +144,7 @@ class ServerAPI {
             profileImage: otherUser.fakeProfileModel.animalImage,
             nickName: otherUser.fakeProfileModel.nickName,
             lastTimestamp: snapshot.documents[0].data[firestoreChatTimestampField],
+            lastMessage: snapshot.documents[0].data[firestoreChatContentField],
             user: otherUser
           )
         ));
@@ -172,8 +173,6 @@ class ServerAPI {
       .where('$firestoreChatUsersField.$currentUser', isEqualTo: true)
       .where('$firestoreChatUsersField.$otherUser', isEqualTo: true)
       .getDocuments();
-
-    print(querySnapshot.documents.length);
     
     return querySnapshot.documents[0].documentID;
   }

@@ -12,7 +12,7 @@ class CurrentUser {
   KakaoMLModel kakaoMLModel;
   FakeProfileModel fakeProfileModel;
 
-  List<ChatListModel> chatList;
+  Map<String,ChatListModel> chatHistory;
   List<UserModel> friendsList;
   List<UserModel> friendsRequestList;
 
@@ -22,7 +22,13 @@ class CurrentUser {
   bool isDataFetched;
 
   CurrentUser() {
-    chatList = [];
+    uid = '';
+
+    realProfileModel = RealProfileModel();
+    tagListModel = TagListModel(tagTitleList: [], tagDetailList: []);
+    fakeProfileModel =FakeProfileModel();
+
+    chatHistory = Map<String,ChatListModel>();
     friendsList = [];
     friendsRequestList = [];
 

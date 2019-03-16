@@ -91,6 +91,7 @@ class HomeAPI {
     await sl.get<ServerAPI>().connectFriendsList();
     await sl.get<ServerAPI>().connectFriendsRequestList();
     await sl.get<ServerAPI>().connectFriendsAccept();
+    await sl.get<ServerAPI>().connectAllChatRoom();
 
     // 데이터 가져왔다고 설정
     sl.get<CurrentUser>().isDataFetched = true;

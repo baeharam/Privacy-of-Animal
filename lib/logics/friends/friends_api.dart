@@ -69,6 +69,7 @@ class FriendsAPI {
     await batch.commit();
 
     sl.get<CurrentUser>().friendsList.remove(userToBlock);
+    sl.get<CurrentUser>().chatHistory.remove(userToBlock);
 
     _cancelOtherUser(userToBlock.uid);
   }

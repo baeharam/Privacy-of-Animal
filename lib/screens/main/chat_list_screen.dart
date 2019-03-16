@@ -27,11 +27,6 @@ class _ChatListScreenState extends State<ChatListScreen> {
   }
 
   @override
-  void dispose() {
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -46,17 +41,20 @@ class _ChatListScreenState extends State<ChatListScreen> {
         elevation: 0.0,
         backgroundColor: primaryBlue,
       ),
-      body: ListView.builder(
-        padding: EdgeInsets.all(10.0),
-        itemCount: chatList.length,
-        itemBuilder: (context,index) {
-          return BlocBuilder(
-            bloc: chatListBloc,
-            builder: (context, ChatListState state){
-              if(state.isInitial) {
-                return CircularProgressIndicator();
-              }
-              return _buildChatRoom(sl.get<CurrentUser>().chatList[index]);
+      body: BlocBuilder(
+        bloc: chatListBloc,
+        builder: (context, ChatListState state){
+          if(state.isNewMessage) {
+            chatList = sl.get<CurrentUser>().chatHistory.values.toList();
+          }
+          if(chatList.isEmpty) {
+            return Center(child: Text('아직 대화기록이 없습니다.'));
+          }
+          return ListView.builder(
+            padding: EdgeInsets.all(10.0),
+            itemCount: chatList.length,
+            itemBuilder: (context,index) {
+              return _buildChatRoom(chatList[index]);
             }
           );
         }

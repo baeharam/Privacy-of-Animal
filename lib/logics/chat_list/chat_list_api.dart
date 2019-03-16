@@ -11,7 +11,7 @@ class ChatListAPI {
 
   /// [채팅 추가]
   void addChatHistory(ChatListModel chat) {
-    sl.get<CurrentUser>().chatList.add(chat);
+    sl.get<CurrentUser>().chatHistory[chat.user.uid] = chat;
   }
 
   /// [채팅 삭제]
