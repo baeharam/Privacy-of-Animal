@@ -8,7 +8,6 @@ import 'package:privacy_of_animal/resources/strings.dart';
 class SettingAPI {
 
   Future<void> logout() async {
-    sl.get<CurrentUser>().clear();
     await sl.get<ServerAPI>().disconnectFriendsList();
     await sl.get<ServerAPI>().disconnectFriendsRequestList();
     await sl.get<FirebaseAPI>().getAuth().signOut();

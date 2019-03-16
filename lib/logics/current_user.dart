@@ -15,28 +15,20 @@ class CurrentUser {
   List<ChatListModel> chatList;
   List<UserModel> friendsList;
   List<UserModel> friendsRequestList;
-  int friendsListLength;
-  int friendsRequestListLength;
 
   bool friendsNotification;
   bool messageNotification;
 
   bool isDataFetched;
 
-  void clear() {
-    uid = '';
-    realProfileModel = RealProfileModel();
-    tagListModel = TagListModel(tagTitleList: [], tagDetailList: []);
-    fakeProfileModel = FakeProfileModel();
-
-    friendsList = friendsRequestList = [];
-    friendsListLength =friendsRequestListLength = -1;
-
-    friendsNotification =messageNotification = false;
-    isDataFetched = false;
-  }
-
   CurrentUser() {
-    clear();
+    chatList = [];
+    friendsList = [];
+    friendsRequestList = [];
+
+    friendsNotification = false;
+    messageNotification = false;
+
+    isDataFetched = false;
   }
 }
