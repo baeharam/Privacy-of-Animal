@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:meta/meta.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/logics/server_api.dart';
@@ -9,16 +10,21 @@ import 'package:privacy_of_animal/resources/strings.dart';
 class FriendsAPI {
 
   // 친구정보 가져오기
-  Future<List<UserModel>> fetchFriendsList(List<dynamic> friends) async {
-    List<UserModel> friendsList = List<UserModel>();
-    if(friends.length==0) return friendsList;
+  Future<void> fetchFriendsList(List<dynamic> friends, {@required bool isFriendsList}) async {
+    List<UserModel> userList = List<UserModel>();
+    if(friends.length==0) return;
     for(var user in friends) {
       DocumentSnapshot userInfo = await sl.get<FirebaseAPI>().getFirestore()
         .collection(firestoreUsersCollection)
         .document((user as DocumentSnapshot).documentID).get();
-      friendsList.add(UserModel.fromSnapshot(snapshot: userInfo));
+      userList.add(UserModel.fromSnapshot(snapshot: userInfo));
     }
-    return friendsList;
+
+    if(isFriendsList) {
+      sl.get<CurrentUser>().friendsList = userList;
+    } else {
+      sl.get<CurrentUser>().friendsRequestList = userList;
+    }
   }
 
   // 친구 차단하기
@@ -99,15 +105,6 @@ class FriendsAPI {
       firestoreFriendsUID: currentUser
     });
 
-    List<String> users = List<String>();
-    if(currentUser.compareTo(requestingUser)<0) {
-      users.add(currentUser);
-      users.add(requestingUser);
-    } else {
-      users.add(requestingUser);
-      users.add(currentUser);
-    }
-
     batch.setData(chatDoc, {
       firestoreChatOutField: {
         currentUser: Timestamp(0,0),
@@ -117,7 +114,10 @@ class FriendsAPI {
         currentUser: false,
         requestingUser: false
       },
-      firestoreChatUsersField: users
+      firestoreChatUsersField: {
+        currentUser: true,
+        requestingUser: true
+      }
     });
 
     await batch.commit();
