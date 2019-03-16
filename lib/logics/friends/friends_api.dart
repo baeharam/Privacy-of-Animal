@@ -28,25 +28,31 @@ class FriendsAPI {
   }
 
   // 친구 차단하기
-  Future<void> blockFriends(String userToBlock) async {
-    DocumentReference myselfDoc = sl.get<FirebaseAPI>().getFirestore().collection(firestoreUsersCollection)
-      .document(sl.get<CurrentUser>().uid).collection(firestoreFriendsSubCollection).document(userToBlock);
-    DocumentReference userToBlockDoc = sl.get<FirebaseAPI>().getFirestore().collection(firestoreUsersCollection)
-      .document(userToBlock).collection(firestoreFriendsSubCollection).document(sl.get<CurrentUser>().uid);
+  Future<void> blockFriends(UserModel userToBlock) async {
+    String currentUser = sl.get<CurrentUser>().uid;
 
-    QuerySnapshot chatRoomSnapshot = await sl.get<FirebaseAPI>().getFirestore().collection(firestoreFriendsMessageCollection)
-      .where(firestoreChatUsersField, arrayContains: userToBlock).getDocuments();
+    DocumentReference myselfDoc = sl.get<FirebaseAPI>().getFirestore()
+      .collection(firestoreUsersCollection)
+      .document(currentUser)
+      .collection(firestoreFriendsSubCollection)
+      .document(userToBlock.uid);
+
+    DocumentReference userToBlockDoc = sl.get<FirebaseAPI>().getFirestore()
+      .collection(firestoreUsersCollection)
+      .document(userToBlock.uid)
+      .collection(firestoreFriendsSubCollection)
+      .document(currentUser);
+
+    QuerySnapshot chatRoomSnapshot = await sl.get<FirebaseAPI>().getFirestore()
+      .collection(firestoreFriendsMessageCollection)
+      .where('$firestoreChatUsersField.$currentUser', isEqualTo: true)
+      .where('$firestoreChatUsersField.${userToBlock.uid}', isEqualTo: true)
+      .getDocuments();
 
     WriteBatch batch = sl.get<FirebaseAPI>().getFirestore().batch();
 
     if(chatRoomSnapshot.documents.isNotEmpty) {
-      DocumentReference realChatRoom;
-      for(DocumentSnapshot doc in chatRoomSnapshot.documents) {
-        if(doc.data[firestoreChatUsersField].contains(sl.get<CurrentUser>().uid)){
-          realChatRoom = doc.reference;
-          break;
-        }
-      }
+      DocumentReference realChatRoom =chatRoomSnapshot.documents[0].reference;
 
       QuerySnapshot chatSnapshot = await realChatRoom
       .collection(realChatRoom.documentID)
@@ -60,13 +66,11 @@ class FriendsAPI {
 
     batch.delete(myselfDoc);
     batch.delete(userToBlockDoc);
-
     await batch.commit();
-    if(sl.get<CurrentUser>().friendsListLength!=0) {
-      sl.get<CurrentUser>().friendsListLength--;
-    }
 
-    _cancelOtherUser(userToBlock);
+    sl.get<CurrentUser>().friendsList.remove(userToBlock);
+
+    _cancelOtherUser(userToBlock.uid);
   }
 
   void _cancelOtherUser(String userToBlock) {
@@ -74,7 +78,7 @@ class FriendsAPI {
   }
 
   // 친구신청 수락하기
-  Future<void> acceptFriendsRequest(String requestingUser) async {
+  Future<void> acceptFriendsRequest(UserModel requestingUser) async {
 
     String currentUser = sl.get<CurrentUser>().uid;
 
@@ -82,11 +86,11 @@ class FriendsAPI {
       .collection(firestoreUsersCollection)
       .document(currentUser)
       .collection(firestoreFriendsSubCollection)
-      .document(requestingUser);
+      .document(requestingUser.uid);
 
     DocumentReference requestingUserDoc = sl.get<FirebaseAPI>().getFirestore()
       .collection(firestoreUsersCollection)
-      .document(requestingUser)
+      .document(requestingUser.uid)
       .collection(firestoreFriendsSubCollection)
       .document(currentUser);
 
@@ -106,20 +110,22 @@ class FriendsAPI {
     batch.setData(chatDoc, {
       firestoreChatOutField: {
         currentUser: Timestamp(0,0),
-        requestingUser: Timestamp(0,0)
+        requestingUser.uid: Timestamp(0,0)
       },
       firestoreChatDeleteField: {
         currentUser: false,
-        requestingUser: false
+        requestingUser.uid: false
       },
       firestoreChatUsersField: {
         currentUser: true,
-        requestingUser: true
+        requestingUser.uid: true
       }
     });
 
     await batch.commit();
-    await _listenOtherUser(requestingUser);
+
+    sl.get<CurrentUser>().friendsList.add(requestingUser);
+    await _listenOtherUser(requestingUser.uid);
   }
 
   Future<void> _listenOtherUser(String requestingUser) async{

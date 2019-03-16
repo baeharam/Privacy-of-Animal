@@ -38,7 +38,7 @@ class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProvider
     super.dispose();
   }
 
-  void _showAlertForBlock(String userToBlock) {
+  void _showAlertForBlock(UserModel userToBlock) {
     Alert(
       context: context,
       title: '정말로 차단하시겠습니까?',
@@ -272,7 +272,7 @@ class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProvider
                 ),
               ),
             ),
-            onTap: () { _showAlertForBlock(user.uid); }
+            onTap: () { _showAlertForBlock(user); }
           )
         ],
       ),
@@ -342,7 +342,7 @@ class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProvider
                 ),
               ),
             ),
-            onTap: () => friendsBloc.emitEvent(FriendsEventRequestAccept(user: user.uid)),
+            onTap: () => friendsBloc.emitEvent(FriendsEventRequestAccept(user: user)),
           ),
           SizedBox(width: 10.0),
           GestureDetector(

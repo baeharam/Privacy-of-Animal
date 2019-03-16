@@ -22,12 +22,12 @@ class FriendsEventChat extends FriendsEvent {
 }
 
 class FriendsEventBlock extends FriendsEvent {
-  final String user;
+  final UserModel user;
   FriendsEventBlock({@required this.user});
 }
 
 class FriendsEventRequestAccept extends FriendsEvent {
-  final String user;
+  final UserModel user;
   FriendsEventRequestAccept({@required this.user});
 }
 
