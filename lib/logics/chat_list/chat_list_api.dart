@@ -1,77 +1,20 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:privacy_of_animal/logics/chat_list/chat_list.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/models/chat_list_model.dart';
-import 'package:privacy_of_animal/models/user_model.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
-import 'package:rxdart/rxdart.dart';
 
 class ChatListAPI {
 
-  static Observable<QuerySnapshot> chatRoomListStream = Stream.empty();
-  static PublishSubject<QuerySnapshot> chatRoomStreamController = PublishSubject();
-
-  List<StreamSubscription> chatRoomSubscriptions = List<StreamSubscription>();
-  StreamSubscription chatRoomListSubscription;
-
-  void disconnectToFirebase() {
-    chatRoomSubscriptions.map((sub) => sub.cancel());
-    chatRoomListSubscription.cancel();
-    chatRoomStreamController.close();
+  /// [채팅 추가]
+  void addChatHistory(ChatListModel chat) {
+    sl.get<CurrentUser>().chatList.add(chat);
   }
 
-  void connectToFirebase() {
-    chatRoomListStream = Observable(sl.get<FirebaseAPI>().getFirestore()
-      .collection(firestoreFriendsMessageCollection)
-      .where('$firestoreChatDeleteField.${sl.get<CurrentUser>().uid}',isEqualTo: false)
-      .snapshots());
-    chatRoomListSubscription = chatRoomListStream.listen((chatRoomList){
-      chatRoomList.documents.map((chatRoom){
-        print(chatRoom.documentID);
-        Observable<QuerySnapshot> chatRoomStream = sl.get<FirebaseAPI>().getFirestore()
-            .collection(firestoreFriendsMessageCollection)
-            .document(chatRoom.documentID)
-            .collection(chatRoom.documentID)
-            .orderBy(firestoreChatTimestampField,descending: true)
-            .limit(1)
-            .snapshots();
-        StreamSubscription subscription = chatRoomStream.listen((snapshot) 
-          => sl.get<ChatListBloc>().emitEvent(ChatListEventFetch(newMessage: snapshot.documents[0])));
-        chatRoomSubscriptions.add(subscription);
-        chatRoomStreamController.addStream(chatRoomStream);
-      });
-    });
-  }
-
-  Future<ChatListModel> fetchUserData(DocumentSnapshot newMessage) async {
-
-    String uid = sl.get<CurrentUser>().uid.compareTo(newMessage.data[firestoreChatUsersField][0])==0
-      ? newMessage.data[firestoreChatUsersField][1] 
-      : newMessage.data[firestoreChatUsersField][0];
-    DocumentSnapshot userData = await sl.get<FirebaseAPI>().getFirestore()
-    .collection(firestoreUsersCollection)
-    .document(uid).get();
-
-    QuerySnapshot chatData = await newMessage.reference.collection(newMessage.documentID)
-    .orderBy(firestoreChatTimestampField,descending: true).limit(1).getDocuments();
-
-    return ChatListModel(
-      chatRoomID: newMessage.documentID,
-      profileImage: userData.data[firestoreFakeProfileField][firestoreAnimalImageField],
-      nickName: userData.data[firestoreFakeProfileField][firestoreNickNameField],
-      lastMessage: chatData.documents[0].data[firestoreChatContentField],
-      lastTimestamp: chatData.documents[0].data[firestoreChatTimestampField],
-      user: UserModel.fromSnapshot(snapshot: userData)
-    );
-  }
-
-  // 채팅방 삭제
-  // 1. 처음 사람이 삭제하는 경우 delete 플래그를 true로
-  // 2. 두번째 사람이 삭제하는 경우는 delete 플래그가 true니까 아예 서버에서 삭제
+  /// [채팅 삭제]
   Future<void> deleteChatRoom(String chatRoomID) async {
     DocumentSnapshot doc = await sl.get<FirebaseAPI>().getFirestore()
       .collection(firestoreFriendsMessageCollection)

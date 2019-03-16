@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meta/meta.dart';
+import 'package:privacy_of_animal/logics/chat_list/chat_list.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/logics/friends/friends.dart';
@@ -24,6 +25,31 @@ class ServerAPI {
 
   Observable<QuerySnapshot> friendsAcceptServer;
   StreamSubscription friendsAcceptSubscription;
+
+  /// [로그인 → 모든 채팅방 연결]
+  Future<void> connectAllChatRoom() async {
+    String currentUser = sl.get<CurrentUser>().uid;
+
+    QuerySnapshot friendsListSnapshot = await sl.get<FirebaseAPI>().getFirestore()
+      .collection(firestoreUsersCollection)
+      .document(currentUser)
+      .collection(firestoreFriendsSubCollection)
+      .where(firestoreFriendsField,isEqualTo: true)
+      .getDocuments();
+
+    friendsListSnapshot.documents.map((friends) async{
+      DocumentSnapshot friendsInfo = await sl.get<FirebaseAPI>().getFirestore()
+        .collection(firestoreUsersCollection).document(friends.documentID).get();
+      connectChatRoom(otherUser: UserModel.fromSnapshot(snapshot: friendsInfo));
+    });
+  }
+
+  /// [로그아웃 → 모든 채팅방 해제]
+  Future<void> disconnectAllChatRoom() async {
+    sl.get<CurrentUser>().friendsList.map((friends){
+      disconnectChatRoom(otherUserUID: friends.uid);
+    });
+  }
 
   /// [로그인 → 친구수락 여부 연결]
   Future<void> connectFriendsAccept() async {
@@ -96,6 +122,8 @@ class ServerAPI {
   /// [친구수락 → 채팅방 연결]
   Future<void> connectChatRoom({@required UserModel otherUser}) async{
 
+    print("Connect to ChatRoom with ${otherUser.uid}");
+
     String chatRoomID = await _getChatRoomID(otherUser.uid);
 
     chatRoomListServer[otherUser.uid] = Observable(
@@ -110,12 +138,14 @@ class ServerAPI {
 
     chatRoomListSubscriptions[otherUser.uid] = chatRoomListServer[otherUser.uid].listen((snapshot){
       if(snapshot.documents.isNotEmpty) {
-        sl.get<CurrentUser>().chatList.add(ChatListModel(
-          chatRoomID: chatRoomID,
-          profileImage: otherUser.fakeProfileModel.animalImage,
-          nickName: otherUser.fakeProfileModel.nickName,
-          lastTimestamp: snapshot.documents[0].data[firestoreChatTimestampField],
-          user: otherUser
+        sl.get<ChatListBloc>().emitEvent(ChatListEventNew(newMessage: 
+          ChatListModel(
+            chatRoomID: chatRoomID,
+            profileImage: otherUser.fakeProfileModel.animalImage,
+            nickName: otherUser.fakeProfileModel.nickName,
+            lastTimestamp: snapshot.documents[0].data[firestoreChatTimestampField],
+            user: otherUser
+          )
         ));
       }
     });

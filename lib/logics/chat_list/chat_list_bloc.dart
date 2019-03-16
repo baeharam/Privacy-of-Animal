@@ -6,35 +6,25 @@ class ChatListBloc extends BlocEventStateBase<ChatListEvent,ChatListState> {
   static final ChatListAPI _api = ChatListAPI();
 
   @override
-    ChatListState get initialState => ChatListState.fetchLoading();
+    ChatListState get initialState => ChatListState.initial();
 
   @override
   Stream<ChatListState> eventHandler(ChatListEvent event, ChatListState currentState) async*{
 
-    if(event is ChatListEventConnectServer) {
-      _api.connectToFirebase();
-    }
-
-    if(event is ChatListEventDisconnectServer) {
-      _api.disconnectToFirebase();
-    }
-
     if(event is ChatListEventDeleteChatRoom) {
       try {
+        yield ChatListState.deleteLoading();
         await _api.deleteChatRoom(event.chatRoomID);
-        yield ChatListState.fetchLoading();
+        yield ChatListState.deleteSucceeded();
       } catch(exception) {
-        print(exception);
+        print('채팅삭제 실패: ${exception.toString()}');
+        yield ChatListState.deleteFailed();
       }
     }
     
-    if(event is ChatListEventFetch) {
-      try { 
-        yield ChatListState.fetchSucceeded(await _api.fetchUserData(event.newMessage));
-      } catch(exception){
-        print(exception);
-        yield ChatListState.fetchFailed();
-      }
+    if(event is ChatListEventNew) {
+      _api.addChatHistory(event.newMessage);
+      yield ChatListState.newMessage();
     }
     if(event is ChatListEventStateClear) {
       yield ChatListState.initial();

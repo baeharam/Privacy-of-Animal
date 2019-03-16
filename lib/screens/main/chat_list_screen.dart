@@ -1,17 +1,14 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state_builder.dart';
 import 'package:privacy_of_animal/logics/chat_list/chat_list.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
-import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/models/chat_list_model.dart';
 import 'package:privacy_of_animal/resources/resources.dart';
 import 'package:privacy_of_animal/screens/main/friends_chat_screen.dart';
 import 'package:privacy_of_animal/screens/main/other_profile_screen.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
-import 'package:privacy_of_animal/widgets/progress_indicator.dart';
 
 class ChatListScreen extends StatefulWidget {
   @override
@@ -26,13 +23,11 @@ class _ChatListScreenState extends State<ChatListScreen> {
   @override
   void initState() {
     super.initState();
-    chatListBloc.emitEvent(ChatListEventConnectServer());
-    initializeDateFormatting('ko');
+    initializeDateFormatting();
   }
 
   @override
   void dispose() {
-    chatListBloc.emitEvent(ChatListEventDisconnectServer());
     super.dispose();
   }
 
@@ -58,15 +53,10 @@ class _ChatListScreenState extends State<ChatListScreen> {
           return BlocBuilder(
             bloc: chatListBloc,
             builder: (context, ChatListState state){
-              if(state.isLoading) {
+              if(state.isInitial) {
                 return CircularProgressIndicator();
               }
-              if(state.isFailed) {
-                return Text('로딩 실패');
-              }
-              if(state.isSucceeded) {
-                return _buildChatRoom(state.chatList);
-              }
+              return _buildChatRoom(sl.get<CurrentUser>().chatList[index]);
             }
           );
         }
