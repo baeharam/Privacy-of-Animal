@@ -32,79 +32,107 @@ class _MatchScreenState extends State<MatchScreen> {
         elevation: 0.0,
         backgroundColor: primaryBlue
       ),
-      body: Stack(
-        children: <Widget>[
-          Positioned(
-            top: -ScreenUtil.height/10,
-            left: -ScreenUtil.width/2,
-            child: GestureDetector(
-              child: Image(
-                image: AssetImage('assets/images/components/match_tag_circle.png'),
-                width: ScreenUtil.width*1.1,
-                height: ScreenUtil.width*1.1
-              ),
-              onTap: () {
-                sl.get<SameMatchBloc>().emitEvent(SameMatchEventFindUser());
-                Navigator.pushNamed(context, routeSameMatch);
-              },
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Image(
+              image: AssetImage('assets/images/components/match_random_circle.png'),
+              width: ScreenUtil.width * 1.1,
+              height: ScreenUtil.width * 1.1,
             ),
-          ),
-          TagTitleForm(
-            content: tagListModel.tagTitleList[0],
-            left: ScreenUtil.width/7,
-            top: ScreenUtil.height/15,
-          ),
-          TagTitleForm(
-            content: tagListModel.tagTitleList[1],
-            left: ScreenUtil.width/12,
-            top: ScreenUtil.height/8,
-          ),
-          TagTitleForm(
-            content: tagListModel.tagTitleList[2],
-            left: ScreenUtil.width/13,
-            top: ScreenUtil.height/5.5,
-          ),
-          TagTitleForm(
-            content: tagListModel.tagTitleList[3],
-            left: ScreenUtil.width/11,
-            top: ScreenUtil.height/4,
-          ),
-          TagTitleForm(
-            content: tagListModel.tagTitleList[4],
-            left: ScreenUtil.width/15,
-            top: ScreenUtil.height/3.2,
-          ),
-          Positioned(
-            left: ScreenUtil.width/3,
-            top: ScreenUtil.height/6,
-            child: ExplainWidget(
-              content: '관심사 일치\n대화상대 추천'
+
+            SizedBox(
+              height: ScreenUtil.height * 0.01,
             ),
-          ),
-          Positioned(
-            bottom: -ScreenUtil.height/7,
-            right: -ScreenUtil.width/2,
-            child: GestureDetector(
-              child: Image(
-                width: ScreenUtil.width*1.1,
-                height: ScreenUtil.width*1.1,
-                image: AssetImage('assets/images/components/match_random_circle.png'),
-              ),
-              onTap: () {
-                sl.get<RandomLoadingBloc>().emitEvent(RandomLoadingEventMatchStart());
-                Navigator.pushNamed(context, routeRandomLoading);
-              }
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                FlatButton(
+                  child: Text("상대 추천"),
+                  onPressed: null,
+                ),
+                FlatButton(
+                  child: Text("랜덤 매칭"),
+                  onPressed: null,
+                )
+              ],
             )
-          ),
-          Positioned(
-            right: ScreenUtil.width/4,
-            bottom: ScreenUtil.height/6,
-            child: ExplainWidget(
-              content: '완전 랜덤 매칭'
-            ),
-          ),
-        ],
-      )
+          ],
+        )
+//      body: Stack(
+//        children: <Widget>[
+//          Positioned(
+//            top: -ScreenUtil.height/10,
+//            left: -ScreenUtil.width/2,
+//            child: GestureDetector(
+//              child: Image(
+//                image: AssetImage('assets/images/components/match_tag_circle.png'),
+//                width: ScreenUtil.width*1.1,
+//                height: ScreenUtil.width*1.1
+//              ),
+//              onTap: () {
+//                sl.get<SameMatchBloc>().emitEvent(SameMatchEventFindUser());
+//                Navigator.pushNamed(context, routeSameMatch);
+//              },
+//            ),
+//          ),
+//          TagTitleForm(
+//            content: tagListModel.tagTitleList[0],
+//            left: ScreenUtil.width/7,
+//            top: ScreenUtil.height/15,
+//          ),
+//          TagTitleForm(
+//            content: tagListModel.tagTitleList[1],
+//            left: ScreenUtil.width/12,
+//            top: ScreenUtil.height/8,
+//          ),
+//          TagTitleForm(
+//            content: tagListModel.tagTitleList[2],
+//            left: ScreenUtil.width/13,
+//            top: ScreenUtil.height/5.5,
+//          ),
+//          TagTitleForm(
+//            content: tagListModel.tagTitleList[3],
+//            left: ScreenUtil.width/11,
+//            top: ScreenUtil.height/4,
+//          ),
+//          TagTitleForm(
+//            content: tagListModel.tagTitleList[4],
+//            left: ScreenUtil.width/15,
+//            top: ScreenUtil.height/3.2,
+//          ),
+//          Positioned(
+//            left: ScreenUtil.width/3,
+//            top: ScreenUtil.height/6,
+//            child: ExplainWidget(
+//              content: '관심사 일치\n대화상대 추천'
+//            ),
+//          ),
+//          Positioned(
+//            bottom: -ScreenUtil.height/7,
+//            right: -ScreenUtil.width/2,
+//            child: GestureDetector(
+//              child: Image(
+//                width: ScreenUtil.width*1.1,
+//                height: ScreenUtil.width*1.1,
+//                image: AssetImage('assets/images/components/match_random_circle.png'),
+//              ),
+//              onTap: () {
+//                sl.get<RandomLoadingBloc>().emitEvent(RandomLoadingEventMatchStart());
+//                Navigator.pushNamed(context, routeRandomLoading);
+//              }
+//            )
+//          ),
+//          Positioned(
+//            right: ScreenUtil.width/4,
+//            bottom: ScreenUtil.height/6,
+//            child: ExplainWidget(
+//              content: '완전 랜덤 매칭'
+//            ),
+//          ),
+//        ],
+//      )
     );
   }
 }
