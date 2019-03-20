@@ -32,6 +32,7 @@ class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProvider
   @override
   void dispose() {
     tabController.dispose();
+    sl.get<CurrentUser>().newFriendsNum = 0;
     super.dispose();
   }
 
@@ -100,14 +101,48 @@ class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProvider
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text('친구'),
-                  SizedBox(width: 10.0)
+                  SizedBox(width: 10.0),
+                  BlocBuilder(
+                    bloc: friendsBloc,
+                    builder: (context, FriendsState state){
+                      int newFriendsNum = sl.get<CurrentUser>().newFriendsNum;
+                      if(newFriendsNum==0) {
+                        return Container();
+                      }
+                      return Container(
+                        padding: EdgeInsets.all(8.0),
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          shape: BoxShape.circle
+                        ),
+                        child: Text(sl.get<CurrentUser>().newFriendsNum.toString())
+                      );
+                    }
+                  )
                 ],
               )),
               Tab(child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text('친구신청'),
-                  SizedBox(width: 10.0)
+                  SizedBox(width: 10.0),
+                  BlocBuilder(
+                    bloc: friendsBloc,
+                    builder: (context, FriendsState state){
+                      int requestNum = sl.get<CurrentUser>().friendsRequestList.length;
+                      if(requestNum==0) {
+                        return Container();
+                      }
+                      return Container(
+                        padding: EdgeInsets.all(8.0),
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          shape: BoxShape.circle
+                        ),
+                        child: Text(sl.get<CurrentUser>().friendsRequestList.length.toString())
+                      );
+                    },
+                  )
                 ],
               ))
             ],

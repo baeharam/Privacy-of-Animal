@@ -92,11 +92,15 @@ class ServerAPI {
         .snapshots());
     friendsListSubscription = friendsListServer.listen((snapshot) {
       if(snapshot.documentChanges.isNotEmpty) {
+        int beforeFriendsNum = sl.get<CurrentUser>().friendsList.length;
         sl.get<FriendsBloc>().emitEvent(FriendsEventFetchFriendsList(friends: snapshot.documents));
-        if(sl.get<CurrentUser>().friendsList.length > snapshot.documents.length) {
+        if(beforeFriendsNum > snapshot.documents.length) {
           sl.get<ChatListBloc>().emitEvent(ChatListEventFriendsDeleted(
             friends: snapshot.documentChanges[0].document.data[firestoreFriendsUID])
           );
+        } else {
+          sl.get<FriendsBloc>().emitEvent(FriendsEventNewFriends(
+            newFriendsNum: snapshot.documentChanges.length));
         }
       }
     });

@@ -37,3 +37,8 @@ class FriendsEventRequestReject extends FriendsEvent {
 }
 
 class FriendsEventFriendsAccepted extends FriendsEvent {}
+
+class FriendsEventNewFriends extends FriendsEvent {
+  final int newFriendsNum;
+  FriendsEventNewFriends({@required this.newFriendsNum});
+}

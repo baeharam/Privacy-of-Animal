@@ -10,6 +10,11 @@ import 'package:privacy_of_animal/resources/strings.dart';
 
 class FriendsAPI {
 
+  /// [새로운 친구수 갱신]
+  void updateNewFriends(int newFriendsNum) {
+    sl.get<CurrentUser>().newFriendsNum = newFriendsNum;
+  }
+
   /// [친구목록] 및 [친구신청 목록] 가져오기
   Future<void> fetchFriendsList(List<dynamic> friends, {@required bool isFriendsList}) async {
     List<UserModel> userList = List<UserModel>();
@@ -70,7 +75,6 @@ class FriendsAPI {
     await batch.commit();
 
     sl.get<CurrentUser>().friendsList.remove(userToBlock);
-    sl.get<ChatListBloc>().emitEvent(ChatListEventFriendsDeleted(friends: userToBlock.uid));
 
     _cancelOtherUser(userToBlock.uid);
   }

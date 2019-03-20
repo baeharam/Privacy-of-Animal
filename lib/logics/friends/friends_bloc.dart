@@ -82,5 +82,10 @@ class FriendsBloc extends BlocEventStateBase<FriendsEvent,FriendsState>
         yield FriendsState.friendsRejectFailed();
       }
     }
+
+    if(event is FriendsEventNewFriends) {
+      _api.updateNewFriends(event.newFriendsNum);
+      yield FriendsState.newFriends();
+    }
   }
 }
