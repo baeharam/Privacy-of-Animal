@@ -16,6 +16,7 @@ import 'package:privacy_of_animal/resources/strings.dart';
 class ServerAPI {
 
   static bool isFirstFriendsFetch = true;
+  static bool isFirstFriendsRequestFetch = true;
 
   var chatRoomListServer = Map<String, Observable<QuerySnapshot>>();
   var chatRoomListSubscriptions = Map<String, StreamSubscription<QuerySnapshot>>();
@@ -75,18 +76,20 @@ class ServerAPI {
               friends: update.document.data[firestoreFriendsUID])
             );
           }
+          sl.get<CurrentUser>().newFriendsNum = 0;
         } 
         // 친구 증가
         else if(!isFirstFriendsFetch){
           String newFriendsNickName = '';
           for(DocumentChange update in snapshot.documentChanges) {
-            DocumentSnapshot userSnapshot = await _getUserInfo(update.document.documentID);
+            DocumentSnapshot userSnapshot = await _getUserInfo(update.document.data[firestoreFriendsUID]);
             UserModel user = UserModel.fromSnapshot(snapshot: userSnapshot);
-            if(userSnapshot.data[firestoreFriendsAccepted]==true) {
+            if(update.document.data[firestoreFriendsAccepted]==true) {
               newFriendsNickName = user.fakeProfileModel.nickName;
             }
             await connectChatRoom(otherUser: user);
           }
+          
           sl.get<FriendsBloc>().emitEvent(FriendsEventNewFriends(
             newFriendsNum: snapshot.documentChanges.length));
           if(newFriendsNickName.isNotEmpty && sl.get<CurrentUser>().friendsNotification) {
@@ -116,9 +119,20 @@ class ServerAPI {
         .collection(firestoreUsersCollection).document(sl.get<CurrentUser>().uid)
         .collection(firestoreFriendsSubCollection).where(firestoreFriendsField, isEqualTo: false)
         .snapshots());
-    friendsRequestListSubscription = friendsRequestListServer.listen((snapshot) {
+    friendsRequestListSubscription = friendsRequestListServer.listen((snapshot) async{
       if(snapshot.documentChanges.isNotEmpty) {
+        if(sl.get<CurrentUser>().friendsRequestList.length < snapshot.documents.length
+          && sl.get<CurrentUser>().friendsNotification && !isFirstFriendsRequestFetch) {
+            DocumentSnapshot userSnapshot = 
+              await _getUserInfo(snapshot.documentChanges[0].document.data[firestoreFriendsUID]);
+            sl.get<NotificationHelper>()
+              .showFriendsRequestNotification(userSnapshot.data[firestoreFakeProfileField][firestoreNickNameField]);
+          } else {
+            isFirstFriendsRequestFetch = false;
+          }
         sl.get<FriendsBloc>().emitEvent(FriendsEventFetchFriendsRequestList(friendsRequest: snapshot.documents));
+      } else {
+        isFirstFriendsRequestFetch = false;
       }
     });
   }
