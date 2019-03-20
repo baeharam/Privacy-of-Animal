@@ -17,6 +17,16 @@ class FriendsBloc extends BlocEventStateBase<FriendsEvent,FriendsState>
       yield FriendsState.initial();
     }
 
+    if(event is FriendsEventFriendsNotification) {
+      try {
+        await _api.setFriendsNotification();
+        yield FriendsState.friendsNotificationToggleSucceeded();
+      } catch(exception) {
+        print('알림설정 실패: ${exception.toString()}');
+        yield FriendsState.friendsNotificationToggleFailed();
+      }
+    }
+
     if(event is FriendsEventFetchFriendsList) {
       yield FriendsState.friendsFetchLoading();
       try {

@@ -1,12 +1,22 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meta/meta.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
+import 'package:privacy_of_animal/logics/database_helper.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/models/user_model.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class FriendsAPI {
+
+  /// [친구 알림 설정]
+  Future<void> setFriendsNotification() async {
+    SharedPreferences prefs = await sl.get<DatabaseHelper>().sharedPreferences;
+    bool value = !sl.get<CurrentUser>().friendsNotification;
+    prefs.setBool(sl.get<CurrentUser>().uid+friendsNotification, value);
+    sl.get<CurrentUser>().friendsNotification = value;
+  }
 
   /// [새로운 친구수 갱신]
   void updateNewFriends(int newFriendsNum) {

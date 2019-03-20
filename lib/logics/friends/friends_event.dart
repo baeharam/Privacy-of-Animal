@@ -42,3 +42,5 @@ class FriendsEventNewFriends extends FriendsEvent {
   final int newFriendsNum;
   FriendsEventNewFriends({@required this.newFriendsNum});
 }
+
+class FriendsEventFriendsNotification extends FriendsEvent {}

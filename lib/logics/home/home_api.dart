@@ -11,58 +11,6 @@ import 'package:sqflite/sqflite.dart';
 
 class HomeAPI {
 
-  static Stream<QuerySnapshot> friendsRequestStream = Stream.empty();
-  static Stream<QuerySnapshot> friendsStream = Stream.empty();
-
-  // void _setFriendsNotification() {
-  //   _addListenerToFriendsRequest();
-  //   _addListenerToFriends();
-  // }
-
-  // void _addListenerToFriendsRequest() {
-  //   friendsRequestStream = sl.get<FirebaseAPI>().getFirestore()
-  //     .collection(firestoreUsersCollection).document(sl.get<CurrentUser>().uid)
-  //     .collection(firestoreFriendsSubCollection).where(firestoreFriendsField, isEqualTo: false)
-  //     .snapshots();
-  //   friendsRequestStream.listen((snapshot){
-  //     if(snapshot.documents.isNotEmpty && snapshot.documentChanges.isNotEmpty){
-  //       if(sl.get<CurrentUser>().friendsRequestListLength==-1) {
-  //         sl.get<CurrentUser>().friendsRequestListLength = snapshot.documents.length;
-  //       }
-  //       else if(snapshot.documentChanges.length==1 
-  //         && sl.get<CurrentUser>().friendsRequestListLength < snapshot.documents.length
-  //         && sl.get<CurrentUser>().friendsNotification) {
-  //           sl.get<CurrentUser>().friendsRequestListLength = snapshot.documents.length;
-  //           sl.get<NotificationHelper>().showFriendsRequestNotification(snapshot);
-  //       }
-  //     }
-  //   });
-  // }
-
-  // void _addListenerToFriends() {
-  //   friendsStream = sl.get<FirebaseAPI>().getFirestore()
-  //     .collection(firestoreUsersCollection).document(sl.get<CurrentUser>().uid)
-  //     .collection(firestoreFriendsSubCollection)
-  //     .where(firestoreFriendsField, isEqualTo: true)
-  //     .where(firestoreFriendsAccepted, isEqualTo: true)
-  //     .snapshots();
-  //   friendsStream.listen((snapshot){
-  //     if(snapshot.documents.isNotEmpty && snapshot.documentChanges.isNotEmpty){
-  //       if(sl.get<CurrentUser>().friendsListLength==-1) {
-  //         sl.get<CurrentUser>().friendsListLength = snapshot.documents.length;
-  //       }
-  //       else if(snapshot.documentChanges.length==1
-  //         && sl.get<CurrentUser>().friendsListLength < snapshot.documents.length
-  //         && sl.get<CurrentUser>().friendsNotification) {
-  //           sl.get<NotificationHelper>().showFriendsNotification(snapshot);
-  //         }
-  //     } else {
-  //       sl.get<CurrentUser>().friendsListLength = 0;
-  //     }
-  //   });
-  // }
-
-
   // 바로 홈 화면으로 갈 경우 그에 해당하는 데이터를 가져옴
   Future<void> fetchUserData() async {
     if(sl.get<CurrentUser>().isDataFetched) { return; }

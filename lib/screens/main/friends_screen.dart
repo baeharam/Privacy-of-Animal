@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state_builder.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/friends/friends.dart';
-import 'package:privacy_of_animal/logics/notification/notification.dart';
 import 'package:privacy_of_animal/models/user_model.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/screens/main/friends_chat_screen.dart';
@@ -20,7 +19,6 @@ class FriendsScreen extends StatefulWidget {
 class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProviderStateMixin{
 
   final FriendsBloc friendsBloc = sl.get<FriendsBloc>();
-  final NotificationBloc notificationBloc = sl.get<NotificationBloc>();
   TabController tabController;
 
   @override
@@ -80,17 +78,17 @@ class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProvider
           backgroundColor: primaryBlue,
           actions: [
             BlocBuilder(
-              bloc: notificationBloc,
-              builder: (context, NotificationState state){
+              bloc: friendsBloc,
+              builder: (context, FriendsState state){
+                if(state.isFriendsNotificationToggleFailed) {
+                  streamSnackbar(context, '알림 설정에 실패하였습니다.');
+                  friendsBloc.emitEvent(FriendsEventStateClear());
+                }
                 return IconButton(
-                  icon: Icon(state.isFriendsNotificationOnSucceeded 
+                  icon: Icon(sl.get<CurrentUser>().friendsNotification
                     ? Icons.notifications
                     : Icons.notifications_off),
-                  onPressed: () => notificationBloc.emitEvent(
-                    state.isFriendsNotificationOnSucceeded
-                    ? NotificationEventFriends(value: false)
-                    : NotificationEventFriends(value: true)
-                  )
+                  onPressed: () => friendsBloc.emitEvent(FriendsEventFriendsNotification())
                 );
               }
             )

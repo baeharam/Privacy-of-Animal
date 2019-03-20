@@ -15,6 +15,8 @@ import 'package:privacy_of_animal/resources/strings.dart';
 
 class ServerAPI {
 
+  static bool isFirstFriendsFetch = true;
+
   var chatRoomListServer = Map<String, Observable<QuerySnapshot>>();
   var chatRoomListSubscriptions = Map<String, StreamSubscription<QuerySnapshot>>();
 
@@ -75,7 +77,7 @@ class ServerAPI {
           }
         } 
         // 친구 증가
-        else if(!sl.get<CurrentUser>().isFirstFriendsFetch){
+        else if(!isFirstFriendsFetch){
           String newFriendsNickName = '';
           for(DocumentChange update in snapshot.documentChanges) {
             DocumentSnapshot userSnapshot = await _getUserInfo(update.document.documentID);
@@ -93,10 +95,12 @@ class ServerAPI {
         } 
         // 처음
         else {
-          sl.get<CurrentUser>().isFirstFriendsFetch = false;
+          isFirstFriendsFetch = false;
         }
 
         sl.get<FriendsBloc>().emitEvent(FriendsEventFetchFriendsList(friends: snapshot.documents));
+      } else {
+        isFirstFriendsFetch = false;
       }
     });
   }

@@ -30,6 +30,9 @@ class FriendsState extends BlocState {
 
   final bool isNewFriends;
 
+  final bool isFriendsNotificationToggleSucceeded;
+  final bool isFriendsNotificationToggleFailed;
+
   final String chatRoomID;
   final UserModel receiver;
 
@@ -61,6 +64,9 @@ class FriendsState extends BlocState {
     this.isFriendsRejectFailed: false,
 
     this.isNewFriends: false,
+
+    this.isFriendsNotificationToggleSucceeded: false,
+    this.isFriendsNotificationToggleFailed: false,
 
     this.chatRoomID: '',
     this.receiver,
@@ -104,4 +110,8 @@ class FriendsState extends BlocState {
 
   factory FriendsState.newFriends() => FriendsState(isNewFriends: true);
 
+  factory FriendsState.friendsNotificationToggleSucceeded() 
+    => FriendsState(isFriendsNotificationToggleSucceeded: true);
+  factory FriendsState.friendsNotificationToggleFailed() 
+    => FriendsState(isFriendsNotificationToggleFailed: true);
 }
