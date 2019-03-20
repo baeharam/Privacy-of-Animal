@@ -1,9 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meta/meta.dart';
-import 'package:privacy_of_animal/logics/chat_list/chat_list.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
-import 'package:privacy_of_animal/logics/server_api.dart';
 import 'package:privacy_of_animal/models/user_model.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
@@ -75,8 +73,6 @@ class FriendsAPI {
     await batch.commit();
 
     sl.get<CurrentUser>().friendsList.remove(userToBlock);
-
-    _cancelOtherUser(userToBlock.uid);
   }
 
   /// [친구신청 수락]
@@ -126,7 +122,6 @@ class FriendsAPI {
 
     await batch.commit();
     sl.get<CurrentUser>().friendsRequestList.remove(requestingUser);
-    await _listenOtherUser(requestingUser);
   }
 
   /// [친구신청 삭제]
@@ -153,13 +148,5 @@ class FriendsAPI {
       .getDocuments();
 
     return snapshot.documents[0].documentID;
-  }
-
-  Future<void> _cancelOtherUser(String userToBlock) async{
-    await sl.get<ServerAPI>().disconnectChatRoom(otherUserUID: userToBlock);
-  }
-
-  Future<void> _listenOtherUser(UserModel requestingUser) async{
-    await sl.get<ServerAPI>().connectChatRoom(otherUser: requestingUser);
   }
 }

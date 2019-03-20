@@ -6,6 +6,7 @@ import 'package:privacy_of_animal/logics/chat_list/chat_list.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/logics/friends/friends.dart';
+import 'package:privacy_of_animal/logics/notification_helper.dart';
 import 'package:privacy_of_animal/models/chat_list_model.dart';
 import 'package:privacy_of_animal/models/user_model.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
@@ -90,18 +91,43 @@ class ServerAPI {
         .collection(firestoreFriendsSubCollection)
         .where(firestoreFriendsField, isEqualTo: true)
         .snapshots());
-    friendsListSubscription = friendsListServer.listen((snapshot) {
+    friendsListSubscription = friendsListServer.listen((snapshot) async{
       if(snapshot.documentChanges.isNotEmpty) {
         int beforeFriendsNum = sl.get<CurrentUser>().friendsList.length;
-        sl.get<FriendsBloc>().emitEvent(FriendsEventFetchFriendsList(friends: snapshot.documents));
+
+        // 친구 감소
         if(beforeFriendsNum > snapshot.documents.length) {
-          sl.get<ChatListBloc>().emitEvent(ChatListEventFriendsDeleted(
-            friends: snapshot.documentChanges[0].document.data[firestoreFriendsUID])
-          );
-        } else {
+          for(DocumentChange update in snapshot.documentChanges) {
+            await disconnectChatRoom(otherUserUID: update.document.documentID);
+            sl.get<ChatListBloc>().emitEvent(ChatListEventFriendsDeleted(
+              friends: update.document.data[firestoreFriendsUID])
+            );
+          }
+        } 
+        // 친구 증가
+        else if(!sl.get<CurrentUser>().isFirstFriendsFetch){
+          UserModel acceptingUser;
+          for(DocumentChange update in snapshot.documentChanges) {
+            DocumentSnapshot userSnapshot = await _getUserInfo(update.document.documentID);
+            UserModel user = UserModel.fromSnapshot(snapshot: userSnapshot);
+            if(userSnapshot.data[firestoreFriendsAccepted]==true) {
+              acceptingUser = user;
+            }
+            await connectChatRoom(otherUser: user);
+          }
           sl.get<FriendsBloc>().emitEvent(FriendsEventNewFriends(
             newFriendsNum: snapshot.documentChanges.length));
+          if(sl.get<CurrentUser>().friendsNotification) {
+            sl.get<NotificationHelper>().showFriendsNotification(
+                acceptingUser.fakeProfileModel.nickName);
+          }
+        } 
+        // 처음
+        else {
+          sl.get<CurrentUser>().isFirstFriendsFetch = false;
         }
+
+        sl.get<FriendsBloc>().emitEvent(FriendsEventFetchFriendsList(friends: snapshot.documents));
       }
     });
   }

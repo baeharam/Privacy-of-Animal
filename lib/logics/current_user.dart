@@ -16,6 +16,7 @@ class CurrentUser {
   List<UserModel> friendsList;
   List<UserModel> friendsRequestList;
   int newFriendsNum;
+  bool isFirstFriendsFetch;
 
   bool friendsNotification;
   bool messageNotification;
@@ -33,6 +34,7 @@ class CurrentUser {
     friendsList = [];
     friendsRequestList = [];
     newFriendsNum = 0;
+    isFirstFriendsFetch = true;
 
     friendsNotification = false;
     messageNotification = false;
