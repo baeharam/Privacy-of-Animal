@@ -24,8 +24,6 @@ class ServerAPI {
   Observable<QuerySnapshot> friendsRequestListServer;
   StreamSubscription friendsRequestListSubscription;
 
-  Observable<QuerySnapshot> friendsAcceptServer;
-  StreamSubscription friendsAcceptSubscription;
 
   /// [로그인 → 모든 채팅방 연결]
   Future<void> connectAllChatRoom() async {
@@ -54,34 +52,6 @@ class ServerAPI {
     });
   }
 
-  /// [로그인 → 친구수락 여부 연결]
-  Future<void> connectFriendsAccept() async {
-    friendsAcceptServer =Observable(sl.get<FirebaseAPI>().getFirestore()
-      .collection(firestoreUsersCollection)
-      .document(sl.get<CurrentUser>().uid)
-      .collection(firestoreFriendsSubCollection)
-      .where(firestoreFriendsField, isEqualTo: true)
-      .where(firestoreFriendsAccepted, isEqualTo: true)
-      .snapshots());
-
-    friendsAcceptSubscription =friendsAcceptServer.listen((snapshot) async{
-      if(snapshot.documentChanges.isNotEmpty) {
-        for(DocumentSnapshot userDoc in snapshot.documents) {
-          String user = userDoc.documentID;
-          if(chatRoomListServer[user]==null){
-            DocumentSnapshot userInfoSnapshot = await _getUserInfo(user);
-            await connectChatRoom(otherUser: UserModel.fromSnapshot(snapshot: userInfoSnapshot));
-          }
-        }
-      }
-    });
-  }
-
-  /// [로그아웃 → 친구수락 여부 해제]
-  Future<void> disconnectFriendsAccept() async {
-    await friendsAcceptSubscription.cancel();
-  }
-
 
   /// [로그인 → 친구목록 연결]
   Future<void> connectFriendsList() async {
@@ -106,20 +76,19 @@ class ServerAPI {
         } 
         // 친구 증가
         else if(!sl.get<CurrentUser>().isFirstFriendsFetch){
-          UserModel acceptingUser;
+          String newFriendsNickName = '';
           for(DocumentChange update in snapshot.documentChanges) {
             DocumentSnapshot userSnapshot = await _getUserInfo(update.document.documentID);
             UserModel user = UserModel.fromSnapshot(snapshot: userSnapshot);
             if(userSnapshot.data[firestoreFriendsAccepted]==true) {
-              acceptingUser = user;
+              newFriendsNickName = user.fakeProfileModel.nickName;
             }
             await connectChatRoom(otherUser: user);
           }
           sl.get<FriendsBloc>().emitEvent(FriendsEventNewFriends(
             newFriendsNum: snapshot.documentChanges.length));
-          if(sl.get<CurrentUser>().friendsNotification) {
-            sl.get<NotificationHelper>().showFriendsNotification(
-                acceptingUser.fakeProfileModel.nickName);
+          if(newFriendsNickName.isNotEmpty && sl.get<CurrentUser>().friendsNotification) {
+            sl.get<NotificationHelper>().showFriendsNotification(newFriendsNickName);
           }
         } 
         // 처음

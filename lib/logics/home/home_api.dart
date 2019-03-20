@@ -90,7 +90,6 @@ class HomeAPI {
     // 친구목록, 친구신청목록과의 스트림 연결작업
     await sl.get<ServerAPI>().connectFriendsList();
     await sl.get<ServerAPI>().connectFriendsRequestList();
-    await sl.get<ServerAPI>().connectFriendsAccept();
     await sl.get<ServerAPI>().connectAllChatRoom();
 
     // 데이터 가져왔다고 설정
