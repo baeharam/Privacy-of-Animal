@@ -13,6 +13,9 @@ class FriendsChatState extends BlocState {
   final bool isTimestampFetchFailed;
   final Timestamp timestamp;
 
+  final bool isNotificationToggleSucceeded;
+  final bool isNotificationToggleFalied;
+
   FriendsChatState({
     this.isInitial: false,
     this.isSendSucceeded: false,
@@ -21,38 +24,19 @@ class FriendsChatState extends BlocState {
     this.isStoreFailed: false,
     this.isTimestampFetchSucceeded: false,
     this.isTimestampFetchFailed: false,
-    this.timestamp
+    this.timestamp,
+
+    this.isNotificationToggleSucceeded: false,
+    this.isNotificationToggleFalied: false
   });
 
-  factory FriendsChatState.initial() {
-    return FriendsChatState(
-      isInitial: true
-    );
-  }
+  factory FriendsChatState.initial() => FriendsChatState(isInitial: true);
 
-  factory FriendsChatState.sendSucceeded() {
-    return FriendsChatState(
-      isSendSucceeded: true
-    );
-  }
+  factory FriendsChatState.sendSucceeded() => FriendsChatState(isSendSucceeded: true);
+  factory FriendsChatState.sendFailed() => FriendsChatState(isSendFailed: true);
 
-  factory FriendsChatState.sendFailed() {
-    return FriendsChatState(
-      isSendFailed: true
-    );
-  }
-
-  factory FriendsChatState.storeSucceeded() {
-    return FriendsChatState(
-      isStoreSucceeded: true
-    );
-  }
-
-  factory FriendsChatState.storeFailed() {
-    return FriendsChatState(
-      isStoreFailed: true
-    );
-  }
+  factory FriendsChatState.storeSucceeded() => FriendsChatState(isStoreSucceeded: true);
+  factory FriendsChatState.storeFailed() => FriendsChatState(isStoreFailed: true);
 
   factory FriendsChatState.timeStampFetchSucceeded(Timestamp timestamp) {
     return FriendsChatState(
@@ -60,10 +44,10 @@ class FriendsChatState extends BlocState {
       timestamp: timestamp
     );
   }
+  factory FriendsChatState.timeStampFetchFailed() => FriendsChatState(isTimestampFetchFailed: true);
 
-  factory FriendsChatState.timeStampFetchFailed() {
-    return FriendsChatState(
-      isTimestampFetchFailed: true
-    );
-  }
+  factory FriendsChatState.notificationToggleSucceeded() 
+    => FriendsChatState(isNotificationToggleSucceeded: true);
+  factory FriendsChatState.notificationToggleFailed() 
+    => FriendsChatState(isNotificationToggleFalied: true);
 }

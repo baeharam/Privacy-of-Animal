@@ -64,9 +64,18 @@ class _FriendsChatScreenState extends State<FriendsChatScreen> {
           ),
         ),
         actions: [
-          IconButton(
-            icon: Icon(Icons.notifications),
-            onPressed: (){},
+          BlocBuilder(
+            bloc: friendsChatBloc,
+            builder: (context, FriendsChatState state){
+              return IconButton(
+                icon: sl.get<CurrentUser>().chatRoomNotification[widget.chatRoomID]
+                ? Icon(Icons.notifications)
+                : Icon(Icons.notifications_off),
+                onPressed: () => friendsChatBloc.emitEvent(FriendsChatEventNotification(
+                  chatRoomID: widget.chatRoomID
+                )),
+              );
+            }
           )
         ],
         centerTitle: true,

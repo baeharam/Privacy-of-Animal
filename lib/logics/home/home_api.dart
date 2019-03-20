@@ -32,8 +32,8 @@ class HomeAPI {
     _setFakeProfile(fakeProfile);
 
     // 알림 설정 가져오기
-    await _setNotification(uid);
-    //_setFriendsNotification();
+    await _setFriendsNotification(uid);
+    await _setChatRoomNotification();
 
     // 친구목록, 친구신청목록과의 스트림 연결작업
     await sl.get<ServerAPI>().connectFriendsList();
@@ -80,13 +80,31 @@ class HomeAPI {
     sl.get<CurrentUser>().fakeProfileModel.analyzedTime = fakeProfile[0][analyzedTimeCol];
   }
 
-  Future<void> _setNotification(String uid) async{
+  Future<void> _setFriendsNotification(String uid) async{
     SharedPreferences prefs = await sl.get<DatabaseHelper>().sharedPreferences;
     if(prefs.getBool(uid+friendsNotification)==null){
       prefs.setBool(uid+friendsNotification, false);
       sl.get<CurrentUser>().friendsNotification = false;
     } else {
       sl.get<CurrentUser>().friendsNotification = prefs.getBool(uid+friendsNotification);
+    }
+  }
+
+  Future<void> _setChatRoomNotification() async{
+    QuerySnapshot chatRoomsSnapshot = await sl.get<FirebaseAPI>().getFirestore()
+      .collection(firestoreFriendsMessageCollection)
+      .getDocuments();
+
+    SharedPreferences prefs = await sl.get<DatabaseHelper>().sharedPreferences;
+    
+    for(DocumentSnapshot chatRoomSnapshot in chatRoomsSnapshot.documents) {
+      String chatRoomID = chatRoomSnapshot.documentID;
+      if(prefs.getBool(chatRoomID)==null) {
+        prefs.setBool(chatRoomID, false);
+        sl.get<CurrentUser>().chatRoomNotification[chatRoomID] = false;
+      } else {
+        sl.get<CurrentUser>().chatRoomNotification[chatRoomID] = prefs.getBool(chatRoomID);
+      }
     }
   }
 

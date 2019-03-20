@@ -13,12 +13,26 @@ class FriendsChatBloc extends BlocEventStateBase<FriendsChatEvent,FriendsChatSta
   @override
   Stream<FriendsChatState> eventHandler(FriendsChatEvent event, FriendsChatState currentState) async*{
 
+    if(event is FriendsChatEventStateClear) {
+      yield FriendsChatState();
+    }
+
+    if(event is FriendsChatEventNotification) {
+      try {
+        await _api.setChatRoomNotification(event.chatRoomID);
+        yield FriendsChatState.notificationToggleSucceeded();
+      } catch(exception) {
+        print("채팅방 알림설정 실패: ${exception.toString()}");
+        yield FriendsChatState.notificationToggleFailed();
+      }
+    }
+
     if(event is FriendsChatEventFetchTimestamp) {
       try {
         yield FriendsChatState.timeStampFetchSucceeded(
           await _api.getDeleteTimestamp(event.chatRoomID));
       } catch(exception) {
-        print(exception);
+        print("채팅 시간 가져오기 실패: ${exception.toString()}");
         yield FriendsChatState.timeStampFetchFailed();
       }
     }
@@ -28,7 +42,7 @@ class FriendsChatBloc extends BlocEventStateBase<FriendsChatEvent,FriendsChatSta
         await _api.sendMessage(event.content, event.receiver, event.chatRoomID);
         yield FriendsChatState.sendSucceeded();
       } catch(exception) {
-        print(exception);
+        print("채팅 전송 실패: ${exception.toString()}");
         yield FriendsChatState.sendFailed();
       }
     }
@@ -38,7 +52,7 @@ class FriendsChatBloc extends BlocEventStateBase<FriendsChatEvent,FriendsChatSta
         await _api.storeIntoLocalDB(event.from, event.to, event.timestamp, event.content);
         yield FriendsChatState.storeSucceeded();
       } catch(exception) {
-        print(exception);
+        print("채팅 저장 실패: ${exception.toString()}");
         yield FriendsChatState.storeFailed();
       }
     }

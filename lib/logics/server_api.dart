@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meta/meta.dart';
 import 'package:privacy_of_animal/logics/chat_list/chat_list.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
+import 'package:privacy_of_animal/logics/database_helper.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/logics/friends/friends.dart';
 import 'package:privacy_of_animal/logics/notification_helper.dart';
@@ -12,6 +13,7 @@ import 'package:privacy_of_animal/models/user_model.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ServerAPI {
 
@@ -72,6 +74,7 @@ class ServerAPI {
         if(beforeFriendsNum > snapshot.documents.length) {
           for(DocumentChange update in snapshot.documentChanges) {
             await disconnectChatRoom(otherUserUID: update.document.documentID);
+            await deleteChatRoomNotification(update.document.documentID);
             sl.get<ChatListBloc>().emitEvent(ChatListEventFriendsDeleted(
               friends: update.document.data[firestoreFriendsUID])
             );
@@ -178,6 +181,12 @@ class ServerAPI {
   Future<void> disconnectChatRoom({@required String otherUserUID}) async{
     await chatRoomListSubscriptions[otherUserUID].cancel();
     chatRoomListServer.remove(otherUserUID);
+  }
+
+  Future<void> deleteChatRoomNotification(String user) async {
+    SharedPreferences prefs = await sl.get<DatabaseHelper>().sharedPreferences;
+    String chatRoomID = await _getChatRoomID(user);
+    await prefs.remove(chatRoomID);
   }
 
   Future<DocumentSnapshot> _getUserInfo(String user) async {

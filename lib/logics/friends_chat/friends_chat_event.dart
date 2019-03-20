@@ -35,3 +35,8 @@ class FriendsChatEventStoreMessages extends FriendsChatEvent {
     @required this.content
   });
 }
+
+class FriendsChatEventNotification extends FriendsChatEvent {
+  final String chatRoomID;
+  FriendsChatEventNotification({@required this.chatRoomID});
+}

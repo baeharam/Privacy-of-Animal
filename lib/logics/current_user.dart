@@ -18,7 +18,7 @@ class CurrentUser {
   int newFriendsNum;
 
   bool friendsNotification;
-  bool messageNotification;
+  Map<String,bool> chatRoomNotification;
 
   bool isDataFetched;
 
@@ -35,7 +35,7 @@ class CurrentUser {
     newFriendsNum = 0;
 
     friendsNotification = false;
-    messageNotification = false;
+    chatRoomNotification = Map<String,bool>();
 
     isDataFetched = false;
   }

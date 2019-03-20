@@ -5,9 +5,18 @@ import 'package:privacy_of_animal/logics/database_helper.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
 class FriendsChatAPI {
+
+  /// [친구 알림 설정]
+  Future<void> setChatRoomNotification(String chatRoomID) async {
+    SharedPreferences prefs = await sl.get<DatabaseHelper>().sharedPreferences;
+    bool value = !sl.get<CurrentUser>().chatRoomNotification[chatRoomID];
+    prefs.setBool(chatRoomID, value);
+    sl.get<CurrentUser>().chatRoomNotification[chatRoomID] = value;
+  }
 
   Future<Timestamp> getDeleteTimestamp(String chatroomID) async {
     DocumentSnapshot doc = await sl.get<FirebaseAPI>().getFirestore()
