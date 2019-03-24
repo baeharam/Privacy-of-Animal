@@ -38,23 +38,33 @@ class _MatchScreenState extends State<MatchScreen> {
           children: <Widget>[
             Image(
               image: AssetImage('assets/images/components/match_random_circle.png'),
-              width: ScreenUtil.width * 1.1,
-              height: ScreenUtil.width * 1.1,
+              width: ScreenUtil.width * .8,
+              height: ScreenUtil.width * .8,
             ),
-
-            SizedBox(
-              height: ScreenUtil.height * 0.01,
-            ),
+//            SizedBox(
+//              height: ScreenUtil.height * 0.001,
+//            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 FlatButton(
+                  color: primaryBeige,
                   child: Text("상대 추천"),
-                  onPressed: null,
+                  onPressed: () {
+                    sl.get<SameMatchBloc>().emitEvent(SameMatchEventFindUser());
+                    Navigator.pushNamed(context, routeSameMatch);
+                  },
+                  shape: RoundedRectangleBorder(side: BorderSide(color : Colors.orange[200], width : 1.3) ,borderRadius: BorderRadius.circular(10.0)),
                 ),
+                SizedBox(width: ScreenUtil.width *.09),
                 FlatButton(
+                  color: primaryBeige,
                   child: Text("랜덤 매칭"),
-                  onPressed: null,
+                  onPressed: () {
+                    sl.get<RandomLoadingBloc>().emitEvent(RandomLoadingEventMatchStart());
+                    Navigator.pushNamed(context, routeRandomLoading);
+                  },
+                  shape: RoundedRectangleBorder(side: BorderSide(color : Colors.orange[200], width : 1.3) ,borderRadius: BorderRadius.circular(10.0)),
                 )
               ],
             )
