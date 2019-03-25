@@ -236,9 +236,8 @@ class _FriendsChatScreenState extends State<FriendsChatScreen> {
   }
 
   bool _isFirstLeft(int index) {
-    if((index<messages.length-1 && messages!=null && messages[index+1].from 
-      != messages[index].to)
-     || index == messages.length-1) {
+    if((index<messages.length-1 && messages!=null && messages[index+1].from == sl.get<CurrentUser>().uid)
+     || (index == messages.length-1)) {
        return true;
      } else {
        return false;
