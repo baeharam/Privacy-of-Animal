@@ -18,7 +18,23 @@ class FriendsChatBloc extends BlocEventStateBase<FriendsChatEvent,FriendsChatSta
     }
 
     if(event is FriendsChatEventMessageRecieved) {
+      _api.updateChatHistory(event.otherUserUID, event.snapshot);
       yield FriendsChatState.messageReceived();
+    }
+
+    if(event is FriendsChatEventMyChatUpdate) {
+      _api.addChatDirectly(event.otherUserUID, event.chatModel);
+      yield FriendsChatState.myMessage();
+
+    }
+  
+    if(event is FriendsChatEventMessageSend) {
+      try {
+        await _api.sendMessage(event.content, event.receiver, event.chatRoomID);
+      } catch(exception) {
+        print("채팅 전송 실패: ${exception.toString()}");
+        yield FriendsChatState.sendFailed();
+      }
     }
 
     if(event is FriendsChatEventNotification) {
@@ -28,16 +44,6 @@ class FriendsChatBloc extends BlocEventStateBase<FriendsChatEvent,FriendsChatSta
       } catch(exception) {
         print("채팅방 알림설정 실패: ${exception.toString()}");
         yield FriendsChatState.notificationToggleFailed();
-      }
-    }
-
-    if(event is FriendsChatEventMessageSend) {
-      try {
-        await _api.sendMessage(event.content, event.receiver, event.chatRoomID);
-        yield FriendsChatState.sendSucceeded();
-      } catch(exception) {
-        print("채팅 전송 실패: ${exception.toString()}");
-        yield FriendsChatState.sendFailed();
       }
     }
   }

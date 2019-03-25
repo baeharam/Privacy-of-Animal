@@ -2,11 +2,26 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/database_helper.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
+import 'package:privacy_of_animal/models/chat_model.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class FriendsChatAPI {
+
+  void addChatDirectly(String otherUserUID, ChatModel chat) {
+    sl.get<CurrentUser>().chatHistory[otherUserUID].insert(0,chat);
+  }
+
+  void updateChatHistory(String otherUserUID, QuerySnapshot snapshot) {
+    sl.get<CurrentUser>().chatHistory[otherUserUID] ??= List<ChatModel>();
+
+    for(DocumentChange chatData in snapshot.documentChanges) {
+      sl.get<CurrentUser>().chatHistory[otherUserUID].insert(0,ChatModel.fromSnapshot(
+        snapshot: chatData.document
+      ));
+    }
+  }
 
   /// [친구 알림 설정]
   Future<void> setChatRoomNotification(String chatRoomID) async {

@@ -8,6 +8,13 @@ class ChatModel {
   String content;
   Timestamp timeStamp;
 
+  ChatModel({
+    this.from,
+    this.to,
+    this.content,
+    this.timeStamp
+  });
+
   ChatModel.fromSnapshot({@required DocumentSnapshot snapshot}) {
     this.from = snapshot.data[firestoreChatFromField];
     this.to = snapshot.data[firestoreChatToField];

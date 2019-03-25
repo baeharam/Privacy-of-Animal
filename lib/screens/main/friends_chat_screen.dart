@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state_builder.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
@@ -82,7 +83,7 @@ class _FriendsChatScreenState extends State<FriendsChatScreen> {
               bloc: friendsChatBloc,
               builder: (context, FriendsChatState state){
                 if(state.isMessageReceived) {
-                  messages = sl.get<CurrentUser>().chatHistory[widget.receiver];
+                  messages = sl.get<CurrentUser>().chatHistory[widget.receiver.uid];
                 }
                 return ListView.builder(
                   padding: EdgeInsets.all(10.0),
@@ -124,6 +125,15 @@ class _FriendsChatScreenState extends State<FriendsChatScreen> {
                         ));
                       }
                       else {
+                        friendsChatBloc.emitEvent(FriendsChatEventMyChatUpdate(
+                          chatModel: ChatModel(
+                            content: messageController.text,
+                            from: sl.get<CurrentUser>().uid,
+                            to: widget.receiver.uid,
+                            timeStamp: Timestamp.fromDate(DateTime.now())
+                          ),
+                          otherUserUID: widget.receiver.uid
+                        ));
                         friendsChatBloc.emitEvent(FriendsChatEventMessageSend(
                           content: messageController.text,
                           receiver: widget.receiver.uid,

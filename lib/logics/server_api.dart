@@ -10,7 +10,6 @@ import 'package:privacy_of_animal/logics/friends/friends.dart';
 import 'package:privacy_of_animal/logics/friends_chat/friends_chat.dart';
 import 'package:privacy_of_animal/logics/notification_helper.dart';
 import 'package:privacy_of_animal/models/chat_list_model.dart';
-import 'package:privacy_of_animal/models/chat_model.dart';
 import 'package:privacy_of_animal/models/user_model.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:rxdart/rxdart.dart';
@@ -21,6 +20,7 @@ class ServerAPI {
 
   static bool isFirstFriendsFetch = true;
   static bool isFirstFriendsRequestFetch = true;
+  static Map<String,bool> isFirstChatHistoryFetch = Map<String,bool>();
 
   var chatRoomListServer = Map<String, Observable<QuerySnapshot>>();
   var chatRoomListSubscriptions = Map<String, StreamSubscription<QuerySnapshot>>();
@@ -153,6 +153,7 @@ class ServerAPI {
 
     String chatRoomID = await _getChatRoomID(otherUser.uid);
     Timestamp outTimestamp = await _getChatRoomOutTimestamp(chatRoomID);
+    isFirstChatHistoryFetch[chatRoomID] ??= true;
 
     chatRoomListServer[otherUser.uid] = Observable(
       sl.get<FirebaseAPI>().getFirestore()
@@ -167,7 +168,9 @@ class ServerAPI {
     chatRoomListSubscriptions[otherUser.uid] = chatRoomListServer[otherUser.uid].listen((snapshot){
       if(snapshot.documents.isNotEmpty) {
         _updateChatListHistory(otherUser, chatRoomID, snapshot);
-        _updateChatHistory(otherUser.uid, snapshot);
+      }
+      if(snapshot.documentChanges.isNotEmpty) {
+        _updateChatHistory(otherUser.uid, chatRoomID, snapshot);
       }
     });
   }
@@ -178,14 +181,15 @@ class ServerAPI {
     chatRoomListServer.remove(otherUserUID);
   }
 
-  void _updateChatHistory(String otherUserUID, QuerySnapshot snapshot) {
-    sl.get<CurrentUser>().chatHistory[otherUserUID] ??= List<ChatModel>();
-    snapshot.documentChanges.map((chatData) async{
-      sl.get<CurrentUser>().chatHistory[otherUserUID].add(ChatModel.fromSnapshot(
-        snapshot: chatData.document
-      ));
-    });
-    sl.get<FriendsChatBloc>().emitEvent(FriendsChatEventMessageRecieved());
+  void _updateChatHistory(String otherUserUID, String chatRoomID, QuerySnapshot snapshot) {
+    if(isFirstChatHistoryFetch[chatRoomID] ||
+        snapshot.documentChanges[0].document.data[firestoreChatFromField]!=sl.get<CurrentUser>().uid) {
+          if(isFirstChatHistoryFetch[chatRoomID]) isFirstChatHistoryFetch[chatRoomID] = false;
+          sl.get<FriendsChatBloc>().emitEvent(FriendsChatEventMessageRecieved(
+            snapshot: snapshot,
+            otherUserUID: otherUserUID
+          ));
+    }
   }
 
   void _updateChatListHistory(UserModel otherUser, String chatRoomID, QuerySnapshot snapshot) {
