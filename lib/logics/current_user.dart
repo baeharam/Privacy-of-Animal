@@ -1,4 +1,5 @@
 import 'package:privacy_of_animal/models/chat_list_model.dart';
+import 'package:privacy_of_animal/models/chat_model.dart';
 import 'package:privacy_of_animal/models/fake_profile_model.dart';
 import 'package:privacy_of_animal/models/kakao_ml_model.dart';
 import 'package:privacy_of_animal/models/real_profile_model.dart';
@@ -12,7 +13,8 @@ class CurrentUser {
   KakaoMLModel kakaoMLModel;
   FakeProfileModel fakeProfileModel;
 
-  Map<String,ChatListModel> chatHistory;
+  Map<String,ChatListModel> chatListHistory;
+  Map<String,List<ChatModel>> chatHistory;
   List<UserModel> friendsList;
   List<UserModel> friendsRequestList;
   int newFriendsNum;
@@ -29,7 +31,9 @@ class CurrentUser {
     tagListModel = TagListModel(tagTitleList: [], tagDetailList: []);
     fakeProfileModel =FakeProfileModel();
 
-    chatHistory = Map<String,ChatListModel>();
+    chatListHistory = Map<String,ChatListModel>();
+    chatHistory = Map<String,List<ChatModel>>();
+
     friendsList = [];
     friendsRequestList = [];
     newFriendsNum = 0;

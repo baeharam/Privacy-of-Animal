@@ -236,10 +236,10 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
     );
   }
 
-  Widget _buildMessage(int index, ChatModel chatData) {
+  Widget _buildMessage(int index, ChatModel chat) {
 
     // 내가 보내는 메시지
-    if(chatData.fromUID == sl.get<CurrentUser>().uid){
+    if(chat.from == sl.get<CurrentUser>().uid){
       return Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
@@ -248,14 +248,13 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
             margin: EdgeInsets.only(right: 10.0),
             child: Text(
               DateFormat('kk:mm','ko')
-                .format(DateTime.fromMillisecondsSinceEpoch(
-                  (chatData.timeStamp as Timestamp).millisecondsSinceEpoch)),
+                .format(DateTime.fromMillisecondsSinceEpoch(chat.timeStamp.millisecondsSinceEpoch)),
                 style: TextStyle(color: Colors.grey,fontSize: 12.0),
             ),
           ) : Container(),
           Container(
             child: Text(
-              chatData.content,
+              chat.content,
               style: TextStyle(
                 color: Colors.white
               ),
@@ -296,7 +295,7 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
           ),
           Container(
             child: Text(
-              chatData.content,
+              chat.content,
               style: TextStyle(color: Colors.white),
             ),
             padding: EdgeInsets.fromLTRB(15.0,10.0,15.0,10.0),
@@ -311,8 +310,7 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
             margin: EdgeInsets.only(left: 10.0,top: 15.0),
             child: Text(
               DateFormat('kk:mm','ko')
-                .format(DateTime.fromMillisecondsSinceEpoch(
-                  (chatData.timeStamp as Timestamp).millisecondsSinceEpoch)),
+                .format(DateTime.fromMillisecondsSinceEpoch(chat.timeStamp.millisecondsSinceEpoch)),
                 style: TextStyle(color: Colors.grey,fontSize: 12.0),
             ),
           ) : Container()
@@ -322,7 +320,7 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
   }
 
   bool _isFirstLeft(int index) {
-    if((index<messages.length-1 && messages!=null && messages[index+1].fromUID!= messages[index].fromUID)
+    if((index<messages.length-1 && messages!=null && messages[index+1].from!= messages[index].from)
      || index == messages.length-1) {
        return true;
      } else {
@@ -331,7 +329,7 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
   }
 
   bool _isLastLeft(int index) {
-    if((index>0 && messages!=null && messages[index-1].fromUID == sl.get<CurrentUser>().uid) 
+    if((index>0 && messages!=null && messages[index-1].from == sl.get<CurrentUser>().uid) 
       || index==0){
         return true;
     } else {
@@ -340,7 +338,7 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
   }
 
   bool _isLastRight(int index) {
-    if((index>0 && messages!=null && messages[index-1].toUID == sl.get<CurrentUser>().uid) 
+    if((index>0 && messages!=null && messages[index-1].to == sl.get<CurrentUser>().uid) 
       || index==0){
         return true;
     } else {

@@ -7,8 +7,10 @@ import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/database_helper.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/logics/friends/friends.dart';
+import 'package:privacy_of_animal/logics/friends_chat/friends_chat.dart';
 import 'package:privacy_of_animal/logics/notification_helper.dart';
 import 'package:privacy_of_animal/models/chat_list_model.dart';
+import 'package:privacy_of_animal/models/chat_model.dart';
 import 'package:privacy_of_animal/models/user_model.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:rxdart/rxdart.dart';
@@ -150,6 +152,7 @@ class ServerAPI {
   Future<void> connectChatRoom({@required UserModel otherUser}) async{
 
     String chatRoomID = await _getChatRoomID(otherUser.uid);
+    Timestamp outTimestamp = await _getChatRoomOutTimestamp(chatRoomID);
 
     chatRoomListServer[otherUser.uid] = Observable(
       sl.get<FirebaseAPI>().getFirestore()
@@ -157,22 +160,14 @@ class ServerAPI {
         .document(chatRoomID)
         .collection(chatRoomID)
         .orderBy(firestoreChatTimestampField,descending: true)
-        .limit(1)
+        .where(firestoreChatTimestampField,isGreaterThan: outTimestamp)
         .snapshots()
     );
 
     chatRoomListSubscriptions[otherUser.uid] = chatRoomListServer[otherUser.uid].listen((snapshot){
       if(snapshot.documents.isNotEmpty) {
-        sl.get<ChatListBloc>().emitEvent(ChatListEventNew(newMessage: 
-          ChatListModel(
-            chatRoomID: chatRoomID,
-            profileImage: otherUser.fakeProfileModel.animalImage,
-            nickName: otherUser.fakeProfileModel.nickName,
-            lastTimestamp: snapshot.documents[0].data[firestoreChatTimestampField],
-            lastMessage: snapshot.documents[0].data[firestoreChatContentField],
-            user: otherUser
-          )
-        ));
+        _updateChatListHistory(otherUser, chatRoomID, snapshot);
+        _updateChatHistory(otherUser.uid, snapshot);
       }
     });
   }
@@ -181,6 +176,36 @@ class ServerAPI {
   Future<void> disconnectChatRoom({@required String otherUserUID}) async{
     await chatRoomListSubscriptions[otherUserUID].cancel();
     chatRoomListServer.remove(otherUserUID);
+  }
+
+  void _updateChatHistory(String otherUserUID, QuerySnapshot snapshot) {
+    sl.get<CurrentUser>().chatHistory[otherUserUID] ??= List<ChatModel>();
+    snapshot.documentChanges.map((chatData) async{
+      sl.get<CurrentUser>().chatHistory[otherUserUID].add(ChatModel.fromSnapshot(
+        snapshot: chatData.document
+      ));
+    });
+    sl.get<FriendsChatBloc>().emitEvent(FriendsChatEventMessageRecieved());
+  }
+
+  void _updateChatListHistory(UserModel otherUser, String chatRoomID, QuerySnapshot snapshot) {
+    sl.get<ChatListBloc>().emitEvent(ChatListEventNew(newMessage: 
+      ChatListModel(
+        chatRoomID: chatRoomID,
+        profileImage: otherUser.fakeProfileModel.animalImage,
+        nickName: otherUser.fakeProfileModel.nickName,
+        lastTimestamp: snapshot.documents[0].data[firestoreChatTimestampField],
+        lastMessage: snapshot.documents[0].data[firestoreChatContentField],
+        user: otherUser
+      )
+    ));
+  }
+
+  Future<Timestamp> _getChatRoomOutTimestamp(String chatRoomID) async {
+    DocumentSnapshot doc = await sl.get<FirebaseAPI>().getFirestore()
+      .collection(firestoreFriendsMessageCollection)
+      .document(chatRoomID).get();
+    return doc.data[firestoreChatOutField][sl.get<CurrentUser>().uid];
   }
 
   Future<void> deleteChatRoomNotification(String user) async {

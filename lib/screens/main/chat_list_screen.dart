@@ -45,7 +45,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
         bloc: chatListBloc,
         builder: (context, ChatListState state){
           if(state.isNewMessage || state.isFriendsDeleted) {
-            chatList = sl.get<CurrentUser>().chatHistory.values.toList();
+            chatList = sl.get<CurrentUser>().chatListHistory.values.toList();
           }
           if(chatList.isEmpty) {
             return Center(child: Text('아직 대화기록이 없습니다.'));

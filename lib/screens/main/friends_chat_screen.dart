@@ -1,15 +1,12 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state_builder.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
-import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/logics/friends_chat/friends_chat.dart';
+import 'package:privacy_of_animal/models/chat_model.dart';
 import 'package:privacy_of_animal/models/user_model.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/screens/main/other_profile_screen.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
-import 'package:privacy_of_animal/widgets/progress_indicator.dart';
-import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
@@ -31,11 +28,7 @@ class _FriendsChatScreenState extends State<FriendsChatScreen> {
   final FocusNode messageFocusNode = FocusNode();
   final FriendsChatBloc friendsChatBloc = sl.get<FriendsChatBloc>();
   final GlobalKey<ScaffoldState> scaffoldKey =GlobalKey<ScaffoldState>();
-
-  // Cloud Firestore에서 불러와서 저장.
-  List<DocumentSnapshot> messages = List<DocumentSnapshot>();
-  bool isReceiverOut = false;
-  Timestamp outTimestamp =Timestamp(0, 0);
+  List<ChatModel> messages = List<ChatModel>();
 
   @override
   void initState() {
@@ -88,37 +81,16 @@ class _FriendsChatScreenState extends State<FriendsChatScreen> {
             child: BlocBuilder(
               bloc: friendsChatBloc,
               builder: (context, FriendsChatState state){
-                if(state.isInitial) {
-                  friendsChatBloc.emitEvent(FriendsChatEventFetchTimestamp(chatRoomID: widget.chatRoomID));
-                  return CustomProgressIndicator();
+                if(state.isMessageReceived) {
+                  messages = sl.get<CurrentUser>().chatHistory[widget.receiver];
                 }
-                if(state.isTimestampFetchSucceeded){
-                  outTimestamp = state.timestamp;
-                }
-                return StreamBuilder<QuerySnapshot>(
-                  stream: sl.get<FirebaseAPI>().getFirestore()
-                    .collection(firestoreFriendsMessageCollection)
-                    .document(widget.chatRoomID)
-                    .collection(widget.chatRoomID)
-                    .orderBy(firestoreChatTimestampField,descending: true)
-                    .where(firestoreChatTimestampField, isGreaterThan: outTimestamp)
-                    .snapshots(),
-                  builder: (context, snapshot){
-                    if(!snapshot.hasData){
-                      return CustomProgressIndicator();
-                    } else {
-                      if(messages.length!=snapshot.data.documents.length){
-                        messages = snapshot.data.documents;
-                      }
-                      return ListView.builder(
-                        padding: EdgeInsets.all(10.0),
-                        itemBuilder: (context,index) => _buildMessage(index,messages[index]),
-                        itemCount: messages.length,
-                        reverse: true,
-                        controller: scrollController,
-                      );
-                    }
-                  }
+                return ListView.builder(
+                  padding: EdgeInsets.all(10.0),
+                  itemBuilder: (context,index) => 
+                    _buildMessage(index,messages[index]),
+                  itemCount: messages.length,
+                  reverse: true,
+                  controller: scrollController,
                 );
               }
             ),
@@ -171,9 +143,9 @@ class _FriendsChatScreenState extends State<FriendsChatScreen> {
     );
   }
 
-  Widget _buildMessage(int index, DocumentSnapshot document) {
+  Widget _buildMessage(int index, ChatModel chat) {
     // 내가 보내는 메시지
-    if(document[firestoreChatFromField] == sl.get<CurrentUser>().uid){
+    if(chat.from == sl.get<CurrentUser>().uid){
       return Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
@@ -182,14 +154,13 @@ class _FriendsChatScreenState extends State<FriendsChatScreen> {
             margin: EdgeInsets.only(right: 10.0),
             child: Text(
               DateFormat('kk:mm','ko')
-                .format(DateTime.fromMillisecondsSinceEpoch(
-                  (document[firestoreChatTimestampField] as Timestamp).millisecondsSinceEpoch)),
+                .format(DateTime.fromMillisecondsSinceEpoch(chat.timeStamp.millisecondsSinceEpoch)),
                 style: TextStyle(color: Colors.grey,fontSize: 12.0),
             ),
           ) : Container(),
           Container(
             child: Text(
-              document[firestoreChatContentField],
+              chat.content,
               style: TextStyle(
                 color: Colors.white
               ),
@@ -230,7 +201,7 @@ class _FriendsChatScreenState extends State<FriendsChatScreen> {
           ),
           Container(
             child: Text(
-              document[firestoreChatContentField],
+              chat.content,
               style: TextStyle(color: Colors.white),
             ),
             padding: EdgeInsets.fromLTRB(15.0,10.0,15.0,10.0),
@@ -245,8 +216,7 @@ class _FriendsChatScreenState extends State<FriendsChatScreen> {
             margin: EdgeInsets.only(left: 10.0,top: 15.0),
             child: Text(
               DateFormat('kk:mm','ko')
-                .format(DateTime.fromMillisecondsSinceEpoch(
-                  (document[firestoreChatTimestampField] as Timestamp).millisecondsSinceEpoch)),
+                .format(DateTime.fromMillisecondsSinceEpoch(chat.timeStamp.millisecondsSinceEpoch)),
                 style: TextStyle(color: Colors.grey,fontSize: 12.0),
             ),
           ) : Container()
@@ -256,8 +226,8 @@ class _FriendsChatScreenState extends State<FriendsChatScreen> {
   }
 
   bool _isFirstLeft(int index) {
-    if((index<messages.length-1 && messages!=null && messages[index+1][firestoreChatFromField] 
-      != messages[index][firestoreChatFromField])
+    if((index<messages.length-1 && messages!=null && messages[index+1].from 
+      != messages[index].to)
      || index == messages.length-1) {
        return true;
      } else {
@@ -266,7 +236,7 @@ class _FriendsChatScreenState extends State<FriendsChatScreen> {
   }
 
   bool _isLastLeft(int index) {
-    if((index>0 && messages!=null && messages[index-1][firestoreChatFromField] == sl.get<CurrentUser>().uid) 
+    if((index>0 && messages!=null && messages[index-1].from == sl.get<CurrentUser>().uid) 
       || index==0){
         return true;
     } else {
@@ -275,7 +245,7 @@ class _FriendsChatScreenState extends State<FriendsChatScreen> {
   }
 
   bool _isLastRight(int index) {
-    if((index>0 && messages!=null && messages[index-1][firestoreChatToField] == sl.get<CurrentUser>().uid) 
+    if((index>0 && messages!=null && messages[index-1].to == sl.get<CurrentUser>().uid) 
       || index==0){
         return true;
     } else {

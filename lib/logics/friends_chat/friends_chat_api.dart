@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/database_helper.dart';
@@ -6,7 +5,6 @@ import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sqflite/sqflite.dart';
 
 class FriendsChatAPI {
 
@@ -17,16 +15,9 @@ class FriendsChatAPI {
     prefs.setBool(chatRoomID, value);
     sl.get<CurrentUser>().chatRoomNotification[chatRoomID] = value;
   }
-
-  Future<Timestamp> getDeleteTimestamp(String chatroomID) async {
-    DocumentSnapshot doc = await sl.get<FirebaseAPI>().getFirestore()
-      .collection(firestoreFriendsMessageCollection)
-      .document(chatroomID).get();
-    return doc.data[firestoreChatOutField][sl.get<CurrentUser>().uid];
-  }
+  
 
   Future<void> sendMessage(String content,String receiver,String chatRoomID) async {
-
     DocumentSnapshot flagDoc = await sl.get<FirebaseAPI>().getFirestore()
       .collection(firestoreFriendsMessageCollection)
       .document(chatRoomID)
@@ -54,11 +45,4 @@ class FriendsChatAPI {
       });
     });
   }
-
-  Future<void> storeIntoLocalDB(String from, String to, int timestamp, String content) async {
-    Database db = await sl.get<DatabaseHelper>().database;
-    db.rawInsert('INSERT INTO $friendsMessagesTable($fromCol,$toCol,$timeStampCol,$contentCol) '
-    'VALUES($from,$to,$timestamp,$content)');
-  }
-
 }
