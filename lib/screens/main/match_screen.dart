@@ -7,6 +7,8 @@ import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/resources/constants.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
+import 'package:flare_flutter/flare_actor.dart';
+
 
 class MatchScreen extends StatefulWidget {
   @override
@@ -16,6 +18,22 @@ class MatchScreen extends StatefulWidget {
 class _MatchScreenState extends State<MatchScreen> {
 
   final TagListModel tagListModel = sl.get<CurrentUser>().tagListModel;
+  bool isAnimating = false;
+  String _currentAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentAnimation = 'rolling';
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    dispose();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -32,44 +50,78 @@ class _MatchScreenState extends State<MatchScreen> {
         elevation: 0.0,
         backgroundColor: primaryBlue
       ),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Image(
-              image: AssetImage('assets/images/components/match_random_circle.png'),
-              width: ScreenUtil.width * .8,
-              height: ScreenUtil.width * .8,
-            ),
-//            SizedBox(
-//              height: ScreenUtil.height * 0.001,
-//            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                FlatButton(
-                  color: primaryBeige,
-                  child: Text("상대 추천"),
-                  onPressed: () {
-                    sl.get<SameMatchBloc>().emitEvent(SameMatchEventFindUser());
-                    Navigator.pushNamed(context, routeSameMatch);
-                  },
-                  shape: RoundedRectangleBorder(side: BorderSide(color : Colors.orange[200], width : 1.3) ,borderRadius: BorderRadius.circular(10.0)),
-                ),
-                SizedBox(width: ScreenUtil.width *.09),
-                FlatButton(
-                  color: primaryBeige,
-                  child: Text("랜덤 매칭"),
-                  onPressed: () {
-                    sl.get<RandomLoadingBloc>().emitEvent(RandomLoadingEventMatchStart());
-                    Navigator.pushNamed(context, routeRandomLoading);
-                  },
-                  shape: RoundedRectangleBorder(side: BorderSide(color : Colors.orange[200], width : 1.3) ,borderRadius: BorderRadius.circular(10.0)),
-                )
-              ],
-            )
-          ],
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Expanded(
+                  child: FlareActor(
+                    "assets/images/components/roulette.flr",
+                    alignment: Alignment.center,
+                    fit: BoxFit.fitHeight,
+                    animation: isAnimating ? _currentAnimation : null,
+                    callback: (string){
+                      isAnimating = false;
+                      debugPrint(string);
+                    },
+                  )),
+              FlatButton(
+                child: Text('Rolling'),
+                onPressed: () => setState((){
+                  _currentAnimation = 'rolling';
+                  isAnimating = true;
+                }),
+              ),
+              FlatButton(
+                child: Text('darting'),
+                onPressed: () => setState((){
+                  _currentAnimation = 'darting';
+                  isAnimating = true;
+                }),
+              )
+            ],
+          ),
         )
+
+//        Column(
+//          mainAxisAlignment: MainAxisAlignment.center,
+//          crossAxisAlignment: CrossAxisAlignment.center,
+//          children: <Widget>[
+//            Image(
+//              image: AssetImage('assets/images/components/match_random_circle.png'),
+//              width: ScreenUtil.width * .8,
+//              height: ScreenUtil.width * .8,
+//            ),
+////            SizedBox(
+////              height: ScreenUtil.height * 0.001,
+////            ),
+//            Row(
+//              mainAxisAlignment: MainAxisAlignment.center,
+//              children: <Widget>[
+//                FlatButton(
+//                  color: primaryBeige,
+//                  child: Text("상대 추천"),
+//                  onPressed: () {
+//                    sl.get<SameMatchBloc>().emitEvent(SameMatchEventFindUser());
+//                    Navigator.pushNamed(context, routeSameMatch);
+//                  },
+//                  shape: RoundedRectangleBorder(side: BorderSide(color : Colors.orange[200], width : 1.3) ,borderRadius: BorderRadius.circular(10.0)),
+//                ),
+//                SizedBox(width: ScreenUtil.width *.09),
+//                FlatButton(
+//                  color: primaryBeige,
+//                  child: Text("랜덤 매칭"),
+//                  onPressed: () {
+//                    sl.get<RandomLoadingBloc>().emitEvent(RandomLoadingEventMatchStart());
+//                    Navigator.pushNamed(context, routeRandomLoading);
+//                  },
+//                  shape: RoundedRectangleBorder(side: BorderSide(color : Colors.orange[200], width : 1.3) ,borderRadius: BorderRadius.circular(10.0)),
+//                )
+//              ],
+//            )
+//          ],
+//        )
 //      body: Stack(
 //        children: <Widget>[
 //          Positioned(
