@@ -1,13 +1,24 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:meta/meta.dart';
+import 'package:privacy_of_animal/resources/strings.dart';
 
 class ChatModel {
-  DocumentSnapshot receiver;
-  String myMessage;
-  Timestamp myTimestamp;
+  String from;
+  String to;
+  String content;
+  Timestamp timeStamp;
 
   ChatModel({
-    this.receiver,
-    this.myMessage,
-    this.myTimestamp
+    this.from,
+    this.to,
+    this.content,
+    this.timeStamp
   });
+
+  ChatModel.fromSnapshot({@required DocumentSnapshot snapshot}) {
+    this.from = snapshot.data[firestoreChatFromField];
+    this.to = snapshot.data[firestoreChatToField];
+    this.content = snapshot.data[firestoreChatContentField];
+    this.timeStamp = snapshot.data[firestoreChatTimestampField];
+  }
 }

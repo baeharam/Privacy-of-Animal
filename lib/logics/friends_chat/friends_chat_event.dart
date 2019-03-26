@@ -1,13 +1,30 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meta/meta.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state.dart';
+import 'package:privacy_of_animal/models/chat_model.dart';
 
 abstract class FriendsChatEvent extends BlocEvent{}
 
 class FriendsChatEventStateClear extends FriendsChatEvent {}
 
-class FriendsChatEventFetchTimestamp extends FriendsChatEvent {
-  final String chatRoomID;
-  FriendsChatEventFetchTimestamp({@required this.chatRoomID});
+class FriendsChatEventMessageRecieved extends FriendsChatEvent {
+  final String otherUserUID;
+  final QuerySnapshot snapshot;
+
+  FriendsChatEventMessageRecieved({
+    @required this.otherUserUID,
+    @required this.snapshot
+  });
+}
+
+class FriendsChatEventMyChatUpdate extends FriendsChatEvent {
+  final String otherUserUID;
+  final ChatModel chatModel;
+
+  FriendsChatEventMyChatUpdate({
+    @required this.otherUserUID,
+    @required this.chatModel
+  });
 }
 
 class FriendsChatEventMessageSend extends FriendsChatEvent {
@@ -22,16 +39,7 @@ class FriendsChatEventMessageSend extends FriendsChatEvent {
   });
 }
 
-class FriendsChatEventStoreMessages extends FriendsChatEvent {
-  final String from;
-  final String to;
-  final int timestamp;
-  final String content;
-
-  FriendsChatEventStoreMessages({
-    @required this.from,
-    @required this.to,
-    @required this.timestamp,
-    @required this.content
-  });
+class FriendsChatEventNotification extends FriendsChatEvent {
+  final String chatRoomID;
+  FriendsChatEventNotification({@required this.chatRoomID});
 }

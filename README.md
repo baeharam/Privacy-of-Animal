@@ -1,16 +1,5 @@
-# privacy_of_animal
+# 동물의 사생활
 
-A new Flutter project.
+## 소개
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.io/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.io/docs/cookbook)
-
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.io/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
+동물의 사생활은 동물 프로필 기반의 반 익명 채팅 어플리케이션입니다. 반 익명이라 함은 완전한 익명도 아니고 사용자의 얼굴을 드러내는 것도 아니라는 뜻입니다. 이런 목적의 채팅 어플리케이션을 기획한 이유는 현재 채팅 앱이 랜덤채팅과 소개팅 앱으로 구분되는데 랜덤채팅은 완전한 익명성이라 안좋은 목적으로 사용되는 경우가 많고 소개팅 앱은 목적자체가 소개팅일 뿐더러 외모의 가중치가 높기 때문에 단순한 채팅을 하되 제대로된 채팅을 하게 해주기 위함입니다.

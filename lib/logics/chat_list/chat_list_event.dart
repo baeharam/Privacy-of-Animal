@@ -1,15 +1,21 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meta/meta.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state.dart';
+import 'package:privacy_of_animal/models/chat_list_model.dart';
 
 abstract class ChatListEvent extends BlocEvent {}
 
 class ChatListEventStateClear extends ChatListEvent {}
 
-class ChatListEventFetchList extends ChatListEvent{
-  final List<DocumentSnapshot> documents;
+class ChatListEventFriendsDeleted extends ChatListEvent {
+  final String friends;
 
-  ChatListEventFetchList({@required this.documents });
+  ChatListEventFriendsDeleted({@required this.friends});
+}
+
+class ChatListEventNew extends ChatListEvent{
+  final ChatListModel newMessage;
+
+  ChatListEventNew({@required this.newMessage});
 }
 
 class ChatListEventDeleteChatRoom extends ChatListEvent {

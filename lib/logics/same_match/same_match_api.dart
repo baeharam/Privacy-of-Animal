@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/models/same_match_model.dart';
+import 'package:privacy_of_animal/models/user_model.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
 
@@ -40,13 +41,24 @@ class SameMatchAPI {
         .collection(firestoreFriendsSubCollection).where(uidCol, isEqualTo: currentUser.uid)
         .where(firestoreFriendsField, isEqualTo: false).getDocuments();
 
-      // 제외하는 경우
-      // 1. 친구
-      // 2. 자기자신
-      // 3. 내가 친구신청을 이미 한 사람
-      if(!(friends.contains(user.documentID)) && user.documentID!=currentUser.uid &&
-        friendsRequestSnapshot.documents.length==0){
-        // 통과하면 매칭하는 태그 개수를 계산해서 해당하는 배열 인덱스에 넣는다.
+      /// [제외하는 경우]
+      /// [1. 친구]
+      /// [2. 자기자신]
+      /// [3. 내가 친구신청을 이미 한 사람]
+      /// [4. 친구신청을 받은 경우의 사람]
+      
+      bool isRequestingUser = false;
+      for(UserModel userModel in sl.get<CurrentUser>().friendsRequestList) {
+        if(userModel.uid.compareTo(user.documentID)==0){
+          isRequestingUser = true;
+          break;
+        }
+      }
+
+      if(!(friends.contains(user.documentID)) 
+        && user.documentID!=currentUser.uid 
+        && friendsRequestSnapshot.documents.length==0
+        && !isRequestingUser){
         int matchNum = 0;       
         matchedTags[user.documentID] = List<List<String>>();
 
@@ -122,14 +134,17 @@ class SameMatchAPI {
         int randomIndex = Random().nextInt(tags.length);
         sameMatchModel.tagTitle = tags[randomIndex][0];
         sameMatchModel.tagDetail = tags[randomIndex][1];
-        sameMatchModel.userInfo = matchedPeople[i][index];
-        sameMatchModel.profileImage = sameMatchModel.userInfo.data[firestoreFakeProfileField][firestoreAnimalImageField];
-        sameMatchModel.confidence =sameMatchModel.userInfo.data[firestoreFakeProfileField][firestoreAnimalConfidenceField];
-        sameMatchModel.nickName =sameMatchModel.userInfo.data[firestoreFakeProfileField][firestoreNickNameField];
-        sameMatchModel.age =sameMatchModel.userInfo.data[firestoreFakeProfileField][firestoreFakeAgeField];
-        sameMatchModel.gender =sameMatchModel.userInfo.data[firestoreFakeProfileField][firestoreFakeGenderField];
-        sameMatchModel.emotion =sameMatchModel.userInfo.data[firestoreFakeProfileField][firestoreFakeEmotionField];
-        sameMatchModel.animalName=sameMatchModel.userInfo.data[firestoreFakeProfileField][firestoreAnimalNameField];
+
+        UserModel userInfo = UserModel.fromSnapshot(snapshot: matchedPeople[i][index]);
+
+        sameMatchModel.userInfo = userInfo;
+        sameMatchModel.profileImage = userInfo.fakeProfileModel.animalImage;
+        sameMatchModel.confidence = userInfo.fakeProfileModel.animalConfidence;
+        sameMatchModel.nickName = userInfo.fakeProfileModel.nickName;
+        sameMatchModel.age = userInfo.fakeProfileModel.age;
+        sameMatchModel.gender = userInfo.fakeProfileModel.gender;
+        sameMatchModel.emotion = userInfo.fakeProfileModel.emotion;
+        sameMatchModel.animalName =  userInfo.fakeProfileModel.animalName;
         break;
       }
     }

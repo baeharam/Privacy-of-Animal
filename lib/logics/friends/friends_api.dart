@@ -1,44 +1,72 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:meta/meta.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
+import 'package:privacy_of_animal/logics/database_helper.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
+import 'package:privacy_of_animal/models/user_model.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class FriendsAPI {
 
-  // 친구정보 가져오기
-  Future<List<DocumentSnapshot>> fetchFriendsList(List<dynamic> friends) async {
-    List<DocumentSnapshot> friendsList = List<DocumentSnapshot>();
-    if(friends.length==0) return friendsList;
-    for(var user in friends) {
-      DocumentSnapshot userInfo = await sl.get<FirebaseAPI>().getFirestore()
-        .collection(firestoreUsersCollection)
-        .document((user as DocumentSnapshot).documentID).get();
-      friendsList.add(userInfo);
-    }
-    return friendsList;
+  /// [친구 알림 설정]
+  Future<void> setFriendsNotification() async {
+    SharedPreferences prefs = await sl.get<DatabaseHelper>().sharedPreferences;
+    bool value = !sl.get<CurrentUser>().friendsNotification;
+    prefs.setBool(sl.get<CurrentUser>().uid+friendsNotification, value);
+    sl.get<CurrentUser>().friendsNotification = value;
   }
 
-  // 친구 차단하기
-  Future<void> blockFriends(String userToBlock) async {
-    DocumentReference myselfDoc = sl.get<FirebaseAPI>().getFirestore().collection(firestoreUsersCollection)
-      .document(sl.get<CurrentUser>().uid).collection(firestoreFriendsSubCollection).document(userToBlock);
-    DocumentReference userToBlockDoc = sl.get<FirebaseAPI>().getFirestore().collection(firestoreUsersCollection)
-      .document(userToBlock).collection(firestoreFriendsSubCollection).document(sl.get<CurrentUser>().uid);
+  /// [새로운 친구수 갱신]
+  void updateNewFriends(int newFriendsNum) {
+    sl.get<CurrentUser>().newFriendsNum = newFriendsNum;
+  }
 
-    QuerySnapshot chatRoomSnapshot = await sl.get<FirebaseAPI>().getFirestore().collection(firestoreFriendsMessageCollection)
-      .where(firestoreChatUsersField, arrayContains: userToBlock).getDocuments();
+  /// [친구목록] 및 [친구신청 목록] 가져오기
+  Future<void> fetchFriendsList(List<dynamic> friends, {@required bool isFriendsList}) async {
+    List<UserModel> userList = List<UserModel>();
+    if(friends.isNotEmpty) {
+      for(var user in friends) {
+        DocumentSnapshot userInfo = await sl.get<FirebaseAPI>().getFirestore()
+          .collection(firestoreUsersCollection)
+          .document((user as DocumentSnapshot).documentID).get();
+        userList.add(UserModel.fromSnapshot(snapshot: userInfo));
+      }
+    }
+    if(isFriendsList) {
+      sl.get<CurrentUser>().friendsList = userList;
+    } else {
+      sl.get<CurrentUser>().friendsRequestList = userList;
+    }
+  }
+
+  /// [친구 삭제]
+  Future<void> blockFriends(UserModel userToBlock) async {
+    String currentUser = sl.get<CurrentUser>().uid;
+
+    DocumentReference myselfDoc = sl.get<FirebaseAPI>().getFirestore()
+      .collection(firestoreUsersCollection)
+      .document(currentUser)
+      .collection(firestoreFriendsSubCollection)
+      .document(userToBlock.uid);
+
+    DocumentReference userToBlockDoc = sl.get<FirebaseAPI>().getFirestore()
+      .collection(firestoreUsersCollection)
+      .document(userToBlock.uid)
+      .collection(firestoreFriendsSubCollection)
+      .document(currentUser);
+
+    QuerySnapshot chatRoomSnapshot = await sl.get<FirebaseAPI>().getFirestore()
+      .collection(firestoreFriendsMessageCollection)
+      .where('$firestoreChatUsersField.$currentUser', isEqualTo: true)
+      .where('$firestoreChatUsersField.${userToBlock.uid}', isEqualTo: true)
+      .getDocuments();
 
     WriteBatch batch = sl.get<FirebaseAPI>().getFirestore().batch();
 
     if(chatRoomSnapshot.documents.isNotEmpty) {
-      DocumentReference realChatRoom;
-      for(DocumentSnapshot doc in chatRoomSnapshot.documents) {
-        if(doc.data[firestoreChatUsersField].contains(sl.get<CurrentUser>().uid)){
-          realChatRoom = doc.reference;
-          break;
-        }
-      }
+      DocumentReference realChatRoom =chatRoomSnapshot.documents[0].reference;
 
       QuerySnapshot chatSnapshot = await realChatRoom
       .collection(realChatRoom.documentID)
@@ -52,20 +80,31 @@ class FriendsAPI {
 
     batch.delete(myselfDoc);
     batch.delete(userToBlockDoc);
-
     await batch.commit();
-    if(sl.get<CurrentUser>().friendsListLength!=0) {
-      sl.get<CurrentUser>().friendsListLength--;
-    }
+
+    sl.get<CurrentUser>().friendsList.remove(userToBlock);
   }
 
-  // 친구신청 수락하기
-  // 친구 신청 목록에서 삭제 + 현재유저 친구목록에 넣기 + 신청유저 친구목록에 넣기 = 일괄작업 batch로
-  Future<void> acceptFriendsRequest(String requestingUser) async {
-    DocumentReference myselfDoc = sl.get<FirebaseAPI>().getFirestore().collection(firestoreUsersCollection)
-      .document(sl.get<CurrentUser>().uid).collection(firestoreFriendsSubCollection).document(requestingUser);
-    DocumentReference requestingUserDoc = sl.get<FirebaseAPI>().getFirestore().collection(firestoreUsersCollection)
-      .document(requestingUser).collection(firestoreFriendsSubCollection).document(sl.get<CurrentUser>().uid);
+  /// [친구신청 수락]
+  Future<void> acceptFriendsRequest(UserModel requestingUser) async {
+
+    String currentUser = sl.get<CurrentUser>().uid;
+
+    DocumentReference myselfDoc = sl.get<FirebaseAPI>().getFirestore()
+      .collection(firestoreUsersCollection)
+      .document(currentUser)
+      .collection(firestoreFriendsSubCollection)
+      .document(requestingUser.uid);
+
+    DocumentReference requestingUserDoc = sl.get<FirebaseAPI>().getFirestore()
+      .collection(firestoreUsersCollection)
+      .document(requestingUser.uid)
+      .collection(firestoreFriendsSubCollection)
+      .document(currentUser);
+
+    DocumentReference chatDoc = sl.get<FirebaseAPI>().getFirestore()
+      .collection(firestoreFriendsMessageCollection)
+      .document();
     
     WriteBatch batch = sl.get<FirebaseAPI>().getFirestore().batch();
 
@@ -73,57 +112,51 @@ class FriendsAPI {
     batch.setData(requestingUserDoc, {
       firestoreFriendsField: true,
       firestoreFriendsAccepted: true,
-      firestoreFriendsUID: sl.get<CurrentUser>().uid
+      firestoreFriendsUID: currentUser
+    });
+
+    batch.setData(chatDoc, {
+      firestoreChatOutField: {
+        currentUser: Timestamp(0,0),
+        requestingUser.uid: Timestamp(0,0)
+      },
+      firestoreChatDeleteField: {
+        currentUser: false,
+        requestingUser.uid: false
+      },
+      firestoreChatUsersField: {
+        currentUser: true,
+        requestingUser.uid: true
+      }
     });
 
     await batch.commit();
+    sl.get<CurrentUser>().friendsRequestList.remove(requestingUser);
   }
 
-  // 친구신청 삭제하기
-  Future<void> rejectFriendsRequest(String requestingUser) async {
-    DocumentReference doc = sl.get<FirebaseAPI>().getFirestore().collection(firestoreUsersCollection)
-      .document(sl.get<CurrentUser>().uid).collection(firestoreFriendsSubCollection).document(requestingUser);
+  /// [친구신청 삭제]
+  Future<void> rejectFriendsRequest(UserModel requestingUser) async {
+    DocumentReference doc = sl.get<FirebaseAPI>().getFirestore()
+      .collection(firestoreUsersCollection)
+      .document(sl.get<CurrentUser>().uid)
+      .collection(firestoreFriendsSubCollection)
+      .document(requestingUser.uid);
     await sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async{
       await tx.delete(doc);
     });
-    sl.get<CurrentUser>().friendsRequestListLength--;
+    sl.get<CurrentUser>().friendsRequestList.remove(requestingUser);
   }
 
-  // 친구랑 대화하기
-  // 1. 대화한 내용이 서버에 없으면 방을 생성한다.
-  // 2. 대화한 내용이 서버에 있으면 해당 방에 입장한다.
+  /// [친구와 대화]
   Future<String> chatWithFriends(String userToChat) async {
-    QuerySnapshot snapshot = await sl.get<FirebaseAPI>().getFirestore().collection(firestoreFriendsMessageCollection)
-      .where(firestoreChatUsersField, arrayContains: sl.get<CurrentUser>().uid).getDocuments();
+    String currentUser = sl.get<CurrentUser>().uid;
 
-    String chatRoomID = '';
-    for(DocumentSnapshot doc in snapshot.documents) {
-      if((doc.data[firestoreChatUsersField] as List).contains(userToChat)){
-        chatRoomID = doc.documentID;
-      }
-    }
+    QuerySnapshot snapshot = await sl.get<FirebaseAPI>().getFirestore()
+      .collection(firestoreFriendsMessageCollection)
+      .where('$firestoreChatUsersField.$currentUser',isEqualTo: true)
+      .where('$firestoreChatUsersField.$userToChat',isEqualTo: true)
+      .getDocuments();
 
-    if(chatRoomID.isEmpty) {
-      DocumentReference doc = sl.get<FirebaseAPI>().getFirestore()
-        .collection(firestoreFriendsMessageCollection)
-        .document();
-      await sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async{
-        await tx.set(doc, {
-          firestoreChatOutField: {
-            sl.get<CurrentUser>().uid: Timestamp(0,0),
-            userToChat: Timestamp(0,0)
-          },
-          firestoreChatDeleteField: {
-            sl.get<CurrentUser>().uid: false,
-            userToChat: false
-          },
-          firestoreChatUsersField: [userToChat, sl.get<CurrentUser>().uid]
-        });
-      });
-      return doc.documentID;
-    } else {
-      return chatRoomID;
-    }
+    return snapshot.documents[0].documentID;
   }
-
 }

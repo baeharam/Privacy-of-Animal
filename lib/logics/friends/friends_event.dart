@@ -1,6 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meta/meta.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state.dart';
+import 'package:privacy_of_animal/models/user_model.dart';
 
 abstract class FriendsEvent extends BlocEvent {}
 
@@ -17,23 +17,30 @@ class FriendsEventFetchFriendsRequestList extends FriendsEvent {
 }
 
 class FriendsEventChat extends FriendsEvent {
-  final DocumentSnapshot user;
+  final UserModel user;
   FriendsEventChat({@required this.user});
 }
 
 class FriendsEventBlock extends FriendsEvent {
-  final String user;
+  final UserModel user;
   FriendsEventBlock({@required this.user});
 }
 
 class FriendsEventRequestAccept extends FriendsEvent {
-  final String user;
+  final UserModel user;
   FriendsEventRequestAccept({@required this.user});
 }
 
 class FriendsEventRequestReject extends FriendsEvent {
-  final String user;
+  final UserModel user;
   FriendsEventRequestReject({@required this.user});
 }
 
 class FriendsEventFriendsAccepted extends FriendsEvent {}
+
+class FriendsEventNewFriends extends FriendsEvent {
+  final int newFriendsNum;
+  FriendsEventNewFriends({@required this.newFriendsNum});
+}
+
+class FriendsEventFriendsNotification extends FriendsEvent {}

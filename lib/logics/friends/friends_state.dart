@@ -1,51 +1,73 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state.dart';
+import 'package:privacy_of_animal/models/user_model.dart';
 
 class FriendsState extends BlocState {
   final bool isInitial;
-  final bool isLoading;
+
+  final bool isFriendsFetchLoading;
   final bool isFriendsFetchSucceeded;
   final bool isFriendsFetchFailed;
-  final bool isFriendsBlockSucceeded;
-  final bool isFriendsBlockFailed;
+  
+  final bool isFriendsChatLoading;
   final bool isFriendsChatSucceeded;
   final bool isFriendsChatFailed;
 
+  final bool isFriendsBlockLoading;
+  final bool isFriendsBlockSucceeded;
+  final bool isFriendsBlockFailed;
+
+  final bool isFriendsRequestFetchLoading;
   final bool isFriendsRequestFetchSucceeded;
   final bool isFriendsRequestFetchFailed;
+
+  final bool isFriendsAcceptLoading;
   final bool isFriendsAcceptSucceeded;
   final bool isFriendsAcceptFailed;
+
+  final bool isFriendsRejectLoading;
   final bool isFriendsRejectSucceeded;
   final bool isFriendsRejectFailed;
 
-  final bool isFriendsAcceptedNotification;
+  final bool isNewFriends;
 
-  final List<DocumentSnapshot> friends;
-  final List<DocumentSnapshot> friendsRequest;
+  final bool isFriendsNotificationToggleSucceeded;
+  final bool isFriendsNotificationToggleFailed;
+
   final String chatRoomID;
-  final DocumentSnapshot receiver;
+  final UserModel receiver;
 
   FriendsState({
     this.isInitial: false,
-    this.isLoading: false,
+
+    this.isFriendsFetchLoading: false,
     this.isFriendsFetchSucceeded: false,
     this.isFriendsFetchFailed: false,
-    this.isFriendsBlockSucceeded: false,
-    this.isFriendsBlockFailed: false,
+    
+    this.isFriendsChatLoading: false,
     this.isFriendsChatSucceeded: false,
     this.isFriendsChatFailed: false,
 
+    this.isFriendsBlockLoading: false,
+    this.isFriendsBlockSucceeded: false,
+    this.isFriendsBlockFailed: false,
+
+    this.isFriendsRequestFetchLoading: false,
     this.isFriendsRequestFetchSucceeded: false,
     this.isFriendsRequestFetchFailed: false,
+
+    this.isFriendsAcceptLoading: false,
     this.isFriendsAcceptSucceeded: false,
     this.isFriendsAcceptFailed: false,
+
+    this.isFriendsRejectLoading: false,
     this.isFriendsRejectSucceeded: false,
     this.isFriendsRejectFailed: false,
 
-    this.isFriendsAcceptedNotification: false,
+    this.isNewFriends: false,
 
-    this.friends,
-    this.friendsRequest,
+    this.isFriendsNotificationToggleSucceeded: false,
+    this.isFriendsNotificationToggleFailed: false,
+
     this.chatRoomID: '',
     this.receiver,
   });
@@ -55,93 +77,41 @@ class FriendsState extends BlocState {
       isInitial: true
     );
   }
+  
+  factory FriendsState.friendsFetchLoading()  => FriendsState(isFriendsFetchLoading: true);
+  factory FriendsState.friendsFetchSuceeded()  => FriendsState(isFriendsFetchSucceeded: true);
+  factory FriendsState.friendsFetchFailed()  => FriendsState(isFriendsFetchFailed: true);
 
-  factory FriendsState.loading() {
-    return FriendsState(
-      isLoading: true
-    );
-  }
-
-  factory FriendsState.friendsFetchSuceeded(List<DocumentSnapshot> friends) {
-    return FriendsState(
-      isFriendsFetchSucceeded: true,
-      friends: friends
-    );
-  }
-
-  factory FriendsState.friendsFetchFailed() {
-    return FriendsState(
-      isFriendsFetchFailed: true
-    );
-  }
-
-  factory FriendsState.friendsChatSucceeded(String chatRoomID, DocumentSnapshot receiver) {
+  factory FriendsState.friendsChatLoading() => FriendsState(isFriendsChatLoading: true);
+  factory FriendsState.friendsChatSucceeded(String chatRoomID, UserModel receiver) {
     return FriendsState(
       isFriendsChatSucceeded: true,
       chatRoomID: chatRoomID,
       receiver: receiver
     );
   }
+  factory FriendsState.friendsChatFailed() => FriendsState(isFriendsChatFailed: true);
 
-  factory FriendsState.friendsChatFailed() {
-    return FriendsState(
-      isFriendsChatFailed: true
-    );
-  }
+  factory FriendsState.friendsBlockLoading() => FriendsState(isFriendsBlockLoading: true);
+  factory FriendsState.friendsBlockSucceeded() => FriendsState(isFriendsBlockSucceeded: true);
+  factory FriendsState.friendsBlockFailed() => FriendsState(isFriendsBlockFailed: true);
 
-  factory FriendsState.friendsBlockSucceeded() {
-    return FriendsState(
-      isFriendsBlockSucceeded: true
-    );
-  }
+  factory FriendsState.friendsRequestFetchLoading() => FriendsState(isFriendsRequestFetchLoading: true);
+  factory FriendsState.friendsRequestFetchSucceeded() => FriendsState(isFriendsRequestFetchSucceeded: true);
+  factory FriendsState.friendsRequestFetchFailed() => FriendsState(isFriendsRequestFetchFailed: true);
 
-  factory FriendsState.friendsBlockFailed() {
-    return FriendsState(
-      isFriendsBlockFailed: true
-    );
-  }
+  factory FriendsState.friendsAcceptLoading() => FriendsState(isFriendsAcceptLoading: true);
+  factory FriendsState.friendsAcceptSucceeded() => FriendsState(isFriendsAcceptSucceeded: true);
+  factory FriendsState.friendsAcceptFailed() => FriendsState(isFriendsAcceptFailed: true);
 
-  factory FriendsState.friendsRequestFetchSucceeded(List<DocumentSnapshot> friendsRequest) {
-    return FriendsState(
-      isFriendsRequestFetchSucceeded: true,
-      friendsRequest: friendsRequest
-    );
-  }
+  factory FriendsState.friendsRejectLoading() => FriendsState(isFriendsRejectLoading: true);
+  factory FriendsState.friendsRejectSucceeded() => FriendsState(isFriendsRejectSucceeded: true);
+  factory FriendsState.friendsRejectFailed() => FriendsState(isFriendsRejectFailed: true);
 
-  factory FriendsState.friendsRequestFetchFailed() {
-    return FriendsState(
-      isFriendsRequestFetchFailed: true
-    );
-  }
+  factory FriendsState.newFriends() => FriendsState(isNewFriends: true);
 
-  factory FriendsState.friendsAcceptSucceeded() {
-    return FriendsState(
-      isFriendsAcceptSucceeded: true
-    );
-  }
-
-  factory FriendsState.friendsAcceptFailed() {
-    return FriendsState(
-      isFriendsAcceptSucceeded: true
-    );
-  }
-
-  factory FriendsState.friendsRejectSucceeded() {
-    return FriendsState(
-      isFriendsRejectSucceeded: true
-    );
-  }
-
-  factory FriendsState.friendsRejectFailed() {
-    return FriendsState(
-      isFriendsRejectFailed: true
-    );
-  }
-
-  factory FriendsState.friendsAcceptedNotify() {
-    return FriendsState(
-      isFriendsAcceptedNotification: true
-    );
-  }
-  
+  factory FriendsState.friendsNotificationToggleSucceeded() 
+    => FriendsState(isFriendsNotificationToggleSucceeded: true);
+  factory FriendsState.friendsNotificationToggleFailed() 
+    => FriendsState(isFriendsNotificationToggleFailed: true);
 }

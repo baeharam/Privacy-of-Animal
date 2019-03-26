@@ -1,6 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meta/meta.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state.dart';
+import 'package:privacy_of_animal/models/user_model.dart';
 
 class RandomLoadingState extends BlocState {
   
@@ -16,7 +16,7 @@ class RandomLoadingState extends BlocState {
   final bool isReceiverDataFetchFailed;
 
   final String chatRoomID;
-  final DocumentSnapshot receiver;
+  final UserModel receiver;
 
   RandomLoadingState({
     this.isInitial: false,

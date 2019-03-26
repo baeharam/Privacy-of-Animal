@@ -1,11 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:privacy_of_animal/logics/current_user.dart';
-import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/logics/home/home.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
-import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:privacy_of_animal/utils/stream_navigator.dart';
 
 class NotificationHelper {
@@ -41,7 +37,7 @@ class NotificationHelper {
   }
 
   // 상대방이 친구신청을 수락했을 시 알림
-  Future<void> showFriendsNotification(QuerySnapshot data) async {
+  Future<void> showFriendsNotification(String nickName) async {
     var android =AndroidNotificationDetails(
       'Friends Notification ID',
       'Friends Notification NAME',
@@ -51,29 +47,14 @@ class NotificationHelper {
     var iOS =IOSNotificationDetails();
     var platform =NotificationDetails(android,iOS);
 
-    if(data.documents.isNotEmpty && data.documentChanges.isNotEmpty 
-      && sl.get<CurrentUser>().friendsList.length < data.documents.length) {
-      String friendsCandidate = data.documentChanges[0].document.documentID;
-      QuerySnapshot checkFriends = await sl.get<FirebaseAPI>().getFirestore()
-        .collection(firestoreUsersCollection).document(sl.get<CurrentUser>().uid)
-        .collection(firestoreFriendsSubCollection)
-        .where(firestoreFriendsUID, isEqualTo: friendsCandidate)
-        .getDocuments();
-      if(checkFriends.documents.isNotEmpty){
-        DocumentSnapshot userSnapshot = await sl.get<FirebaseAPI>().getFirestore()
-          .collection(firestoreUsersCollection)
-          .document(data.documentChanges[0].document.data[firestoreFriendsUID]).get();
-        String friends = userSnapshot.data[firestoreFakeProfileField][firestoreNickNameField];
-        await _flutterLocalNotificationsPlugin.show(
-          0, '친구','$friends 님이 친구신청을 수락하였습니다.',platform,
-          payload: '친구'
-        );
-      }
-    }
+    await _flutterLocalNotificationsPlugin.show(
+      0, '친구','$nickName 님이 친구신청을 수락하였습니다.',platform,
+      payload: '친구'
+    );
   }
 
   // 상대방이 친구 신청 보냈을 시 알림
-  Future<void> showFriendsRequestNotification(QuerySnapshot data) async {
+  Future<void> showFriendsRequestNotification(String nickName) async {
     var android =AndroidNotificationDetails(
       'FriendsRequest Notification ID',
       'FriendsRequest Notification NAME',
@@ -83,23 +64,9 @@ class NotificationHelper {
     var iOS =IOSNotificationDetails();
     var platform =NotificationDetails(android,iOS);
 
-    if(data.documents.isNotEmpty && data.documentChanges.isNotEmpty 
-      && sl.get<CurrentUser>().friendsRequestList.length < data.documents.length) {
-      String requestCandidate = data.documentChanges[0].document.documentID;
-      QuerySnapshot checkRequest = await sl.get<FirebaseAPI>().getFirestore()
-        .collection(firestoreUsersCollection).document(sl.get<CurrentUser>().uid)
-        .collection(firestoreFriendsSubCollection)
-        .where(uidCol, isEqualTo: requestCandidate).getDocuments();
-      if(checkRequest.documents.isNotEmpty){
-        DocumentSnapshot userSnapshot = await sl.get<FirebaseAPI>().getFirestore()
-          .collection(firestoreUsersCollection)
-          .document(data.documentChanges[0].document.data[uidCol]).get();
-        String sender = userSnapshot.data[firestoreFakeProfileField][firestoreNickNameField];
-        await _flutterLocalNotificationsPlugin.show(
-          0, '친구 신청','$sender 님으로부터 친구신청이 왔습니다.',platform,
-          payload: '친구 신청 알림'
-        );
-      }
-    }
+    await _flutterLocalNotificationsPlugin.show(
+      0, '친구 신청','$nickName 님으로부터 친구신청이 왔습니다.',platform,
+      payload: '친구 신청 알림'
+    );
   }
 }

@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state.dart';
 import 'package:privacy_of_animal/logics/random_loading/random_loading.dart';
+import 'package:privacy_of_animal/models/user_model.dart';
 
 class RandomLoadingBloc extends BlocEventStateBase<RandomLoadingEvent,RandomLoadingState>
 {
@@ -32,10 +32,10 @@ class RandomLoadingBloc extends BlocEventStateBase<RandomLoadingEvent,RandomLoad
           }
         } else {
           try {
-            DocumentSnapshot receiver = await _api.enterChatRoom(_chatRoomID);
+            UserModel user = await _api.enterRoomAndGetUser(_chatRoomID);
             yield RandomLoadingState.matchSucceeded(
               chatRoomID: _chatRoomID,
-              receiver: receiver
+              receiver: user
             );
           } catch(exception) {
             print('매칭 실패\n${exception.toString()}');
@@ -50,7 +50,7 @@ class RandomLoadingBloc extends BlocEventStateBase<RandomLoadingEvent,RandomLoad
 
     if(event is RandomLoadingEventUserEntered) {
       try {
-        DocumentSnapshot userData = await _api.fetchUserData(event.receiver);
+        UserModel userData = await _api.fetchUserData(event.receiver);
         yield RandomLoadingState.matchSucceeded(
           receiver: userData,
           chatRoomID: event.chatRoomID

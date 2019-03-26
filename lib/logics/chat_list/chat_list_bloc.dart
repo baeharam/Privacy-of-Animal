@@ -1,35 +1,35 @@
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state.dart';
 import 'package:privacy_of_animal/logics/chat_list/chat_list.dart';
-import 'package:privacy_of_animal/models/chat_list_model.dart';
 
 class ChatListBloc extends BlocEventStateBase<ChatListEvent,ChatListState> {
 
-  final ChatListAPI _api = ChatListAPI();
+  static final ChatListAPI _api = ChatListAPI();
 
   @override
-    ChatListState get initialState => ChatListState.fetchLoading();
+    ChatListState get initialState => ChatListState.initial();
 
   @override
   Stream<ChatListState> eventHandler(ChatListEvent event, ChatListState currentState) async*{
 
     if(event is ChatListEventDeleteChatRoom) {
       try {
+        yield ChatListState.deleteLoading();
         await _api.deleteChatRoom(event.chatRoomID);
-        yield ChatListState.fetchLoading();
+        yield ChatListState.deleteSucceeded();
       } catch(exception) {
-        print(exception);
+        print('채팅삭제 실패: ${exception.toString()}');
+        yield ChatListState.deleteFailed();
       }
     }
+
+    if(event is ChatListEventFriendsDeleted) {
+      _api.deleteChatHistory(event.friends);
+      yield ChatListState.friendsDeleted();
+    }
     
-    if(event is ChatListEventFetchList) {
-      List<ChatListModel> chatListModels = List<ChatListModel>();
-      try { 
-        chatListModels = await _api.fetchUserData(event.documents);
-        yield ChatListState.fetchSucceeded(chatListModels);
-      } catch(exception){
-        print(exception);
-        yield ChatListState.fetchFailed();
-      }
+    if(event is ChatListEventNew) {
+      _api.addChatHistory(event.newMessage);
+      yield ChatListState.newMessage();
     }
     if(event is ChatListEventStateClear) {
       yield ChatListState.initial();

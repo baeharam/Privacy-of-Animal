@@ -5,6 +5,7 @@ import 'package:privacy_of_animal/bloc_helpers/bloc_event_state_builder.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/logics/friend_request/friend_request.dart';
+import 'package:privacy_of_animal/models/user_model.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/resources/constants.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
@@ -16,7 +17,7 @@ import 'package:rxdart/rxdart.dart';
 
 class OtherProfileScreen extends StatefulWidget {
 
-  final DocumentSnapshot user;
+  final UserModel user;
 
   OtherProfileScreen({@required this.user});  
 
@@ -28,21 +29,17 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
 
   final FriendRequestBloc friendRequestBloc = sl.get<FriendRequestBloc>();
 
-  Stream<QuerySnapshot> _getRequestStream() {
+  Stream<bool> _getRequestStream() {
     Stream<QuerySnapshot> stream1 = sl.get<FirebaseAPI>().getFirestore().collection(firestoreUsersCollection)
-      .document(widget.user.documentID).collection(firestoreFriendsSubCollection)
+      .document(widget.user.uid).collection(firestoreFriendsSubCollection)
       .where(uidCol,isEqualTo:sl.get<CurrentUser>().uid)
       .where(firestoreFriendsField,isEqualTo: false).snapshots();
     Stream<QuerySnapshot> stream2 = sl.get<FirebaseAPI>().getFirestore().collection(firestoreUsersCollection)
       .document(sl.get<CurrentUser>().uid).collection(firestoreFriendsSubCollection)
-      .where(uidCol,isEqualTo:widget.user.documentID)
+      .where(uidCol,isEqualTo:widget.user.uid)
       .where(firestoreFriendsField,isEqualTo: false).snapshots();
     return Observable.combineLatest2(stream1, stream2, (s1,s2){
-      if((s1 as QuerySnapshot).documents.isNotEmpty || (s2 as QuerySnapshot).documents.isNotEmpty){
-        return (s1 as QuerySnapshot).documents.isNotEmpty ? s1 : s2;
-      } else {
-        return s1;
-      }
+      return (s1.documents.isNotEmpty || s2.documents.isNotEmpty) ? true : false;
     });
   }
 
@@ -96,8 +93,7 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
                           ),
                           onTap: () => Navigator.push(context, MaterialPageRoute(
                             builder: (context) => 
-                              webViewImage(widget.user.data[firestoreFakeProfileField]
-                                [firestoreCelebrityField])
+                              webViewImage(widget.user.fakeProfileModel.celebrity)
                           )),
                         )
                       ],
@@ -119,29 +115,28 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
                                 children: <Widget>[
                                   CircularPercentIndicator(
                                     radius: ScreenUtil.width/2.8,
-                                    percent: widget.user.data[firestoreFakeProfileField][firestoreAnimalConfidenceField],
+                                    percent: widget.user.fakeProfileModel.animalConfidence,
                                     lineWidth: 10.0,
                                     progressColor: primaryBeige,
                                   ),
                                   Hero(
                                     child: GestureDetector(
                                       child: CircleAvatar(
-                                        backgroundImage: AssetImage(widget.user.data[firestoreFakeProfileField]
-                                          [firestoreAnimalImageField]),
+                                        backgroundImage: AssetImage(widget.user.fakeProfileModel.animalImage),
                                         radius: ScreenUtil.width/6.2,
                                       ),
                                       onTap: () => profileHeroAnimation(
                                         context: context,
-                                        image: widget.user.data[firestoreFakeProfileField][firestoreAnimalImageField]
+                                        image: widget.user.fakeProfileModel.animalImage
                                       ),
                                     ),
-                                    tag: widget.user.data[firestoreFakeProfileField][firestoreAnimalImageField],
+                                    tag: widget.user.fakeProfileModel.animalImage,
                                   )
                                 ],
                               ),
                               SizedBox(height: 10.0),
                               Text(
-                                widget.user.data[firestoreFakeProfileField][firestoreNickNameField],
+                                widget.user.fakeProfileModel.nickName,
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold
@@ -153,11 +148,11 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              OtherFakeProfileForm(title: '추정동물',detail: widget.user.data[firestoreFakeProfileField][firestoreAnimalNameField]),
-                              OtherFakeProfileForm(title: '추정성별',detail: widget.user.data[firestoreFakeProfileField][firestoreFakeGenderField]),
-                              OtherFakeProfileForm(title: '추정나이',detail: widget.user.data[firestoreFakeProfileField][firestoreFakeAgeField]),
-                              OtherFakeProfileForm(title: '추정기분',detail: widget.user.data[firestoreFakeProfileField][firestoreFakeEmotionField]),
-                              OtherFakeProfileForm(title: '유명인   ',detail: widget.user.data[firestoreFakeProfileField][firestoreCelebrityField])
+                              OtherFakeProfileForm(title: '추정동물',detail: widget.user.fakeProfileModel.animalName),
+                              OtherFakeProfileForm(title: '추정성별',detail: widget.user.fakeProfileModel.gender),
+                              OtherFakeProfileForm(title: '추정나이',detail: widget.user.fakeProfileModel.age),
+                              OtherFakeProfileForm(title: '추정기분',detail: widget.user.fakeProfileModel.emotion),
+                              OtherFakeProfileForm(title: '유명인   ',detail: widget.user.fakeProfileModel.celebrity)
                             ],
                           )
                         ],
@@ -177,7 +172,7 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
               width: double.infinity,
               child: StreamBuilder<QuerySnapshot>(
                 stream: sl.get<FirebaseAPI>().getFirestore().collection(firestoreUsersCollection)
-                  .document(widget.user.documentID).collection(firestoreFriendsSubCollection)
+                  .document(widget.user.uid).collection(firestoreFriendsSubCollection)
                   .where(uidCol,isEqualTo:sl.get<CurrentUser>().uid)
                   .where(firestoreFriendsField,isEqualTo: true).snapshots(),
                 builder: (context, snapshot){
@@ -193,10 +188,10 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
                           ),
                         ),
                         SizedBox(height: 10.0),
-                        OtherRealProfileForm(title: '이름',detail: widget.user.data[firestoreRealProfileField][firestoreNameField]),
-                        OtherRealProfileForm(title: '성별',detail: widget.user.data[firestoreRealProfileField][firestoreGenderField]),
-                        OtherRealProfileForm(title: '나이',detail: widget.user.data[firestoreRealProfileField][firestoreAgeField]),
-                        OtherRealProfileForm(title: '직업',detail: widget.user.data[firestoreRealProfileField][firestoreJobField])
+                        OtherRealProfileForm(title: '이름',detail: widget.user.realProfileModel.name),
+                        OtherRealProfileForm(title: '성별',detail: widget.user.realProfileModel.gender),
+                        OtherRealProfileForm(title: '나이',detail: widget.user.realProfileModel.age),
+                        OtherRealProfileForm(title: '직업',detail: widget.user.realProfileModel.job)
                       ],
                     );
                   } else {
@@ -217,10 +212,10 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
                           ]
                         ),
                         SizedBox(height: 10.0),
-                        StreamBuilder<QuerySnapshot>(
+                        StreamBuilder<bool>(
                           stream: _getRequestStream(),
                           builder: (context, snapshot){
-                            if(snapshot.hasData && snapshot.data.documents.length!=0){
+                            if(snapshot.hasData && snapshot.data){
                               return Text(
                                 '친구신청 승인 대기중입니다.',
                                 style: TextStyle(
@@ -249,7 +244,7 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
                                 ),
                               ),
                               onTap: () => friendRequestBloc
-                                .emitEvent(FriendRequestEventSendRequest(uid: widget.user.documentID)),
+                                .emitEvent(FriendRequestEventSendRequest(uid: widget.user.uid)),
                             );
                           }
                         )
@@ -304,7 +299,7 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
 
 class OtherTagPart extends StatelessWidget {
 
-  final DocumentSnapshot user;
+  final UserModel user;
   OtherTagPart({@required this.user}); 
 
   @override
@@ -319,33 +314,33 @@ class OtherTagPart extends StatelessWidget {
           children: <Widget>[
             Row(
               children: <Widget>[
-                OtherTagForm(content: user.data[firestoreTagField][firestoreTagTitle1Field],isTitle: true),
+                OtherTagForm(content: user.tagListModel.tagTitleList[0],isTitle: true),
                 SizedBox(width: 10.0),
-                OtherTagForm(content: user.data[firestoreTagField][firestoreTagDetail1Field],isTitle: false),
+                OtherTagForm(content: user.tagListModel.tagDetailList[0],isTitle: false),
                 SizedBox(width: 10.0),
-                OtherTagForm(content: user.data[firestoreTagField][firestoreTagTitle2Field],isTitle: true),
+                OtherTagForm(content: user.tagListModel.tagTitleList[1],isTitle: true),
                 SizedBox(width: 10.0),
-                OtherTagForm(content: user.data[firestoreTagField][firestoreTagDetail2Field],isTitle: false)
+                OtherTagForm(content: user.tagListModel.tagDetailList[1],isTitle: false)
               ],
             ),
             SizedBox(height: 10.0),
             Row(
               children: <Widget>[
-                OtherTagForm(content: user.data[firestoreTagField][firestoreTagTitle3Field],isTitle: true),
+                OtherTagForm(content: user.tagListModel.tagTitleList[2],isTitle: true),
                 SizedBox(width: 10.0),
-                OtherTagForm(content: user.data[firestoreTagField][firestoreTagDetail3Field],isTitle: false),
+                OtherTagForm(content: user.tagListModel.tagDetailList[2],isTitle: false),
                 SizedBox(width: 10.0),
-                OtherTagForm(content: user.data[firestoreTagField][firestoreTagTitle4Field],isTitle: true),
+                OtherTagForm(content: user.tagListModel.tagTitleList[3],isTitle: true),
                 SizedBox(width: 10.0),
-                OtherTagForm(content: user.data[firestoreTagField][firestoreTagDetail4Field],isTitle: false)
+                OtherTagForm(content: user.tagListModel.tagDetailList[3],isTitle: false)
               ],
             ),
             SizedBox(height: 10.0),
             Row(
               children: <Widget>[
-                OtherTagForm(content: user.data[firestoreTagField][firestoreTagTitle5Field],isTitle: true),
+                OtherTagForm(content: user.tagListModel.tagTitleList[4],isTitle: true),
                 SizedBox(width: 10.0),
-                OtherTagForm(content: user.data[firestoreTagField][firestoreTagDetail5Field],isTitle: false)
+                OtherTagForm(content: user.tagListModel.tagTitleList[4],isTitle: false)
               ],
             )
           ],

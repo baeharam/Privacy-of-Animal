@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
+import 'package:privacy_of_animal/models/user_model.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 
@@ -39,7 +40,7 @@ class RandomLoadingAPI {
   }
 
   // 대기중인 방이 있으면 그곳에 들어가서 flag 값을 true로 변경
-  Future<DocumentSnapshot> enterChatRoom(String chatRoomID) async {
+  Future<UserModel> enterRoomAndGetUser(String chatRoomID) async {
     DocumentReference document = sl.get<FirebaseAPI>().getFirestore()
       .collection(firestoreRandomMessageCollection)
       .document(chatRoomID);
@@ -59,13 +60,17 @@ class RandomLoadingAPI {
       .document(receiver);
     DocumentSnapshot userDoc = await users.get();
 
-    return userDoc;
+    UserModel user = UserModel.fromSnapshot(snapshot: userDoc);
+
+    return user;
   }
 
   // 사용자가 들어오면 해당 사용자에 대한 정보를 받아와야 함
-  Future<DocumentSnapshot> fetchUserData(String uid) async {
-    return await sl.get<FirebaseAPI>().getFirestore().collection(firestoreUsersCollection)
+  Future<UserModel> fetchUserData(String uid) async {
+    DocumentSnapshot snapshot = await sl.get<FirebaseAPI>().getFirestore()
+      .collection(firestoreUsersCollection)
       .document(uid).get();
+    return UserModel.fromSnapshot(snapshot: snapshot);
   }
 
   // 만든 채팅방 삭제

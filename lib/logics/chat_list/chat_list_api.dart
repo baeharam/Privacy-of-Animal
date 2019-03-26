@@ -1,3 +1,4 @@
+import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
@@ -8,40 +9,17 @@ import 'package:privacy_of_animal/resources/strings.dart';
 
 class ChatListAPI {
 
-  // 채팅방 리스트 불러오기
-  Future<List<ChatListModel>> fetchUserData(List<DocumentSnapshot> documents) async {
-    List<ChatListModel> result = List<ChatListModel>();
-
-    for(DocumentSnapshot doc in documents) {
-      if(doc.data[firestoreChatDeleteField][sl.get<CurrentUser>().uid]){
-        continue;
-      }
-      String uid = sl.get<CurrentUser>().uid.compareTo(doc.data[firestoreChatUsersField][0])==0
-        ? doc.data[firestoreChatUsersField][1] 
-        : doc.data[firestoreChatUsersField][0];
-      DocumentSnapshot userData = await sl.get<FirebaseAPI>().getFirestore()
-      .collection(firestoreUsersCollection)
-      .document(uid).get();
-
-      QuerySnapshot chatData = await doc.reference.collection(doc.documentID)
-      .orderBy(firestoreChatTimestampField,descending: true).limit(1).getDocuments();
-
-      ChatListModel chatListModel = ChatListModel(
-        chatRoomID: doc.documentID,
-        profileImage: userData.data[firestoreFakeProfileField][firestoreAnimalImageField],
-        nickName: userData.data[firestoreFakeProfileField][firestoreNickNameField],
-        lastMessage: chatData.documents[0].data[firestoreChatContentField],
-        lastTimestamp: chatData.documents[0].data[firestoreChatTimestampField],
-        snapshot: userData
-      );
-      result.add(chatListModel);
-    }
-    return result;
+  /// [채팅 삭제]
+  void deleteChatHistory(String user) {
+    sl.get<CurrentUser>().chatListHistory.remove(user);
   }
 
-  // 채팅방 삭제
-  // 1. 처음 사람이 삭제하는 경우 delete 플래그를 true로
-  // 2. 두번째 사람이 삭제하는 경우는 delete 플래그가 true니까 아예 서버에서 삭제
+  /// [채팅 추가]
+  void addChatHistory(ChatListModel chat) {
+    sl.get<CurrentUser>().chatListHistory[chat.chatRoomID] = chat;
+  }
+
+  /// [채팅 삭제]
   Future<void> deleteChatRoom(String chatRoomID) async {
     DocumentSnapshot doc = await sl.get<FirebaseAPI>().getFirestore()
       .collection(firestoreFriendsMessageCollection)

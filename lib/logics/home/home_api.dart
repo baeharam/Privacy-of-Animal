@@ -3,65 +3,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/database_helper.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
-import 'package:privacy_of_animal/logics/notification_helper.dart';
+import 'package:privacy_of_animal/logics/server_api.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
 class HomeAPI {
-
-  static Stream<QuerySnapshot> friendsRequestStream = Stream.empty();
-  static Stream<QuerySnapshot> friendsStream = Stream.empty();
-
-  void _setFriendsNotification() {
-    _addListenerToFriendsRequest();
-    _addListenerToFriends();
-  }
-
-  void _addListenerToFriendsRequest() {
-    friendsRequestStream = sl.get<FirebaseAPI>().getFirestore()
-      .collection(firestoreUsersCollection).document(sl.get<CurrentUser>().uid)
-      .collection(firestoreFriendsSubCollection).where(firestoreFriendsField, isEqualTo: false)
-      .snapshots();
-    friendsRequestStream.listen((snapshot){
-      if(snapshot.documents.isNotEmpty && snapshot.documentChanges.isNotEmpty){
-        if(sl.get<CurrentUser>().friendsRequestListLength==-1) {
-          sl.get<CurrentUser>().friendsRequestListLength = snapshot.documents.length;
-        }
-        else if(snapshot.documentChanges.length==1 
-          && sl.get<CurrentUser>().friendsRequestListLength < snapshot.documents.length
-          && sl.get<CurrentUser>().friendsNotification) {
-            sl.get<CurrentUser>().friendsRequestListLength = snapshot.documents.length;
-            sl.get<NotificationHelper>().showFriendsRequestNotification(snapshot);
-        }
-      }
-    });
-  }
-
-  void _addListenerToFriends() {
-    friendsStream = sl.get<FirebaseAPI>().getFirestore()
-      .collection(firestoreUsersCollection).document(sl.get<CurrentUser>().uid)
-      .collection(firestoreFriendsSubCollection)
-      .where(firestoreFriendsField, isEqualTo: true)
-      .where(firestoreFriendsAccepted, isEqualTo: true)
-      .snapshots();
-    friendsStream.listen((snapshot){
-      if(snapshot.documents.isNotEmpty && snapshot.documentChanges.isNotEmpty){
-        if(sl.get<CurrentUser>().friendsListLength==-1) {
-          sl.get<CurrentUser>().friendsListLength = snapshot.documents.length;
-        }
-        else if(snapshot.documentChanges.length==1
-          && sl.get<CurrentUser>().friendsListLength < snapshot.documents.length
-          && sl.get<CurrentUser>().friendsNotification) {
-            sl.get<NotificationHelper>().showFriendsNotification(snapshot);
-          }
-      } else {
-        sl.get<CurrentUser>().friendsListLength = 0;
-      }
-    });
-  }
-
 
   // 바로 홈 화면으로 갈 경우 그에 해당하는 데이터를 가져옴
   Future<void> fetchUserData() async {
@@ -84,8 +32,13 @@ class HomeAPI {
     _setFakeProfile(fakeProfile);
 
     // 알림 설정 가져오기
-    await _setNotification(uid);
-    _setFriendsNotification();
+    await _setFriendsNotification(uid);
+    await _setChatRoomNotification();
+
+    // 친구목록, 친구신청목록과의 스트림 연결작업
+    await sl.get<ServerAPI>().connectFriendsList();
+    await sl.get<ServerAPI>().connectFriendsRequestList();
+    await sl.get<ServerAPI>().connectAllChatRoom();
 
     // 데이터 가져왔다고 설정
     sl.get<CurrentUser>().isDataFetched = true;
@@ -127,13 +80,31 @@ class HomeAPI {
     sl.get<CurrentUser>().fakeProfileModel.analyzedTime = fakeProfile[0][analyzedTimeCol];
   }
 
-  Future<void> _setNotification(String uid) async{
+  Future<void> _setFriendsNotification(String uid) async{
     SharedPreferences prefs = await sl.get<DatabaseHelper>().sharedPreferences;
     if(prefs.getBool(uid+friendsNotification)==null){
       prefs.setBool(uid+friendsNotification, false);
       sl.get<CurrentUser>().friendsNotification = false;
     } else {
       sl.get<CurrentUser>().friendsNotification = prefs.getBool(uid+friendsNotification);
+    }
+  }
+
+  Future<void> _setChatRoomNotification() async{
+    QuerySnapshot chatRoomsSnapshot = await sl.get<FirebaseAPI>().getFirestore()
+      .collection(firestoreFriendsMessageCollection)
+      .getDocuments();
+
+    SharedPreferences prefs = await sl.get<DatabaseHelper>().sharedPreferences;
+    
+    for(DocumentSnapshot chatRoomSnapshot in chatRoomsSnapshot.documents) {
+      String chatRoomID = chatRoomSnapshot.documentID;
+      if(prefs.getBool(chatRoomID)==null) {
+        prefs.setBool(chatRoomID, false);
+        sl.get<CurrentUser>().chatRoomNotification[chatRoomID] = false;
+      } else {
+        sl.get<CurrentUser>().chatRoomNotification[chatRoomID] = prefs.getBool(chatRoomID);
+      }
     }
   }
 

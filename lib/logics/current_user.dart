@@ -1,8 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:privacy_of_animal/models/chat_list_model.dart';
+import 'package:privacy_of_animal/models/chat_model.dart';
 import 'package:privacy_of_animal/models/fake_profile_model.dart';
 import 'package:privacy_of_animal/models/kakao_ml_model.dart';
 import 'package:privacy_of_animal/models/real_profile_model.dart';
 import 'package:privacy_of_animal/models/tag_list_model.dart';
+import 'package:privacy_of_animal/models/user_model.dart';
 
 class CurrentUser {
   String uid;
@@ -11,30 +13,34 @@ class CurrentUser {
   KakaoMLModel kakaoMLModel;
   FakeProfileModel fakeProfileModel;
 
-  List<DocumentSnapshot> friendsList;
-  List<DocumentSnapshot> friendsRequestList;
-  int friendsListLength;
-  int friendsRequestListLength;
+  Map<String,ChatListModel> chatListHistory;
+  Map<String,List<ChatModel>> chatHistory;
+  List<UserModel> friendsList;
+  List<UserModel> friendsRequestList;
+  int newFriendsNum;
 
   bool friendsNotification;
-  bool messageNotification;
+  Map<String,bool> chatRoomNotification;
 
   bool isDataFetched;
 
-  void clear() {
+  CurrentUser() {
     uid = '';
+
     realProfileModel = RealProfileModel();
     tagListModel = TagListModel(tagTitleList: [], tagDetailList: []);
-    fakeProfileModel = FakeProfileModel();
+    fakeProfileModel =FakeProfileModel();
 
-    friendsList = friendsRequestList = [];
-    friendsListLength =friendsRequestListLength = -1;
+    chatListHistory = Map<String,ChatListModel>();
+    chatHistory = Map<String,List<ChatModel>>();
 
-    friendsNotification =messageNotification = false;
+    friendsList = [];
+    friendsRequestList = [];
+    newFriendsNum = 0;
+
+    friendsNotification = false;
+    chatRoomNotification = Map<String,bool>();
+
     isDataFetched = false;
-  }
-
-  CurrentUser() {
-    clear();
   }
 }

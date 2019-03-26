@@ -15,6 +15,7 @@ class FriendRequestAPI {
     await sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async{
       await tx.set(doc, {
         firestoreFriendsField: false,
+        firestoreFriendsAccepted: false,
         uidCol: sl.get<CurrentUser>().uid
       });
     });
