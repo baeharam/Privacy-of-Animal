@@ -145,51 +145,57 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
                   ],
                 ),
                 SizedBox(height: 20.0),
-                SameMatchButton(
-                  color: sameMatchRedColor,
-                  title: '★ 프로필 보기',
-                  onPressed: () => _viewOtherProfile()
-                ),
-                BlocBuilder(
-                  bloc: _sameMatchBloc,
-                  builder: (context,SameMatchState state){
-                    if(state.isAlreadyFriendsOrRequestReceived){
-                      return Padding(
-                        padding: EdgeInsets.only(top: 10.0),
-                        child: Text(
-                          '친구신청 승인 대기중이거나 이미 친구입니다.',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold
-                          ),
-                        ),
-                      );
-                    }
-                    if(state.isRequestLoading || state.isCancelLoading) {
-                      return CircularProgressIndicator();
-                    }
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SameMatchButton(
+                      color: sameMatchRedColor,
+                      title: '★ 프로필 보기',
+                      onPressed: () => _viewOtherProfile()
+                    ),
+                    SizedBox(width: 15.0),
+                    BlocBuilder(
+                      bloc: _sameMatchBloc,
+                      builder: (context,SameMatchState state){
+                        if(state.isAlreadyFriendsOrRequestReceived){
+                          return Padding(
+                            padding: EdgeInsets.only(top: 10.0),
+                            child: Text(
+                              '친구신청 승인 대기중이거나 이미 친구입니다.',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold
+                              ),
+                            ),
+                          );
+                        }
+                        if(state.isRequestLoading || state.isCancelLoading) {
+                          return CircularProgressIndicator();
+                        }
 
-                    if(state.isRequestSucceeded) {
-                      return SameMatchButton(
-                        color: primaryGreen,
-                        title: '친구 신청취소',
-                        onPressed: () => _sameMatchBloc
-                        .emitEvent(SameMatchEventCancelRequest(
-                          uid: _sameMatchModel.userInfo.uid))
-                      );
-                    }
-                    if(state.isRequestFailed) {
-                      streamSnackbar(context, '친구신청에 실패했습니다.');
-                      _sameMatchBloc.emitEvent(SameMatchEventStateClear());
-                    }
-                    return SameMatchButton( 
-                      color: primaryBlue,
-                      title: '친구 신청하기',
-                      onPressed: () => _sameMatchBloc
-                        .emitEvent(SameMatchEventSendRequest(
-                          uid: _sameMatchModel.userInfo.uid))
-                    );
-                  }
+                        if(state.isRequestSucceeded) {
+                          return SameMatchButton(
+                            color: primaryGreen,
+                            title: '친구 신청취소',
+                            onPressed: () => _sameMatchBloc
+                            .emitEvent(SameMatchEventCancelRequest(
+                              uid: _sameMatchModel.userInfo.uid))
+                          );
+                        }
+                        if(state.isRequestFailed) {
+                          streamSnackbar(context, '친구신청에 실패했습니다.');
+                          _sameMatchBloc.emitEvent(SameMatchEventStateClear());
+                        }
+                        return SameMatchButton( 
+                          color: primaryBlue,
+                          title: '친구 신청하기',
+                          onPressed: () => _sameMatchBloc
+                            .emitEvent(SameMatchEventSendRequest(
+                              uid: _sameMatchModel.userInfo.uid))
+                        );
+                      }
+                    )
+                  ]
                 )
               ],
             ),
