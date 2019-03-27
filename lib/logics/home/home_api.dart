@@ -11,6 +11,7 @@ import 'package:sqflite/sqflite.dart';
 class HomeAPI {
   static bool isProfileDataFetched = false;
   static bool isFriendsDataFetched = false;
+  static bool isChatRoomListDataFetched = false;
 
   Database db;
   SharedPreferences prefs;
@@ -43,13 +44,19 @@ class HomeAPI {
   Future<void> fetchFriendsData() async {
     if(!isFriendsDataFetched) {
       await _setFriendsNotification(uid);
-      await _setChatRoomNotification();
-
       await sl.get<ServerAPI>().connectFriendsList();
       await sl.get<ServerAPI>().connectFriendsRequestList();
-      await sl.get<ServerAPI>().connectAllChatRoom();
 
       isFriendsDataFetched = true;
+    }
+  }
+
+  Future<void> fetchChatRoomListData() async {
+    if(!isChatRoomListDataFetched) {
+      await _setChatRoomNotification();
+      await sl.get<ServerAPI>().connectAllChatRoom();
+
+      isChatRoomListDataFetched = true;
     }
   }
 

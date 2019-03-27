@@ -13,6 +13,9 @@ class HomeState extends BlocState {
   final bool isFriendsFetchLoading;
   final bool isFriendsFetchFailed;
 
+  final bool isChatRoomListFetchLoading;
+  final bool isChatRoomListFetchFailed;
+
   final int activeIndex;
 
   HomeState({
@@ -26,6 +29,9 @@ class HomeState extends BlocState {
 
     this.isFriendsFetchLoading: false,
     this.isFriendsFetchFailed: false,
+
+    this.isChatRoomListFetchLoading: false,
+    this.isChatRoomListFetchFailed: false,
 
     this.activeIndex: 0
   });
@@ -72,6 +78,14 @@ class HomeState extends BlocState {
     );
   }
 
+  factory HomeState.chatRoomListLoading(int index) {
+    return HomeState(
+      isChatRoomListFetchLoading: true,
+      activeIndex: index
+    );
+  }
+
   factory HomeState.profileFailed() => HomeState(isProfileFetchFailed: true);
   factory HomeState.friendsFailed() => HomeState(isFriendsFetchFailed: true);
+  factory HomeState.chatRoomListFailed() => HomeState(isChatRoomListFetchFailed: true);
 }

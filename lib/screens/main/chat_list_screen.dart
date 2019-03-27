@@ -104,9 +104,17 @@ class _ChatListScreenState extends State<ChatListScreen> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Text(
-                            chatListModel.nickName,
-                            style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),
+                          Row(
+                            children: <Widget>[
+                              Text(
+                                chatListModel.nickName,
+                                style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(width: 10.0),
+                              sl.get<CurrentUser>().chatRoomNotification[chatListModel.chatRoomID]
+                              ? Icon(Icons.notifications,color: Colors.grey)
+                              : Icon(Icons.notifications_off,color: Colors.grey)
+                            ],
                           ),
                           SizedBox(height: 10.0),
                           Text(chatListModel.lastMessage)

@@ -15,7 +15,14 @@ class HomeBloc extends BlocEventStateBase<HomeEvent,HomeState> {
         yield HomeState.match(event.index);
       }
       else if(event.index==TAB.CHAT.index){
-        yield HomeState.chat(event.index);
+        yield HomeState.chatRoomListLoading(event.index);
+        try {
+          await _api.fetchChatRoomListData();
+          yield HomeState.chat(event.index);
+        } catch(exception) {
+          print('채팅목록 데이터 가져오기 에러: ${exception.toString()}');
+          yield HomeState.chatRoomListFailed();
+        }
       }
       else if(event.index==TAB.FRIENDS.index){
         yield HomeState.profileLoading(event.index);

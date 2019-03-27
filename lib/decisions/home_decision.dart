@@ -31,7 +31,7 @@ class _HomeDecisionState extends State<HomeDecision> {
     return BlocBuilder(
       bloc: _homeBloc,
       builder: (context, HomeState state){
-        if(state.isProfileFetchFailed || state.isFriendsFetchFailed) {
+        if(state.isProfileFetchFailed || state.isFriendsFetchFailed || state.isChatRoomListFetchFailed) {
           return Center(
             child: Text('데이터 로딩에 실패했습니다.'),
           );
@@ -40,7 +40,7 @@ class _HomeDecisionState extends State<HomeDecision> {
         return WillPopScope(
           onWillPop: () => BackButtonAction.terminateApp(context),
           child: Scaffold(
-            body: (state.isProfileFetchLoading || state.isFriendsFetchLoading)
+            body: (state.isProfileFetchLoading || state.isFriendsFetchLoading || state.isChatRoomListFetchLoading)
              ? CustomProgressIndicator() : _homePage[state.activeIndex],
             bottomNavigationBar: BottomNavigationBar(
               currentIndex: state.activeIndex,
