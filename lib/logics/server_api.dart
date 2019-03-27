@@ -34,7 +34,6 @@ class ServerAPI {
   StreamSubscription friendsRequestListSubscription;
 
   StreamSubscription friendsOrRequestReceivedSubscription;
-  StreamSubscription friendsRequestSubscription;
 
   /// [특정사람 매칭 → 친구이거나 친구 신청 받았는지 확인]
   void connectFriendsOrRequestReceivedStream({@required SameMatchModel sameMatchModel}) {

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state_builder.dart';
 import 'package:privacy_of_animal/logics/same_match/same_match.dart';
-import 'package:privacy_of_animal/logics/server_api.dart';
 import 'package:privacy_of_animal/models/same_match_model.dart';
 import 'package:privacy_of_animal/resources/resources.dart';
 import 'package:privacy_of_animal/screens/main/other_profile_screen.dart';
@@ -20,12 +19,6 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
 
   final SameMatchBloc _sameMatchBloc = sl.get<SameMatchBloc>();
   SameMatchModel _sameMatchModel;
-
-  @override
-  void initState() {
-    super.initState();
-    print("hi");
-  }
 
   void _viewOtherProfile() {
     WidgetsBinding.instance.addPostFrameCallback((_){
@@ -59,21 +52,20 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
       body: BlocBuilder(
         bloc: _sameMatchBloc,
         builder: (context, SameMatchState state){
-          if(state.isFindLoading){
+          if(state.isFindLoading || state.isInitial) {
             return SameMatchLoadingIndicator();
           }
           if(state.isFindFailed){
-            streamSnackbar(context,'데이터를 불러오는데 실패했습니다.');
-            _sameMatchBloc.emitEvent(SameMatchEventStateClear());
+            return Center(child: Text('데이터를 불러오는데 실패했습니다.'));
           }
           if(state.isFindSucceeded) {
             if(state.sameMatchModel.tagTitle==null){
               return Center(child: Text('아직까지 맞는 상대가 없습니다.'));
             } else {
               _sameMatchModel = state.sameMatchModel;
-              sl.get<ServerAPI>().connectFriendsOrRequestReceivedStream(
+              _sameMatchBloc.emitEvent(SameMatchEventConnectToServer(
                 sameMatchModel: _sameMatchModel
-              );
+              ));
             }
           }
           return Container(
@@ -178,7 +170,6 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
                     }
 
                     if(state.isRequestSucceeded) {
-                      streamSnackbar(context,'친구신청에 성공했습니다.');
                       return SameMatchButton(
                         color: primaryGreen,
                         title: '친구 신청취소',
@@ -186,9 +177,6 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
                         .emitEvent(SameMatchEventCancelRequest(
                           uid: _sameMatchModel.userInfo.uid))
                       );
-                    }
-                    if(state.isCancelSucceeded) {
-                      streamSnackbar(context, '친구신청을 취소하였습니다.');
                     }
                     if(state.isRequestFailed) {
                       streamSnackbar(context, '친구신청에 실패했습니다.');
