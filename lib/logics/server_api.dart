@@ -170,7 +170,7 @@ class ServerAPI {
         _updateChatListHistory(otherUser, chatRoomID, snapshot);
       }
       if(snapshot.documentChanges.isNotEmpty) {
-        _updateChatHistory(otherUser.uid, chatRoomID, snapshot);
+        _updateChatHistory(otherUser, chatRoomID, snapshot);
       }
     });
   }
@@ -181,14 +181,22 @@ class ServerAPI {
     chatRoomListServer.remove(otherUserUID);
   }
 
-  void _updateChatHistory(String otherUserUID, String chatRoomID, QuerySnapshot snapshot) {
-    if(isFirstChatHistoryFetch[chatRoomID] ||
-        snapshot.documentChanges[0].document.data[firestoreChatFromField]!=sl.get<CurrentUser>().uid) {
-          if(isFirstChatHistoryFetch[chatRoomID]) isFirstChatHistoryFetch[chatRoomID] = false;
-          sl.get<FriendsChatBloc>().emitEvent(FriendsChatEventMessageRecieved(
-            snapshot: snapshot,
-            otherUserUID: otherUserUID
-          ));
+  void _updateChatHistory(UserModel otherUser, String chatRoomID, QuerySnapshot snapshot) {
+    String from = snapshot.documentChanges[0].document.data[firestoreChatFromField];
+    if(isFirstChatHistoryFetch[chatRoomID] || from==otherUser.uid) {
+      sl.get<FriendsChatBloc>().emitEvent(FriendsChatEventMessageRecieved(
+        snapshot: snapshot,
+        otherUserUID: otherUser.uid
+      ));
+      if(!isFirstChatHistoryFetch[chatRoomID] && sl.get<CurrentUser>().chatRoomNotification[chatRoomID]){
+        sl.get<NotificationHelper>().showChatNotification(
+          otherUser.fakeProfileModel.nickName,
+          snapshot.documentChanges[0].document.data[firestoreChatContentField]
+        );
+      }
+      if(isFirstChatHistoryFetch[chatRoomID]) {
+        isFirstChatHistoryFetch[chatRoomID] = false;
+      }
     }
   }
 

@@ -30,11 +30,14 @@ class _FriendsChatScreenState extends State<FriendsChatScreen> {
   final FriendsChatBloc friendsChatBloc = sl.get<FriendsChatBloc>();
   final GlobalKey<ScaffoldState> scaffoldKey =GlobalKey<ScaffoldState>();
   List<ChatModel> messages = List<ChatModel>();
+  bool originalNotification;
 
   @override
   void initState() {
     super.initState();
     initializeDateFormatting();
+    originalNotification = sl.get<CurrentUser>().chatRoomNotification[widget.chatRoomID];
+    sl.get<CurrentUser>().chatRoomNotification[widget.chatRoomID] = false;
   }
 
   @override
@@ -43,6 +46,7 @@ class _FriendsChatScreenState extends State<FriendsChatScreen> {
     messageController.dispose();
     messageFocusNode.dispose();
     scrollController.dispose();
+    sl.get<CurrentUser>().chatRoomNotification[widget.chatRoomID] =originalNotification;
   }
 
   @override
