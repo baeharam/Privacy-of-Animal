@@ -20,6 +20,12 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
   final SameMatchBloc _sameMatchBloc = sl.get<SameMatchBloc>();
   SameMatchModel _sameMatchModel;
 
+  @override
+  void dispose() {
+    _sameMatchBloc.emitEvent(SameMatchEventDisconnectToServer());
+    super.dispose();
+  }
+
   void _viewOtherProfile() {
     WidgetsBinding.instance.addPostFrameCallback((_){
       Navigator.push(context, MaterialPageRoute(
@@ -45,7 +51,10 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
         actions: [
           IconButton(
             icon: Icon(Icons.refresh),
-            onPressed: () => _sameMatchBloc.emitEvent(SameMatchEventFindUser()),
+            onPressed: () {
+              _sameMatchBloc.emitEvent(SameMatchEventDisconnectToServer());
+              _sameMatchBloc.emitEvent(SameMatchEventFindUser());
+            }
           )
         ],
       ),
