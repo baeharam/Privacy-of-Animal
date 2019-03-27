@@ -137,8 +137,9 @@ class _ChatListScreenState extends State<ChatListScreen> {
           ],
         )
       ),
-      onDismissed: (direction) {sl.get<ChatListBloc>().emitEvent(ChatListEventDeleteChatRoom(
-        chatRoomID: chatListModel.chatRoomID
+      onDismissed: (direction) {chatListBloc.emitEvent(ChatListEventDeleteChatRoom(
+        chatRoomID: chatListModel.chatRoomID,
+        friends: chatListModel.user.uid
       ));},
     );
   }

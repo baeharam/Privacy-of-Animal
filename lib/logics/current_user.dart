@@ -22,8 +22,6 @@ class CurrentUser {
   bool friendsNotification;
   Map<String,bool> chatRoomNotification;
 
-  bool isDataFetched;
-
   CurrentUser() {
     uid = '';
 
@@ -40,7 +38,5 @@ class CurrentUser {
 
     friendsNotification = false;
     chatRoomNotification = Map<String,bool>();
-
-    isDataFetched = false;
   }
 }

@@ -6,8 +6,12 @@ class HomeState extends BlocState {
   final bool isChatClicked;
   final bool isFriendClicked;
   final bool isProfileClicked;
-  final bool isFetchLoading;
-  final bool isFetchFailed;
+
+  final bool isProfileFetchLoading;
+  final bool isProfileFetchFailed;
+
+  final bool isFriendsFetchLoading;
+  final bool isFriendsFetchFailed;
 
   final int activeIndex;
 
@@ -16,8 +20,13 @@ class HomeState extends BlocState {
     this.isChatClicked: false,
     this.isFriendClicked: false,
     this.isProfileClicked: false,
-    this.isFetchLoading: false,
-    this.isFetchFailed: false,
+    
+    this.isProfileFetchLoading: false,
+    this.isProfileFetchFailed: false,
+
+    this.isFriendsFetchLoading: false,
+    this.isFriendsFetchFailed: false,
+
     this.activeIndex: 0
   });
 
@@ -49,12 +58,20 @@ class HomeState extends BlocState {
     );
   }
 
-  factory HomeState.loading(int index) {
+  factory HomeState.profileLoading(int index) {
     return HomeState(
-      isFetchLoading: true,
+      isProfileFetchLoading: true,
       activeIndex: index
     );
   }
 
-  factory HomeState.failed() => HomeState(isFetchFailed: true);
+  factory HomeState.friendsLoading(int index) {
+    return HomeState(
+      isFriendsFetchLoading: true,
+      activeIndex: index
+    );
+  }
+
+  factory HomeState.profileFailed() => HomeState(isProfileFetchFailed: true);
+  factory HomeState.friendsFailed() => HomeState(isFriendsFetchFailed: true);
 }

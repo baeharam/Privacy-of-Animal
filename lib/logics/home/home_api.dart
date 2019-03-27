@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/database_helper.dart';
@@ -10,38 +9,48 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
 class HomeAPI {
+  static bool isProfileDataFetched = false;
+  static bool isFriendsDataFetched = false;
 
-  // 바로 홈 화면으로 갈 경우 그에 해당하는 데이터를 가져옴
-  Future<void> fetchUserData() async {
-    if(sl.get<CurrentUser>().isDataFetched) { return; }
+  Database db;
+  SharedPreferences prefs;
+  String uid;
 
-    await _checkDBAndCallFirestore();
-    String uid = sl.get<CurrentUser>().uid;
-    Database db = await sl.get<DatabaseHelper>().database;
+  Future<void> _apiInitialization() async {
+    db = await sl.get<DatabaseHelper>().database;
+    prefs = await sl.get<DatabaseHelper>().sharedPreferences;
+    uid = sl.get<CurrentUser>().uid;
+  }
 
-    // 태그 정보 가져오기
-    var tags = await db.rawQuery('SELECT * FROM $tagTable WHERE $uidCol="$uid"');
-    _setTagData(tags);
+  Future<void> fetchProfileData() async {
+    if(!isProfileDataFetched) {
+      await _apiInitialization();
+      await _checkDBAndCallFirestore();
 
-    // 실제 프로필 정보 가져오기
-    var realProfile = await db.rawQuery('SELECT * FROM $realProfileTable WHERE $uidCol="$uid"');
-    _setRealProfile(realProfile);
+      var tags = await db.rawQuery('SELECT * FROM $tagTable WHERE $uidCol="$uid"');
+      _setTagData(tags);
 
-    // 가상 프로필 정보 가져오기
-    var fakeProfile = await db.rawQuery('SELECT * FROM $fakeProfileTable WHERE $uidCol="$uid"');
-    _setFakeProfile(fakeProfile);
+      var realProfile = await db.rawQuery('SELECT * FROM $realProfileTable WHERE $uidCol="$uid"');
+      _setRealProfile(realProfile);
 
-    // 알림 설정 가져오기
-    await _setFriendsNotification(uid);
-    await _setChatRoomNotification();
+      var fakeProfile = await db.rawQuery('SELECT * FROM $fakeProfileTable WHERE $uidCol="$uid"');
+      _setFakeProfile(fakeProfile);
 
-    // 친구목록, 친구신청목록과의 스트림 연결작업
-    await sl.get<ServerAPI>().connectFriendsList();
-    await sl.get<ServerAPI>().connectFriendsRequestList();
-    await sl.get<ServerAPI>().connectAllChatRoom();
+      isProfileDataFetched = true;
+    }
+  }
 
-    // 데이터 가져왔다고 설정
-    sl.get<CurrentUser>().isDataFetched = true;
+  Future<void> fetchFriendsData() async {
+    if(!isFriendsDataFetched) {
+      await _setFriendsNotification(uid);
+      await _setChatRoomNotification();
+
+      await sl.get<ServerAPI>().connectFriendsList();
+      await sl.get<ServerAPI>().connectFriendsRequestList();
+      await sl.get<ServerAPI>().connectAllChatRoom();
+
+      isFriendsDataFetched = true;
+    }
   }
 
   void _setTagData(List<Map<String,dynamic>> tags) {
@@ -81,7 +90,6 @@ class HomeAPI {
   }
 
   Future<void> _setFriendsNotification(String uid) async{
-    SharedPreferences prefs = await sl.get<DatabaseHelper>().sharedPreferences;
     if(prefs.getBool(uid+friendsNotification)==null){
       prefs.setBool(uid+friendsNotification, false);
       sl.get<CurrentUser>().friendsNotification = false;
@@ -94,8 +102,6 @@ class HomeAPI {
     QuerySnapshot chatRoomsSnapshot = await sl.get<FirebaseAPI>().getFirestore()
       .collection(firestoreFriendsMessageCollection)
       .getDocuments();
-
-    SharedPreferences prefs = await sl.get<DatabaseHelper>().sharedPreferences;
     
     for(DocumentSnapshot chatRoomSnapshot in chatRoomsSnapshot.documents) {
       String chatRoomID = chatRoomSnapshot.documentID;
@@ -110,7 +116,6 @@ class HomeAPI {
 
   // 로컬 DB체크한 후에 없으면 서버에서 가져옴
   Future<void> _checkDBAndCallFirestore() async {
-    Database db = await sl.get<DatabaseHelper>().database;
     List tags = await db.rawQuery('SELECT * FROM $tagTable WHERE $uidCol="${sl.get<CurrentUser>().uid}"');
     if(tags.length==0){
       await _fetchTagsFromFirestore();
@@ -129,8 +134,7 @@ class HomeAPI {
 
   Future<void> _fetchFakeProfileFromFirestore() async {
     CollectionReference col = sl.get<FirebaseAPI>().getFirestore().collection(firestoreUsersCollection);
-    DocumentSnapshot doc = await col.document(sl.get<CurrentUser>().uid).get();
-    Database db = await sl.get<DatabaseHelper>().database;
+    DocumentSnapshot doc = await col.document(uid).get();
     await db.rawInsert(
       'INSERT INTO $fakeProfileTable ($uidCol,$nickNameCol,$fakeAgeCol,$fakeGenderCol,$fakeEmotionCol,'
       '$fakeAgeConfidenceCol,$fakeGenderConfidenceCol,$fakeEmotionConfidenceCol,'
@@ -148,8 +152,7 @@ class HomeAPI {
 
   Future<void> _fetchRealProfileFromFirestore() async {
     CollectionReference col = sl.get<FirebaseAPI>().getFirestore().collection(firestoreUsersCollection);
-    DocumentSnapshot doc = await col.document(sl.get<CurrentUser>().uid).get();
-    Database db = await sl.get<DatabaseHelper>().database;
+    DocumentSnapshot doc = await col.document(uid).get();
     await db.rawInsert(
       'INSERT INTO $realProfileTable ($uidCol,$nameCol,$ageCol,$genderCol,$jobCol) VALUES('
       '"${sl.get<CurrentUser>().uid}",'
@@ -160,8 +163,7 @@ class HomeAPI {
 
   Future<void> _fetchTagsFromFirestore() async {
     CollectionReference col = sl.get<FirebaseAPI>().getFirestore().collection(firestoreUsersCollection);
-    DocumentSnapshot doc = await col.document(sl.get<CurrentUser>().uid).get();
-    Database db = await sl.get<DatabaseHelper>().database;
+    DocumentSnapshot doc = await col.document(uid).get();
     await db.rawInsert(
       'INSERT INTO $tagTable ($uidCol,$tagName1Col,$tagName2Col,$tagName3Col,$tagName4Col,$tagName5Col,'
       '$tagDetail1Col,$tagDetail2Col,$tagDetail3Col,$tagDetail4Col,$tagDetail5Col) VALUES('

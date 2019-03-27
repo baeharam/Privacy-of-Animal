@@ -15,23 +15,23 @@ class HomeDecision extends StatefulWidget {
 
 class _HomeDecisionState extends State<HomeDecision> {
 
-  final HomeBloc homeBloc = sl.get<HomeBloc>();
-  final List<Widget> homePage = [MatchScreen(),ChatListScreen(),FriendsScreen(),ProfileScreen()];
+  final HomeBloc _homeBloc = sl.get<HomeBloc>();
+  final List<Widget> _homePage = [MatchScreen(),ChatListScreen(),FriendsScreen(),ProfileScreen()];
 
   @override
   void initState() {
     super.initState();
     sl.get<NotificationHelper>().initializeNotification(context);
-    homeBloc.emitEvent(HomeEventNavigate(index: 3));
+    _homeBloc.emitEvent(HomeEventNavigate(index: TAB.PROFILE.index));
   }
 
   @override
   Widget build(BuildContext context) {
 
     return BlocBuilder(
-      bloc: homeBloc,
+      bloc: _homeBloc,
       builder: (context, HomeState state){
-        if(state.isFetchFailed) {
+        if(state.isProfileFetchFailed || state.isFriendsFetchFailed) {
           return Center(
             child: Text('데이터 로딩에 실패했습니다.'),
           );
@@ -40,10 +40,11 @@ class _HomeDecisionState extends State<HomeDecision> {
         return WillPopScope(
           onWillPop: () => BackButtonAction.terminateApp(context),
           child: Scaffold(
-            body: state.isFetchLoading ? CustomProgressIndicator() : homePage[state.activeIndex],
+            body: (state.isProfileFetchLoading || state.isFriendsFetchLoading)
+             ? CustomProgressIndicator() : _homePage[state.activeIndex],
             bottomNavigationBar: BottomNavigationBar(
               currentIndex: state.activeIndex,
-              onTap: (index) => homeBloc.emitEvent(HomeEventNavigate(index: index)),
+              onTap: (index) => _homeBloc.emitEvent(HomeEventNavigate(index: index)),
               items: [
                 BottomNavigationBarItem(
                   title: Text(''),

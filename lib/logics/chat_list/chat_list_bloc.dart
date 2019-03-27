@@ -15,6 +15,7 @@ class ChatListBloc extends BlocEventStateBase<ChatListEvent,ChatListState> {
       try {
         yield ChatListState.deleteLoading();
         await _api.deleteChatRoom(event.chatRoomID);
+        _api.deleteChatHistory(event.friends);
         yield ChatListState.deleteSucceeded();
       } catch(exception) {
         print('채팅삭제 실패: ${exception.toString()}');
