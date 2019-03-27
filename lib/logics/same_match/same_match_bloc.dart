@@ -11,13 +11,25 @@ class SameMatchBloc extends BlocEventStateBase<SameMatchEvent,SameMatchState>
   static final FriendRequestAPI _friendRequestAPI = FriendRequestAPI();
 
   @override
-  SameMatchState get initialState => SameMatchState.findLoading();
+  SameMatchState get initialState => SameMatchState.initial();
 
   @override
   Stream<SameMatchState> eventHandler(SameMatchEvent event, SameMatchState currentState) async*{
 
     if(event is SameMatchEventStateClear) {
-      yield SameMatchState.initial();
+      yield SameMatchState();
+    }
+
+    if(event is SameMatchEventFriendsStateUpdate) {
+      yield SameMatchState.alreadyFriendsOrRequestReceived();
+    }
+
+    if(event is SameMatchEventConnectToServer) {
+      _sameMatchAPI.connectToServer(sameMatchModel: event.sameMatchModel);
+    }
+
+    if(event is SameMatchEventDisconnectToServer) {
+      await _sameMatchAPI.disconnectToServer();
     }
 
     if(event is SameMatchEventFindUser) {

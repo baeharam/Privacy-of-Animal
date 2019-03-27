@@ -2,14 +2,24 @@
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:meta/meta.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
+import 'package:privacy_of_animal/logics/server_api.dart';
 import 'package:privacy_of_animal/models/same_match_model.dart';
 import 'package:privacy_of_animal/models/user_model.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
 
 class SameMatchAPI {
+
+  void connectToServer({@required SameMatchModel sameMatchModel})  {
+    sl.get<ServerAPI>().connectFriendsOrRequestReceivedStream(sameMatchModel: sameMatchModel);
+  }
+
+  Future<void> disconnectToServer() async{
+    await sl.get<ServerAPI>().disconnectFriendsOrRequestReceivedStream();
+  }
 
   // 전체 사용자 중에서 관심사가 가장 잘 맞는 애 선정해서 넘겨주기
   Future<SameMatchModel> findUser() async {

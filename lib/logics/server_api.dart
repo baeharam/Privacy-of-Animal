@@ -9,7 +9,9 @@ import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/logics/friends/friends.dart';
 import 'package:privacy_of_animal/logics/friends_chat/friends_chat.dart';
 import 'package:privacy_of_animal/logics/notification_helper.dart';
+import 'package:privacy_of_animal/logics/same_match/same_match.dart';
 import 'package:privacy_of_animal/models/chat_list_model.dart';
+import 'package:privacy_of_animal/models/same_match_model.dart';
 import 'package:privacy_of_animal/models/user_model.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:rxdart/rxdart.dart';
@@ -30,6 +32,57 @@ class ServerAPI {
 
   Observable<QuerySnapshot> friendsRequestListServer;
   StreamSubscription friendsRequestListSubscription;
+
+  StreamSubscription friendsOrRequestReceivedSubscription;
+  StreamSubscription friendsRequestSubscription;
+
+  /// [특정사람 매칭 → 친구이거나 친구 신청 받았는지 확인]
+  void connectFriendsOrRequestReceivedStream({@required SameMatchModel sameMatchModel}) {
+    Stream<QuerySnapshot> requestStreamFrom = sl.get<FirebaseAPI>().getFirestore()
+      .collection(firestoreUsersCollection)
+      .document(sl.get<CurrentUser>().uid)
+      .collection(firestoreFriendsSubCollection)
+      .where(firestoreFriendsUID, isEqualTo: sameMatchModel.userInfo.uid)
+      .where(firestoreFriendsField, isEqualTo: false).snapshots();
+
+    // 친구인지 판단하는 Stream
+    Stream<QuerySnapshot> friendsStream = sl.get<FirebaseAPI>().getFirestore()
+      .collection(firestoreUsersCollection)
+      .document(sameMatchModel.userInfo.uid)
+      .collection(firestoreFriendsSubCollection)
+      .where(firestoreFriendsUID, isEqualTo: sl.get<CurrentUser>().uid)
+      .where(firestoreFriendsField, isEqualTo: true).snapshots();
+
+    Observable<bool> combinedStream = Observable.combineLatest2(friendsStream, requestStreamFrom,(s1,s2)
+      => (s1.documents.isNotEmpty || s2.documents.isNotEmpty)
+    );
+
+    friendsOrRequestReceivedSubscription = combinedStream.listen((flag){
+      if(flag) {
+        sl.get<SameMatchBloc>().emitEvent(SameMatchEventFriendsStateUpdate());
+      }
+    });
+  }
+
+  Future<void> disconnectFriendsOrRequestReceivedStream() async{
+    await friendsOrRequestReceivedSubscription.cancel();
+  }
+
+  // void connectFriendsRequestStream({@required SameMatchModel sameMatchModel}) {
+  //   Stream<QuerySnapshot> requestStream = sl.get<FirebaseAPI>().getFirestore()
+  //     .collection(firestoreUsersCollection)
+  //     .document(sameMatchModel.userInfo.uid)
+  //     .collection(firestoreFriendsSubCollection)
+  //     .where(firestoreFriendsUID, isEqualTo: sl.get<CurrentUser>().uid)
+  //     .where(firestoreFriendsField, isEqualTo: false).snapshots();
+    
+  //   friendsRequestSubscription = requestStream.listen((snapshot){
+  //     if(snapshot.documentChanges.isNotEmpty) {
+  //       sl.get<SameMatchBloc>().emitEvent(Samematch());
+  //     }
+  //   });
+    
+  // }
 
 
   /// [로그인 → 모든 채팅방 연결]
