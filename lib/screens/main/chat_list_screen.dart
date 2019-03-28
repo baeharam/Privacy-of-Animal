@@ -66,7 +66,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
 
     bool isToday = chatListModel.lastTimestamp.toDate().difference(DateTime.now())
       == Duration(days: 0) ? true : false;
-      
+
     return Dismissible(
       key: Key(chatListModel.user.uid),
       background: Container(color: Colors.black),

@@ -230,7 +230,9 @@ class ServerAPI {
         snapshot: snapshot,
         otherUserUID: otherUser.uid
       ));
-      if(!isFirstChatHistoryFetch[chatRoomID] && sl.get<CurrentUser>().chatRoomNotification[chatRoomID]){
+      if(!isFirstChatHistoryFetch[chatRoomID] 
+        && sl.get<CurrentUser>().chatRoomNotification[chatRoomID]
+        && chatRoomID!=sl.get<CurrentUser>().currentChatRoomID){
         sl.get<NotificationHelper>().showChatNotification(
           otherUser.fakeProfileModel.nickName,
           snapshot.documentChanges[0].document.data[firestoreChatContentField]

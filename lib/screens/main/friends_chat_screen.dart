@@ -36,7 +36,7 @@ class _FriendsChatScreenState extends State<FriendsChatScreen> {
   void initState() {
     super.initState();
     initializeDateFormatting();
-    _saveOriginalNotification();
+    _initCurrentChatRoomID();
   }
 
   @override
@@ -44,18 +44,14 @@ class _FriendsChatScreenState extends State<FriendsChatScreen> {
     messageController.dispose();
     messageFocusNode.dispose();
     scrollController.dispose();
-    _retrieveOriginalNotification();
+    _disposeCurrentChatRoomID();
     super.dispose();
   }
 
-  void _saveOriginalNotification() {
-    originalNotification = sl.get<CurrentUser>().chatRoomNotification[widget.chatRoomID];
-    sl.get<CurrentUser>().chatRoomNotification[widget.chatRoomID] = false;
-  }
+  void _initCurrentChatRoomID() => sl.get<CurrentUser>().currentChatRoomID = widget.chatRoomID;
+  void _disposeCurrentChatRoomID() => sl.get<CurrentUser>().currentChatRoomID = '';
 
-  void _retrieveOriginalNotification() {
-    sl.get<CurrentUser>().chatRoomNotification[widget.chatRoomID] =originalNotification;
-  }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -73,6 +69,9 @@ class _FriendsChatScreenState extends State<FriendsChatScreen> {
           BlocBuilder(
             bloc: friendsChatBloc,
             builder: (context, FriendsChatState state){
+              if(state.isNotificationToggleSucceeded) {
+                originalNotification = sl.get<CurrentUser>().chatRoomNotification[widget.chatRoomID];
+              }
               return IconButton(
                 icon: sl.get<CurrentUser>().chatRoomNotification[widget.chatRoomID]
                 ? Icon(Icons.notifications)

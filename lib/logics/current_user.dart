@@ -21,6 +21,7 @@ class CurrentUser {
 
   bool friendsNotification;
   Map<String,bool> chatRoomNotification;
+  String currentChatRoomID;
 
   CurrentUser() {
     uid = '';
@@ -38,5 +39,6 @@ class CurrentUser {
 
     friendsNotification = false;
     chatRoomNotification = Map<String,bool>();
+    currentChatRoomID = '';
   }
 }
