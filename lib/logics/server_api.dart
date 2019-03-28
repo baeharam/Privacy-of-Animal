@@ -8,7 +8,6 @@ import 'package:privacy_of_animal/logics/database_helper.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/logics/friends/friends.dart';
 import 'package:privacy_of_animal/logics/friends_chat/friends_chat.dart';
-import 'package:privacy_of_animal/logics/notification_helper.dart';
 import 'package:privacy_of_animal/logics/same_match/same_match.dart';
 import 'package:privacy_of_animal/models/chat_list_model.dart';
 import 'package:privacy_of_animal/models/same_match_model.dart';
@@ -80,7 +79,7 @@ class ServerAPI {
 
     _matchSubscription = combinedStream.listen((isAlreadyFriends){
       if(isAlreadyFriends) {
-        sl.get<SameMatchBloc>().emitEvent(SameMatchEventFriendsStateUpdate());
+        _sameMatchBloc.emitEvent(SameMatchEventFriendsStateUpdate());
       }
     });
   }
@@ -144,7 +143,7 @@ class ServerAPI {
 
             String otherUserUID = decreasedChange.document.data[firestoreFriendsUID];
 
-            sl.get<ChatListBloc>().emitEvent(ChatListEventDeleteChatRoom(
+            _chatListBloc.emitEvent(ChatListEventDeleteChatRoom(
               chatRoomID: await _getChatRoomID(otherUserUID),
               friends: otherUserUID
             ));
@@ -269,7 +268,7 @@ class ServerAPI {
   }
 
   void _updateChatListHistory(UserModel otherUser, String chatRoomID, QuerySnapshot snapshot) {
-    sl.get<ChatListBloc>().emitEvent(ChatListEventNew(newMessage: 
+    _chatListBloc.emitEvent(ChatListEventNew(newMessage: 
       ChatListModel(
         chatRoomID: chatRoomID,
         profileImage: otherUser.fakeProfileModel.animalImage,
@@ -306,7 +305,8 @@ class ServerAPI {
 
 
   Future<String> _getChatRoomID(String otherUser) async {
-    QuerySnapshot querySnapshot = await sl.get<FirebaseAPI>().getFirestore()
+    QuerySnapshot querySnapshot = 
+      await _firestore
       .collection(firestoreFriendsMessageCollection)
       .where('$firestoreChatUsersField.${_currentUser.uid}', isEqualTo: true)
       .where('$firestoreChatUsersField.$otherUser', isEqualTo: true)
