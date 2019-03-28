@@ -46,7 +46,7 @@ class FriendsAPI {
     }
   }
 
-  /// [친구 삭제]
+  /// [서버에서 친구 차단]
   Future<void> blockFriendsForServer(UserModel userToBlock) async {
     String currentUser = uid;
 
@@ -88,6 +88,7 @@ class FriendsAPI {
     await batch.commit();
   }
 
+  /// [로컬에서 친구 차단]
   void blockFriendsForLocal(UserModel userToBlock) {
     sl.get<CurrentUser>().friendsList.remove(userToBlock);
     sl.get<CurrentUser>().chatHistory.remove(userToBlock.uid);
@@ -96,7 +97,7 @@ class FriendsAPI {
     sl.get<CurrentUser>().newFriendsNum = 0;
   }
 
-  /// [친구신청 수락]
+  /// [서버에서 친구신청 수락]
   Future<void> acceptFriendsForServer(UserModel requestingUser) async {
 
     String currentUser = uid;
@@ -144,6 +145,7 @@ class FriendsAPI {
     await batch.commit();
   }
 
+  /// [로컬에서 친구신청 수락]
   void acceptFriendsForLocal(UserModel requestingUser) {
     sl.get<CurrentUser>().friendsRequestList.remove(requestingUser);
     sl.get<CurrentUser>().chatHistory[requestingUser.uid] = [];
@@ -151,8 +153,7 @@ class FriendsAPI {
     sl.get<CurrentUser>().chatRoomNotification[requestingUser.uid] = true;
   } 
 
-  /// [친구신청 삭제]
-  /// 서버와 로컬 전부 갱신
+  /// [서버에서 친구신청 삭제]
   Future<void> rejectFriendsForServer(UserModel userToReject) async {
     DocumentReference doc = sl.get<FirebaseAPI>().getFirestore()
       .collection(firestoreUsersCollection)
@@ -164,6 +165,7 @@ class FriendsAPI {
     });
   }
 
+  /// [로컬에서 친구신청 삭제]
   void rejectFriendsForLocal(UserModel userToReject) {
     sl.get<CurrentUser>().friendsRequestList.remove(userToReject);
   }

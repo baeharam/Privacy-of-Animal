@@ -138,17 +138,17 @@ class ServerAPI {
         if(beforeFriendsNum > snapshot.documents.length) {
           for(DocumentChange decreasedChange in snapshot.documentChanges) {
 
-            await disconnectChatRoom(otherUserUID: decreasedChange.document.documentID);
-            await deleteChatRoomNotification(decreasedChange.document.documentID);
+            String blockedUserUID = decreasedChange.document.documentID;
 
-            String otherUserUID = decreasedChange.document.data[firestoreFriendsUID];
+            await disconnectChatRoom(otherUserUID: blockedUserUID);
+            await deleteChatRoomNotification(blockedUserUID);
 
             _chatListBloc.emitEvent(ChatListEventDeleteChatRoom(
-              chatRoomID: await _getChatRoomID(otherUserUID),
-              friends: otherUserUID
+              chatRoomID: await _getChatRoomID(blockedUserUID),
+              friends: blockedUserUID
             ));
             _friendsBloc.emitEvent(FriendsEventBlockFromServer(
-              userToBlock: UserModel.fromSnapshot(snapshot: await _getUserInfo(otherUserUID))
+              userToBlock: UserModel.fromSnapshot(snapshot: await _getUserInfo(blockedUserUID))
             ));
           }
         } 
