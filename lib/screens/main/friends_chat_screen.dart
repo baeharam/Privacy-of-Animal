@@ -36,8 +36,7 @@ class _FriendsChatScreenState extends State<FriendsChatScreen> {
   void initState() {
     super.initState();
     initializeDateFormatting();
-    originalNotification = sl.get<CurrentUser>().chatRoomNotification[widget.chatRoomID];
-    sl.get<CurrentUser>().chatRoomNotification[widget.chatRoomID] = false;
+    _saveOriginalNotification();
   }
 
   @override
@@ -45,8 +44,17 @@ class _FriendsChatScreenState extends State<FriendsChatScreen> {
     messageController.dispose();
     messageFocusNode.dispose();
     scrollController.dispose();
-    sl.get<CurrentUser>().chatRoomNotification[widget.chatRoomID] =originalNotification;
+    _retrieveOriginalNotification();
     super.dispose();
+  }
+
+  void _saveOriginalNotification() {
+    originalNotification = sl.get<CurrentUser>().chatRoomNotification[widget.chatRoomID];
+    sl.get<CurrentUser>().chatRoomNotification[widget.chatRoomID] = false;
+  }
+
+  void _retrieveOriginalNotification() {
+    sl.get<CurrentUser>().chatRoomNotification[widget.chatRoomID] =originalNotification;
   }
 
   @override
@@ -86,7 +94,7 @@ class _FriendsChatScreenState extends State<FriendsChatScreen> {
             child: BlocBuilder(
               bloc: friendsChatBloc,
               builder: (context, FriendsChatState state){
-                if(state.isMessageReceived) {
+                if(state.isMessageReceived || state.isInitial ){
                   messages = sl.get<CurrentUser>().chatHistory[widget.receiver.uid];
                 }
                 return ListView.builder(

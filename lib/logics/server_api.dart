@@ -35,58 +35,48 @@ class ServerAPI {
 
   StreamSubscription friendsOrRequestReceivedSubscription;
 
+  String uid;
+
+  ServerAPI() {
+    uid = sl.get<CurrentUser>().uid;
+  }
+
   /// [특정사람 매칭 → 친구이거나 친구 신청 받았는지 확인]
   void connectFriendsOrRequestReceivedStream({@required SameMatchModel sameMatchModel}) {
     Stream<QuerySnapshot> requestStreamFrom = sl.get<FirebaseAPI>().getFirestore()
       .collection(firestoreUsersCollection)
-      .document(sl.get<CurrentUser>().uid)
+      .document(uid)
       .collection(firestoreFriendsSubCollection)
       .where(firestoreFriendsUID, isEqualTo: sameMatchModel.userInfo.uid)
       .where(firestoreFriendsField, isEqualTo: false).snapshots();
 
-    // 친구인지 판단하는 Stream
     Stream<QuerySnapshot> friendsStream = sl.get<FirebaseAPI>().getFirestore()
       .collection(firestoreUsersCollection)
       .document(sameMatchModel.userInfo.uid)
       .collection(firestoreFriendsSubCollection)
-      .where(firestoreFriendsUID, isEqualTo: sl.get<CurrentUser>().uid)
+      .where(firestoreFriendsUID, isEqualTo: uid)
       .where(firestoreFriendsField, isEqualTo: true).snapshots();
 
     Observable<bool> combinedStream = Observable.combineLatest2(friendsStream, requestStreamFrom,(s1,s2)
       => (s1.documents.isNotEmpty || s2.documents.isNotEmpty)
     );
 
-    friendsOrRequestReceivedSubscription = combinedStream.listen((flag){
-      if(flag) {
+    friendsOrRequestReceivedSubscription = combinedStream.listen((isFriendsOrRequestRecived){
+      if(isFriendsOrRequestRecived) {
         sl.get<SameMatchBloc>().emitEvent(SameMatchEventFriendsStateUpdate());
       }
     });
   }
 
+  /// [특정 사람 매칭 스트림 취소]
   Future<void> disconnectFriendsOrRequestReceivedStream() async{
     await friendsOrRequestReceivedSubscription.cancel();
   }
 
-  // void connectFriendsRequestStream({@required SameMatchModel sameMatchModel}) {
-  //   Stream<QuerySnapshot> requestStream = sl.get<FirebaseAPI>().getFirestore()
-  //     .collection(firestoreUsersCollection)
-  //     .document(sameMatchModel.userInfo.uid)
-  //     .collection(firestoreFriendsSubCollection)
-  //     .where(firestoreFriendsUID, isEqualTo: sl.get<CurrentUser>().uid)
-  //     .where(firestoreFriendsField, isEqualTo: false).snapshots();
-    
-  //   friendsRequestSubscription = requestStream.listen((snapshot){
-  //     if(snapshot.documentChanges.isNotEmpty) {
-  //       sl.get<SameMatchBloc>().emitEvent(Samematch());
-  //     }
-  //   });
-    
-  // }
-
 
   /// [로그인 → 모든 채팅방 연결]
   Future<void> connectAllChatRoom() async {
-    String currentUser = sl.get<CurrentUser>().uid;
+    String currentUser = uid;
 
     QuerySnapshot friendsListSnapshot = await sl.get<FirebaseAPI>().getFirestore()
       .collection(firestoreUsersCollection)
@@ -116,7 +106,7 @@ class ServerAPI {
   Future<void> connectFriendsList() async {
     friendsListServer = Observable(sl.get<FirebaseAPI>().getFirestore()
         .collection(firestoreUsersCollection)
-        .document(sl.get<CurrentUser>().uid)
+        .document(uid)
         .collection(firestoreFriendsSubCollection)
         .where(firestoreFriendsField, isEqualTo: true)
         .snapshots());
@@ -173,7 +163,7 @@ class ServerAPI {
   /// [로그인 → 친구신청목록 연결]
   Future<void> connectFriendsRequestList() async {
     friendsRequestListServer = Observable(sl.get<FirebaseAPI>().getFirestore()
-        .collection(firestoreUsersCollection).document(sl.get<CurrentUser>().uid)
+        .collection(firestoreUsersCollection).document(uid)
         .collection(firestoreFriendsSubCollection).where(firestoreFriendsField, isEqualTo: false)
         .snapshots());
     friendsRequestListSubscription = friendsRequestListServer.listen((snapshot) async{
@@ -269,7 +259,7 @@ class ServerAPI {
     DocumentSnapshot doc = await sl.get<FirebaseAPI>().getFirestore()
       .collection(firestoreFriendsMessageCollection)
       .document(chatRoomID).get();
-    return doc.data[firestoreChatOutField][sl.get<CurrentUser>().uid];
+    return doc.data[firestoreChatOutField][uid];
   }
 
   Future<void> deleteChatRoomNotification(String user) async {
@@ -286,7 +276,7 @@ class ServerAPI {
 
 
   Future<String> _getChatRoomID(String otherUser) async {
-    String currentUser = sl.get<CurrentUser>().uid;
+    String currentUser = uid;
 
     QuerySnapshot querySnapshot = await sl.get<FirebaseAPI>().getFirestore()
       .collection(firestoreFriendsMessageCollection)
