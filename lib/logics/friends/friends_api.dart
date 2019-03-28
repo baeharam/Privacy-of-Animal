@@ -62,6 +62,8 @@ class FriendsAPI {
       .collection(firestoreFriendsSubCollection)
       .document(currentUser);
 
+    print(myselfDoc.documentID + '\n' + userToBlockDoc.documentID);
+
     QuerySnapshot chatRoomSnapshot = await sl.get<FirebaseAPI>().getFirestore()
       .collection(firestoreFriendsMessageCollection)
       .where('$firestoreChatUsersField.$currentUser', isEqualTo: true)
