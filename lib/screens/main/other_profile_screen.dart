@@ -6,9 +6,8 @@ import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/logics/friend_request/friend_request.dart';
 import 'package:privacy_of_animal/models/user_model.dart';
-import 'package:privacy_of_animal/resources/colors.dart';
-import 'package:privacy_of_animal/resources/constants.dart';
-import 'package:privacy_of_animal/resources/strings.dart';
+import 'package:privacy_of_animal/resources/resources.dart';
+import 'package:privacy_of_animal/screens/sub/other_profile_sub.dart';
 import 'package:privacy_of_animal/utils/profile_hero.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:privacy_of_animal/utils/stream_snackbar.dart';
@@ -188,10 +187,10 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
                           ),
                         ),
                         SizedBox(height: 10.0),
-                        OtherRealProfileForm(title: '이름',detail: widget.user.realProfileModel.name),
-                        OtherRealProfileForm(title: '성별',detail: widget.user.realProfileModel.gender),
-                        OtherRealProfileForm(title: '나이',detail: widget.user.realProfileModel.age),
-                        OtherRealProfileForm(title: '직업',detail: widget.user.realProfileModel.job)
+                        OtherProfileRealForm(title: '이름',detail: widget.user.realProfileModel.name),
+                        OtherProfileRealForm(title: '성별',detail: widget.user.realProfileModel.gender),
+                        OtherProfileRealForm(title: '나이',detail: widget.user.realProfileModel.age),
+                        OtherProfileRealForm(title: '직업',detail: widget.user.realProfileModel.job)
                       ],
                     );
                   } else {
@@ -273,7 +272,7 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
                     )
                   ),
                   SizedBox(height: 20.0),
-                  OtherTagPart(user: widget.user)
+                  OtherProfileTagPart(user: widget.user)
                 ],
               )
             ),
@@ -294,147 +293,5 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
         )
       )
     );  
-  }
-}
-
-class OtherTagPart extends StatelessWidget {
-
-  final UserModel user;
-  OtherTagPart({@required this.user}); 
-
-  @override
-  Widget build(BuildContext context) {
-
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Padding(
-        padding: EdgeInsets.only(left: ScreenUtil.width/20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Row(
-              children: <Widget>[
-                OtherTagForm(content: user.tagListModel.tagTitleList[0],isTitle: true),
-                SizedBox(width: 10.0),
-                OtherTagForm(content: user.tagListModel.tagDetailList[0],isTitle: false),
-                SizedBox(width: 10.0),
-                OtherTagForm(content: user.tagListModel.tagTitleList[1],isTitle: true),
-                SizedBox(width: 10.0),
-                OtherTagForm(content: user.tagListModel.tagDetailList[1],isTitle: false)
-              ],
-            ),
-            SizedBox(height: 10.0),
-            Row(
-              children: <Widget>[
-                OtherTagForm(content: user.tagListModel.tagTitleList[2],isTitle: true),
-                SizedBox(width: 10.0),
-                OtherTagForm(content: user.tagListModel.tagDetailList[2],isTitle: false),
-                SizedBox(width: 10.0),
-                OtherTagForm(content: user.tagListModel.tagTitleList[3],isTitle: true),
-                SizedBox(width: 10.0),
-                OtherTagForm(content: user.tagListModel.tagDetailList[3],isTitle: false)
-              ],
-            ),
-            SizedBox(height: 10.0),
-            Row(
-              children: <Widget>[
-                OtherTagForm(content: user.tagListModel.tagTitleList[4],isTitle: true),
-                SizedBox(width: 10.0),
-                OtherTagForm(content: user.tagListModel.tagTitleList[4],isTitle: false)
-              ],
-            )
-          ],
-        )
-      ),
-    );
-  }
-}
-
-class OtherFakeProfileForm extends StatelessWidget {
-
-  final String title;
-  final String detail;
-
-  OtherFakeProfileForm({
-    @required this.title,
-    @required this.detail
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return RichText(
-      text: TextSpan(
-        text: '$title  ',
-        style: TextStyle(
-          color: Colors.black,
-          fontWeight: FontWeight.bold,
-          fontSize: 20.0
-        ),
-        children: [TextSpan(
-          text: detail,
-          style: TextStyle(color: Colors.white)
-        )]
-      )
-    );
-  }
-}
-
-class OtherRealProfileForm extends StatelessWidget {
-
-  final String title;
-  final String detail;
-
-  OtherRealProfileForm({
-    @required this.title,
-    @required this.detail
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20.0,vertical: 10.0),
-      child: Row(
-        children: <Widget>[
-          Text(
-            '*'+title,
-            style: TextStyle(
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
-              fontSize: 15.0
-            ),
-          ),
-          Spacer(),
-          Text(
-            detail,
-            style: TextStyle(
-              fontSize: 15.0
-            ),
-          )
-        ],
-      ),
-    );
-  }
-}
-
-class OtherTagForm extends StatelessWidget {
-  final String content;
-  final bool isTitle;
-  OtherTagForm({@required this.content, @required this.isTitle});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8.0,vertical: 5.0),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15.0),
-        border: Border.all(
-          color: isTitle ? primaryBlue : primaryGreen,
-          width: 3.0
-        )
-      ),
-      child: Text(
-        '# $content'
-      ),
-    );
   }
 }

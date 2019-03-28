@@ -23,6 +23,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
   @override
   void initState() {
     super.initState();
+    print('initState()');
     initializeDateFormatting();
   }
 

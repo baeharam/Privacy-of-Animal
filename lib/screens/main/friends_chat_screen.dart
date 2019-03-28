@@ -42,11 +42,11 @@ class _FriendsChatScreenState extends State<FriendsChatScreen> {
 
   @override
   void dispose() {
-    super.dispose();
     messageController.dispose();
     messageFocusNode.dispose();
     scrollController.dispose();
     sl.get<CurrentUser>().chatRoomNotification[widget.chatRoomID] =originalNotification;
+    super.dispose();
   }
 
   @override
