@@ -21,14 +21,24 @@ class FriendsEventChat extends FriendsEvent {
   FriendsEventChat({@required this.user});
 }
 
-class FriendsEventBlock extends FriendsEvent {
+class FriendsEventBlockFromLocal extends FriendsEvent {
   final UserModel user;
-  FriendsEventBlock({@required this.user});
+  FriendsEventBlockFromLocal({@required this.user});
 }
 
-class FriendsEventRequestAccept extends FriendsEvent {
-  final UserModel user;
-  FriendsEventRequestAccept({@required this.user});
+class FriendsEventBlockFromServer extends FriendsEvent {
+  final UserModel userToBlock;
+  FriendsEventBlockFromServer({@required this.userToBlock});
+}
+
+class FriendsEventAcceptFromServer extends FriendsEvent {
+  final UserModel userToAccept;
+  FriendsEventAcceptFromServer({@required this.userToAccept});
+}
+
+class FriendsEventAcceptFromLocal extends FriendsEvent {
+  final UserModel userToAccept;
+  FriendsEventAcceptFromLocal({@required this.userToAccept});
 }
 
 class FriendsEventRequestReject extends FriendsEvent {

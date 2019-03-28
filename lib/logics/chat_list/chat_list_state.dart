@@ -7,7 +7,6 @@ class ChatListState extends BlocState {
   final bool isDeleteSucceeded;
   final bool isDeleteFailed;
 
-  final bool isFriendsDeleted;
   final bool isNewMessage;
 
   ChatListState({
@@ -17,7 +16,6 @@ class ChatListState extends BlocState {
     this.isDeleteSucceeded: false,
     this.isDeleteFailed: false,
 
-    this.isFriendsDeleted: false,
     this.isNewMessage: false,
   });
 
@@ -26,8 +24,6 @@ class ChatListState extends BlocState {
   factory ChatListState.deleteLoading() => ChatListState(isDeleteLoading: true);
   factory ChatListState.deleteSucceeded() => ChatListState(isDeleteSucceeded: true);
   factory ChatListState.deleteFailed() => ChatListState(isDeleteFailed: true);
-
-  factory ChatListState.friendsDeleted() => ChatListState(isFriendsDeleted: true);
 
   factory ChatListState.newMessage() => ChatListState(isNewMessage: true);
 }

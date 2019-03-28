@@ -43,7 +43,7 @@ class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProvider
       buttons: [
         DialogButton(
           onPressed: (){
-            friendsBloc.emitEvent(FriendsEventBlock(user: userToBlock));
+            friendsBloc.emitEvent(FriendsEventBlockFromLocal(user: userToBlock));
             Navigator.pop(context);
           },
           child: Text(
@@ -388,7 +388,7 @@ class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProvider
               ),
             ),
             onTap: () => (state.isFriendsAcceptLoading || state.isFriendsRejectLoading) ? null :
-              friendsBloc.emitEvent(FriendsEventRequestAccept(user: user)),
+              friendsBloc.emitEvent(FriendsEventAcceptFromLocal(userToAccept: user)),
           ),
           SizedBox(width: 10.0),
           GestureDetector(

@@ -30,7 +30,6 @@ class _FriendsChatScreenState extends State<FriendsChatScreen> {
   final FriendsChatBloc friendsChatBloc = sl.get<FriendsChatBloc>();
   final GlobalKey<ScaffoldState> scaffoldKey =GlobalKey<ScaffoldState>();
   List<ChatModel> messages = List<ChatModel>();
-  bool originalNotification;
 
   @override
   void initState() {
@@ -69,9 +68,6 @@ class _FriendsChatScreenState extends State<FriendsChatScreen> {
           BlocBuilder(
             bloc: friendsChatBloc,
             builder: (context, FriendsChatState state){
-              if(state.isNotificationToggleSucceeded) {
-                originalNotification = sl.get<CurrentUser>().chatRoomNotification[widget.chatRoomID];
-              }
               return IconButton(
                 icon: sl.get<CurrentUser>().chatRoomNotification[widget.chatRoomID]
                 ? Icon(Icons.notifications)

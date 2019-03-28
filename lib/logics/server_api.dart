@@ -119,11 +119,15 @@ class ServerAPI {
           for(DocumentChange update in snapshot.documentChanges) {
             await disconnectChatRoom(otherUserUID: update.document.documentID);
             await deleteChatRoomNotification(update.document.documentID);
-            sl.get<ChatListBloc>().emitEvent(ChatListEventFriendsDeleted(
-              friends: update.document.data[firestoreFriendsUID])
-            );
+            String otherUserUID = update.document.data[firestoreFriendsUID];
+            sl.get<ChatListBloc>().emitEvent(ChatListEventDeleteChatRoom(
+              chatRoomID: await _getChatRoomID(otherUserUID),
+              friends: otherUserUID
+            ));
+            sl.get<FriendsBloc>().emitEvent(FriendsEventBlockFromServer(
+              userToBlock: UserModel.fromSnapshot(snapshot: await _getUserInfo(otherUserUID))
+            ));
           }
-          sl.get<CurrentUser>().newFriendsNum = 0;
         } 
         // 친구 증가
         else if(!isFirstFriendsFetch){
