@@ -6,14 +6,14 @@ abstract class FriendsEvent extends BlocEvent {}
 
 class FriendsEventStateClear extends FriendsEvent {}
 
-class FriendsEventFetchFriendsList extends FriendsEvent {
+class FriendsEventRefreshFriends extends FriendsEvent {
   final List<dynamic> friends;
-  FriendsEventFetchFriendsList({@required this.friends});
+  FriendsEventRefreshFriends({@required this.friends});
 }
 
-class FriendsEventFetchFriendsRequestList extends FriendsEvent {
+class FriendsEventRefreshRequest extends FriendsEvent {
   final List<dynamic> friendsRequest;
-  FriendsEventFetchFriendsRequestList({@required this.friendsRequest});
+  FriendsEventRefreshRequest({@required this.friendsRequest});
 }
 
 class FriendsEventChat extends FriendsEvent {
@@ -41,9 +41,14 @@ class FriendsEventAcceptFromLocal extends FriendsEvent {
   FriendsEventAcceptFromLocal({@required this.userToAccept});
 }
 
-class FriendsEventRequestReject extends FriendsEvent {
-  final UserModel user;
-  FriendsEventRequestReject({@required this.user});
+class FriendsEventRejectFromLocal extends FriendsEvent {
+  final UserModel userToReject;
+  FriendsEventRejectFromLocal({@required this.userToReject});
+}
+
+class FriendsEventRejectFromServer extends FriendsEvent {
+  final UserModel userToReject;
+  FriendsEventRejectFromServer({@required this.userToReject});
 }
 
 class FriendsEventFriendsAccepted extends FriendsEvent {}

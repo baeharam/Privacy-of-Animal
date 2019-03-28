@@ -408,7 +408,7 @@ class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProvider
               ),
             ),
             onTap: () => (state.isFriendsAcceptLoading || state.isFriendsRejectLoading) ? null :
-              friendsBloc.emitEvent(FriendsEventRequestReject(user: user)),
+              friendsBloc.emitEvent(FriendsEventRejectFromLocal(userToReject: user)),
           )
         ],
       ),

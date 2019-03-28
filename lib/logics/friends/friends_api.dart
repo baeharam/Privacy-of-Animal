@@ -152,16 +152,20 @@ class FriendsAPI {
   } 
 
   /// [친구신청 삭제]
-  Future<void> rejectFriendsRequest(UserModel requestingUser) async {
+  /// 서버와 로컬 전부 갱신
+  Future<void> rejectFriendsForServer(UserModel userToReject) async {
     DocumentReference doc = sl.get<FirebaseAPI>().getFirestore()
       .collection(firestoreUsersCollection)
       .document(uid)
       .collection(firestoreFriendsSubCollection)
-      .document(requestingUser.uid);
+      .document(userToReject.uid);
     await sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async{
       await tx.delete(doc);
     });
-    sl.get<CurrentUser>().friendsRequestList.remove(requestingUser);
+  }
+
+  void rejectFriendsForLocal(UserModel userToReject) {
+    sl.get<CurrentUser>().friendsRequestList.remove(userToReject);
   }
 
   /// [친구와 대화]
