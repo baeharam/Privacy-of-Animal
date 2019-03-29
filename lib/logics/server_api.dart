@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:meta/meta.dart';
 import 'package:privacy_of_animal/logics/chat_list/chat_list.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
@@ -55,7 +56,9 @@ class ServerAPI {
   }
 
   /// [특정사람 매칭 → 친구이거나 친구 신청 받았는지 확인]
-  void connectFriendsOrRequestReceivedStream({@required SameMatchModel sameMatchModel}) {
+  void connectMatchStream({@required SameMatchModel sameMatchModel}) {
+    debugPrint('Call connectMatchStream($sameMatchModel)');
+
     Stream<QuerySnapshot> requestStreamFrom = 
       _firestore
       .collection(firestoreUsersCollection)
@@ -85,13 +88,16 @@ class ServerAPI {
   }
 
   /// [특정 사람 매칭 스트림 취소]
-  Future<void> disconnectFriendsOrRequestReceivedStream() async{
+  Future<void> disconnectMatchStream() async{
+    debugPrint('Call disconnectMatchStream()');
+
     await _matchSubscription.cancel();
   }
 
 
   /// [로그인 → 모든 채팅방 연결]
   Future<void> connectAllChatRoom() async {
+    debugPrint('Call connectAllChatRoom()');
 
     QuerySnapshot friendsListSnapshot = 
       await _firestore
@@ -107,12 +113,14 @@ class ServerAPI {
         .collection(firestoreUsersCollection)
         .document(friends.documentID)
         .get();
-      await connectChatRoom(otherUser: UserModel.fromSnapshot(snapshot: friendsInfoSnapshot));
+      await _connectChatRoom(otherUser: UserModel.fromSnapshot(snapshot: friendsInfoSnapshot));
     }
   }
 
   /// [로그아웃 → 모든 채팅방 해제]
   Future<void> disconnectAllChatRoom() async {
+    debugPrint('Call disconnectAllChatRoom()');
+
     _currentUser.friendsList.map((friends) async{
       await disconnectChatRoom(otherUserUID: friends.uid);
     });
@@ -121,6 +129,8 @@ class ServerAPI {
 
   /// [로그인 → 친구목록 연결]
   Future<void> connectFriendsList() async {
+    debugPrint('Call connectFriendsList()');
+
     _friendsServer = Observable(
       _firestore
       .collection(firestoreUsersCollection)
@@ -141,15 +151,13 @@ class ServerAPI {
             String blockedUserUID = decreasedChange.document.documentID;
 
             await disconnectChatRoom(otherUserUID: blockedUserUID);
-            await deleteChatRoomNotification(blockedUserUID);
+            await _deleteChatRoomNotification(blockedUserUID);
 
-            _chatListBloc.emitEvent(ChatListEventDeleteChatRoom(
-              chatRoomID: await _getChatRoomID(blockedUserUID),
-              friends: blockedUserUID
-            ));
-            _friendsBloc.emitEvent(FriendsEventBlockFromServer(
-              userToBlock: UserModel.fromSnapshot(snapshot: await _getUserInfo(blockedUserUID))
-            ));
+            _chatListBloc.emitEvent(ChatListEventRefresh());
+            UserModel otherUser = UserModel.fromSnapshot(snapshot: await _getUserInfo(blockedUserUID));
+            if(_isFriends(otherUser)) {
+              _friendsBloc.emitEvent(FriendsEventBlockFromServer(userToBlock: otherUser));
+            }
           }
         } 
         // 친구 증가
@@ -162,7 +170,7 @@ class ServerAPI {
               newFriendsNickName = user.fakeProfileModel.nickName;
             }
             /// TODO 친구 알림
-            await connectChatRoom(otherUser: user);
+            await _connectChatRoom(otherUser: user);
           }
           _friendsBloc.emitEvent(FriendsEventNewFriends(newFriendsNum: snapshot.documentChanges.length));
         } 
@@ -180,11 +188,15 @@ class ServerAPI {
 
   /// [로그아웃 → 친구목록 해제]
   Future<void> disconnectFriendsList() async {
+    debugPrint('Call disconnectFriendsList()');
+
     await _friendsSubscription.cancel();
   }
 
   /// [로그인 → 친구신청목록 연결]
   Future<void> connectFriendsRequestList() async {
+    debugPrint('Call connectFriendsRequestList()');
+
     _friendsRequestServer = Observable(
       _firestore
       .collection(firestoreUsersCollection)
@@ -212,12 +224,15 @@ class ServerAPI {
 
   /// [로그아웃 → 친구신청목록 해제]
   Future<void> disconnectFriendsRequestList() async {
+    debugPrint('Call disconnectFriendsRequestList()');
+
     await _friendsRequestSubscription.cancel();
   }
 
 
   /// [친구수락 → 채팅방 연결]
-  Future<void> connectChatRoom({@required UserModel otherUser}) async{
+  Future<void> _connectChatRoom({@required UserModel otherUser}) async{
+    debugPrint('Call _connectChatRoom($otherUser');
 
     String chatRoomID = await _getChatRoomID(otherUser.uid);
     Timestamp outTimestamp = await _getChatRoomOutTimestamp(chatRoomID);
@@ -245,11 +260,15 @@ class ServerAPI {
 
   /// [친구차단 → 채팅방 해제]
   Future<void> disconnectChatRoom({@required String otherUserUID}) async{
+    debugPrint('Call disconnectChatRoom($otherUserUID');
+
     await _chatRoomListSubscriptions[otherUserUID].cancel();
     _chatRoomListServer.remove(otherUserUID);
   }
 
   void _updateChatHistory(UserModel otherUser, String chatRoomID, QuerySnapshot snapshot) {
+    debugPrint('Call _updateChatHistory($otherUser,$chatRoomID,$snapshot');
+
     String from = snapshot.documentChanges[0].document.data[firestoreChatFromField];
     if(_isFirstChatHistoryFetch[chatRoomID] || from==otherUser.uid) {
       _friendsChatBloc.emitEvent(FriendsChatEventMessageRecieved(
@@ -267,7 +286,13 @@ class ServerAPI {
     }
   }
 
+  bool _isFriends(UserModel otherUser) {
+    debugPrint('Call _isFriends($otherUser');
+    return _currentUser.friendsList.contains(otherUser);
+  }
+
   void _updateChatListHistory(UserModel otherUser, String chatRoomID, QuerySnapshot snapshot) {
+    debugPrint('Call _updateChatListHistory($otherUser,$chatRoomID,$snapshot)');
     _chatListBloc.emitEvent(ChatListEventNew(newMessage: 
       ChatListModel(
         chatRoomID: chatRoomID,
@@ -281,6 +306,7 @@ class ServerAPI {
   }
 
   Future<Timestamp> _getChatRoomOutTimestamp(String chatRoomID) async {
+    debugPrint('Call _getChatRoomOutTimestamp($chatRoomID)');
     DocumentSnapshot doc = 
       await _firestore
       .collection(firestoreFriendsMessageCollection)
@@ -289,29 +315,35 @@ class ServerAPI {
     return doc.data[firestoreChatOutField][_currentUser.uid];
   }
 
-  Future<void> deleteChatRoomNotification(String user) async {
+  Future<void> _deleteChatRoomNotification(String otherUserUID) async {
+    debugPrint('Call _deleteChatRoomNotification($otherUserUID)');
     SharedPreferences prefs = await sl.get<DatabaseHelper>().sharedPreferences;
-    String chatRoomID = await _getChatRoomID(user);
-    await prefs.remove(chatRoomID);
+    await prefs.remove(otherUserUID+chatNotification);
   }
 
-  Future<DocumentSnapshot> _getUserInfo(String user) async {
+  Future<DocumentSnapshot> _getUserInfo(String otherUserUID) async {
+    debugPrint('Call _getUserInfo($otherUserUID)');
     return 
       await _firestore
       .collection(firestoreUsersCollection)
-      .document(user)
+      .document(otherUserUID)
       .get();
   }
 
 
-  Future<String> _getChatRoomID(String otherUser) async {
-    QuerySnapshot querySnapshot = 
+  Future<String> _getChatRoomID(String otherUserUID) async {
+    debugPrint('Call _getChatRoomID($otherUserUID)');
+
+    QuerySnapshot friendsChatSnapshot = 
       await _firestore
       .collection(firestoreFriendsMessageCollection)
       .where('$firestoreChatUsersField.${_currentUser.uid}', isEqualTo: true)
-      .where('$firestoreChatUsersField.$otherUser', isEqualTo: true)
+      .where('$firestoreChatUsersField.$otherUserUID', isEqualTo: true)
+      .limit(1)
       .getDocuments();
+
+    assert(friendsChatSnapshot.documents.isNotEmpty, "에러! 친구끼리의 채팅이 없음");
     
-    return querySnapshot.documents[0].documentID;
+    return friendsChatSnapshot.documents[0].documentID;
   }
 }
