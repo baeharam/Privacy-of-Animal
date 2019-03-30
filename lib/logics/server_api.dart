@@ -21,7 +21,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class ServerAPI {
 
   static bool _isFirstFriendsFetch = true;
-  static bool _isFirstFriendsRequestFetch = true;
+  static bool _isFirstRequestFetch = true;
   static Map<String,bool> _isFirstChatHistoryFetch = Map<String,bool>();
 
   Map<String, Observable<QuerySnapshot>> _chatRoomListServer;
@@ -30,12 +30,11 @@ class ServerAPI {
   Observable<QuerySnapshot> _friendsServer;
   StreamSubscription _friendsSubscription;
 
-  Observable<QuerySnapshot> _friendsRequestServer;
-  StreamSubscription _friendsRequestSubscription;
+  Observable<QuerySnapshot> _requestServer;
+  StreamSubscription _requestSubscription;
 
   StreamSubscription _matchSubscription;
 
-  final CurrentUser _currentUser = sl.get<CurrentUser>();
   final Firestore _firestore = sl.get<FirebaseAPI>().getFirestore();
   final SameMatchBloc _sameMatchBloc = sl.get<SameMatchBloc>();
   final FriendsBloc _friendsBloc = sl.get<FriendsBloc>();
@@ -49,8 +48,8 @@ class ServerAPI {
     _friendsServer = Observable.empty();
     _friendsSubscription = _friendsServer.listen((_){});
 
-    _friendsRequestServer = Observable.empty();
-    _friendsRequestSubscription = _friendsRequestServer.listen((_){});
+    _requestServer = Observable.empty();
+    _requestSubscription = _requestServer.listen((_){});
 
     _matchSubscription = Stream.empty().listen((_){});
   }
@@ -62,7 +61,7 @@ class ServerAPI {
     Stream<QuerySnapshot> requestStreamFrom = 
       _firestore
       .collection(firestoreUsersCollection)
-      .document(_currentUser.uid)
+      .document(sl.get<CurrentUser>().uid)
       .collection(firestoreFriendsSubCollection)
       .where(firestoreFriendsUID, isEqualTo: sameMatchModel.userInfo.uid)
       .where(firestoreFriendsField, isEqualTo: false).snapshots();
@@ -72,7 +71,7 @@ class ServerAPI {
       .collection(firestoreUsersCollection)
       .document(sameMatchModel.userInfo.uid)
       .collection(firestoreFriendsSubCollection)
-      .where(firestoreFriendsUID, isEqualTo: _currentUser.uid)
+      .where(firestoreFriendsUID, isEqualTo: sl.get<CurrentUser>().uid)
       .where(firestoreFriendsField, isEqualTo: true).snapshots();
 
     Observable<bool> combinedStream = 
@@ -102,7 +101,7 @@ class ServerAPI {
     QuerySnapshot friendsListSnapshot = 
       await _firestore
       .collection(firestoreUsersCollection)
-      .document(_currentUser.uid)
+      .document(sl.get<CurrentUser>().uid)
       .collection(firestoreFriendsSubCollection)
       .where(firestoreFriendsField,isEqualTo: true)
       .getDocuments();
@@ -121,7 +120,7 @@ class ServerAPI {
   Future<void> disconnectAllChatRoom() async {
     debugPrint('Call disconnectAllChatRoom()');
 
-    _currentUser.friendsList.map((friends) async{
+    sl.get<CurrentUser>().friendsList.map((friends) async{
       await disconnectChatRoom(otherUserUID: friends.uid);
     });
   }
@@ -134,7 +133,7 @@ class ServerAPI {
     _friendsServer = Observable(
       _firestore
       .collection(firestoreUsersCollection)
-      .document(_currentUser.uid)
+      .document(sl.get<CurrentUser>().uid)
       .collection(firestoreFriendsSubCollection)
       .where(firestoreFriendsField, isEqualTo: true)
       .snapshots()
@@ -142,14 +141,15 @@ class ServerAPI {
     _friendsSubscription = _friendsServer.listen((snapshot) async{
       if(snapshot.documentChanges.isNotEmpty) {
         
-        int beforeFriendsNum = _currentUser.friendsList.length;
+        int beforeFriendsNum = sl.get<CurrentUser>().friendsList.length;
 
         // 친구 감소
-        if(beforeFriendsNum > snapshot.documents.length) {
+        if(beforeFriendsNum >= snapshot.documents.length && !_isFirstFriendsFetch) {
+          debugPrint('Friends are decreased!!');
+
           for(DocumentChange decreasedChange in snapshot.documentChanges) {
 
             String blockedUserUID = decreasedChange.document.documentID;
-
             await disconnectChatRoom(otherUserUID: blockedUserUID);
             await _deleteChatRoomNotification(blockedUserUID);
 
@@ -159,28 +159,33 @@ class ServerAPI {
               _friendsBloc.emitEvent(FriendsEventBlockFromServer(userToBlock: otherUser));
             }
           }
+          _friendsBloc.emitEvent(
+            FriendsEventFriendsDecreased(friends: snapshot.documentChanges)
+          );          
         } 
         // 친구 증가
         else if(!_isFirstFriendsFetch){
-          String newFriendsNickName = '';
+          debugPrint('Friends are increased!!');
+
           for(DocumentChange increasedChange in snapshot.documentChanges) {
             DocumentSnapshot userSnapshot = await _getUserInfo(increasedChange.document.data[firestoreFriendsUID]);
             UserModel user = UserModel.fromSnapshot(snapshot: userSnapshot);
-            if(increasedChange.document.data[firestoreFriendsAccepted]==true) {
-              newFriendsNickName = user.fakeProfileModel.nickName;
-            }
-            /// TODO 친구 알림
             await _connectChatRoom(otherUser: user);
           }
-          _friendsBloc.emitEvent(FriendsEventNewFriends(newFriendsNum: snapshot.documentChanges.length));
+          _friendsBloc.emitEvent(
+            FriendsEventFriendsIncreased(friends: snapshot.documentChanges)
+          );
         } 
         // 처음
         else {
-          _isFirstFriendsFetch = false;
-        }
+          debugPrint('Initial Friends, Not Empty!!');
 
-        _friendsBloc.emitEvent(FriendsEventRefreshFriends(friends: snapshot.documents));
+          _isFirstFriendsFetch = false;
+          _friendsBloc.emitEvent(FriendsEventFriendsIncreased(friends: snapshot.documentChanges));
+        }
       } else {
+        debugPrint('Initial Friends, Empty!!');
+        
         _isFirstFriendsFetch = false;
       }
     });
@@ -194,45 +199,67 @@ class ServerAPI {
   }
 
   /// [로그인 → 친구신청목록 연결]
-  Future<void> connectFriendsRequestList() async {
-    debugPrint('Call connectFriendsRequestList()');
+  Future<void> connectRequestList() async {
+    debugPrint('Call connectRequestList()');
 
-    _friendsRequestServer = Observable(
+    _requestServer = Observable(
       _firestore
       .collection(firestoreUsersCollection)
-      .document(_currentUser.uid)
+      .document(sl.get<CurrentUser>().uid)
       .collection(firestoreFriendsSubCollection)
       .where(firestoreFriendsField, isEqualTo: false)
       .snapshots()
     );
-    _friendsRequestSubscription = _friendsRequestServer.listen((snapshot) async{
+    _requestSubscription = _requestServer.listen((snapshot) async{
       if(snapshot.documentChanges.isNotEmpty) {
-        if(_currentUser.friendsRequestList.length < snapshot.documents.length
-          && !_isFirstFriendsRequestFetch) {
-            DocumentSnapshot userSnapshot = 
-              await _getUserInfo(snapshot.documentChanges[0].document.data[firestoreFriendsUID]);
-            /// TODO 친구 신청 알림
-          } else {
-            _isFirstFriendsRequestFetch = false;
-          }
-        _friendsBloc.emitEvent(FriendsEventRefreshRequest(friendsRequest: snapshot.documents));
-      } else {
-        _isFirstFriendsRequestFetch = false;
+        // 친구신청 증가
+        if(sl.get<CurrentUser>().requestList.length < snapshot.documents.length
+          && !_isFirstRequestFetch) {
+            debugPrint('Requests are increased!!');
+
+            _friendsBloc.emitEvent(
+              FriendsEventRequestIncreased(request: snapshot.documentChanges)
+            );
+          } 
+        // 친구신청 감소
+        else if(!_isFirstRequestFetch){
+          debugPrint('Requests are Decreased!!');
+
+          _friendsBloc.emitEvent(
+            FriendsEventRequestDecreased(request: snapshot.documentChanges)
+          );
+        }
+        // 처음
+        else {
+          debugPrint('Initial Requests, Not Empty!!');
+
+          _isFirstRequestFetch = false;
+          _friendsBloc.emitEvent(
+            FriendsEventRequestDecreased(request: snapshot.documentChanges)
+          );
+        }
+      } 
+      // 처음
+      else {
+        debugPrint('Initial Requests, Empty!!');
+
+        _isFirstRequestFetch = false;
+        _friendsBloc.emitEvent(FriendsEventRequestIncreased(request: snapshot.documentChanges));
       }
     });
   }
 
   /// [로그아웃 → 친구신청목록 해제]
-  Future<void> disconnectFriendsRequestList() async {
-    debugPrint('Call disconnectFriendsRequestList()');
+  Future<void> disconnectRequestList() async {
+    debugPrint('Call disconnectRequestList()');
 
-    await _friendsRequestSubscription.cancel();
+    await _requestSubscription.cancel();
   }
 
 
   /// [친구수락 → 채팅방 연결]
   Future<void> _connectChatRoom({@required UserModel otherUser}) async{
-    debugPrint('Call _connectChatRoom($otherUser');
+    debugPrint('Call _connectChatRoom($otherUser)');
 
     String chatRoomID = await _getChatRoomID(otherUser.uid);
     Timestamp outTimestamp = await _getChatRoomOutTimestamp(chatRoomID);
@@ -260,14 +287,14 @@ class ServerAPI {
 
   /// [친구차단 → 채팅방 해제]
   Future<void> disconnectChatRoom({@required String otherUserUID}) async{
-    debugPrint('Call disconnectChatRoom($otherUserUID');
+    debugPrint('Call disconnectChatRoom($otherUserUID)');
 
     await _chatRoomListSubscriptions[otherUserUID].cancel();
     _chatRoomListServer.remove(otherUserUID);
   }
 
   void _updateChatHistory(UserModel otherUser, String chatRoomID, QuerySnapshot snapshot) {
-    debugPrint('Call _updateChatHistory($otherUser,$chatRoomID,$snapshot');
+    debugPrint('Call _updateChatHistory($otherUser,$chatRoomID,$snapshot)');
 
     String from = snapshot.documentChanges[0].document.data[firestoreChatFromField];
     if(_isFirstChatHistoryFetch[chatRoomID] || from==otherUser.uid) {
@@ -276,8 +303,8 @@ class ServerAPI {
         otherUserUID: otherUser.uid
       ));
       if(!_isFirstChatHistoryFetch[chatRoomID] 
-        && _currentUser.chatRoomNotification[chatRoomID]
-        && chatRoomID!=_currentUser.currentChatRoomID){
+        && sl.get<CurrentUser>().chatRoomNotification[chatRoomID]
+        && chatRoomID!=sl.get<CurrentUser>().currentChatRoomID){
           /// TODO 새로운 채팅 알림
       }
       if(_isFirstChatHistoryFetch[chatRoomID]) {
@@ -287,12 +314,14 @@ class ServerAPI {
   }
 
   bool _isFriends(UserModel otherUser) {
-    debugPrint('Call _isFriends($otherUser');
-    return _currentUser.friendsList.contains(otherUser);
+    debugPrint('Call _isFriends($otherUser)');
+
+    return sl.get<CurrentUser>().friendsList.contains(otherUser);
   }
 
   void _updateChatListHistory(UserModel otherUser, String chatRoomID, QuerySnapshot snapshot) {
     debugPrint('Call _updateChatListHistory($otherUser,$chatRoomID,$snapshot)');
+
     _chatListBloc.emitEvent(ChatListEventNew(newMessage: 
       ChatListModel(
         chatRoomID: chatRoomID,
@@ -307,22 +336,25 @@ class ServerAPI {
 
   Future<Timestamp> _getChatRoomOutTimestamp(String chatRoomID) async {
     debugPrint('Call _getChatRoomOutTimestamp($chatRoomID)');
+
     DocumentSnapshot doc = 
       await _firestore
       .collection(firestoreFriendsMessageCollection)
       .document(chatRoomID)
       .get();
-    return doc.data[firestoreChatOutField][_currentUser.uid];
+    return doc.data[firestoreChatOutField][sl.get<CurrentUser>().uid];
   }
 
   Future<void> _deleteChatRoomNotification(String otherUserUID) async {
     debugPrint('Call _deleteChatRoomNotification($otherUserUID)');
+
     SharedPreferences prefs = await sl.get<DatabaseHelper>().sharedPreferences;
     await prefs.remove(otherUserUID+chatNotification);
   }
 
   Future<DocumentSnapshot> _getUserInfo(String otherUserUID) async {
     debugPrint('Call _getUserInfo($otherUserUID)');
+
     return 
       await _firestore
       .collection(firestoreUsersCollection)
@@ -337,7 +369,7 @@ class ServerAPI {
     QuerySnapshot friendsChatSnapshot = 
       await _firestore
       .collection(firestoreFriendsMessageCollection)
-      .where('$firestoreChatUsersField.${_currentUser.uid}', isEqualTo: true)
+      .where('$firestoreChatUsersField.${sl.get<CurrentUser>().uid}', isEqualTo: true)
       .where('$firestoreChatUsersField.$otherUserUID', isEqualTo: true)
       .limit(1)
       .getDocuments();

@@ -9,6 +9,8 @@ class ChatListState extends BlocState {
 
   final bool isNewMessage;
 
+  final bool isRefresh;
+
   ChatListState({
     this.isInitial: false,
 
@@ -17,6 +19,8 @@ class ChatListState extends BlocState {
     this.isDeleteFailed: false,
 
     this.isNewMessage: false,
+
+    this.isRefresh: false
   });
 
   factory ChatListState.initial() => ChatListState(isInitial: true);
@@ -26,4 +30,6 @@ class ChatListState extends BlocState {
   factory ChatListState.deleteFailed() => ChatListState(isDeleteFailed: true);
 
   factory ChatListState.newMessage() => ChatListState(isNewMessage: true);
+
+  factory ChatListState.refresh() => ChatListState(isRefresh: true);
 }

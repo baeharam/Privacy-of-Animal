@@ -23,6 +23,8 @@
   * 로컬에서 자신의 친구신청 목록에서 제거 :heavy_check_mark:
   * 로컬에서 친구와의 채팅방 초기화 :heavy_check_mark:
   * 로컬에서 친구와의 채팅 알림 초기화 :heavy_check_mark:
+    * 로컬 변수 초기화 (CurrentUser)
+    * SharedPreferences 값 초기화
 * **친구신청 수락 (수락당한 경우)**
   * 로컬에서 자신의 친구목록 업데이트 ✔️
   * 로컬에서 자신의 친구신청 목록에서 제거 ✔️
@@ -46,7 +48,7 @@
   * 서버에서 자신의 친구목록에서 제거 :heavy_check_mark:
   * 서버에서 상대방의 친구목록에서 제거 :heavy_check_mark:
   * 서버에서 모든 채팅내용 제거 :heavy_check_mark:
-    * 서버에서 모든 채팅방 제거 :heavy_check_mark:
+  * 서버에서 모든 채팅방 제거 :heavy_check_mark:
   * 로컬에서 자신의 친구목록에서 제거 :heavy_check_mark:
   * 로컬에서 모든 채팅내용 제거 :heavy_check_mark:
   * 로컬에서 모든 채팅방 제거 :heavy_check_mark:

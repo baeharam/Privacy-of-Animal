@@ -11,6 +11,14 @@ class ChatListBloc extends BlocEventStateBase<ChatListEvent,ChatListState> {
   @override
   Stream<ChatListState> eventHandler(ChatListEvent event, ChatListState currentState) async*{
 
+    if(event is ChatListEventStateClear) {
+      yield ChatListState();
+    }
+
+    if(event is ChatListEventRefresh) {
+      yield ChatListState.refresh();
+    }
+
     if(event is ChatListEventDeleteChatRoom) {
       try {
         yield ChatListState.deleteLoading();

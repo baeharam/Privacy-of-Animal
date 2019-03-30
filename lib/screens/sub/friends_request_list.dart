@@ -18,10 +18,10 @@ class FriendsRequestList extends StatelessWidget {
     return BlocBuilder(
       bloc: friendsBloc,
       builder: (context, FriendsState state){
-        if(state.isFriendsRequestFetchFailed){
+        if(state.isRequestRefreshFailed){
           return Center(child: Text('친구 신청 목록을 불러오는데 실패했습니다.'));
         }
-        if(state.isFriendsFetchLoading) {
+        if(state.isRequestRefreshLoading) {
           return CustomProgressIndicator();
         }
         if(state.isFriendsAcceptSucceeded){
@@ -32,13 +32,13 @@ class FriendsRequestList extends StatelessWidget {
           streamSnackbar(context, '친구를 거절하였습니다.');
           friendsBloc.emitEvent(FriendsEventStateClear());
         }
-        if(sl.get<CurrentUser>().friendsRequestList.isNotEmpty) {
+        if(sl.get<CurrentUser>().requestList.isNotEmpty) {
           return ListView.builder(
             scrollDirection: Axis.vertical,
-            itemCount: sl.get<CurrentUser>().friendsRequestList.length,
+            itemCount: sl.get<CurrentUser>().requestList.length,
             itemBuilder: (context,index) 
               => FriendsRequestItem(
-                requestingUser: sl.get<CurrentUser>().friendsRequestList[index],
+                requestingUser: sl.get<CurrentUser>().requestList[index],
                 state: state,
                 friendsBloc: friendsBloc,
               )

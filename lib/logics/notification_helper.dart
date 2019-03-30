@@ -70,7 +70,7 @@ class NotificationHelper {
   }
 
   // 상대방이 친구 신청 보냈을 시 알림
-  Future<void> showFriendsRequestNotification(String nickName) async {
+  Future<void> showRequestNotification(String nickName) async {
     var android =AndroidNotificationDetails(
       'FriendsRequest Notification ID',
       'FriendsRequest Notification NAME',

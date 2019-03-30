@@ -13,8 +13,13 @@ class ChatListEventNew extends ChatListEvent{
 }
 
 class ChatListEventDeleteChatRoom extends ChatListEvent {
-  final String chatRoomID;
   final String friends;
+  final String chatRoomID;
 
-  ChatListEventDeleteChatRoom({@required this.chatRoomID, @required this.friends});
+  ChatListEventDeleteChatRoom({
+    @required this.friends,
+    @required this.chatRoomID
+  });
 }
+
+class ChatListEventRefresh extends ChatListEvent {}

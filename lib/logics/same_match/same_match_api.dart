@@ -14,11 +14,11 @@ import 'package:privacy_of_animal/resources/strings.dart';
 class SameMatchAPI {
 
   void connectToServer({@required SameMatchModel sameMatchModel})  {
-    sl.get<ServerAPI>().connectFriendsOrRequestReceivedStream(sameMatchModel: sameMatchModel);
+    sl.get<ServerAPI>().connectMatchStream(sameMatchModel: sameMatchModel);
   }
 
   Future<void> disconnectToServer() async{
-    await sl.get<ServerAPI>().disconnectFriendsOrRequestReceivedStream();
+    await sl.get<ServerAPI>().disconnectMatchStream();
   }
 
   // 전체 사용자 중에서 관심사가 가장 잘 맞는 애 선정해서 넘겨주기
@@ -58,7 +58,7 @@ class SameMatchAPI {
       /// [4. 친구신청을 받은 경우의 사람]
       
       bool isRequestingUser = false;
-      for(UserModel userModel in sl.get<CurrentUser>().friendsRequestList) {
+      for(UserModel userModel in sl.get<CurrentUser>().requestList) {
         if(userModel.uid.compareTo(user.documentID)==0){
           isRequestingUser = true;
           break;

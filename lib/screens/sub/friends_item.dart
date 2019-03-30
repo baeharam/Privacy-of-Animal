@@ -120,7 +120,7 @@ class FriendsItem extends StatelessWidget {
       buttons: [
         DialogButton(
           onPressed: (){
-            friendsBloc.emitEvent(FriendsEventBlockFromLocal(user: friends));
+            friendsBloc.emitEvent(FriendsEventBlockFromLocal(userToBlock: friends));
             Navigator.pop(context);
           },
           child: Text(

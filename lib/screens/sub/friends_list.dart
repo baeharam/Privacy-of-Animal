@@ -19,10 +19,10 @@ class FriendsList extends StatelessWidget {
     return BlocBuilder(
       bloc: friendsBloc,
       builder: (context, FriendsState state){
-        if(state.isFriendsFetchFailed){
+        if(state.isFriendsRefreshFailed){
           return Center(child: Text('친구목록을 불러오는데 실패했습니다.'));
         }
-        if(state.isFriendsFetchLoading) {
+        if(state.isFriendsRefreshLoading) {
           return CustomProgressIndicator();
         }
         if(state.isFriendsChatSucceeded){

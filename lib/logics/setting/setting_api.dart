@@ -9,7 +9,7 @@ class SettingAPI {
 
   Future<void> logout() async {
     await sl.get<ServerAPI>().disconnectFriendsList();
-    await sl.get<ServerAPI>().disconnectFriendsRequestList();
+    await sl.get<ServerAPI>().disconnectRequestList();
     await sl.get<FirebaseAPI>().getAuth().signOut();
   }
 

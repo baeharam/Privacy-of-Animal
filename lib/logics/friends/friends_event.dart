@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meta/meta.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state.dart';
 import 'package:privacy_of_animal/models/user_model.dart';
@@ -6,14 +7,24 @@ abstract class FriendsEvent extends BlocEvent {}
 
 class FriendsEventStateClear extends FriendsEvent {}
 
-class FriendsEventRefreshFriends extends FriendsEvent {
-  final List<dynamic> friends;
-  FriendsEventRefreshFriends({@required this.friends});
+class FriendsEventFriendsIncreased extends FriendsEvent {
+  final List<DocumentChange> friends;
+  FriendsEventFriendsIncreased({@required this.friends});
 }
 
-class FriendsEventRefreshRequest extends FriendsEvent {
-  final List<dynamic> friendsRequest;
-  FriendsEventRefreshRequest({@required this.friendsRequest});
+class FriendsEventFriendsDecreased extends FriendsEvent {
+  final List<DocumentChange> friends;
+  FriendsEventFriendsDecreased({@required this.friends});
+}
+
+class FriendsEventRequestIncreased extends FriendsEvent {
+  final List<DocumentChange> request;
+  FriendsEventRequestIncreased({@required this.request});
+}
+
+class FriendsEventRequestDecreased extends FriendsEvent {
+  final List<DocumentChange> request;
+  FriendsEventRequestDecreased({@required this.request});
 }
 
 class FriendsEventChat extends FriendsEvent {
@@ -22,8 +33,8 @@ class FriendsEventChat extends FriendsEvent {
 }
 
 class FriendsEventBlockFromLocal extends FriendsEvent {
-  final UserModel user;
-  FriendsEventBlockFromLocal({@required this.user});
+  final UserModel userToBlock;
+  FriendsEventBlockFromLocal({@required this.userToBlock});
 }
 
 class FriendsEventBlockFromServer extends FriendsEvent {
