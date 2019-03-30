@@ -18,28 +18,16 @@ class SameMatchBloc extends BlocEventStateBase<SameMatchEvent,SameMatchState>
       yield SameMatchState();
     }
 
-    if(event is SameMatchEventAlreadyFriends) {
-      yield SameMatchState.alreadyFriends();
+    if(event is SameMatchEventRefreshFriends) {
+      yield SameMatchState.refreshFriends();
     }
 
-    if(event is SameMatchEventAlreadyRequestFrom) {
-      yield SameMatchState.alreadyRequestFrom();
+    if(event is SameMatchEventRefreshRequestFrom) {
+      yield SameMatchState.refreshRequestFrom();
     }
 
-    if(event is SameMatchEventAlreadyRequestTo) {
-      yield SameMatchState.alreadyRequestTo();
-    }
-
-    if(event is SameMatchEventConnectToServer) {
-      _api.connectToServer(otherUser: event.otherUser);
-    }
-
-    if(event is SameMatchEventDisconnectToServer) {
-      await _api.disconnectToServer();
-    }
-
-    if(event is SameMatchEventEnterOtherProfile) {
-      _api.enterOtherProfile();
+    if(event is SameMatchEventRefreshRequestTo) {
+      yield SameMatchState.refreshRequestTo();
     }
 
     if(event is SameMatchEventFindUser) {
@@ -56,8 +44,8 @@ class SameMatchBloc extends BlocEventStateBase<SameMatchEvent,SameMatchState>
     if(event is SameMatchEventSendRequest) {
       try {
         yield SameMatchState.requestLoading();
-        _api.addRequestToLocal(event.uid);
         await _api.sendRequest(event.uid);
+        await _api.addToLocal(event.uid);
         yield SameMatchState.requestSucceeded();
       } catch(exception) {
         print('친구신청 실패\n${exception.toString()}');
@@ -68,8 +56,8 @@ class SameMatchBloc extends BlocEventStateBase<SameMatchEvent,SameMatchState>
     if(event is SameMatchEventCancelRequest) {
       try {
         yield SameMatchState.cancelLoading();
-        _api.removeRequestFromLocal(event.uid);
         await _api.cancelRequest(event.uid);
+        _api.removeFromLocal(event.uid);
         yield SameMatchState.cancelSucceeded();
       } catch(exception) {
         print('친구신청 취소 실패\n${exception.toString()}');

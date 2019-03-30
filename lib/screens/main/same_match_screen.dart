@@ -23,7 +23,7 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
 
   @override
   void dispose() {
-    _sameMatchBloc.emitEvent(SameMatchEventDisconnectToServer());
+    sl.get<CurrentUser>().currentProfileUID = '';
     super.dispose();
   }
 
@@ -35,14 +35,11 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
     });
   }
 
-  bool isFriendsOrRequestFrom() {
-    return sl.get<CurrentUser>().friendsList.contains(_sameMatchModel.userInfo)
-      || sl.get<CurrentUser>().requestFromList.contains(_sameMatchModel.userInfo);
-  }
+  bool _isAlreadyFriends() => sl.get<CurrentUser>().friendsList.contains(_sameMatchModel.userInfo);
+  bool _isAlreadyRequestFrom() => sl.get<CurrentUser>().requestFromList.contains(_sameMatchModel.userInfo);
+  bool _isAlreadyRequestTo() => sl.get<CurrentUser>().requestToList.contains(_sameMatchModel.userInfo);
 
-  bool isRequestTo() {
-    return sl.get<CurrentUser>().requestToList.contains(_sameMatchModel.userInfo.uid);
-  }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -61,10 +58,7 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
         actions: [
           IconButton(
             icon: Icon(Icons.refresh),
-            onPressed: () {
-              _sameMatchBloc.emitEvent(SameMatchEventDisconnectToServer());
-              _sameMatchBloc.emitEvent(SameMatchEventFindUser());
-            }
+            onPressed: () => _sameMatchBloc.emitEvent(SameMatchEventFindUser())
           )
         ],
       ),
@@ -82,9 +76,7 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
               return Center(child: Text('아직까지 맞는 상대가 없습니다.'));
             } else {
               _sameMatchModel = state.sameMatchModel;
-              _sameMatchBloc.emitEvent(SameMatchEventConnectToServer(
-                otherUser: _sameMatchModel.userInfo
-              ));
+              sl.get<CurrentUser>().currentProfileUID = _sameMatchModel.userInfo.uid;
             }
           }
           return Container(
@@ -177,14 +169,14 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
                     SizedBox(width: 15.0),
                     BlocBuilder(
                       bloc: _sameMatchBloc,
-                      builder: (context,SameMatchState state){
-                        if(isFriendsOrRequestFrom()){
+                      builder: (context,SameMatchState state){  
+                        if(_isAlreadyFriends() || _isAlreadyRequestFrom()){
                           return Padding(
                             padding: EdgeInsets.only(top: 10.0),
                             child: Text(
-                              state.isAlreadyFriends
+                              _isAlreadyFriends()
                               ? '이미 친구입니다.'
-                              : '친구신청 중입니다.',
+                              : '친구신청을 받았습니다.',
                               style: TextStyle(
                                 color: Colors.black,
                                 fontWeight: FontWeight.bold
@@ -196,7 +188,7 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
                           return CircularProgressIndicator();
                         }
 
-                        if(isRequestTo()) {
+                        if(_isAlreadyRequestTo()) {
                           return SameMatchButton(
                             color: primaryGreen,
                             title: '친구 신청취소',

@@ -2,10 +2,8 @@
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:meta/meta.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
-import 'package:privacy_of_animal/logics/server_api.dart';
 import 'package:privacy_of_animal/models/same_match_model.dart';
 import 'package:privacy_of_animal/models/user_model.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
@@ -13,23 +11,12 @@ import 'package:privacy_of_animal/resources/strings.dart';
 
 class SameMatchAPI {
 
-  void enterOtherProfile() {
-    sl.get<ServerAPI>().sameMatchFlagOn();
-  }
-
-  void connectToServer({@required UserModel otherUser})  {
-    sl.get<ServerAPI>().setCurrentProfileUser(otherUser: otherUser);
-    sl.get<ServerAPI>().connectAlreadyRequestToStream(otherUserUID: otherUser.uid);
-  }
-
-  Future<void> disconnectToServer() async{
-    await sl.get<ServerAPI>().disconnectAlreadyRequestToStream();
-  }
-
   Future<void> sendRequest(String uid) async {
     DocumentReference doc = 
-     sl.get<FirebaseAPI>().getFirestore().collection(firestoreUsersCollection)
-      .document(uid).collection(firestoreFriendsSubCollection)
+     sl.get<FirebaseAPI>().getFirestore()
+      .collection(firestoreUsersCollection)
+      .document(uid)
+      .collection(firestoreFriendsSubCollection)
       .document(sl.get<CurrentUser>().uid);
 
     await sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async{
@@ -41,8 +28,20 @@ class SameMatchAPI {
     });
   }
 
-  void addRequestToLocal(String uid) {
-    sl.get<CurrentUser>().requestToList.add(uid);
+  Future<void> addToLocal(String uid) async {
+    UserModel userInfo = await _getUserInfo(uid);
+    sl.get<CurrentUser>().requestToList.add(userInfo);
+  }
+
+  Future<UserModel> _getUserInfo(String uid) async {
+    DocumentReference userInfoDoc = sl.get<FirebaseAPI>().getFirestore()
+      .collection(firestoreUsersCollection)
+      .document(uid);
+    DocumentSnapshot userSnapshot;
+    await sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async{
+      userSnapshot = await tx.get(userInfoDoc);
+    });
+    return UserModel.fromSnapshot(snapshot: userSnapshot);
   }
 
   Future<void> cancelRequest(String receiver) async {
@@ -59,8 +58,13 @@ class SameMatchAPI {
     });
   }
 
-  void removeRequestFromLocal(String uid) {
-    sl.get<CurrentUser>().requestToList.remove(uid);
+  void removeFromLocal(String uid) {
+    for(UserModel userModel in sl.get<CurrentUser>().requestToList) {
+      if(userModel.uid == uid) {
+        sl.get<CurrentUser>().requestToList.remove(userModel);
+        break;
+      }
+    }
   }
 
   // 전체 사용자 중에서 관심사가 가장 잘 맞는 애 선정해서 넘겨주기
@@ -70,8 +74,11 @@ class SameMatchAPI {
 
     // 친구 목록 받아오기
     QuerySnapshot friendsSnapshot = await sl.get<FirebaseAPI>().getFirestore()
-      .collection(firestoreUsersCollection).document(currentUser.uid)
-      .collection(firestoreFriendsSubCollection).where(firestoreFriendsField,isEqualTo: true).getDocuments();
+      .collection(firestoreUsersCollection)
+      .document(currentUser.uid)
+      .collection(firestoreFriendsSubCollection)
+      .where(firestoreFriendsField,isEqualTo: true)
+      .getDocuments();
     List<String> friends = List<String>();
     for(DocumentSnapshot friendsDoc in friendsSnapshot.documents){
       friends.add(friendsDoc.documentID);

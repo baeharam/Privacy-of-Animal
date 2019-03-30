@@ -9,8 +9,6 @@ import 'package:privacy_of_animal/logics/database_helper.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/logics/friends/friends.dart';
 import 'package:privacy_of_animal/logics/friends_chat/friends_chat.dart';
-import 'package:privacy_of_animal/logics/other_profile/other_profile.dart';
-import 'package:privacy_of_animal/logics/same_match/same_match.dart';
 import 'package:privacy_of_animal/models/chat_list_model.dart';
 import 'package:privacy_of_animal/models/user_model.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
@@ -23,7 +21,6 @@ class ServerAPI {
   static bool _isFirstFriendsFetch = true;
   static bool _isFirstRequestFetch = true;
   static Map<String,bool> _isFirstChatHistoryFetch = Map<String,bool>();
-  static bool _isAlreadyRequestToConnected = false;
   static bool _isInSameMatchScreen = false;
 
   Map<String, Observable<QuerySnapshot>> _chatRoomListServer;
@@ -35,15 +32,12 @@ class ServerAPI {
   Observable<QuerySnapshot> _requestServer;
   StreamSubscription _requestSubscription;
 
-  UserModel _currentProfileUser;
   StreamSubscription _alreadyRequestToSubscription;
 
   final Firestore _firestore = sl.get<FirebaseAPI>().getFirestore();
-  final SameMatchBloc _sameMatchBloc = sl.get<SameMatchBloc>();
   final FriendsBloc _friendsBloc = sl.get<FriendsBloc>();
   final FriendsChatBloc _friendsChatBloc = sl.get<FriendsChatBloc>();
   final ChatListBloc _chatListBloc = sl.get<ChatListBloc>();
-  final OtherProfileBloc _otherProfileBloc = sl.get<OtherProfileBloc>();
 
   ServerAPI() {
     _chatRoomListServer = Map<String, Observable<QuerySnapshot>>();
@@ -57,46 +51,6 @@ class ServerAPI {
 
     _alreadyRequestToSubscription = Stream.empty().listen((_){});
   }
-
-  /// [매칭화면 → 이미 친구인지 확인 스트림 연결]
-  void setCurrentProfileUser({@required UserModel otherUser}) {
-    debugPrint('Call setCurrentProfileUID($otherUser)');
-    _currentProfileUser = otherUser;
-  }
-
-  /// [매칭화면 → 이미 친구신청 했는지 확인 스트림 연결]
-  void connectAlreadyRequestToStream({@required String otherUserUID}) {
-    debugPrint('Call connectAlreadyRequestToStream($otherUserUID)');
-
-    if(!_isAlreadyRequestToConnected) {
-      Stream<QuerySnapshot> requestStreamFrom = 
-        _firestore
-        .collection(firestoreUsersCollection)
-        .document(otherUserUID)
-        .collection(firestoreFriendsSubCollection)
-        .where(firestoreFriendsUID, isEqualTo: sl.get<CurrentUser>().uid)
-        .where(firestoreFriendsField, isEqualTo: false).snapshots();
-
-      _alreadyRequestToSubscription = requestStreamFrom.listen((requestSnapshot){
-        if(requestSnapshot.documents.isNotEmpty) {
-          _sameMatchBloc.emitEvent(SameMatchEventAlreadyRequestFrom());
-          _otherProfileBloc.emitEvent(OtherProfileEventAlreadyRequest());
-        }
-      });
-      _isAlreadyRequestToConnected = true;
-    }
-  }
-
-  /// [매칭화면 → 이미 친구신청 했는지 확인 스트림 취소]
-  Future<void> disconnectAlreadyRequestToStream() async{
-    if(!_isInSameMatchScreen) {
-      debugPrint('Call disconnectAlreadyRequestStream()');
-
-      await _alreadyRequestToSubscription.cancel();
-      _isAlreadyRequestToConnected = false;
-    }
-  }
-
 
   /// [로그인 → 모든 채팅방 연결]
   Future<void> connectAllChatRoom() async {
@@ -187,12 +141,6 @@ class ServerAPI {
           _isFirstFriendsFetch = false;
           _friendsBloc.emitEvent(FriendsEventFriendsIncreased(friends: snapshot.documentChanges));
         }
-
-        if(snapshot.documentChanges.where((change) => 
-          change.document.documentID==_currentProfileUser.uid).isNotEmpty) {
-          _sameMatchBloc.emitEvent(SameMatchEventAlreadyFriends());
-          _otherProfileBloc.emitEvent(OtherProfileEventAlreadyFriends());
-        }
       } else {
         debugPrint('Initial Friends, Empty!!');
         
@@ -222,6 +170,7 @@ class ServerAPI {
     );
     _requestSubscription = _requestServer.listen((snapshot) async{
       if(snapshot.documentChanges.isNotEmpty) {
+
         // 친구신청 증가
         if(sl.get<CurrentUser>().requestFromList.length < snapshot.documents.length
           && !_isFirstRequestFetch) {

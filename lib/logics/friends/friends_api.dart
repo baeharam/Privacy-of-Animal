@@ -3,6 +3,8 @@ import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/database_helper.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/logics/notification_helper.dart';
+import 'package:privacy_of_animal/logics/other_profile/other_profile.dart';
+import 'package:privacy_of_animal/logics/same_match/same_match.dart';
 import 'package:privacy_of_animal/models/chat_list_model.dart';
 import 'package:privacy_of_animal/models/user_model.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
@@ -36,7 +38,15 @@ class FriendsAPI {
         .get();
       UserModel newFriendsUserModel =UserModel.fromSnapshot(snapshot: newFriendsSnapshot);
       sl.get<CurrentUser>().friendsList.add(newFriendsUserModel);
+      _updateOtherProfileFriends(newFriendsUserModel.uid);
       _notifyingFriends ??=newFriendsUserModel;
+    }
+  }
+
+  void _updateOtherProfileFriends(String otherUserUID) {
+    if(otherUserUID == sl.get<CurrentUser>().currentProfileUID) {
+      sl.get<SameMatchBloc>().emitEvent(SameMatchEventRefreshFriends());
+      sl.get<OtherProfileBloc>().emitEvent(OtherProfileEventAlreadyFriends());
     }
   }
 
@@ -51,6 +61,7 @@ class FriendsAPI {
     for(DocumentChange deletedFriends in deletedFriendsList) {
       String deletedFriendsUID = deletedFriends.document.documentID;
       sl.get<CurrentUser>().friendsList.removeWhere((friendsModel) => friendsModel.uid==deletedFriendsUID);
+      _updateOtherProfileFriends(deletedFriendsUID);
     }
   }
 
@@ -63,7 +74,15 @@ class FriendsAPI {
         .get();
       UserModel newRequestFromUserModel =UserModel.fromSnapshot(snapshot: newRequestFromSnapshot);
       sl.get<CurrentUser>().requestFromList.add(newRequestFromUserModel);
+      _updateOtherProfileRequest(newRequestFromUserModel.uid);
       _notifyingRequestFrom ??= newRequestFromUserModel;
+    }
+  }
+
+  void _updateOtherProfileRequest(String otherUserUID) {
+    if(otherUserUID == sl.get<CurrentUser>().currentProfileUID) {
+      sl.get<SameMatchBloc>().emitEvent(SameMatchEventRefreshRequestFrom());
+      sl.get<OtherProfileBloc>().emitEvent(OtherProfileEventAlreadyRequest());
     }
   }
 
@@ -78,6 +97,7 @@ class FriendsAPI {
     for(DocumentChange deletedRequestFrom in deletedRequestFromList) {
       String deletedRequestFromUID = deletedRequestFrom.document.documentID;
       sl.get<CurrentUser>().requestFromList.removeWhere((requestFromModel) => requestFromModel.uid==deletedRequestFromUID);
+      _updateOtherProfileRequest(deletedRequestFromUID);
     }
   }
 

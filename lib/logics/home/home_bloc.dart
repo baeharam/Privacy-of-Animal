@@ -15,31 +15,17 @@ class HomeBloc extends BlocEventStateBase<HomeEvent,HomeState> {
         yield HomeState.match(event.index);
       }
       else if(event.index==TAB.CHAT.index){
-        yield HomeState.chatRoomListLoading(event.index);
-        try {
-          await _api.fetchFriendsData();
-          await _api.fetchChatRoomListData();
-          yield HomeState.chat(event.index);
-        } catch(exception) {
-          print('채팅목록 데이터 가져오기 에러: ${exception.toString()}');
-          yield HomeState.chatRoomListFailed();
-        }
+        yield HomeState.chat(event.index);
       }
       else if(event.index==TAB.FRIENDS.index){
-        yield HomeState.profileLoading(event.index);
-        try {
-          await _api.fetchFriendsData();
-          await _api.fetchChatRoomListData();
-          yield HomeState.friend(event.index);
-        } catch(exception) {
-          print('친구 데이터 가져오기 에러: ${exception.toString()}');
-          yield HomeState.friendsFailed();
-        }
+        yield HomeState.friend(event.index);
       }
       else if(event.index==TAB.PROFILE.index){
         yield HomeState.profileLoading(event.index);
         try {
           await _api.fetchProfileData();
+          await _api.fetchFriendsData();
+          await _api.fetchChatRoomListData();
           yield HomeState.profile(event.index);
         } catch(exception) {
           print('프로필 데이터 가져오기 에러: ${exception.toString()}');
