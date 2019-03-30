@@ -5,6 +5,7 @@ abstract class OtherProfileEvent extends BlocEvent {}
 
 class OtherProfileEventStateClear extends OtherProfileEvent {}
 
+class OtherProfileEventRefreshLoading extends OtherProfileEvent {}
 class OtherProfileEventRefreshFriends extends OtherProfileEvent {}
 class OtherProfileEventRefreshRequestFrom extends OtherProfileEvent {}
 class OtherProfileEventRefreshRequestTo extends OtherProfileEvent {}

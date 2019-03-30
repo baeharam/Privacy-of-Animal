@@ -176,13 +176,10 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
             Container(
               padding: EdgeInsets.symmetric(horizontal: ScreenUtil.width/20,vertical: ScreenUtil.height/20),
               width: double.infinity,
-              child: StreamBuilder<QuerySnapshot>(
-                stream: sl.get<FirebaseAPI>().getFirestore().collection(firestoreUsersCollection)
-                  .document(widget.user.uid).collection(firestoreFriendsSubCollection)
-                  .where(uidCol,isEqualTo:sl.get<CurrentUser>().uid)
-                  .where(firestoreFriendsField,isEqualTo: true).snapshots(),
-                builder: (context, snapshot){
-                  if(snapshot.hasData && snapshot.data.documents.length!=0){
+              child: BlocBuilder(
+                bloc: _otherProfileBloc,
+                builder: (context, OtherProfileState state){
+                  if(_isAlreadyFriends()){
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
@@ -235,7 +232,9 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
                                 ),
                               );
                             }
-                            if(state.isRequestLoading || state.isCancelLoading) {
+                            if(state.isRequestLoading 
+                               || state.isCancelLoading 
+                               || state.isRefreshLoading) {
                               return CircularProgressIndicator();
                             }
 

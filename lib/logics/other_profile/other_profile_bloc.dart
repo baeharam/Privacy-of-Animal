@@ -16,14 +16,15 @@ class OtherProfileBloc extends BlocEventStateBase<OtherProfileEvent,OtherProfile
       yield OtherProfileState();
     }
 
+    if(event is OtherProfileEventRefreshLoading) {
+      yield OtherProfileState.refreshLoading();
+    }
     if(event is OtherProfileEventRefreshFriends) {
       yield OtherProfileState.refreshFriends();
     }
-
     if(event is OtherProfileEventRefreshRequestFrom) {
       yield OtherProfileState.refreshRequestFrom();
     }
-
     if(event is OtherProfileEventRefreshRequestTo) {
       yield OtherProfileState.refreshRequestTo();
     }

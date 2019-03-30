@@ -195,7 +195,9 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
                             ),
                           );
                         }
-                        if(state.isRequestLoading || state.isCancelLoading) {
+                        if(state.isRequestLoading || 
+                           state.isCancelLoading || 
+                           state.isRefreshLoading) {
                           return CircularProgressIndicator();
                         }
 

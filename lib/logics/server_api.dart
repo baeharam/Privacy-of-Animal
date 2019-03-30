@@ -59,18 +59,19 @@ class ServerAPI {
   void connectRequestToStream({@required String otherUserUID}) {
     debugPrint('Call connectRequestToStream($otherUserUID)');
 
-    Stream<QuerySnapshot> requestStreamFrom = 
+    Stream<QuerySnapshot> requestStreamTo = 
       _firestore
       .collection(firestoreUsersCollection)
       .document(otherUserUID)
       .collection(firestoreFriendsSubCollection)
       .where(firestoreFriendsUID, isEqualTo: sl.get<CurrentUser>().uid)
       .where(firestoreFriendsField, isEqualTo: false).snapshots();
-    _requestToSubscription = requestStreamFrom.listen((requestSnapshot){
-      if(requestSnapshot.documents.isNotEmpty) {
+    _requestToSubscription = requestStreamTo.listen((requestSnapshot){
+      if(requestSnapshot.documents
+        .where((snapshot) => snapshot.documentID==sl.get<CurrentUser>().uid).isEmpty) {
         sl.get<CurrentUser>().isRequestTo = false;
         _sameMatchBloc.emitEvent(SameMatchEventRefreshRequestTo());
-        _otherProfileBloc.emitEvent(OtherProfileEventRefreshRequestFrom());
+        _otherProfileBloc.emitEvent(OtherProfileEventRefreshRequestTo());
       }
     });
   }
@@ -130,6 +131,12 @@ class ServerAPI {
       if(snapshot.documentChanges.isNotEmpty) {
         
         int beforeFriendsNum = sl.get<CurrentUser>().friendsList.length;
+
+        if(snapshot.documentChanges.where((change)=>
+          change.document.documentID==sl.get<CurrentUser>().currentProfileUID).isNotEmpty) {
+            _sameMatchBloc.emitEvent(SameMatchEventRefreshLoading());
+            _otherProfileBloc.emitEvent(OtherProfileEventRefreshLoading());
+          }
         
         // 친구 감소
         if(beforeFriendsNum >= snapshot.documents.length && !_isFirstFriendsFetch) {

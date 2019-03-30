@@ -18,14 +18,15 @@ class SameMatchBloc extends BlocEventStateBase<SameMatchEvent,SameMatchState>
       yield SameMatchState();
     }
 
+    if(event is SameMatchEventRefreshLoading) {
+      yield SameMatchState.refreshLoading();
+    }
     if(event is SameMatchEventRefreshFriends) {
       yield SameMatchState.refreshFriends();
     }
-
     if(event is SameMatchEventRefreshRequestFrom) {
       yield SameMatchState.refreshRequestFrom();
     }
-
     if(event is SameMatchEventRefreshRequestTo) {
       yield SameMatchState.refreshRequestTo();
     }

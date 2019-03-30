@@ -4,6 +4,7 @@ import 'package:privacy_of_animal/bloc_helpers/bloc_event_state.dart';
 class OtherProfileState extends BlocState {
   final bool isInitial;
 
+  final bool isRefreshLoading;
   final bool isRefreshFriends;
   final bool isRefreshRequestFrom;
   final bool isRefreshRequestTo;
@@ -19,6 +20,7 @@ class OtherProfileState extends BlocState {
   OtherProfileState({
     this.isInitial: false,
 
+    this.isRefreshLoading: false,
     this.isRefreshFriends: false,
     this.isRefreshRequestFrom: false,
     this.isRefreshRequestTo: false,
@@ -34,6 +36,7 @@ class OtherProfileState extends BlocState {
 
   factory OtherProfileState.initial() => OtherProfileState(isInitial: true);
 
+  factory OtherProfileState.refreshLoading() => OtherProfileState(isRefreshLoading: true);
   factory OtherProfileState.refreshFriends() => OtherProfileState(isRefreshFriends: true);
   factory OtherProfileState.refreshRequestFrom() => OtherProfileState(isRefreshRequestFrom: true);
   factory OtherProfileState.refreshRequestTo() => OtherProfileState(isRefreshRequestTo: true);

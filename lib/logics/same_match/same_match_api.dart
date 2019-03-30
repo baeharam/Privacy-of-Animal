@@ -44,6 +44,7 @@ class SameMatchAPI {
         uidCol: sl.get<CurrentUser>().uid
       });
     });
+    sl.get<CurrentUser>().isRequestTo = true;
   }
 
   Future<void> cancelRequest(String receiver) async {
@@ -58,6 +59,7 @@ class SameMatchAPI {
     await sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async {
       await tx.delete(requestSnapshot.documents[0].reference);
     });
+    sl.get<CurrentUser>().isRequestTo = false;
   }
 
   // 전체 사용자 중에서 관심사가 가장 잘 맞는 애 선정해서 넘겨주기
