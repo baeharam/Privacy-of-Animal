@@ -27,6 +27,7 @@ class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProvider
   @override
   void dispose() {
     _tabController.dispose();
+    _friendsBloc.emitEvent(FriendsEventStateClear());
     super.dispose();
   }
 
@@ -68,7 +69,6 @@ class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProvider
                     bloc: _friendsBloc,
                     builder: (context, FriendsState state){
                       if(state.isFriendsIncreased && sl.get<CurrentUser>().friendsList.isNotEmpty) {
-                        _friendsBloc.emitEvent(FriendsEventStateClear());
                         return Container(
                           padding: EdgeInsets.all(8.0),
                           decoration: BoxDecoration(
@@ -92,7 +92,6 @@ class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProvider
                     bloc: _friendsBloc,
                     builder: (context, FriendsState state){
                       if(state.isRequestIncreased && sl.get<CurrentUser>().requestList.isNotEmpty) {
-                        _friendsBloc.emitEvent(FriendsEventStateClear());
                         return Container(
                           padding: EdgeInsets.all(8.0),
                           decoration: BoxDecoration(

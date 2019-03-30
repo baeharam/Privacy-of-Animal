@@ -14,11 +14,13 @@ import 'package:privacy_of_animal/resources/strings.dart';
 class SameMatchAPI {
 
   void connectToServer({@required SameMatchModel sameMatchModel})  {
-    sl.get<ServerAPI>().connectMatchStream(sameMatchModel: sameMatchModel);
+    sl.get<ServerAPI>().connectAlreadyFriendsStream(sameMatchModel: sameMatchModel);
+    sl.get<ServerAPI>().connectAlreadyRequestStream(sameMatchModel: sameMatchModel);
   }
 
   Future<void> disconnectToServer() async{
-    await sl.get<ServerAPI>().disconnectMatchStream();
+    await sl.get<ServerAPI>().disconnectAlreadyFriendsStream();
+    await sl.get<ServerAPI>().disconnectAlreadyRequestStream();
   }
 
   // 전체 사용자 중에서 관심사가 가장 잘 맞는 애 선정해서 넘겨주기

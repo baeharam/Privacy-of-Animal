@@ -33,7 +33,8 @@ class ServerAPI {
   Observable<QuerySnapshot> _requestServer;
   StreamSubscription _requestSubscription;
 
-  StreamSubscription _matchSubscription;
+  StreamSubscription _alreadyFriendsSubscription;
+  StreamSubscription _alreadyRequestSubscription;
 
   final Firestore _firestore = sl.get<FirebaseAPI>().getFirestore();
   final SameMatchBloc _sameMatchBloc = sl.get<SameMatchBloc>();
@@ -51,20 +52,13 @@ class ServerAPI {
     _requestServer = Observable.empty();
     _requestSubscription = _requestServer.listen((_){});
 
-    _matchSubscription = Stream.empty().listen((_){});
+    _alreadyFriendsSubscription = Stream.empty().listen((_){});
+    _alreadyRequestSubscription = Stream.empty().listen((_){});
   }
 
-  /// [특정사람 매칭 → 친구이거나 친구 신청 받았는지 확인]
-  void connectMatchStream({@required SameMatchModel sameMatchModel}) {
-    debugPrint('Call connectMatchStream($sameMatchModel)');
-
-    Stream<QuerySnapshot> requestStreamFrom = 
-      _firestore
-      .collection(firestoreUsersCollection)
-      .document(sl.get<CurrentUser>().uid)
-      .collection(firestoreFriendsSubCollection)
-      .where(firestoreFriendsUID, isEqualTo: sameMatchModel.userInfo.uid)
-      .where(firestoreFriendsField, isEqualTo: false).snapshots();
+  /// [특정사람 매칭 → 이미 친구인지 확인]
+  void connectAlreadyFriendsStream({@required SameMatchModel sameMatchModel}) {
+    debugPrint('Call connectAlreadyFriendsStream($sameMatchModel)');
 
     Stream<QuerySnapshot> friendsStream =
       _firestore
@@ -74,23 +68,44 @@ class ServerAPI {
       .where(firestoreFriendsUID, isEqualTo: sl.get<CurrentUser>().uid)
       .where(firestoreFriendsField, isEqualTo: true).snapshots();
 
-    Observable<bool> combinedStream = 
-    Observable.combineLatest2(friendsStream, requestStreamFrom,(s1,s2)
-      => (s1.documents.isNotEmpty || s2.documents.isNotEmpty)
-    );
-
-    _matchSubscription = combinedStream.listen((isAlreadyFriends){
-      if(isAlreadyFriends) {
-        _sameMatchBloc.emitEvent(SameMatchEventFriendsStateUpdate());
+    _alreadyFriendsSubscription = friendsStream.listen((friendsSnapshot){
+      if(friendsSnapshot.documents.isNotEmpty) {
+        _sameMatchBloc.emitEvent(SameMatchEventAlreadyFriends());
       }
     });
   }
 
-  /// [특정 사람 매칭 스트림 취소]
-  Future<void> disconnectMatchStream() async{
-    debugPrint('Call disconnectMatchStream()');
+  /// [특정 사람 매칭 친구 스트림 취소]
+  Future<void> disconnectAlreadyFriendsStream() async{
+    debugPrint('Call disconnectAlreadyFriendsStream()');
 
-    await _matchSubscription.cancel();
+    await _alreadyFriendsSubscription.cancel();
+  }
+
+  /// [특정사람 매칭 → 이미 친구신청 되어있는지 확인]
+  void connectAlreadyRequestStream({@required SameMatchModel sameMatchModel}) {
+    debugPrint('Call connectAlreadyRequestStream($sameMatchModel)');
+
+    Stream<QuerySnapshot> requestStreamFrom = 
+      _firestore
+      .collection(firestoreUsersCollection)
+      .document(sl.get<CurrentUser>().uid)
+      .collection(firestoreFriendsSubCollection)
+      .where(firestoreFriendsUID, isEqualTo: sameMatchModel.userInfo.uid)
+      .where(firestoreFriendsField, isEqualTo: false).snapshots();
+
+    _alreadyFriendsSubscription = requestStreamFrom.listen((friendsSnapshot){
+      if(friendsSnapshot.documents.isNotEmpty) {
+        _sameMatchBloc.emitEvent(SameMatchEventAlreadyRequest());
+      }
+    });
+  }
+
+  /// [특정 사람 매칭 친구신청 스트림 취소]
+  Future<void> disconnectAlreadyRequestStream() async{
+    debugPrint('Call disconnectAlreadyRequestStream()');
+
+    await _alreadyRequestSubscription.cancel();
   }
 
 
@@ -235,7 +250,7 @@ class ServerAPI {
 
           _isFirstRequestFetch = false;
           _friendsBloc.emitEvent(
-            FriendsEventRequestDecreased(request: snapshot.documentChanges)
+            FriendsEventRequestIncreased(request: snapshot.documentChanges)
           );
         }
       } 

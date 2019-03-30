@@ -17,6 +17,7 @@ class HomeBloc extends BlocEventStateBase<HomeEvent,HomeState> {
       else if(event.index==TAB.CHAT.index){
         yield HomeState.chatRoomListLoading(event.index);
         try {
+          await _api.fetchFriendsData();
           await _api.fetchChatRoomListData();
           yield HomeState.chat(event.index);
         } catch(exception) {
@@ -28,6 +29,7 @@ class HomeBloc extends BlocEventStateBase<HomeEvent,HomeState> {
         yield HomeState.profileLoading(event.index);
         try {
           await _api.fetchFriendsData();
+          await _api.fetchChatRoomListData();
           yield HomeState.friend(event.index);
         } catch(exception) {
           print('친구 데이터 가져오기 에러: ${exception.toString()}');

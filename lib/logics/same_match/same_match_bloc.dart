@@ -20,8 +20,12 @@ class SameMatchBloc extends BlocEventStateBase<SameMatchEvent,SameMatchState>
       yield SameMatchState();
     }
 
-    if(event is SameMatchEventFriendsStateUpdate) {
-      yield SameMatchState.alreadyFriendsOrRequestReceived();
+    if(event is SameMatchEventAlreadyFriends) {
+      yield SameMatchState.alreadyFriends();
+    }
+
+    if(event is SameMatchEventAlreadyRequest) {
+      yield SameMatchState.alreadyRequest();
     }
 
     if(event is SameMatchEventConnectToServer) {

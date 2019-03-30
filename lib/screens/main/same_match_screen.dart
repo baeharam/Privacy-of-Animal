@@ -166,11 +166,13 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
                     BlocBuilder(
                       bloc: _sameMatchBloc,
                       builder: (context,SameMatchState state){
-                        if(state.isAlreadyFriendsOrRequestReceived){
+                        if(state.isAlreadyFriends || state.isAlreadyRequest){
                           return Padding(
                             padding: EdgeInsets.only(top: 10.0),
                             child: Text(
-                              '친구신청 승인 대기중이거나 이미 친구입니다.',
+                              state.isAlreadyFriends
+                              ? '이미 친구입니다.'
+                              : '친구신청 중입니다.',
                               style: TextStyle(
                                 color: Colors.black,
                                 fontWeight: FontWeight.bold

@@ -20,7 +20,8 @@ class SameMatchEventCancelRequest extends SameMatchEvent {
   SameMatchEventCancelRequest({@required this.uid});
 }
 
-class SameMatchEventFriendsStateUpdate extends SameMatchEvent {}
+class SameMatchEventAlreadyFriends extends SameMatchEvent {}
+class SameMatchEventAlreadyRequest extends SameMatchEvent {}
 
 class SameMatchEventConnectToServer extends SameMatchEvent {
   final SameMatchModel sameMatchModel;
