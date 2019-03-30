@@ -14,19 +14,40 @@ import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:privacy_of_animal/utils/stream_snackbar.dart';
 
 
-class OtherProfileScreen extends StatelessWidget {
+class OtherProfileScreen extends StatefulWidget {
 
-  final OtherProfileBloc _otherProfileBloc = sl.get<OtherProfileBloc>();
   final UserModel user;
 
   OtherProfileScreen({@required this.user});  
 
-  bool _isAlreadyFriends() 
-    => sl.get<CurrentUser>().friendsList.contains(user);
-  bool _isAlreadyRequestFrom() 
-    => sl.get<CurrentUser>().requestFromList.contains(user);
-  bool _isAlreadyRequestTo() 
-    => sl.get<CurrentUser>().requestToList.contains(user);
+  @override
+  _OtherProfileScreenState createState() => _OtherProfileScreenState();
+}
+
+class _OtherProfileScreenState extends State<OtherProfileScreen> {
+
+  final OtherProfileBloc _otherProfileBloc = sl.get<OtherProfileBloc>();
+
+  bool _isAlreadyFriends() => sl.get<CurrentUser>().friendsList.where((userModel)
+    => userModel.uid==widget.user.uid
+  ).isNotEmpty;
+  bool _isAlreadyRequestFrom() => sl.get<CurrentUser>().requestFromList.where((userModel)
+    => userModel.uid==widget.user.uid
+  ).isNotEmpty;
+  bool _isAlreadyRequestTo() => sl.get<CurrentUser>().isRequestTo;
+
+  @override
+  void initState() {
+    super.initState();
+    _otherProfileBloc.emitEvent(OtherProfileEventConnectToServer(otherUserUID: widget.user.uid));
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _otherProfileBloc.emitEvent(OtherProfileEventDisconnectToServer());
+    _otherProfileBloc.emitEvent(OtherProfileEventGetOut());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +99,7 @@ class OtherProfileScreen extends StatelessWidget {
                           ),
                           onTap: () => Navigator.push(context, MaterialPageRoute(
                             builder: (context) => 
-                              webViewImage(user.fakeProfileModel.celebrity)
+                              webViewImage(widget.user.fakeProfileModel.celebrity)
                           )),
                         )
                       ],
@@ -100,28 +121,28 @@ class OtherProfileScreen extends StatelessWidget {
                                 children: <Widget>[
                                   CircularPercentIndicator(
                                     radius: ScreenUtil.width/2.8,
-                                    percent: user.fakeProfileModel.animalConfidence,
+                                    percent: widget.user.fakeProfileModel.animalConfidence,
                                     lineWidth: 10.0,
                                     progressColor: primaryBeige,
                                   ),
                                   Hero(
                                     child: GestureDetector(
                                       child: CircleAvatar(
-                                        backgroundImage: AssetImage(user.fakeProfileModel.animalImage),
+                                        backgroundImage: AssetImage(widget.user.fakeProfileModel.animalImage),
                                         radius: ScreenUtil.width/6.2,
                                       ),
                                       onTap: () => profileHeroAnimation(
                                         context: context,
-                                        image: user.fakeProfileModel.animalImage
+                                        image: widget.user.fakeProfileModel.animalImage
                                       ),
                                     ),
-                                    tag: user.fakeProfileModel.animalImage,
+                                    tag: widget.user.fakeProfileModel.animalImage,
                                   )
                                 ],
                               ),
                               SizedBox(height: 10.0),
                               Text(
-                                user.fakeProfileModel.nickName,
+                                widget.user.fakeProfileModel.nickName,
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold
@@ -133,11 +154,11 @@ class OtherProfileScreen extends StatelessWidget {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              OtherFakeProfileForm(title: '추정동물',detail: user.fakeProfileModel.animalName),
-                              OtherFakeProfileForm(title: '추정성별',detail: user.fakeProfileModel.gender),
-                              OtherFakeProfileForm(title: '추정나이',detail: user.fakeProfileModel.age),
-                              OtherFakeProfileForm(title: '추정기분',detail: user.fakeProfileModel.emotion),
-                              OtherFakeProfileForm(title: '유명인   ',detail: user.fakeProfileModel.celebrity)
+                              OtherFakeProfileForm(title: '추정동물',detail: widget.user.fakeProfileModel.animalName),
+                              OtherFakeProfileForm(title: '추정성별',detail: widget.user.fakeProfileModel.gender),
+                              OtherFakeProfileForm(title: '추정나이',detail: widget.user.fakeProfileModel.age),
+                              OtherFakeProfileForm(title: '추정기분',detail: widget.user.fakeProfileModel.emotion),
+                              OtherFakeProfileForm(title: '유명인   ',detail: widget.user.fakeProfileModel.celebrity)
                             ],
                           )
                         ],
@@ -157,7 +178,7 @@ class OtherProfileScreen extends StatelessWidget {
               width: double.infinity,
               child: StreamBuilder<QuerySnapshot>(
                 stream: sl.get<FirebaseAPI>().getFirestore().collection(firestoreUsersCollection)
-                  .document(user.uid).collection(firestoreFriendsSubCollection)
+                  .document(widget.user.uid).collection(firestoreFriendsSubCollection)
                   .where(uidCol,isEqualTo:sl.get<CurrentUser>().uid)
                   .where(firestoreFriendsField,isEqualTo: true).snapshots(),
                 builder: (context, snapshot){
@@ -173,10 +194,10 @@ class OtherProfileScreen extends StatelessWidget {
                           ),
                         ),
                         SizedBox(height: 10.0),
-                        OtherProfileRealForm(title: '이름',detail: user.realProfileModel.name),
-                        OtherProfileRealForm(title: '성별',detail: user.realProfileModel.gender),
-                        OtherProfileRealForm(title: '나이',detail: user.realProfileModel.age),
-                        OtherProfileRealForm(title: '직업',detail: user.realProfileModel.job)
+                        OtherProfileRealForm(title: '이름',detail: widget.user.realProfileModel.name),
+                        OtherProfileRealForm(title: '성별',detail: widget.user.realProfileModel.gender),
+                        OtherProfileRealForm(title: '나이',detail: widget.user.realProfileModel.age),
+                        OtherProfileRealForm(title: '직업',detail: widget.user.realProfileModel.job)
                       ],
                     );
                   } else {
@@ -223,7 +244,7 @@ class OtherProfileScreen extends StatelessWidget {
                                 color: primaryGreen,
                                 title: '친구 신청취소',
                                 onPressed: () => _otherProfileBloc
-                                .emitEvent(OtherProfileEventCancelRequest( uid: user.uid))
+                                .emitEvent(OtherProfileEventCancelRequest( uid: widget.user.uid))
                               );
                             }
                             if(state.isRequestFailed) {
@@ -234,7 +255,7 @@ class OtherProfileScreen extends StatelessWidget {
                               color: primaryBlue,
                               title: '친구 신청하기',
                               onPressed: () => _otherProfileBloc
-                                .emitEvent(OtherProfileEventSendRequest(uid: user.uid))
+                                .emitEvent(OtherProfileEventSendRequest(uid: widget.user.uid))
                             );
                           }
                         )
@@ -263,7 +284,7 @@ class OtherProfileScreen extends StatelessWidget {
                     )
                   ),
                   SizedBox(height: 20.0),
-                  OtherProfileTagPart(user: user)
+                  OtherProfileTagPart(user: widget.user)
                 ],
               )
             )

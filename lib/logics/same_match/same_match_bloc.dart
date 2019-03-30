@@ -30,6 +30,18 @@ class SameMatchBloc extends BlocEventStateBase<SameMatchEvent,SameMatchState>
       yield SameMatchState.refreshRequestTo();
     }
 
+    if(event is SameMatchEventConnectToServer) {
+      _api.connectToServer(event.otherUserUID);
+    }
+
+    if(event is SameMatchEventDisconnectToServer) {
+      await _api.disconnectToServer();
+    }
+
+    if(event is SameMatchEventEnterOtherProfileScreen) {
+      _api.enterOtherProfileScreen();
+    }
+
     if(event is SameMatchEventFindUser) {
       try {
         yield SameMatchState.findLoading();
@@ -45,7 +57,6 @@ class SameMatchBloc extends BlocEventStateBase<SameMatchEvent,SameMatchState>
       try {
         yield SameMatchState.requestLoading();
         await _api.sendRequest(event.uid);
-        await _api.addToLocal(event.uid);
         yield SameMatchState.requestSucceeded();
       } catch(exception) {
         print('친구신청 실패\n${exception.toString()}');
@@ -57,7 +68,6 @@ class SameMatchBloc extends BlocEventStateBase<SameMatchEvent,SameMatchState>
       try {
         yield SameMatchState.cancelLoading();
         await _api.cancelRequest(event.uid);
-        _api.removeFromLocal(event.uid);
         yield SameMatchState.cancelSucceeded();
       } catch(exception) {
         print('친구신청 취소 실패\n${exception.toString()}');

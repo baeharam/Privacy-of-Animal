@@ -1,14 +1,13 @@
-
 import 'package:meta/meta.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state.dart';
-import 'package:privacy_of_animal/models/user_model.dart';
 
 abstract class OtherProfileEvent extends BlocEvent {}
 
 class OtherProfileEventStateClear extends OtherProfileEvent {}
 
-class OtherProfileEventAlreadyFriends extends OtherProfileEvent {}
-class OtherProfileEventAlreadyRequest extends OtherProfileEvent {}
+class OtherProfileEventRefreshFriends extends OtherProfileEvent {}
+class OtherProfileEventRefreshRequestFrom extends OtherProfileEvent {}
+class OtherProfileEventRefreshRequestTo extends OtherProfileEvent {}
 
 class OtherProfileEventSendRequest extends OtherProfileEvent{
   final String uid;
@@ -21,7 +20,9 @@ class OtherProfileEventCancelRequest extends OtherProfileEvent {
 }
 
 class OtherProfileEventConnectToServer extends OtherProfileEvent {
-  final UserModel otherUser;
-  OtherProfileEventConnectToServer({@required this.otherUser});
+  final String otherUserUID;
+  OtherProfileEventConnectToServer({@required this.otherUserUID});
 }
 class OtherProfileEventDisconnectToServer extends OtherProfileEvent {}
+
+class OtherProfileEventGetOut extends OtherProfileEvent {}

@@ -22,3 +22,11 @@ class SameMatchEventCancelRequest extends SameMatchEvent {
 class SameMatchEventRefreshFriends extends SameMatchEvent {}
 class SameMatchEventRefreshRequestFrom extends SameMatchEvent {}
 class SameMatchEventRefreshRequestTo extends SameMatchEvent {}
+
+class SameMatchEventConnectToServer extends SameMatchEvent {
+  final String otherUserUID;
+  SameMatchEventConnectToServer({@required this.otherUserUID});
+}
+class SameMatchEventDisconnectToServer extends SameMatchEvent {}
+
+class SameMatchEventEnterOtherProfileScreen extends SameMatchEvent {}

@@ -45,7 +45,7 @@ class HomeAPI {
     if(!isFriendsDataFetched) {
       await _setFriendsNotification(uid);
       await sl.get<ServerAPI>().connectFriendsList();
-      await sl.get<ServerAPI>().connectRequestList();
+      await sl.get<ServerAPI>().connectRequestFromList();
 
       isFriendsDataFetched = true;
     }

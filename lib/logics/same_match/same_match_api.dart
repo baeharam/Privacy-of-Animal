@@ -4,12 +4,30 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
+import 'package:privacy_of_animal/logics/server_api.dart';
 import 'package:privacy_of_animal/models/same_match_model.dart';
 import 'package:privacy_of_animal/models/user_model.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
 
 class SameMatchAPI {
+
+  bool _isInSameMatchScreen = false;
+
+  void enterOtherProfileScreen() => _isInSameMatchScreen = true;
+  void getOutOtherProfileScreen() => _isInSameMatchScreen = false;
+
+  void connectToServer(String otherUserUID) {
+    if(!_isInSameMatchScreen) {
+      sl.get<ServerAPI>().connectRequestToStream(otherUserUID: otherUserUID);
+    }
+  }
+
+  Future<void> disconnectToServer() async{
+    if(!_isInSameMatchScreen) {
+      await sl.get<ServerAPI>().disconnectRequestToStream();
+    }
+  }
 
   Future<void> sendRequest(String uid) async {
     DocumentReference doc = 
@@ -28,22 +46,6 @@ class SameMatchAPI {
     });
   }
 
-  Future<void> addToLocal(String uid) async {
-    UserModel userInfo = await _getUserInfo(uid);
-    sl.get<CurrentUser>().requestToList.add(userInfo);
-  }
-
-  Future<UserModel> _getUserInfo(String uid) async {
-    DocumentReference userInfoDoc = sl.get<FirebaseAPI>().getFirestore()
-      .collection(firestoreUsersCollection)
-      .document(uid);
-    DocumentSnapshot userSnapshot;
-    await sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async{
-      userSnapshot = await tx.get(userInfoDoc);
-    });
-    return UserModel.fromSnapshot(snapshot: userSnapshot);
-  }
-
   Future<void> cancelRequest(String receiver) async {
     QuerySnapshot requestSnapshot = await sl.get<FirebaseAPI>().getFirestore()
       .collection(firestoreUsersCollection)
@@ -56,15 +58,6 @@ class SameMatchAPI {
     await sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async {
       await tx.delete(requestSnapshot.documents[0].reference);
     });
-  }
-
-  void removeFromLocal(String uid) {
-    for(UserModel userModel in sl.get<CurrentUser>().requestToList) {
-      if(userModel.uid == uid) {
-        sl.get<CurrentUser>().requestToList.remove(userModel);
-        break;
-      }
-    }
   }
 
   // 전체 사용자 중에서 관심사가 가장 잘 맞는 애 선정해서 넘겨주기

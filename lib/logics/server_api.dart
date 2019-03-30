@@ -9,6 +9,8 @@ import 'package:privacy_of_animal/logics/database_helper.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/logics/friends/friends.dart';
 import 'package:privacy_of_animal/logics/friends_chat/friends_chat.dart';
+import 'package:privacy_of_animal/logics/other_profile/other_profile.dart';
+import 'package:privacy_of_animal/logics/same_match/same_match.dart';
 import 'package:privacy_of_animal/models/chat_list_model.dart';
 import 'package:privacy_of_animal/models/user_model.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
@@ -21,7 +23,6 @@ class ServerAPI {
   static bool _isFirstFriendsFetch = true;
   static bool _isFirstRequestFetch = true;
   static Map<String,bool> _isFirstChatHistoryFetch = Map<String,bool>();
-  static bool _isInSameMatchScreen = false;
 
   Map<String, Observable<QuerySnapshot>> _chatRoomListServer;
   Map<String, StreamSubscription<QuerySnapshot>> _chatRoomListSubscriptions;
@@ -29,15 +30,17 @@ class ServerAPI {
   Observable<QuerySnapshot> _friendsServer;
   StreamSubscription _friendsSubscription;
 
-  Observable<QuerySnapshot> _requestServer;
-  StreamSubscription _requestSubscription;
+  Observable<QuerySnapshot> _requestFromServer;
+  StreamSubscription _requestFromSubscription;
 
-  StreamSubscription _alreadyRequestToSubscription;
+  StreamSubscription _requestToSubscription;
 
   final Firestore _firestore = sl.get<FirebaseAPI>().getFirestore();
   final FriendsBloc _friendsBloc = sl.get<FriendsBloc>();
   final FriendsChatBloc _friendsChatBloc = sl.get<FriendsChatBloc>();
   final ChatListBloc _chatListBloc = sl.get<ChatListBloc>();
+  final SameMatchBloc _sameMatchBloc = sl.get<SameMatchBloc>();
+  final OtherProfileBloc _otherProfileBloc = sl.get<OtherProfileBloc>();
 
   ServerAPI() {
     _chatRoomListServer = Map<String, Observable<QuerySnapshot>>();
@@ -46,11 +49,38 @@ class ServerAPI {
     _friendsServer = Observable.empty();
     _friendsSubscription = _friendsServer.listen((_){});
 
-    _requestServer = Observable.empty();
-    _requestSubscription = _requestServer.listen((_){});
+    _requestFromServer = Observable.empty();
+    _requestFromSubscription = _requestFromServer.listen((_){});
 
-    _alreadyRequestToSubscription = Stream.empty().listen((_){});
+    _requestToSubscription = Observable.empty().listen((_){});
   }
+
+  /// [매칭화면 → 이미 친구신청 했는지 확인 스트림 연결]
+  void connectRequestToStream({@required String otherUserUID}) {
+    debugPrint('Call connectRequestToStream($otherUserUID)');
+
+    Stream<QuerySnapshot> requestStreamFrom = 
+      _firestore
+      .collection(firestoreUsersCollection)
+      .document(otherUserUID)
+      .collection(firestoreFriendsSubCollection)
+      .where(firestoreFriendsUID, isEqualTo: sl.get<CurrentUser>().uid)
+      .where(firestoreFriendsField, isEqualTo: false).snapshots();
+    _requestToSubscription = requestStreamFrom.listen((requestSnapshot){
+      if(requestSnapshot.documents.isNotEmpty) {
+        sl.get<CurrentUser>().isRequestTo = false;
+        _sameMatchBloc.emitEvent(SameMatchEventRefreshRequestTo());
+        _otherProfileBloc.emitEvent(OtherProfileEventRefreshRequestFrom());
+      }
+    });
+  }
+  /// [매칭화면 → 이미 친구신청 했는지 확인 스트림 취소]
+  Future<void> disconnectRequestToStream() async{
+    debugPrint('Call disconnectRequestToStream()');
+
+    await _requestToSubscription.cancel();
+  }
+
 
   /// [로그인 → 모든 채팅방 연결]
   Future<void> connectAllChatRoom() async {
@@ -157,10 +187,10 @@ class ServerAPI {
   }
 
   /// [로그인 → 친구신청목록 연결]
-  Future<void> connectRequestList() async {
-    debugPrint('Call connectRequestList()');
+  Future<void> connectRequestFromList() async {
+    debugPrint('Call connectRequestFromList()');
 
-    _requestServer = Observable(
+    _requestFromServer = Observable(
       _firestore
       .collection(firestoreUsersCollection)
       .document(sl.get<CurrentUser>().uid)
@@ -168,7 +198,7 @@ class ServerAPI {
       .where(firestoreFriendsField, isEqualTo: false)
       .snapshots()
     );
-    _requestSubscription = _requestServer.listen((snapshot) async{
+    _requestFromSubscription = _requestFromServer.listen((snapshot) async{
       if(snapshot.documentChanges.isNotEmpty) {
 
         // 친구신청 증가
@@ -209,10 +239,10 @@ class ServerAPI {
   }
 
   /// [로그아웃 → 친구신청목록 해제]
-  Future<void> disconnectRequestList() async {
-    debugPrint('Call disconnectRequestList()');
+  Future<void> disconnectRequestFromList() async {
+    debugPrint('Call disconnectRequestFromList()');
 
-    await _requestSubscription.cancel();
+    await _requestFromSubscription.cancel();
   }
 
 
@@ -337,8 +367,4 @@ class ServerAPI {
     
     return friendsChatSnapshot.documents[0].documentID;
   }
-
-  void sameMatchFlagOn() => _isInSameMatchScreen = true;
-  void sameMatchFlagOff() => _isInSameMatchScreen = false;
-
 }

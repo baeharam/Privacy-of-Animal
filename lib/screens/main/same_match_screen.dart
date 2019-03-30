@@ -24,6 +24,7 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
   @override
   void dispose() {
     sl.get<CurrentUser>().currentProfileUID = '';
+    _sameMatchBloc.emitEvent(SameMatchEventDisconnectToServer());
     super.dispose();
   }
 
@@ -35,9 +36,13 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
     });
   }
 
-  bool _isAlreadyFriends() => sl.get<CurrentUser>().friendsList.contains(_sameMatchModel.userInfo);
-  bool _isAlreadyRequestFrom() => sl.get<CurrentUser>().requestFromList.contains(_sameMatchModel.userInfo);
-  bool _isAlreadyRequestTo() => sl.get<CurrentUser>().requestToList.contains(_sameMatchModel.userInfo);
+  bool _isAlreadyFriends() => sl.get<CurrentUser>().friendsList.where((user)
+    => user.uid==_sameMatchModel.userInfo.uid
+  ).isNotEmpty;
+  bool _isAlreadyRequestFrom() => sl.get<CurrentUser>().requestFromList.where((user)
+    => user.uid==_sameMatchModel.userInfo.uid
+  ).isNotEmpty;
+  bool _isAlreadyRequestTo() => sl.get<CurrentUser>().isRequestTo;
 
   
 
@@ -58,7 +63,10 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
         actions: [
           IconButton(
             icon: Icon(Icons.refresh),
-            onPressed: () => _sameMatchBloc.emitEvent(SameMatchEventFindUser())
+            onPressed: () {
+              _sameMatchBloc.emitEvent(SameMatchEventDisconnectToServer());
+              _sameMatchBloc.emitEvent(SameMatchEventFindUser());
+            }
           )
         ],
       ),
@@ -76,6 +84,8 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
               return Center(child: Text('아직까지 맞는 상대가 없습니다.'));
             } else {
               _sameMatchModel = state.sameMatchModel;
+              _sameMatchBloc.emitEvent(SameMatchEventConnectToServer(
+                  otherUserUID: _sameMatchModel.userInfo.uid));
               sl.get<CurrentUser>().currentProfileUID = _sameMatchModel.userInfo.uid;
             }
           }
@@ -163,7 +173,8 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
                       color: sameMatchRedColor,
                       title: '★ 프로필 보기',
                       onPressed: () {
-                         _viewOtherProfile();
+                        _sameMatchBloc.emitEvent(SameMatchEventEnterOtherProfileScreen());
+                        _viewOtherProfile();
                       }
                     ),
                     SizedBox(width: 15.0),

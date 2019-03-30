@@ -4,8 +4,9 @@ import 'package:privacy_of_animal/bloc_helpers/bloc_event_state.dart';
 class OtherProfileState extends BlocState {
   final bool isInitial;
 
-  final bool isAlreadyFriends;
-  final bool isAlreadyRequest;
+  final bool isRefreshFriends;
+  final bool isRefreshRequestFrom;
+  final bool isRefreshRequestTo;
 
   final bool isRequestLoading;
   final bool isRequestSucceeded;
@@ -18,8 +19,9 @@ class OtherProfileState extends BlocState {
   OtherProfileState({
     this.isInitial: false,
 
-    this.isAlreadyFriends: false,
-    this.isAlreadyRequest: false,
+    this.isRefreshFriends: false,
+    this.isRefreshRequestFrom: false,
+    this.isRefreshRequestTo: false,
 
     this.isRequestLoading: false,
     this.isRequestSucceeded: false,
@@ -32,8 +34,9 @@ class OtherProfileState extends BlocState {
 
   factory OtherProfileState.initial() => OtherProfileState(isInitial: true);
 
-  factory OtherProfileState.alreadyFriends() => OtherProfileState(isAlreadyFriends: true);
-  factory OtherProfileState.alreadyRequest() => OtherProfileState(isAlreadyRequest: true);
+  factory OtherProfileState.refreshFriends() => OtherProfileState(isRefreshFriends: true);
+  factory OtherProfileState.refreshRequestFrom() => OtherProfileState(isRefreshRequestFrom: true);
+  factory OtherProfileState.refreshRequestTo() => OtherProfileState(isRefreshRequestTo: true);
 
   factory OtherProfileState.requestLoading() => OtherProfileState(isRequestLoading: true);
   factory OtherProfileState.requestSucceeded() => OtherProfileState(isRequestSucceeded: true);

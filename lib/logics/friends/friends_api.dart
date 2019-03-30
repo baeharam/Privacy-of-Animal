@@ -46,7 +46,7 @@ class FriendsAPI {
   void _updateOtherProfileFriends(String otherUserUID) {
     if(otherUserUID == sl.get<CurrentUser>().currentProfileUID) {
       sl.get<SameMatchBloc>().emitEvent(SameMatchEventRefreshFriends());
-      sl.get<OtherProfileBloc>().emitEvent(OtherProfileEventAlreadyFriends());
+      sl.get<OtherProfileBloc>().emitEvent(OtherProfileEventRefreshFriends());
     }
   }
 
@@ -82,7 +82,7 @@ class FriendsAPI {
   void _updateOtherProfileRequest(String otherUserUID) {
     if(otherUserUID == sl.get<CurrentUser>().currentProfileUID) {
       sl.get<SameMatchBloc>().emitEvent(SameMatchEventRefreshRequestFrom());
-      sl.get<OtherProfileBloc>().emitEvent(OtherProfileEventAlreadyRequest());
+      sl.get<OtherProfileBloc>().emitEvent(OtherProfileEventRefreshRequestFrom());
     }
   }
 

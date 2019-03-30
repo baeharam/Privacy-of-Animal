@@ -16,19 +16,34 @@ class OtherProfileBloc extends BlocEventStateBase<OtherProfileEvent,OtherProfile
       yield OtherProfileState();
     }
 
-    if(event is OtherProfileEventAlreadyFriends) {
-      yield OtherProfileState.alreadyFriends();
+    if(event is OtherProfileEventRefreshFriends) {
+      yield OtherProfileState.refreshFriends();
     }
 
-    if(event is OtherProfileEventAlreadyRequest) {
-      yield OtherProfileState.alreadyRequest();
+    if(event is OtherProfileEventRefreshRequestFrom) {
+      yield OtherProfileState.refreshRequestFrom();
+    }
+
+    if(event is OtherProfileEventRefreshRequestTo) {
+      yield OtherProfileState.refreshRequestTo();
+    }
+
+    if(event is OtherProfileEventConnectToServer) {
+      _api.connectToServer(event.otherUserUID);
+    }
+
+    if(event is OtherProfileEventDisconnectToServer) {
+      await _api.disconnectToServer();
+    }
+
+    if(event is OtherProfileEventGetOut) {
+      _api.getOutOtherProfileScreen();
     }
 
     if(event is OtherProfileEventSendRequest) {
       try {
         yield OtherProfileState.requestLoading();
         await _api.sendRequest(event.uid);
-        await _api.addToLocal(event.uid);
         yield OtherProfileState.requestSucceeded();
       } catch(exception) {
         print("친구신청 실패: ${exception.toString()}");
@@ -40,7 +55,6 @@ class OtherProfileBloc extends BlocEventStateBase<OtherProfileEvent,OtherProfile
       try {
         yield OtherProfileState.cancelLoading();
         await _api.cancelRequest(event.uid);
-        _api.removeFromLocal(event.uid);
         yield OtherProfileState.cancelSucceeded();
       } catch(exception) {
         print("친구신청 취소 실패: ${exception.toString()}");
