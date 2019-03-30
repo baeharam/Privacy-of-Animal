@@ -11,7 +11,6 @@ import 'package:privacy_of_animal/logics/friends/friends.dart';
 import 'package:privacy_of_animal/logics/friends_chat/friends_chat.dart';
 import 'package:privacy_of_animal/logics/same_match/same_match.dart';
 import 'package:privacy_of_animal/models/chat_list_model.dart';
-import 'package:privacy_of_animal/models/same_match_model.dart';
 import 'package:privacy_of_animal/models/user_model.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:rxdart/rxdart.dart';
@@ -23,6 +22,9 @@ class ServerAPI {
   static bool _isFirstFriendsFetch = true;
   static bool _isFirstRequestFetch = true;
   static Map<String,bool> _isFirstChatHistoryFetch = Map<String,bool>();
+  static bool _isAlreadyFriendsConnected = false;
+  static bool _isAlreadyRequestConnected = false;
+  static bool _isInSameMatchScreen = false;
 
   Map<String, Observable<QuerySnapshot>> _chatRoomListServer;
   Map<String, StreamSubscription<QuerySnapshot>> _chatRoomListSubscriptions;
@@ -57,55 +59,67 @@ class ServerAPI {
   }
 
   /// [특정사람 매칭 → 이미 친구인지 확인]
-  void connectAlreadyFriendsStream({@required SameMatchModel sameMatchModel}) {
-    debugPrint('Call connectAlreadyFriendsStream($sameMatchModel)');
+  void connectAlreadyFriendsStream({@required String otherUserUID}) {
+    debugPrint('Call connectAlreadyFriendsStream($otherUserUID)');
 
-    Stream<QuerySnapshot> friendsStream =
-      _firestore
-      .collection(firestoreUsersCollection)
-      .document(sameMatchModel.userInfo.uid)
-      .collection(firestoreFriendsSubCollection)
-      .where(firestoreFriendsUID, isEqualTo: sl.get<CurrentUser>().uid)
-      .where(firestoreFriendsField, isEqualTo: true).snapshots();
+    if(!_isAlreadyFriendsConnected) {
+      Stream<QuerySnapshot> friendsStream =
+        _firestore
+        .collection(firestoreUsersCollection)
+        .document(otherUserUID)
+        .collection(firestoreFriendsSubCollection)
+        .where(firestoreFriendsUID, isEqualTo: sl.get<CurrentUser>().uid)
+        .where(firestoreFriendsField, isEqualTo: true).snapshots();
 
-    _alreadyFriendsSubscription = friendsStream.listen((friendsSnapshot){
-      if(friendsSnapshot.documents.isNotEmpty) {
-        _sameMatchBloc.emitEvent(SameMatchEventAlreadyFriends());
-      }
-    });
+      _alreadyFriendsSubscription = friendsStream.listen((friendsSnapshot){
+        if(friendsSnapshot.documents.isNotEmpty) {
+          _sameMatchBloc.emitEvent(SameMatchEventAlreadyFriends());
+        }
+      });
+      _isAlreadyFriendsConnected = true;
+    }
   }
 
   /// [특정 사람 매칭 친구 스트림 취소]
   Future<void> disconnectAlreadyFriendsStream() async{
     debugPrint('Call disconnectAlreadyFriendsStream()');
 
-    await _alreadyFriendsSubscription.cancel();
+    if(!_isInSameMatchScreen) {
+      await _alreadyFriendsSubscription.cancel();
+      _isAlreadyFriendsConnected = false;
+    }
   }
 
   /// [특정사람 매칭 → 이미 친구신청 되어있는지 확인]
-  void connectAlreadyRequestStream({@required SameMatchModel sameMatchModel}) {
-    debugPrint('Call connectAlreadyRequestStream($sameMatchModel)');
+  void connectAlreadyRequestStream({@required String otherUserUID}) {
+    debugPrint('Call connectAlreadyRequestStream($otherUserUID)');
 
-    Stream<QuerySnapshot> requestStreamFrom = 
-      _firestore
-      .collection(firestoreUsersCollection)
-      .document(sl.get<CurrentUser>().uid)
-      .collection(firestoreFriendsSubCollection)
-      .where(firestoreFriendsUID, isEqualTo: sameMatchModel.userInfo.uid)
-      .where(firestoreFriendsField, isEqualTo: false).snapshots();
+    if(!_isAlreadyRequestConnected) {
+      Stream<QuerySnapshot> requestStreamFrom = 
+        _firestore
+        .collection(firestoreUsersCollection)
+        .document(sl.get<CurrentUser>().uid)
+        .collection(firestoreFriendsSubCollection)
+        .where(firestoreFriendsUID, isEqualTo: otherUserUID)
+        .where(firestoreFriendsField, isEqualTo: false).snapshots();
 
-    _alreadyFriendsSubscription = requestStreamFrom.listen((friendsSnapshot){
-      if(friendsSnapshot.documents.isNotEmpty) {
-        _sameMatchBloc.emitEvent(SameMatchEventAlreadyRequest());
-      }
-    });
+      _alreadyFriendsSubscription = requestStreamFrom.listen((friendsSnapshot){
+        if(friendsSnapshot.documents.isNotEmpty) {
+          _sameMatchBloc.emitEvent(SameMatchEventAlreadyRequest());
+        }
+      });
+      _isAlreadyRequestConnected = true;
+    }
   }
 
   /// [특정 사람 매칭 친구신청 스트림 취소]
   Future<void> disconnectAlreadyRequestStream() async{
     debugPrint('Call disconnectAlreadyRequestStream()');
 
-    await _alreadyRequestSubscription.cancel();
+    if(!_isInSameMatchScreen) {
+      await _alreadyRequestSubscription.cancel();
+      _isAlreadyRequestConnected = false;
+    }
   }
 
 
@@ -393,4 +407,8 @@ class ServerAPI {
     
     return friendsChatSnapshot.documents[0].documentID;
   }
+
+  void sameMatchFlagOn() => _isInSameMatchScreen = true;
+  void sameMatchFlagOff() => _isInSameMatchScreen = false;
+
 }

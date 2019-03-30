@@ -1,6 +1,5 @@
 import 'package:meta/meta.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state.dart';
-import 'package:privacy_of_animal/models/same_match_model.dart';
 
 abstract class SameMatchEvent extends BlocEvent{}
 
@@ -24,7 +23,9 @@ class SameMatchEventAlreadyFriends extends SameMatchEvent {}
 class SameMatchEventAlreadyRequest extends SameMatchEvent {}
 
 class SameMatchEventConnectToServer extends SameMatchEvent {
-  final SameMatchModel sameMatchModel;
-  SameMatchEventConnectToServer({@required this.sameMatchModel});
+  final String otherUserUID;
+  SameMatchEventConnectToServer({@required this.otherUserUID});
 }
 class SameMatchEventDisconnectToServer extends SameMatchEvent {}
+
+class SameMatchEventEnterOtherProfile extends SameMatchEvent {}

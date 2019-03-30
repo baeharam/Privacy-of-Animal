@@ -13,14 +13,47 @@ import 'package:privacy_of_animal/resources/strings.dart';
 
 class SameMatchAPI {
 
-  void connectToServer({@required SameMatchModel sameMatchModel})  {
-    sl.get<ServerAPI>().connectAlreadyFriendsStream(sameMatchModel: sameMatchModel);
-    sl.get<ServerAPI>().connectAlreadyRequestStream(sameMatchModel: sameMatchModel);
+  void enterOtherProfile() {
+    sl.get<ServerAPI>().sameMatchFlagOn();
+  }
+
+  void connectToServer({@required String otherUserUID})  {
+    sl.get<ServerAPI>().connectAlreadyFriendsStream(otherUserUID: otherUserUID);
+    sl.get<ServerAPI>().connectAlreadyRequestStream(otherUserUID: otherUserUID);
   }
 
   Future<void> disconnectToServer() async{
     await sl.get<ServerAPI>().disconnectAlreadyFriendsStream();
     await sl.get<ServerAPI>().disconnectAlreadyRequestStream();
+  }
+
+  Future<void> sendRequest(String uid) async {
+    DocumentReference doc = 
+     sl.get<FirebaseAPI>().getFirestore().collection(firestoreUsersCollection)
+      .document(uid).collection(firestoreFriendsSubCollection)
+      .document(sl.get<CurrentUser>().uid);
+
+    await sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async{
+      await tx.set(doc, {
+        firestoreFriendsField: false,
+        firestoreFriendsAccepted: false,
+        uidCol: sl.get<CurrentUser>().uid
+      });
+    });
+  }
+
+  Future<void> cancelRequest(String receiver) async {
+    QuerySnapshot requestSnapshot = await sl.get<FirebaseAPI>().getFirestore()
+      .collection(firestoreUsersCollection)
+      .document(receiver)
+      .collection(firestoreFriendsSubCollection)
+      .where(firestoreFriendsField,isEqualTo: false)
+      .where(firestoreFriendsUID,isEqualTo: sl.get<CurrentUser>().uid)
+      .getDocuments();
+
+    await sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async {
+      await tx.delete(requestSnapshot.documents[0].reference);
+    });
   }
 
   // 전체 사용자 중에서 관심사가 가장 잘 맞는 애 선정해서 넘겨주기

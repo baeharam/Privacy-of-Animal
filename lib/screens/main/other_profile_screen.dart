@@ -4,15 +4,14 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state_builder.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
-import 'package:privacy_of_animal/logics/friend_request/friend_request.dart';
+import 'package:privacy_of_animal/logics/other_profile/other_profile.dart';
 import 'package:privacy_of_animal/models/user_model.dart';
 import 'package:privacy_of_animal/resources/resources.dart';
 import 'package:privacy_of_animal/screens/sub/other_profile_sub.dart';
+import 'package:privacy_of_animal/screens/sub/same_match_button.dart';
 import 'package:privacy_of_animal/utils/profile_hero.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:privacy_of_animal/utils/stream_snackbar.dart';
-import 'package:privacy_of_animal/widgets/progress_indicator.dart';
-import 'package:rxdart/rxdart.dart';
 
 class OtherProfileScreen extends StatefulWidget {
 
@@ -26,20 +25,18 @@ class OtherProfileScreen extends StatefulWidget {
 
 class _OtherProfileScreenState extends State<OtherProfileScreen> {
 
-  final FriendRequestBloc friendRequestBloc = sl.get<FriendRequestBloc>();
+  final OtherProfileBloc _otherProfileBloc = sl.get<OtherProfileBloc>();
 
-  Stream<bool> _getRequestStream() {
-    Stream<QuerySnapshot> stream1 = sl.get<FirebaseAPI>().getFirestore().collection(firestoreUsersCollection)
-      .document(widget.user.uid).collection(firestoreFriendsSubCollection)
-      .where(uidCol,isEqualTo:sl.get<CurrentUser>().uid)
-      .where(firestoreFriendsField,isEqualTo: false).snapshots();
-    Stream<QuerySnapshot> stream2 = sl.get<FirebaseAPI>().getFirestore().collection(firestoreUsersCollection)
-      .document(sl.get<CurrentUser>().uid).collection(firestoreFriendsSubCollection)
-      .where(uidCol,isEqualTo:widget.user.uid)
-      .where(firestoreFriendsField,isEqualTo: false).snapshots();
-    return Observable.combineLatest2(stream1, stream2, (s1,s2){
-      return (s1.documents.isNotEmpty || s2.documents.isNotEmpty) ? true : false;
-    });
+  @override
+  void initState() {
+    super.initState();
+    _otherProfileBloc.emitEvent(OtherProfileEventConnectToServer(otherUserUID: widget.user.uid));
+  }
+
+  @override
+  void dispose() {
+    _otherProfileBloc.emitEvent(OtherProfileEventDisconnectToServer());
+    super.dispose();
   }
 
   @override
@@ -211,39 +208,44 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
                           ]
                         ),
                         SizedBox(height: 10.0),
-                        StreamBuilder<bool>(
-                          stream: _getRequestStream(),
-                          builder: (context, snapshot){
-                            if(snapshot.hasData && snapshot.data){
-                              return Text(
-                                '친구신청 승인 대기중입니다.',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold
-                                ),
-                              );
-                            }
-                            if(snapshot.connectionState==ConnectionState.waiting){
-                              return CustomProgressIndicator();
-                            }
-                            return GestureDetector(
-                              child: Container(
-                                padding: EdgeInsets.all(10.0),
-                                decoration: BoxDecoration(
-                                  color: primaryBlue,
-                                  border: Border.all(color: primaryBlue),
-                                  borderRadius: BorderRadius.circular(3.0)
-                                ),
+                        BlocBuilder(
+                          bloc: _otherProfileBloc,
+                          builder: (context, OtherProfileState state){
+                            if(state.isAlreadyFriends || state.isAlreadyRequest){
+                              return Padding(
+                                padding: EdgeInsets.only(top: 10.0),
                                 child: Text(
-                                  '친구신청 하기',
+                                  state.isAlreadyFriends
+                                  ? '이미 친구입니다.'
+                                  : '친구신청 중입니다.',
                                   style: TextStyle(
-                                    color: Colors.white,
+                                    color: Colors.black,
                                     fontWeight: FontWeight.bold
                                   ),
                                 ),
-                              ),
-                              onTap: () => friendRequestBloc
-                                .emitEvent(FriendRequestEventSendRequest(uid: widget.user.uid)),
+                              );
+                            }
+                            if(state.isRequestLoading || state.isCancelLoading) {
+                              return CircularProgressIndicator();
+                            }
+
+                            if(state.isRequestSucceeded) {
+                              return SameMatchButton(
+                                color: primaryGreen,
+                                title: '친구 신청취소',
+                                onPressed: () => _otherProfileBloc
+                                .emitEvent(OtherProfileEventCancelRequest( uid: widget.user.uid))
+                              );
+                            }
+                            if(state.isRequestFailed) {
+                              streamSnackbar(context, '친구신청에 실패했습니다.');
+                              _otherProfileBloc.emitEvent(OtherProfileEventStateClear());
+                            }
+                            return SameMatchButton( 
+                              color: primaryBlue,
+                              title: '친구 신청하기',
+                              onPressed: () => _otherProfileBloc
+                                .emitEvent(OtherProfileEventSendRequest(uid: widget.user.uid))
                             );
                           }
                         )
@@ -275,19 +277,6 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
                   OtherProfileTagPart(user: widget.user)
                 ],
               )
-            ),
-            BlocBuilder(
-              bloc: friendRequestBloc,
-              builder: (context, FriendRequestState state){
-                if(state.isSucceeded){
-                  streamSnackbar(context, '친구신청에 성공하였습니다.');
-                  friendRequestBloc.emitEvent(FriendRequestEventStateClear());
-                } else if(state.isFailed){
-                  streamSnackbar(context, '친구신청에 실패하였습니다.');
-                  friendRequestBloc.emitEvent(FriendRequestEventStateClear());
-                }
-                return Container();
-              },
             )
           ],
         )

@@ -73,7 +73,7 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
             } else {
               _sameMatchModel = state.sameMatchModel;
               _sameMatchBloc.emitEvent(SameMatchEventConnectToServer(
-                sameMatchModel: _sameMatchModel
+                otherUserUID: _sameMatchModel.userInfo.uid
               ));
             }
           }
@@ -160,7 +160,9 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
                     SameMatchButton(
                       color: sameMatchRedColor,
                       title: '★ 프로필 보기',
-                      onPressed: () => _viewOtherProfile()
+                      onPressed: () {
+                         _viewOtherProfile();
+                      }
                     ),
                     SizedBox(width: 15.0),
                     BlocBuilder(
