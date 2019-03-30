@@ -16,7 +16,8 @@ class SameMatchState extends BlocState {
   final bool isCancelFailed;
 
   final bool isAlreadyFriends;
-  final bool isAlreadyRequest;
+  final bool isAlreadyRequestFrom;
+  final bool isAlreadyRequestTo;
 
   final SameMatchModel sameMatchModel;
 
@@ -33,7 +34,8 @@ class SameMatchState extends BlocState {
     this.isCancelFailed: false,
 
     this.isAlreadyFriends: false,
-    this.isAlreadyRequest: false,
+    this.isAlreadyRequestFrom: false,
+    this.isAlreadyRequestTo: false,
 
     this.sameMatchModel
   });
@@ -58,5 +60,6 @@ class SameMatchState extends BlocState {
   factory SameMatchState.cancelFailed() => SameMatchState(isCancelFailed: true);
 
   factory SameMatchState.alreadyFriends() => SameMatchState(isAlreadyFriends: true);
-  factory SameMatchState.alreadyRequest() => SameMatchState(isAlreadyRequest: true);
+  factory SameMatchState.alreadyRequestFrom() => SameMatchState(isAlreadyRequestFrom: true);
+  factory SameMatchState.alreadyRequestTo() => SameMatchState(isAlreadyRequestTo: true);
 }

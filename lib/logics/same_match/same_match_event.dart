@@ -20,7 +20,8 @@ class SameMatchEventCancelRequest extends SameMatchEvent {
 }
 
 class SameMatchEventAlreadyFriends extends SameMatchEvent {}
-class SameMatchEventAlreadyRequest extends SameMatchEvent {}
+class SameMatchEventAlreadyRequestFrom extends SameMatchEvent {}
+class SameMatchEventAlreadyRequestTo extends SameMatchEvent {}
 
 class SameMatchEventConnectToServer extends SameMatchEvent {
   final String otherUserUID;

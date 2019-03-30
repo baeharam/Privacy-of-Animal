@@ -16,7 +16,8 @@ class CurrentUser {
   Map<String,ChatListModel> chatListHistory;
   Map<String,List<ChatModel>> chatHistory;
   List<UserModel> friendsList;
-  List<UserModel> requestList;
+  List<UserModel> requestFromList;
+  List<String> requestToList;
 
   bool friendsNotification;
   Map<String,bool> chatRoomNotification;
@@ -33,7 +34,8 @@ class CurrentUser {
     chatHistory = Map<String,List<ChatModel>>();
 
     friendsList = [];
-    requestList = [];
+    requestFromList = [];
+    requestToList = [];
 
     friendsNotification = false;
     chatRoomNotification = Map<String,bool>();

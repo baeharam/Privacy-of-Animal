@@ -32,13 +32,13 @@ class FriendsRequestList extends StatelessWidget {
           streamSnackbar(context, '친구를 거절하였습니다.');
           friendsBloc.emitEvent(FriendsEventStateClear());
         }
-        if(sl.get<CurrentUser>().requestList.isNotEmpty) {
+        if(sl.get<CurrentUser>().requestFromList.isNotEmpty) {
           return ListView.builder(
             scrollDirection: Axis.vertical,
-            itemCount: sl.get<CurrentUser>().requestList.length,
+            itemCount: sl.get<CurrentUser>().requestFromList.length,
             itemBuilder: (context,index) 
               => FriendsRequestItem(
-                requestingUser: sl.get<CurrentUser>().requestList[index],
+                requestingUser: sl.get<CurrentUser>().requestFromList[index],
                 state: state,
                 friendsBloc: friendsBloc,
               )

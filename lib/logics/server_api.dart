@@ -9,6 +9,7 @@ import 'package:privacy_of_animal/logics/database_helper.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/logics/friends/friends.dart';
 import 'package:privacy_of_animal/logics/friends_chat/friends_chat.dart';
+import 'package:privacy_of_animal/logics/other_profile/other_profile.dart';
 import 'package:privacy_of_animal/logics/same_match/same_match.dart';
 import 'package:privacy_of_animal/models/chat_list_model.dart';
 import 'package:privacy_of_animal/models/user_model.dart';
@@ -23,7 +24,7 @@ class ServerAPI {
   static bool _isFirstRequestFetch = true;
   static Map<String,bool> _isFirstChatHistoryFetch = Map<String,bool>();
   static bool _isAlreadyFriendsConnected = false;
-  static bool _isAlreadyRequestConnected = false;
+  static bool _isAlreadyRequestFromConnected = false;
   static bool _isInSameMatchScreen = false;
 
   Map<String, Observable<QuerySnapshot>> _chatRoomListServer;
@@ -36,13 +37,15 @@ class ServerAPI {
   StreamSubscription _requestSubscription;
 
   StreamSubscription _alreadyFriendsSubscription;
-  StreamSubscription _alreadyRequestSubscription;
+  StreamSubscription _alreadyRequestFromSubscription;
+  StreamSubscription _alreadyRequestToSubscription;
 
   final Firestore _firestore = sl.get<FirebaseAPI>().getFirestore();
   final SameMatchBloc _sameMatchBloc = sl.get<SameMatchBloc>();
   final FriendsBloc _friendsBloc = sl.get<FriendsBloc>();
   final FriendsChatBloc _friendsChatBloc = sl.get<FriendsChatBloc>();
   final ChatListBloc _chatListBloc = sl.get<ChatListBloc>();
+  final OtherProfileBloc _otherProfileBloc = sl.get<OtherProfileBloc>();
 
   ServerAPI() {
     _chatRoomListServer = Map<String, Observable<QuerySnapshot>>();
@@ -55,10 +58,11 @@ class ServerAPI {
     _requestSubscription = _requestServer.listen((_){});
 
     _alreadyFriendsSubscription = Stream.empty().listen((_){});
-    _alreadyRequestSubscription = Stream.empty().listen((_){});
+    _alreadyRequestFromSubscription = Stream.empty().listen((_){});
+    _alreadyRequestToSubscription = Stream.empty().listen((_){});
   }
 
-  /// [특정사람 매칭 → 이미 친구인지 확인]
+  /// [매칭화면 → 이미 친구인지 확인 스트림 연결]
   void connectAlreadyFriendsStream({@required String otherUserUID}) {
     debugPrint('Call connectAlreadyFriendsStream($otherUserUID)');
 
@@ -74,27 +78,28 @@ class ServerAPI {
       _alreadyFriendsSubscription = friendsStream.listen((friendsSnapshot){
         if(friendsSnapshot.documents.isNotEmpty) {
           _sameMatchBloc.emitEvent(SameMatchEventAlreadyFriends());
+          _otherProfileBloc.emitEvent(OtherProfileEventAlreadyFriends());
         }
       });
       _isAlreadyFriendsConnected = true;
     }
   }
 
-  /// [특정 사람 매칭 친구 스트림 취소]
+  /// [매칭화면 → 이미 친구인지 확인 스트림 취소]
   Future<void> disconnectAlreadyFriendsStream() async{
-    debugPrint('Call disconnectAlreadyFriendsStream()');
-
     if(!_isInSameMatchScreen) {
+      debugPrint('Call disconnectAlreadyFriendsStream()');
+
       await _alreadyFriendsSubscription.cancel();
       _isAlreadyFriendsConnected = false;
     }
   }
 
-  /// [특정사람 매칭 → 이미 친구신청 되어있는지 확인]
-  void connectAlreadyRequestStream({@required String otherUserUID}) {
-    debugPrint('Call connectAlreadyRequestStream($otherUserUID)');
+  /// [매칭화면 → 이미 친구신청 받았는지 확인 스트림 연결]
+  void connectAlreadyRequestFromStream({@required String otherUserUID}) {
+    debugPrint('Call connectAlreadyRequestFromStream($otherUserUID)');
 
-    if(!_isAlreadyRequestConnected) {
+    if(!_isAlreadyRequestFromConnected) {
       Stream<QuerySnapshot> requestStreamFrom = 
         _firestore
         .collection(firestoreUsersCollection)
@@ -105,20 +110,54 @@ class ServerAPI {
 
       _alreadyFriendsSubscription = requestStreamFrom.listen((friendsSnapshot){
         if(friendsSnapshot.documents.isNotEmpty) {
-          _sameMatchBloc.emitEvent(SameMatchEventAlreadyRequest());
+          _sameMatchBloc.emitEvent(SameMatchEventAlreadyRequestFrom());
+          _otherProfileBloc.emitEvent(OtherProfileEventAlreadyRequest());
         }
       });
-      _isAlreadyRequestConnected = true;
+      _isAlreadyRequestFromConnected = true;
     }
   }
 
-  /// [특정 사람 매칭 친구신청 스트림 취소]
-  Future<void> disconnectAlreadyRequestStream() async{
-    debugPrint('Call disconnectAlreadyRequestStream()');
-
+  /// [매칭화면 → 이미 친구신청 받았는지 확인 스트림 취소]
+  Future<void> disconnectAlreadyRequestFromStream() async{
     if(!_isInSameMatchScreen) {
-      await _alreadyRequestSubscription.cancel();
-      _isAlreadyRequestConnected = false;
+      debugPrint('Call disconnectAlreadyRequestStream()');
+
+      await _alreadyRequestFromSubscription.cancel();
+      _isAlreadyRequestFromConnected = false;
+    }
+  }
+
+  /// [매칭화면 → 이미 친구신청 했는지 확인 스트림 연결]
+  void connectAlreadyRequestToStream({@required String otherUserUID}) {
+    debugPrint('Call connectAlreadyRequestToStream($otherUserUID)');
+
+    if(!_isAlreadyRequestFromConnected) {
+      Stream<QuerySnapshot> requestStreamFrom = 
+        _firestore
+        .collection(firestoreUsersCollection)
+        .document(otherUserUID)
+        .collection(firestoreFriendsSubCollection)
+        .where(firestoreFriendsUID, isEqualTo: sl.get<CurrentUser>().uid)
+        .where(firestoreFriendsField, isEqualTo: false).snapshots();
+
+      _alreadyFriendsSubscription = requestStreamFrom.listen((friendsSnapshot){
+        if(friendsSnapshot.documents.isNotEmpty) {
+          _sameMatchBloc.emitEvent(SameMatchEventAlreadyRequestFrom());
+          _otherProfileBloc.emitEvent(OtherProfileEventAlreadyRequest());
+        }
+      });
+      _isAlreadyRequestFromConnected = true;
+    }
+  }
+
+  /// [매칭화면 → 이미 친구신청 했는지 확인 스트림 취소]
+  Future<void> disconnectAlreadyRequestToStream() async{
+    if(!_isInSameMatchScreen) {
+      debugPrint('Call disconnectAlreadyRequestStream()');
+
+      await _alreadyRequestToSubscription.cancel();
+      _isAlreadyRequestFromConnected = false;
     }
   }
 
@@ -242,7 +281,7 @@ class ServerAPI {
     _requestSubscription = _requestServer.listen((snapshot) async{
       if(snapshot.documentChanges.isNotEmpty) {
         // 친구신청 증가
-        if(sl.get<CurrentUser>().requestList.length < snapshot.documents.length
+        if(sl.get<CurrentUser>().requestFromList.length < snapshot.documents.length
           && !_isFirstRequestFetch) {
             debugPrint('Requests are increased!!');
 

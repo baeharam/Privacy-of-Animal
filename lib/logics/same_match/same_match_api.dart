@@ -19,12 +19,14 @@ class SameMatchAPI {
 
   void connectToServer({@required String otherUserUID})  {
     sl.get<ServerAPI>().connectAlreadyFriendsStream(otherUserUID: otherUserUID);
-    sl.get<ServerAPI>().connectAlreadyRequestStream(otherUserUID: otherUserUID);
+    sl.get<ServerAPI>().connectAlreadyRequestFromStream(otherUserUID: otherUserUID);
+    sl.get<ServerAPI>().connectAlreadyRequestToStream(otherUserUID: otherUserUID);
   }
 
   Future<void> disconnectToServer() async{
     await sl.get<ServerAPI>().disconnectAlreadyFriendsStream();
-    await sl.get<ServerAPI>().disconnectAlreadyRequestStream();
+    await sl.get<ServerAPI>().disconnectAlreadyRequestFromStream();
+    await sl.get<ServerAPI>().disconnectAlreadyRequestToStream();
   }
 
   Future<void> sendRequest(String uid) async {
@@ -42,6 +44,10 @@ class SameMatchAPI {
     });
   }
 
+  void addRequestToLocal(String uid) {
+    sl.get<CurrentUser>().requestToList.add(uid);
+  }
+
   Future<void> cancelRequest(String receiver) async {
     QuerySnapshot requestSnapshot = await sl.get<FirebaseAPI>().getFirestore()
       .collection(firestoreUsersCollection)
@@ -54,6 +60,10 @@ class SameMatchAPI {
     await sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async {
       await tx.delete(requestSnapshot.documents[0].reference);
     });
+  }
+
+  void removeRequestFromLocal(String uid) {
+    sl.get<CurrentUser>().requestToList.remove(uid);
   }
 
   // 전체 사용자 중에서 관심사가 가장 잘 맞는 애 선정해서 넘겨주기
@@ -93,7 +103,7 @@ class SameMatchAPI {
       /// [4. 친구신청을 받은 경우의 사람]
       
       bool isRequestingUser = false;
-      for(UserModel userModel in sl.get<CurrentUser>().requestList) {
+      for(UserModel userModel in sl.get<CurrentUser>().requestFromList) {
         if(userModel.uid.compareTo(user.documentID)==0){
           isRequestingUser = true;
           break;

@@ -22,8 +22,12 @@ class SameMatchBloc extends BlocEventStateBase<SameMatchEvent,SameMatchState>
       yield SameMatchState.alreadyFriends();
     }
 
-    if(event is SameMatchEventAlreadyRequest) {
-      yield SameMatchState.alreadyRequest();
+    if(event is SameMatchEventAlreadyRequestFrom) {
+      yield SameMatchState.alreadyRequestFrom();
+    }
+
+    if(event is SameMatchEventAlreadyRequestTo) {
+      yield SameMatchState.alreadyRequestTo();
     }
 
     if(event is SameMatchEventConnectToServer) {
@@ -52,6 +56,7 @@ class SameMatchBloc extends BlocEventStateBase<SameMatchEvent,SameMatchState>
     if(event is SameMatchEventSendRequest) {
       try {
         yield SameMatchState.requestLoading();
+        _api.addRequestToLocal(event.uid);
         await _api.sendRequest(event.uid);
         yield SameMatchState.requestSucceeded();
       } catch(exception) {
@@ -63,6 +68,7 @@ class SameMatchBloc extends BlocEventStateBase<SameMatchEvent,SameMatchState>
     if(event is SameMatchEventCancelRequest) {
       try {
         yield SameMatchState.cancelLoading();
+        _api.removeRequestFromLocal(event.uid);
         await _api.cancelRequest(event.uid);
         yield SameMatchState.cancelSucceeded();
       } catch(exception) {

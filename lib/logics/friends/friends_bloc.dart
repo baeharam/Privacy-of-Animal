@@ -52,7 +52,7 @@ class FriendsBloc extends BlocEventStateBase<FriendsEvent,FriendsState>
     if(event is FriendsEventRequestIncreased) {
       yield FriendsState.requestRefreshLoading();
       try {
-        await _api.fetchIncreasedRequest(event.request);
+        await _api.fetchIncreasedRequestFrom(event.request);
         yield FriendsState.requestIncreased();
       } catch(exception) {
         print('친구신청 증가 실패: ${exception.toString()}');
@@ -63,7 +63,7 @@ class FriendsBloc extends BlocEventStateBase<FriendsEvent,FriendsState>
     if(event is FriendsEventRequestDecreased) {
       yield FriendsState.requestRefreshLoading();
       try {
-        await _api.fetchDecreasedRequest(event.request);
+        await _api.fetchDecreasedRequestFrom(event.request);
         yield FriendsState.requestDecreased();
       } catch(exception) {
         print('친구신청 감소 실패: ${exception.toString()}');

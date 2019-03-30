@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state_builder.dart';
+import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/same_match/same_match.dart';
 import 'package:privacy_of_animal/models/same_match_model.dart';
 import 'package:privacy_of_animal/resources/resources.dart';
@@ -32,6 +33,15 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
         builder: (context) => OtherProfileScreen(user:_sameMatchModel.userInfo)
       ));
     });
+  }
+
+  bool isFriendsOrRequestFrom() {
+    return sl.get<CurrentUser>().friendsList.contains(_sameMatchModel.userInfo)
+      || sl.get<CurrentUser>().requestFromList.contains(_sameMatchModel.userInfo);
+  }
+
+  bool isRequestTo() {
+    return sl.get<CurrentUser>().requestToList.contains(_sameMatchModel.userInfo.uid);
   }
 
   @override
@@ -168,7 +178,7 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
                     BlocBuilder(
                       bloc: _sameMatchBloc,
                       builder: (context,SameMatchState state){
-                        if(state.isAlreadyFriends || state.isAlreadyRequest){
+                        if(isFriendsOrRequestFrom()){
                           return Padding(
                             padding: EdgeInsets.only(top: 10.0),
                             child: Text(
@@ -186,7 +196,7 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
                           return CircularProgressIndicator();
                         }
 
-                        if(state.isRequestSucceeded) {
+                        if(isRequestTo()) {
                           return SameMatchButton(
                             color: primaryGreen,
                             title: '친구 신청취소',

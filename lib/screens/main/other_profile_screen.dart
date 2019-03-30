@@ -211,7 +211,8 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
                         BlocBuilder(
                           bloc: _otherProfileBloc,
                           builder: (context, OtherProfileState state){
-                            if(state.isAlreadyFriends || state.isAlreadyRequest){
+                            if(sl.get<CurrentUser>().friendsList.contains(widget.user) ||
+                              sl.get<CurrentUser>().requestFromList.contains(widget.user)){
                               return Padding(
                                 padding: EdgeInsets.only(top: 10.0),
                                 child: Text(

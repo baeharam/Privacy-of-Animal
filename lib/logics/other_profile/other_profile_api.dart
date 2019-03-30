@@ -14,12 +14,12 @@ class OtherProfileAPI {
 
   void connectToServer({@required String otherUserUID}) {
     sl.get<ServerAPI>().connectAlreadyFriendsStream(otherUserUID: otherUserUID);
-    sl.get<ServerAPI>().connectAlreadyRequestStream(otherUserUID: otherUserUID);
+    sl.get<ServerAPI>().connectAlreadyRequestFromStream(otherUserUID: otherUserUID);
   }
 
   Future<void> disconnectToServer() async{
     await sl.get<ServerAPI>().disconnectAlreadyFriendsStream();
-    await sl.get<ServerAPI>().disconnectAlreadyRequestStream();
+    await sl.get<ServerAPI>().disconnectAlreadyRequestFromStream();
   }
 
   Future<void> sendRequest(String uid) async {

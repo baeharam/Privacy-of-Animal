@@ -91,14 +91,14 @@ class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProvider
                   BlocBuilder(
                     bloc: _friendsBloc,
                     builder: (context, FriendsState state){
-                      if(sl.get<CurrentUser>().requestList.isNotEmpty) {
+                      if(sl.get<CurrentUser>().requestFromList.isNotEmpty) {
                         return Container(
                           padding: EdgeInsets.all(8.0),
                           decoration: BoxDecoration(
                             color: Colors.red,
                             shape: BoxShape.circle
                           ),
-                          child: Text(sl.get<CurrentUser>().requestList.length.toString())
+                          child: Text(sl.get<CurrentUser>().requestFromList.length.toString())
                         );
                       }
                       return Container();
