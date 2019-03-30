@@ -22,7 +22,7 @@ class _HomeDecisionState extends State<HomeDecision> {
   void initState() {
     super.initState();
     sl.get<NotificationHelper>().initializeNotification(context);
-    _homeBloc.emitEvent(HomeEventNavigate(index: TAB.PROFILE.index));
+    _homeBloc.emitEvent(HomeEventFetchAll());
   }
 
   @override
@@ -31,17 +31,21 @@ class _HomeDecisionState extends State<HomeDecision> {
     return BlocBuilder(
       bloc: _homeBloc,
       builder: (context, HomeState state){
-        if(state.isProfileFetchFailed || state.isFriendsFetchFailed || state.isChatRoomListFetchFailed) {
-          return Center(
-            child: Text('데이터 로딩에 실패했습니다.'),
+        if(state.isDataFetchFailed) {
+          return Center(child: Text('데이터 로딩에 실패했습니다.'));
+        }
+        if(state.isDataFetchLoading) {
+          return Container(
+            color: Colors.white,
+            alignment: Alignment.center,
+            child: CircularProgressIndicator()
           );
         }
 
         return WillPopScope(
           onWillPop: () => BackButtonAction.terminateApp(context),
           child: Scaffold(
-            body: (state.isProfileFetchLoading || state.isFriendsFetchLoading || state.isChatRoomListFetchLoading)
-             ? CustomProgressIndicator() : _homePage[state.activeIndex],
+            body: _homePage[state.activeIndex],
             bottomNavigationBar: BottomNavigationBar(
               currentIndex: state.activeIndex,
               onTap: (index) => _homeBloc.emitEvent(HomeEventNavigate(index: index)),

@@ -2,39 +2,36 @@
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state.dart';
 
 class HomeState extends BlocState {
+  final bool isInitial;
+
   final bool isMatchClicked;
   final bool isChatClicked;
   final bool isFriendClicked;
   final bool isProfileClicked;
 
-  final bool isProfileFetchLoading;
-  final bool isProfileFetchFailed;
-
-  final bool isFriendsFetchLoading;
-  final bool isFriendsFetchFailed;
-
-  final bool isChatRoomListFetchLoading;
-  final bool isChatRoomListFetchFailed;
+  final bool isDataFetchLoading;
+  final bool isDataFetchFailed;
 
   final int activeIndex;
 
   HomeState({
+    this.isInitial: false,
+
     this.isMatchClicked: false,
     this.isChatClicked: false,
     this.isFriendClicked: false,
     this.isProfileClicked: false,
-    
-    this.isProfileFetchLoading: false,
-    this.isProfileFetchFailed: false,
 
-    this.isFriendsFetchLoading: false,
-    this.isFriendsFetchFailed: false,
-
-    this.isChatRoomListFetchLoading: false,
-    this.isChatRoomListFetchFailed: false,
+    this.isDataFetchLoading: false,
+    this.isDataFetchFailed: false,
 
     this.activeIndex: 0
   });
+
+  factory HomeState.initial() => HomeState(isInitial: true);
+
+  factory HomeState.fetchLoading() => HomeState(isDataFetchLoading: true);
+  factory HomeState.fetchFailed() => HomeState(isDataFetchFailed: true);
 
   factory HomeState.match(int index) {
     return HomeState(
@@ -63,29 +60,4 @@ class HomeState extends BlocState {
       activeIndex: index
     );
   }
-
-  factory HomeState.profileLoading(int index) {
-    return HomeState(
-      isProfileFetchLoading: true,
-      activeIndex: index
-    );
-  }
-
-  factory HomeState.friendsLoading(int index) {
-    return HomeState(
-      isFriendsFetchLoading: true,
-      activeIndex: index
-    );
-  }
-
-  factory HomeState.chatRoomListLoading(int index) {
-    return HomeState(
-      isChatRoomListFetchLoading: true,
-      activeIndex: index
-    );
-  }
-
-  factory HomeState.profileFailed() => HomeState(isProfileFetchFailed: true);
-  factory HomeState.friendsFailed() => HomeState(isFriendsFetchFailed: true);
-  factory HomeState.chatRoomListFailed() => HomeState(isChatRoomListFetchFailed: true);
 }

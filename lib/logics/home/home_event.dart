@@ -10,3 +10,5 @@ class HomeEventNavigate extends HomeEvent{
     this.index
   });
 }
+
+class HomeEventFetchAll extends HomeEvent {}
