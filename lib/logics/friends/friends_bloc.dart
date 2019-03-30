@@ -66,7 +66,7 @@ class FriendsBloc extends BlocEventStateBase<FriendsEvent,FriendsState>
         await _api.fetchDecreasedRequest(event.request);
         yield FriendsState.requestDecreased();
       } catch(exception) {
-        print('친구신청 증가 실패: ${exception.toString()}');
+        print('친구신청 감소 실패: ${exception.toString()}');
         yield FriendsState.requestRefreshFailed();
       }
     }
@@ -89,6 +89,7 @@ class FriendsBloc extends BlocEventStateBase<FriendsEvent,FriendsState>
         yield FriendsState.friendsBlockLoading();
         _api.blockFriendsForLocal(event.userToBlock);
         await _api.blockFriendsForServer(event.userToBlock);
+        yield FriendsState.friendsBlockSucceeded();
       } catch(exception) {
         print('친구차단하기 실패: ${exception.toString()}');
         yield FriendsState.friendsBlockFailed();
@@ -106,6 +107,7 @@ class FriendsBloc extends BlocEventStateBase<FriendsEvent,FriendsState>
       try {
         yield FriendsState.friendsAcceptLoading();
         await _api.acceptFriendsForServer(event.userToAccept);
+        yield FriendsState.friendsAcceptSucceeded();
       } catch(exception) {
         print('친구수락하기 실패: ${exception.toString()}');
         yield FriendsState.friendsAcceptFailed();
@@ -129,11 +131,6 @@ class FriendsBloc extends BlocEventStateBase<FriendsEvent,FriendsState>
         print('친구삭제하기 실패: ${exception.toString()}');
         yield FriendsState.friendsRejectFailed();
       }
-    }
-
-    if(event is FriendsEventNewFriends) {
-      _api.updateNewFriends(event.newFriendsNum);
-      yield FriendsState.newFriends();
     }
   }
 }

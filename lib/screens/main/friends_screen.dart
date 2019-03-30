@@ -15,19 +15,18 @@ class FriendsScreen extends StatefulWidget {
 
 class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProviderStateMixin{
 
-  final FriendsBloc friendsBloc = sl.get<FriendsBloc>();
-  TabController tabController;
+  final FriendsBloc _friendsBloc = sl.get<FriendsBloc>();
+  TabController _tabController;
 
   @override
   void initState() {
     super.initState();
-    tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 2, vsync: this);
   }
 
   @override
   void dispose() {
-    tabController.dispose();
-    sl.get<CurrentUser>().newFriendsNum = 0;
+    _tabController.dispose();
     super.dispose();
   }
 
@@ -43,17 +42,17 @@ class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProvider
           backgroundColor: primaryBlue,
           actions: [
             BlocBuilder(
-              bloc: friendsBloc,
+              bloc: _friendsBloc,
               builder: (context, FriendsState state){
                 if(state.isFriendsNotificationToggleFailed) {
+                  _friendsBloc.emitEvent(FriendsEventStateClear());
                   streamSnackbar(context, '알림 설정에 실패하였습니다.');
-                  friendsBloc.emitEvent(FriendsEventStateClear());
                 }
                 return IconButton(
                   icon: Icon(sl.get<CurrentUser>().friendsNotification
                     ? Icons.notifications
                     : Icons.notifications_off),
-                  onPressed: () => friendsBloc.emitEvent(FriendsEventFriendsNotification())
+                  onPressed: () => _friendsBloc.emitEvent(FriendsEventFriendsNotification())
                 );
               }
             )
@@ -66,16 +65,17 @@ class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProvider
                   Text('친구'),
                   SizedBox(width: 10.0),
                   BlocBuilder(
-                    bloc: friendsBloc,
+                    bloc: _friendsBloc,
                     builder: (context, FriendsState state){
                       if(state.isFriendsIncreased && sl.get<CurrentUser>().friendsList.isNotEmpty) {
+                        _friendsBloc.emitEvent(FriendsEventStateClear());
                         return Container(
                           padding: EdgeInsets.all(8.0),
                           decoration: BoxDecoration(
                             color: Colors.red,
                             shape: BoxShape.circle
                           ),
-                          child: Text(sl.get<CurrentUser>().friendsList.toString())
+                          child: Text(sl.get<CurrentUser>().friendsList.length.toString())
                         );
                       }
                       return Container();
@@ -89,16 +89,17 @@ class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProvider
                   Text('친구신청'),
                   SizedBox(width: 10.0),
                   BlocBuilder(
-                    bloc: friendsBloc,
+                    bloc: _friendsBloc,
                     builder: (context, FriendsState state){
                       if(state.isRequestIncreased && sl.get<CurrentUser>().requestList.isNotEmpty) {
+                        _friendsBloc.emitEvent(FriendsEventStateClear());
                         return Container(
                           padding: EdgeInsets.all(8.0),
                           decoration: BoxDecoration(
                             color: Colors.red,
                             shape: BoxShape.circle
                           ),
-                          child: Text(sl.get<CurrentUser>().requestList.toString())
+                          child: Text(sl.get<CurrentUser>().requestList.length.toString())
                         );
                       }
                       return Container();
@@ -114,15 +115,15 @@ class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProvider
               fontSize: 20.0
             ),
             unselectedLabelColor: Colors.white.withOpacity(0.2),
-            controller: tabController,
+            controller: _tabController,
           ),
         ),
         body: TabBarView(
           children: [
-            FriendsList(friendsBloc: friendsBloc),
-            FriendsRequestList(friendsBloc: friendsBloc)
+            FriendsList(friendsBloc: _friendsBloc),
+            FriendsRequestList(friendsBloc: _friendsBloc)
           ],
-          controller: tabController,
+          controller: _tabController,
         ),
       ),
     );

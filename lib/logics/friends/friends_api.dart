@@ -27,11 +27,6 @@ class FriendsAPI {
     sl.get<CurrentUser>().friendsNotification = value;
   }
 
-  /// [새로운 친구수 갱신]
-  void updateNewFriends(int newFriendsNum) {
-    sl.get<CurrentUser>().newFriendsNum = newFriendsNum;
-  }
-
   /// [친구 증가]
   Future<void> fetchIncreasedFriends(List<DocumentChange> newFriendsList) async {
     for(DocumentChange newFriends in newFriendsList) {
@@ -43,7 +38,6 @@ class FriendsAPI {
       sl.get<CurrentUser>().friendsList.add(newFriendsUserModel);
       _notifyingFriends ??=newFriendsUserModel;
     }
-    sl.get<CurrentUser>().newFriendsNum = newFriendsList.length;
   }
 
   void notifyNewFriends() {
@@ -135,7 +129,6 @@ class FriendsAPI {
     sl.get<CurrentUser>().chatHistory.remove(userToBlock.uid);
     sl.get<CurrentUser>().chatListHistory.remove(userToBlock.uid);
     sl.get<CurrentUser>().chatRoomNotification.remove(userToBlock.uid);
-    sl.get<CurrentUser>().newFriendsNum = 0;
   }
 
   /// [서버에서 친구신청 수락]
