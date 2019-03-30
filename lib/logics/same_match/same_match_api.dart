@@ -17,15 +17,12 @@ class SameMatchAPI {
     sl.get<ServerAPI>().sameMatchFlagOn();
   }
 
-  void connectToServer({@required String otherUserUID})  {
-    sl.get<ServerAPI>().connectAlreadyFriendsStream(otherUserUID: otherUserUID);
-    sl.get<ServerAPI>().connectAlreadyRequestFromStream(otherUserUID: otherUserUID);
-    sl.get<ServerAPI>().connectAlreadyRequestToStream(otherUserUID: otherUserUID);
+  void connectToServer({@required UserModel otherUser})  {
+    sl.get<ServerAPI>().setCurrentProfileUser(otherUser: otherUser);
+    sl.get<ServerAPI>().connectAlreadyRequestToStream(otherUserUID: otherUser.uid);
   }
 
   Future<void> disconnectToServer() async{
-    await sl.get<ServerAPI>().disconnectAlreadyFriendsStream();
-    await sl.get<ServerAPI>().disconnectAlreadyRequestFromStream();
     await sl.get<ServerAPI>().disconnectAlreadyRequestToStream();
   }
 

@@ -16,7 +16,7 @@ class OtherProfileBloc extends BlocEventStateBase<OtherProfileEvent,OtherProfile
     }
 
     if(event is OtherProfileEventConnectToServer) {
-      _api.connectToServer(otherUserUID: event.otherUserUID);
+      _api.connectToServer(otherUser: event.otherUser);
     }
 
     if(event is OtherProfileEventDisconnectToServer) {
@@ -35,6 +35,7 @@ class OtherProfileBloc extends BlocEventStateBase<OtherProfileEvent,OtherProfile
     if(event is OtherProfileEventSendRequest) {
       try {
         yield OtherProfileState.requestLoading();
+        _api.addRequestToLocal(event.uid);
         await _api.sendRequest(event.uid);
         yield OtherProfileState.requestSucceeded();
       } catch(exception) {
@@ -46,6 +47,7 @@ class OtherProfileBloc extends BlocEventStateBase<OtherProfileEvent,OtherProfile
     if(event is OtherProfileEventCancelRequest) {
       try {
         yield OtherProfileState.cancelLoading();
+        _api.removeRequestFromLocal(event.uid);
         await _api.cancelRequest(event.uid);
         yield OtherProfileState.cancelSucceeded();
       } catch(exception) {

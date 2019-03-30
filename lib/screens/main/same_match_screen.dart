@@ -83,7 +83,7 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
             } else {
               _sameMatchModel = state.sameMatchModel;
               _sameMatchBloc.emitEvent(SameMatchEventConnectToServer(
-                otherUserUID: _sameMatchModel.userInfo.uid
+                otherUser: _sameMatchModel.userInfo
               ));
             }
           }

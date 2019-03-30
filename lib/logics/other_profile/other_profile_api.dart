@@ -3,6 +3,7 @@ import 'package:meta/meta.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/logics/server_api.dart';
+import 'package:privacy_of_animal/models/user_model.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
 
@@ -12,14 +13,13 @@ class OtherProfileAPI {
     sl.get<ServerAPI>().sameMatchFlagOff();
   }
 
-  void connectToServer({@required String otherUserUID}) {
-    sl.get<ServerAPI>().connectAlreadyFriendsStream(otherUserUID: otherUserUID);
-    sl.get<ServerAPI>().connectAlreadyRequestFromStream(otherUserUID: otherUserUID);
+  void connectToServer({@required UserModel otherUser}) {
+    sl.get<ServerAPI>().setCurrentProfileUser(otherUser: otherUser);
+    sl.get<ServerAPI>().connectAlreadyRequestToStream(otherUserUID: otherUser.uid);
   }
 
   Future<void> disconnectToServer() async{
-    await sl.get<ServerAPI>().disconnectAlreadyFriendsStream();
-    await sl.get<ServerAPI>().disconnectAlreadyRequestFromStream();
+    await sl.get<ServerAPI>().disconnectAlreadyRequestToStream();
   }
 
   Future<void> sendRequest(String uid) async {
@@ -37,6 +37,10 @@ class OtherProfileAPI {
     });
   }
 
+  void addRequestToLocal(String uid) {
+    sl.get<CurrentUser>().requestToList.add(uid);
+  }
+
   Future<void> cancelRequest(String receiver) async {
     QuerySnapshot requestSnapshot = await sl.get<FirebaseAPI>().getFirestore()
       .collection(firestoreUsersCollection)
@@ -51,4 +55,8 @@ class OtherProfileAPI {
     });
   }
 
+
+  void removeRequestFromLocal(String uid) {
+    sl.get<CurrentUser>().requestToList.remove(uid);
+  }
 }

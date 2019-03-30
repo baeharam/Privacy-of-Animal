@@ -30,13 +30,22 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
   @override
   void initState() {
     super.initState();
-    _otherProfileBloc.emitEvent(OtherProfileEventConnectToServer(otherUserUID: widget.user.uid));
+    _otherProfileBloc.emitEvent(OtherProfileEventConnectToServer(otherUser: widget.user));
   }
 
   @override
   void dispose() {
     _otherProfileBloc.emitEvent(OtherProfileEventDisconnectToServer());
     super.dispose();
+  }
+
+  bool isFriendsOrRequestFrom() {
+    return sl.get<CurrentUser>().friendsList.contains(widget.user)
+      || sl.get<CurrentUser>().requestFromList.contains(widget.user);
+  }
+
+  bool isRequestTo() {
+    return sl.get<CurrentUser>().requestToList.contains(widget.user.uid);
   }
 
   @override
@@ -211,14 +220,11 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
                         BlocBuilder(
                           bloc: _otherProfileBloc,
                           builder: (context, OtherProfileState state){
-                            if(sl.get<CurrentUser>().friendsList.contains(widget.user) ||
-                              sl.get<CurrentUser>().requestFromList.contains(widget.user)){
+                            if(isFriendsOrRequestFrom()){
                               return Padding(
                                 padding: EdgeInsets.only(top: 10.0),
                                 child: Text(
-                                  state.isAlreadyFriends
-                                  ? '이미 친구입니다.'
-                                  : '친구신청 중입니다.',
+                                  'dd',
                                   style: TextStyle(
                                     color: Colors.black,
                                     fontWeight: FontWeight.bold
@@ -230,7 +236,7 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
                               return CircularProgressIndicator();
                             }
 
-                            if(state.isRequestSucceeded) {
+                            if(isRequestTo()) {
                               return SameMatchButton(
                                 color: primaryGreen,
                                 title: '친구 신청취소',

@@ -31,7 +31,7 @@ class SameMatchBloc extends BlocEventStateBase<SameMatchEvent,SameMatchState>
     }
 
     if(event is SameMatchEventConnectToServer) {
-      _api.connectToServer(otherUserUID: event.otherUserUID);
+      _api.connectToServer(otherUser: event.otherUser);
     }
 
     if(event is SameMatchEventDisconnectToServer) {

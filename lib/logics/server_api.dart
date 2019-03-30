@@ -23,8 +23,7 @@ class ServerAPI {
   static bool _isFirstFriendsFetch = true;
   static bool _isFirstRequestFetch = true;
   static Map<String,bool> _isFirstChatHistoryFetch = Map<String,bool>();
-  static bool _isAlreadyFriendsConnected = false;
-  static bool _isAlreadyRequestFromConnected = false;
+  static bool _isAlreadyRequestToConnected = false;
   static bool _isInSameMatchScreen = false;
 
   Map<String, Observable<QuerySnapshot>> _chatRoomListServer;
@@ -36,8 +35,7 @@ class ServerAPI {
   Observable<QuerySnapshot> _requestServer;
   StreamSubscription _requestSubscription;
 
-  StreamSubscription _alreadyFriendsSubscription;
-  StreamSubscription _alreadyRequestFromSubscription;
+  UserModel _currentProfileUser;
   StreamSubscription _alreadyRequestToSubscription;
 
   final Firestore _firestore = sl.get<FirebaseAPI>().getFirestore();
@@ -57,82 +55,20 @@ class ServerAPI {
     _requestServer = Observable.empty();
     _requestSubscription = _requestServer.listen((_){});
 
-    _alreadyFriendsSubscription = Stream.empty().listen((_){});
-    _alreadyRequestFromSubscription = Stream.empty().listen((_){});
     _alreadyRequestToSubscription = Stream.empty().listen((_){});
   }
 
   /// [매칭화면 → 이미 친구인지 확인 스트림 연결]
-  void connectAlreadyFriendsStream({@required String otherUserUID}) {
-    debugPrint('Call connectAlreadyFriendsStream($otherUserUID)');
-
-    if(!_isAlreadyFriendsConnected) {
-      Stream<QuerySnapshot> friendsStream =
-        _firestore
-        .collection(firestoreUsersCollection)
-        .document(otherUserUID)
-        .collection(firestoreFriendsSubCollection)
-        .where(firestoreFriendsUID, isEqualTo: sl.get<CurrentUser>().uid)
-        .where(firestoreFriendsField, isEqualTo: true).snapshots();
-
-      _alreadyFriendsSubscription = friendsStream.listen((friendsSnapshot){
-        if(friendsSnapshot.documents.isNotEmpty) {
-          _sameMatchBloc.emitEvent(SameMatchEventAlreadyFriends());
-          _otherProfileBloc.emitEvent(OtherProfileEventAlreadyFriends());
-        }
-      });
-      _isAlreadyFriendsConnected = true;
-    }
-  }
-
-  /// [매칭화면 → 이미 친구인지 확인 스트림 취소]
-  Future<void> disconnectAlreadyFriendsStream() async{
-    if(!_isInSameMatchScreen) {
-      debugPrint('Call disconnectAlreadyFriendsStream()');
-
-      await _alreadyFriendsSubscription.cancel();
-      _isAlreadyFriendsConnected = false;
-    }
-  }
-
-  /// [매칭화면 → 이미 친구신청 받았는지 확인 스트림 연결]
-  void connectAlreadyRequestFromStream({@required String otherUserUID}) {
-    debugPrint('Call connectAlreadyRequestFromStream($otherUserUID)');
-
-    if(!_isAlreadyRequestFromConnected) {
-      Stream<QuerySnapshot> requestStreamFrom = 
-        _firestore
-        .collection(firestoreUsersCollection)
-        .document(sl.get<CurrentUser>().uid)
-        .collection(firestoreFriendsSubCollection)
-        .where(firestoreFriendsUID, isEqualTo: otherUserUID)
-        .where(firestoreFriendsField, isEqualTo: false).snapshots();
-
-      _alreadyFriendsSubscription = requestStreamFrom.listen((friendsSnapshot){
-        if(friendsSnapshot.documents.isNotEmpty) {
-          _sameMatchBloc.emitEvent(SameMatchEventAlreadyRequestFrom());
-          _otherProfileBloc.emitEvent(OtherProfileEventAlreadyRequest());
-        }
-      });
-      _isAlreadyRequestFromConnected = true;
-    }
-  }
-
-  /// [매칭화면 → 이미 친구신청 받았는지 확인 스트림 취소]
-  Future<void> disconnectAlreadyRequestFromStream() async{
-    if(!_isInSameMatchScreen) {
-      debugPrint('Call disconnectAlreadyRequestStream()');
-
-      await _alreadyRequestFromSubscription.cancel();
-      _isAlreadyRequestFromConnected = false;
-    }
+  void setCurrentProfileUser({@required UserModel otherUser}) {
+    debugPrint('Call setCurrentProfileUID($otherUser)');
+    _currentProfileUser = otherUser;
   }
 
   /// [매칭화면 → 이미 친구신청 했는지 확인 스트림 연결]
   void connectAlreadyRequestToStream({@required String otherUserUID}) {
     debugPrint('Call connectAlreadyRequestToStream($otherUserUID)');
 
-    if(!_isAlreadyRequestFromConnected) {
+    if(!_isAlreadyRequestToConnected) {
       Stream<QuerySnapshot> requestStreamFrom = 
         _firestore
         .collection(firestoreUsersCollection)
@@ -141,13 +77,13 @@ class ServerAPI {
         .where(firestoreFriendsUID, isEqualTo: sl.get<CurrentUser>().uid)
         .where(firestoreFriendsField, isEqualTo: false).snapshots();
 
-      _alreadyFriendsSubscription = requestStreamFrom.listen((friendsSnapshot){
-        if(friendsSnapshot.documents.isNotEmpty) {
+      _alreadyRequestToSubscription = requestStreamFrom.listen((requestSnapshot){
+        if(requestSnapshot.documents.isNotEmpty) {
           _sameMatchBloc.emitEvent(SameMatchEventAlreadyRequestFrom());
           _otherProfileBloc.emitEvent(OtherProfileEventAlreadyRequest());
         }
       });
-      _isAlreadyRequestFromConnected = true;
+      _isAlreadyRequestToConnected = true;
     }
   }
 
@@ -157,7 +93,7 @@ class ServerAPI {
       debugPrint('Call disconnectAlreadyRequestStream()');
 
       await _alreadyRequestToSubscription.cancel();
-      _isAlreadyRequestFromConnected = false;
+      _isAlreadyRequestToConnected = false;
     }
   }
 
@@ -210,7 +146,7 @@ class ServerAPI {
       if(snapshot.documentChanges.isNotEmpty) {
         
         int beforeFriendsNum = sl.get<CurrentUser>().friendsList.length;
-
+        
         // 친구 감소
         if(beforeFriendsNum >= snapshot.documents.length && !_isFirstFriendsFetch) {
           debugPrint('Friends are decreased!!');
@@ -229,7 +165,7 @@ class ServerAPI {
           }
           _friendsBloc.emitEvent(
             FriendsEventFriendsDecreased(friends: snapshot.documentChanges)
-          );          
+          );
         } 
         // 친구 증가
         else if(!_isFirstFriendsFetch){
@@ -250,6 +186,12 @@ class ServerAPI {
 
           _isFirstFriendsFetch = false;
           _friendsBloc.emitEvent(FriendsEventFriendsIncreased(friends: snapshot.documentChanges));
+        }
+
+        if(snapshot.documentChanges.where((change) => 
+          change.document.documentID==_currentProfileUser.uid).isNotEmpty) {
+          _sameMatchBloc.emitEvent(SameMatchEventAlreadyFriends());
+          _otherProfileBloc.emitEvent(OtherProfileEventAlreadyFriends());
         }
       } else {
         debugPrint('Initial Friends, Empty!!');
