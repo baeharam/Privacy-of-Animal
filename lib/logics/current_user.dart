@@ -16,13 +16,14 @@ class CurrentUser {
   Map<String,ChatListModel> chatListHistory;
   Map<String,List<ChatModel>> chatHistory;
   List<UserModel> friendsList;
-  List<UserModel> friendsRequestList;
-  int newFriendsNum;
+  List<UserModel> requestFromList;
+
+  String currentProfileUID;
+  bool isRequestTo;
 
   bool friendsNotification;
   Map<String,bool> chatRoomNotification;
-
-  bool isDataFetched;
+  String currentChatRoomID;
 
   CurrentUser() {
     uid = '';
@@ -35,12 +36,13 @@ class CurrentUser {
     chatHistory = Map<String,List<ChatModel>>();
 
     friendsList = [];
-    friendsRequestList = [];
-    newFriendsNum = 0;
+    requestFromList = [];
+
+    currentProfileUID = '';
+    isRequestTo = false;
 
     friendsNotification = false;
     chatRoomNotification = Map<String,bool>();
-
-    isDataFetched = false;
+    currentChatRoomID = '';
   }
 }

@@ -44,7 +44,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
       body: BlocBuilder(
         bloc: chatListBloc,
         builder: (context, ChatListState state){
-          if(state.isNewMessage || state.isFriendsDeleted) {
+          if(state.isInitial || state.isNewMessage || state.isDeleteSucceeded) {
             chatList = sl.get<CurrentUser>().chatListHistory.values.toList();
           }
           if(chatList.isEmpty) {
@@ -104,9 +104,17 @@ class _ChatListScreenState extends State<ChatListScreen> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Text(
-                            chatListModel.nickName,
-                            style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),
+                          Row(
+                            children: <Widget>[
+                              Text(
+                                chatListModel.nickName,
+                                style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(width: 10.0),
+                              sl.get<CurrentUser>().chatRoomNotification[chatListModel.chatRoomID]
+                              ? Icon(Icons.notifications,color: Colors.grey)
+                              : Icon(Icons.notifications_off,color: Colors.grey)
+                            ],
                           ),
                           SizedBox(height: 10.0),
                           Text(chatListModel.lastMessage)
@@ -137,8 +145,9 @@ class _ChatListScreenState extends State<ChatListScreen> {
           ],
         )
       ),
-      onDismissed: (direction) {sl.get<ChatListBloc>().emitEvent(ChatListEventDeleteChatRoom(
-        chatRoomID: chatListModel.chatRoomID
+      onDismissed: (direction) {chatListBloc.emitEvent(ChatListEventDeleteChatRoom(
+        chatRoomID: chatListModel.chatRoomID,
+        friends: chatListModel.user.uid
       ));},
     );
   }

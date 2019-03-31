@@ -4,16 +4,15 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state_builder.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
-import 'package:privacy_of_animal/logics/friend_request/friend_request.dart';
+import 'package:privacy_of_animal/logics/other_profile/other_profile.dart';
 import 'package:privacy_of_animal/models/user_model.dart';
-import 'package:privacy_of_animal/resources/colors.dart';
-import 'package:privacy_of_animal/resources/constants.dart';
-import 'package:privacy_of_animal/resources/strings.dart';
+import 'package:privacy_of_animal/resources/resources.dart';
+import 'package:privacy_of_animal/screens/sub/other_profile_sub.dart';
+import 'package:privacy_of_animal/screens/sub/same_match_button.dart';
 import 'package:privacy_of_animal/utils/profile_hero.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:privacy_of_animal/utils/stream_snackbar.dart';
-import 'package:privacy_of_animal/widgets/progress_indicator.dart';
-import 'package:rxdart/rxdart.dart';
+
 
 class OtherProfileScreen extends StatefulWidget {
 
@@ -27,20 +26,27 @@ class OtherProfileScreen extends StatefulWidget {
 
 class _OtherProfileScreenState extends State<OtherProfileScreen> {
 
-  final FriendRequestBloc friendRequestBloc = sl.get<FriendRequestBloc>();
+  final OtherProfileBloc _otherProfileBloc = sl.get<OtherProfileBloc>();
 
-  Stream<bool> _getRequestStream() {
-    Stream<QuerySnapshot> stream1 = sl.get<FirebaseAPI>().getFirestore().collection(firestoreUsersCollection)
-      .document(widget.user.uid).collection(firestoreFriendsSubCollection)
-      .where(uidCol,isEqualTo:sl.get<CurrentUser>().uid)
-      .where(firestoreFriendsField,isEqualTo: false).snapshots();
-    Stream<QuerySnapshot> stream2 = sl.get<FirebaseAPI>().getFirestore().collection(firestoreUsersCollection)
-      .document(sl.get<CurrentUser>().uid).collection(firestoreFriendsSubCollection)
-      .where(uidCol,isEqualTo:widget.user.uid)
-      .where(firestoreFriendsField,isEqualTo: false).snapshots();
-    return Observable.combineLatest2(stream1, stream2, (s1,s2){
-      return (s1.documents.isNotEmpty || s2.documents.isNotEmpty) ? true : false;
-    });
+  bool _isAlreadyFriends() => sl.get<CurrentUser>().friendsList.where((userModel)
+    => userModel.uid==widget.user.uid
+  ).isNotEmpty;
+  bool _isAlreadyRequestFrom() => sl.get<CurrentUser>().requestFromList.where((userModel)
+    => userModel.uid==widget.user.uid
+  ).isNotEmpty;
+  bool _isAlreadyRequestTo() => sl.get<CurrentUser>().isRequestTo;
+
+  @override
+  void initState() {
+    super.initState();
+    _otherProfileBloc.emitEvent(OtherProfileEventConnectToServer(otherUserUID: widget.user.uid));
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _otherProfileBloc.emitEvent(OtherProfileEventDisconnectToServer());
+    _otherProfileBloc.emitEvent(OtherProfileEventGetOut());
   }
 
   @override
@@ -170,13 +176,10 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
             Container(
               padding: EdgeInsets.symmetric(horizontal: ScreenUtil.width/20,vertical: ScreenUtil.height/20),
               width: double.infinity,
-              child: StreamBuilder<QuerySnapshot>(
-                stream: sl.get<FirebaseAPI>().getFirestore().collection(firestoreUsersCollection)
-                  .document(widget.user.uid).collection(firestoreFriendsSubCollection)
-                  .where(uidCol,isEqualTo:sl.get<CurrentUser>().uid)
-                  .where(firestoreFriendsField,isEqualTo: true).snapshots(),
-                builder: (context, snapshot){
-                  if(snapshot.hasData && snapshot.data.documents.length!=0){
+              child: BlocBuilder(
+                bloc: _otherProfileBloc,
+                builder: (context, OtherProfileState state){
+                  if(_isAlreadyFriends()){
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
@@ -188,10 +191,10 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
                           ),
                         ),
                         SizedBox(height: 10.0),
-                        OtherRealProfileForm(title: '이름',detail: widget.user.realProfileModel.name),
-                        OtherRealProfileForm(title: '성별',detail: widget.user.realProfileModel.gender),
-                        OtherRealProfileForm(title: '나이',detail: widget.user.realProfileModel.age),
-                        OtherRealProfileForm(title: '직업',detail: widget.user.realProfileModel.job)
+                        OtherProfileRealForm(title: '이름',detail: widget.user.realProfileModel.name),
+                        OtherProfileRealForm(title: '성별',detail: widget.user.realProfileModel.gender),
+                        OtherProfileRealForm(title: '나이',detail: widget.user.realProfileModel.age),
+                        OtherProfileRealForm(title: '직업',detail: widget.user.realProfileModel.job)
                       ],
                     );
                   } else {
@@ -212,39 +215,46 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
                           ]
                         ),
                         SizedBox(height: 10.0),
-                        StreamBuilder<bool>(
-                          stream: _getRequestStream(),
-                          builder: (context, snapshot){
-                            if(snapshot.hasData && snapshot.data){
-                              return Text(
-                                '친구신청 승인 대기중입니다.',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold
-                                ),
-                              );
-                            }
-                            if(snapshot.connectionState==ConnectionState.waiting){
-                              return CustomProgressIndicator();
-                            }
-                            return GestureDetector(
-                              child: Container(
-                                padding: EdgeInsets.all(10.0),
-                                decoration: BoxDecoration(
-                                  color: primaryBlue,
-                                  border: Border.all(color: primaryBlue),
-                                  borderRadius: BorderRadius.circular(3.0)
-                                ),
+                        BlocBuilder(
+                          bloc: _otherProfileBloc,
+                          builder: (context, OtherProfileState state){
+                            if(_isAlreadyFriends() || _isAlreadyRequestFrom()){
+                              return Padding(
+                                padding: EdgeInsets.only(top: 10.0),
                                 child: Text(
-                                  '친구신청 하기',
+                                  _isAlreadyFriends()
+                                  ? '이미 친구입니다.'
+                                  : '친구신청을 받았습니다.',
                                   style: TextStyle(
-                                    color: Colors.white,
+                                    color: Colors.black,
                                     fontWeight: FontWeight.bold
                                   ),
                                 ),
-                              ),
-                              onTap: () => friendRequestBloc
-                                .emitEvent(FriendRequestEventSendRequest(uid: widget.user.uid)),
+                              );
+                            }
+                            if(state.isRequestLoading 
+                               || state.isCancelLoading 
+                               || state.isRefreshLoading) {
+                              return CircularProgressIndicator();
+                            }
+
+                            if(_isAlreadyRequestTo()) {
+                              return SameMatchButton(
+                                color: primaryGreen,
+                                title: '친구 신청취소',
+                                onPressed: () => _otherProfileBloc
+                                .emitEvent(OtherProfileEventCancelRequest( uid: widget.user.uid))
+                              );
+                            }
+                            if(state.isRequestFailed) {
+                              streamSnackbar(context, '친구신청에 실패했습니다.');
+                              _otherProfileBloc.emitEvent(OtherProfileEventStateClear());
+                            }
+                            return SameMatchButton( 
+                              color: primaryBlue,
+                              title: '친구 신청하기',
+                              onPressed: () => _otherProfileBloc
+                                .emitEvent(OtherProfileEventSendRequest(uid: widget.user.uid))
                             );
                           }
                         )
@@ -273,168 +283,13 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
                     )
                   ),
                   SizedBox(height: 20.0),
-                  OtherTagPart(user: widget.user)
+                  OtherProfileTagPart(user: widget.user)
                 ],
               )
-            ),
-            BlocBuilder(
-              bloc: friendRequestBloc,
-              builder: (context, FriendRequestState state){
-                if(state.isSucceeded){
-                  streamSnackbar(context, '친구신청에 성공하였습니다.');
-                  friendRequestBloc.emitEvent(FriendRequestEventStateClear());
-                } else if(state.isFailed){
-                  streamSnackbar(context, '친구신청에 실패하였습니다.');
-                  friendRequestBloc.emitEvent(FriendRequestEventStateClear());
-                }
-                return Container();
-              },
             )
           ],
         )
       )
     );  
-  }
-}
-
-class OtherTagPart extends StatelessWidget {
-
-  final UserModel user;
-  OtherTagPart({@required this.user}); 
-
-  @override
-  Widget build(BuildContext context) {
-
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Padding(
-        padding: EdgeInsets.only(left: ScreenUtil.width/20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Row(
-              children: <Widget>[
-                OtherTagForm(content: user.tagListModel.tagTitleList[0],isTitle: true),
-                SizedBox(width: 10.0),
-                OtherTagForm(content: user.tagListModel.tagDetailList[0],isTitle: false),
-                SizedBox(width: 10.0),
-                OtherTagForm(content: user.tagListModel.tagTitleList[1],isTitle: true),
-                SizedBox(width: 10.0),
-                OtherTagForm(content: user.tagListModel.tagDetailList[1],isTitle: false)
-              ],
-            ),
-            SizedBox(height: 10.0),
-            Row(
-              children: <Widget>[
-                OtherTagForm(content: user.tagListModel.tagTitleList[2],isTitle: true),
-                SizedBox(width: 10.0),
-                OtherTagForm(content: user.tagListModel.tagDetailList[2],isTitle: false),
-                SizedBox(width: 10.0),
-                OtherTagForm(content: user.tagListModel.tagTitleList[3],isTitle: true),
-                SizedBox(width: 10.0),
-                OtherTagForm(content: user.tagListModel.tagDetailList[3],isTitle: false)
-              ],
-            ),
-            SizedBox(height: 10.0),
-            Row(
-              children: <Widget>[
-                OtherTagForm(content: user.tagListModel.tagTitleList[4],isTitle: true),
-                SizedBox(width: 10.0),
-                OtherTagForm(content: user.tagListModel.tagTitleList[4],isTitle: false)
-              ],
-            )
-          ],
-        )
-      ),
-    );
-  }
-}
-
-class OtherFakeProfileForm extends StatelessWidget {
-
-  final String title;
-  final String detail;
-
-  OtherFakeProfileForm({
-    @required this.title,
-    @required this.detail
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return RichText(
-      text: TextSpan(
-        text: '$title  ',
-        style: TextStyle(
-          color: Colors.black,
-          fontWeight: FontWeight.bold,
-          fontSize: 20.0
-        ),
-        children: [TextSpan(
-          text: detail,
-          style: TextStyle(color: Colors.white)
-        )]
-      )
-    );
-  }
-}
-
-class OtherRealProfileForm extends StatelessWidget {
-
-  final String title;
-  final String detail;
-
-  OtherRealProfileForm({
-    @required this.title,
-    @required this.detail
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20.0,vertical: 10.0),
-      child: Row(
-        children: <Widget>[
-          Text(
-            '*'+title,
-            style: TextStyle(
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
-              fontSize: 15.0
-            ),
-          ),
-          Spacer(),
-          Text(
-            detail,
-            style: TextStyle(
-              fontSize: 15.0
-            ),
-          )
-        ],
-      ),
-    );
-  }
-}
-
-class OtherTagForm extends StatelessWidget {
-  final String content;
-  final bool isTitle;
-  OtherTagForm({@required this.content, @required this.isTitle});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8.0,vertical: 5.0),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15.0),
-        border: Border.all(
-          color: isTitle ? primaryBlue : primaryGreen,
-          width: 3.0
-        )
-      ),
-      child: Text(
-        '# $content'
-      ),
-    );
   }
 }

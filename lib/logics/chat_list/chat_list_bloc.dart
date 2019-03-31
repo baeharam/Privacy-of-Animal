@@ -11,20 +11,24 @@ class ChatListBloc extends BlocEventStateBase<ChatListEvent,ChatListState> {
   @override
   Stream<ChatListState> eventHandler(ChatListEvent event, ChatListState currentState) async*{
 
+    if(event is ChatListEventStateClear) {
+      yield ChatListState();
+    }
+
+    if(event is ChatListEventRefresh) {
+      yield ChatListState.refresh();
+    }
+
     if(event is ChatListEventDeleteChatRoom) {
       try {
         yield ChatListState.deleteLoading();
         await _api.deleteChatRoom(event.chatRoomID);
+        _api.deleteChatHistory(event.friends);
         yield ChatListState.deleteSucceeded();
       } catch(exception) {
         print('채팅삭제 실패: ${exception.toString()}');
         yield ChatListState.deleteFailed();
       }
-    }
-
-    if(event is ChatListEventFriendsDeleted) {
-      _api.deleteChatHistory(event.friends);
-      yield ChatListState.friendsDeleted();
     }
     
     if(event is ChatListEventNew) {

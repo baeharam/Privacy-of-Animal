@@ -36,6 +36,22 @@ class NotificationHelper {
     );
   }
 
+  Future<void> showChatNotification(String nickName, String content) async {
+    var android =AndroidNotificationDetails(
+      'Chat Notification ID',
+      'Chat Notification NAME',
+      'Chat Notification',
+      priority: Priority.High, importance: Importance.Max
+    );
+    var iOS =IOSNotificationDetails();
+    var platform =NotificationDetails(android,iOS);
+
+    await _flutterLocalNotificationsPlugin.show(
+      0, nickName,content,platform,
+      payload: '채팅'
+    );
+  }
+
   // 상대방이 친구신청을 수락했을 시 알림
   Future<void> showFriendsNotification(String nickName) async {
     var android =AndroidNotificationDetails(
@@ -54,7 +70,7 @@ class NotificationHelper {
   }
 
   // 상대방이 친구 신청 보냈을 시 알림
-  Future<void> showFriendsRequestNotification(String nickName) async {
+  Future<void> showRequestNotification(String nickName) async {
     var android =AndroidNotificationDetails(
       'FriendsRequest Notification ID',
       'FriendsRequest Notification NAME',

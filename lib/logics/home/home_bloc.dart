@@ -6,7 +6,7 @@ class HomeBloc extends BlocEventStateBase<HomeEvent,HomeState> {
   static final HomeAPI _api = HomeAPI();
 
   @override
-    HomeState get initialState => HomeState.loading(3);
+    HomeState get initialState => HomeState.initial();
 
   @override
   Stream<HomeState> eventHandler(HomeEvent event, HomeState currentState) async*{
@@ -21,14 +21,20 @@ class HomeBloc extends BlocEventStateBase<HomeEvent,HomeState> {
         yield HomeState.friend(event.index);
       }
       else if(event.index==TAB.PROFILE.index){
-        yield HomeState.loading(event.index);
-        try {
-          await _api.fetchUserData();
-          yield HomeState.profile(event.index);
-        } catch(exception) {
-          print('사용자 데이터 가져오기 에러: ${exception.toString()}');
-          yield HomeState.failed();
-        }
+        yield HomeState.profile(event.index);
+      }
+    }
+    
+    if(event is HomeEventFetchAll) {
+      yield HomeState.fetchLoading();
+      try {
+        await _api.fetchProfileData();
+        await _api.fetchFriendsData();
+        await _api.fetchChatRoomListData();
+        yield HomeState.profile(TAB.PROFILE.index);
+      } catch(exception) {
+        print("데이터 가져오기 에러: ${exception.toString()}");
+        yield HomeState.fetchFailed();
       }
     }
   }

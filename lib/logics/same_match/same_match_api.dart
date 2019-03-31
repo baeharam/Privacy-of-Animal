@@ -4,12 +4,63 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
+import 'package:privacy_of_animal/logics/server_api.dart';
 import 'package:privacy_of_animal/models/same_match_model.dart';
 import 'package:privacy_of_animal/models/user_model.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
 
 class SameMatchAPI {
+
+  bool _isInSameMatchScreen = false;
+
+  void enterOtherProfileScreen() => _isInSameMatchScreen = true;
+  void getOutOtherProfileScreen() => _isInSameMatchScreen = false;
+
+  void connectToServer(String otherUserUID) {
+    if(!_isInSameMatchScreen) {
+      sl.get<ServerAPI>().connectRequestToStream(otherUserUID: otherUserUID);
+    }
+  }
+
+  Future<void> disconnectToServer() async{
+    if(!_isInSameMatchScreen) {
+      await sl.get<ServerAPI>().disconnectRequestToStream();
+    }
+  }
+
+  Future<void> sendRequest(String uid) async {
+    DocumentReference doc = 
+     sl.get<FirebaseAPI>().getFirestore()
+      .collection(firestoreUsersCollection)
+      .document(uid)
+      .collection(firestoreFriendsSubCollection)
+      .document(sl.get<CurrentUser>().uid);
+
+    await sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async{
+      await tx.set(doc, {
+        firestoreFriendsField: false,
+        firestoreFriendsAccepted: false,
+        uidCol: sl.get<CurrentUser>().uid
+      });
+    });
+    sl.get<CurrentUser>().isRequestTo = true;
+  }
+
+  Future<void> cancelRequest(String receiver) async {
+    QuerySnapshot requestSnapshot = await sl.get<FirebaseAPI>().getFirestore()
+      .collection(firestoreUsersCollection)
+      .document(receiver)
+      .collection(firestoreFriendsSubCollection)
+      .where(firestoreFriendsField,isEqualTo: false)
+      .where(firestoreFriendsUID,isEqualTo: sl.get<CurrentUser>().uid)
+      .getDocuments();
+
+    await sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async {
+      await tx.delete(requestSnapshot.documents[0].reference);
+    });
+    sl.get<CurrentUser>().isRequestTo = false;
+  }
 
   // 전체 사용자 중에서 관심사가 가장 잘 맞는 애 선정해서 넘겨주기
   Future<SameMatchModel> findUser() async {
@@ -18,8 +69,11 @@ class SameMatchAPI {
 
     // 친구 목록 받아오기
     QuerySnapshot friendsSnapshot = await sl.get<FirebaseAPI>().getFirestore()
-      .collection(firestoreUsersCollection).document(currentUser.uid)
-      .collection(firestoreFriendsSubCollection).where(firestoreFriendsField,isEqualTo: true).getDocuments();
+      .collection(firestoreUsersCollection)
+      .document(currentUser.uid)
+      .collection(firestoreFriendsSubCollection)
+      .where(firestoreFriendsField,isEqualTo: true)
+      .getDocuments();
     List<String> friends = List<String>();
     for(DocumentSnapshot friendsDoc in friendsSnapshot.documents){
       friends.add(friendsDoc.documentID);
@@ -48,7 +102,7 @@ class SameMatchAPI {
       /// [4. 친구신청을 받은 경우의 사람]
       
       bool isRequestingUser = false;
-      for(UserModel userModel in sl.get<CurrentUser>().friendsRequestList) {
+      for(UserModel userModel in sl.get<CurrentUser>().requestFromList) {
         if(userModel.uid.compareTo(user.documentID)==0){
           isRequestingUser = true;
           break;

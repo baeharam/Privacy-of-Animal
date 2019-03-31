@@ -4,9 +4,15 @@ import 'package:privacy_of_animal/models/user_model.dart';
 class FriendsState extends BlocState {
   final bool isInitial;
 
-  final bool isFriendsFetchLoading;
-  final bool isFriendsFetchSucceeded;
-  final bool isFriendsFetchFailed;
+  final bool isFriendsRefreshLoading;
+  final bool isFriendsIncreased;
+  final bool isFriendsDecreased;
+  final bool isFriendsRefreshFailed;
+
+  final bool isRequestRefreshLoading;
+  final bool isRequestIncreased;
+  final bool isRequestDecreased;
+  final bool isRequestRefreshFailed;
   
   final bool isFriendsChatLoading;
   final bool isFriendsChatSucceeded;
@@ -15,10 +21,6 @@ class FriendsState extends BlocState {
   final bool isFriendsBlockLoading;
   final bool isFriendsBlockSucceeded;
   final bool isFriendsBlockFailed;
-
-  final bool isFriendsRequestFetchLoading;
-  final bool isFriendsRequestFetchSucceeded;
-  final bool isFriendsRequestFetchFailed;
 
   final bool isFriendsAcceptLoading;
   final bool isFriendsAcceptSucceeded;
@@ -39,9 +41,10 @@ class FriendsState extends BlocState {
   FriendsState({
     this.isInitial: false,
 
-    this.isFriendsFetchLoading: false,
-    this.isFriendsFetchSucceeded: false,
-    this.isFriendsFetchFailed: false,
+    this.isFriendsRefreshLoading: false,
+    this.isFriendsIncreased: false,
+    this.isFriendsDecreased: false,
+    this.isFriendsRefreshFailed: false,
     
     this.isFriendsChatLoading: false,
     this.isFriendsChatSucceeded: false,
@@ -51,9 +54,10 @@ class FriendsState extends BlocState {
     this.isFriendsBlockSucceeded: false,
     this.isFriendsBlockFailed: false,
 
-    this.isFriendsRequestFetchLoading: false,
-    this.isFriendsRequestFetchSucceeded: false,
-    this.isFriendsRequestFetchFailed: false,
+    this.isRequestRefreshLoading: false,
+    this.isRequestIncreased: false,
+    this.isRequestDecreased: false,
+    this.isRequestRefreshFailed: false,
 
     this.isFriendsAcceptLoading: false,
     this.isFriendsAcceptSucceeded: false,
@@ -78,9 +82,15 @@ class FriendsState extends BlocState {
     );
   }
   
-  factory FriendsState.friendsFetchLoading()  => FriendsState(isFriendsFetchLoading: true);
-  factory FriendsState.friendsFetchSuceeded()  => FriendsState(isFriendsFetchSucceeded: true);
-  factory FriendsState.friendsFetchFailed()  => FriendsState(isFriendsFetchFailed: true);
+  factory FriendsState.friendsRefreshLoading() => FriendsState(isFriendsRefreshLoading: true);
+  factory FriendsState.friendsIncreased() => FriendsState(isFriendsIncreased: true);
+  factory FriendsState.friendsDecreased() => FriendsState(isFriendsIncreased: true);
+  factory FriendsState.friendsRefreshFailed() => FriendsState(isFriendsRefreshFailed: true);
+
+  factory FriendsState.requestRefreshLoading() => FriendsState(isRequestRefreshLoading: true);
+  factory FriendsState.requestIncreased() => FriendsState(isRequestIncreased: true);
+  factory FriendsState.requestDecreased() => FriendsState(isRequestDecreased: true);
+  factory FriendsState.requestRefreshFailed() => FriendsState(isRequestRefreshFailed: true);
 
   factory FriendsState.friendsChatLoading() => FriendsState(isFriendsChatLoading: true);
   factory FriendsState.friendsChatSucceeded(String chatRoomID, UserModel receiver) {
@@ -95,10 +105,6 @@ class FriendsState extends BlocState {
   factory FriendsState.friendsBlockLoading() => FriendsState(isFriendsBlockLoading: true);
   factory FriendsState.friendsBlockSucceeded() => FriendsState(isFriendsBlockSucceeded: true);
   factory FriendsState.friendsBlockFailed() => FriendsState(isFriendsBlockFailed: true);
-
-  factory FriendsState.friendsRequestFetchLoading() => FriendsState(isFriendsRequestFetchLoading: true);
-  factory FriendsState.friendsRequestFetchSucceeded() => FriendsState(isFriendsRequestFetchSucceeded: true);
-  factory FriendsState.friendsRequestFetchFailed() => FriendsState(isFriendsRequestFetchFailed: true);
 
   factory FriendsState.friendsAcceptLoading() => FriendsState(isFriendsAcceptLoading: true);
   factory FriendsState.friendsAcceptSucceeded() => FriendsState(isFriendsAcceptSucceeded: true);

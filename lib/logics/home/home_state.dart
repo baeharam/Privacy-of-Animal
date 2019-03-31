@@ -2,24 +2,36 @@
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state.dart';
 
 class HomeState extends BlocState {
+  final bool isInitial;
+
   final bool isMatchClicked;
   final bool isChatClicked;
   final bool isFriendClicked;
   final bool isProfileClicked;
-  final bool isFetchLoading;
-  final bool isFetchFailed;
+
+  final bool isDataFetchLoading;
+  final bool isDataFetchFailed;
 
   final int activeIndex;
 
   HomeState({
+    this.isInitial: false,
+
     this.isMatchClicked: false,
     this.isChatClicked: false,
     this.isFriendClicked: false,
     this.isProfileClicked: false,
-    this.isFetchLoading: false,
-    this.isFetchFailed: false,
+
+    this.isDataFetchLoading: false,
+    this.isDataFetchFailed: false,
+
     this.activeIndex: 0
   });
+
+  factory HomeState.initial() => HomeState(isInitial: true);
+
+  factory HomeState.fetchLoading() => HomeState(isDataFetchLoading: true);
+  factory HomeState.fetchFailed() => HomeState(isDataFetchFailed: true);
 
   factory HomeState.match(int index) {
     return HomeState(
@@ -48,13 +60,4 @@ class HomeState extends BlocState {
       activeIndex: index
     );
   }
-
-  factory HomeState.loading(int index) {
-    return HomeState(
-      isFetchLoading: true,
-      activeIndex: index
-    );
-  }
-
-  factory HomeState.failed() => HomeState(isFetchFailed: true);
 }

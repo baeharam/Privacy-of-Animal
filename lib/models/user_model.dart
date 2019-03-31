@@ -11,6 +11,13 @@ class UserModel {
   FakeProfileModel fakeProfileModel;
   TagListModel tagListModel;
 
+  UserModel() {
+    uid = '';
+    realProfileModel = RealProfileModel();
+    fakeProfileModel = FakeProfileModel();
+    tagListModel = TagListModel(tagTitleList: [], tagDetailList: []);
+  }
+
   UserModel.fromSnapshot({@required DocumentSnapshot snapshot}) {
     uid = snapshot.documentID;
     realProfileModel = RealProfileModel.fromSnapshot(snapshot: snapshot);

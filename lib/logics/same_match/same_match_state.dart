@@ -15,6 +15,11 @@ class SameMatchState extends BlocState {
   final bool isCancelSucceeded;
   final bool isCancelFailed;
 
+  final bool isRefreshLoading;
+  final bool isRefreshFriends;
+  final bool isRefreshRequestFrom;
+  final bool isRefreshRequestTo;
+
   final SameMatchModel sameMatchModel;
 
   SameMatchState({
@@ -29,53 +34,35 @@ class SameMatchState extends BlocState {
     this.isCancelSucceeded: false,
     this.isCancelFailed: false,
 
+    this.isRefreshLoading: false,
+    this.isRefreshFriends: false,
+    this.isRefreshRequestFrom: false,
+    this.isRefreshRequestTo: false,
+
     this.sameMatchModel
   });
 
-  factory SameMatchState.initial() {
-    return SameMatchState(
-      isInitial: true
-    );
-  }
+  factory SameMatchState.initial() => SameMatchState(isInitial: true);
 
-  factory SameMatchState.findLoading() {
-    return SameMatchState(
-      isFindLoading: true
-    );
-  }
-
+  factory SameMatchState.findLoading() => SameMatchState(isFindLoading: true);
   factory SameMatchState.findSucceeded(SameMatchModel sameMatchModel) {
     return SameMatchState(
       isFindSucceeded: true,
       sameMatchModel: sameMatchModel
     );
   }
+  factory SameMatchState.findFailed() => SameMatchState(isFindFailed: true);
 
-  factory SameMatchState.findFailed() {
-    return SameMatchState(
-      isFindFailed: true
-    );
-  }
-
-  factory SameMatchState.requestLoading() {
-    return SameMatchState(
-      isRequestLoading: true
-    );
-  }
-
-  factory SameMatchState.requestSucceeded() {
-    return SameMatchState(
-      isRequestSucceeded: true
-    );
-  }
-
-  factory SameMatchState.requestFailed() {
-    return SameMatchState(
-      isRequestFailed: true
-    );
-  }
+  factory SameMatchState.requestLoading() => SameMatchState(isRequestLoading: true);
+  factory SameMatchState.requestSucceeded() => SameMatchState(isRequestSucceeded: true);
+  factory SameMatchState.requestFailed() => SameMatchState(isRequestFailed: true);
 
   factory SameMatchState.cancelLoading() => SameMatchState(isCancelLoading: true);
   factory SameMatchState.cancelSucceeded() => SameMatchState(isCancelSucceeded: true);
   factory SameMatchState.cancelFailed() => SameMatchState(isCancelFailed: true);
+
+  factory SameMatchState.refreshLoading() => SameMatchState(isRequestLoading: true);
+  factory SameMatchState.refreshFriends() => SameMatchState(isRefreshFriends: true);
+  factory SameMatchState.refreshRequestFrom() => SameMatchState(isRefreshRequestFrom: true);
+  factory SameMatchState.refreshRequestTo() => SameMatchState(isRefreshRequestTo: true);
 }
