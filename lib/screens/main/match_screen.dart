@@ -18,22 +18,6 @@ class MatchScreen extends StatefulWidget {
 class _MatchScreenState extends State<MatchScreen> {
 
   final TagListModel tagListModel = sl.get<CurrentUser>().tagListModel;
-  bool isAnimating = false;
-  String _currentAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    _currentAnimation = 'rolling';
-  }
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-    dispose();
-  }
-
 
   @override
   Widget build(BuildContext context) {
@@ -55,31 +39,81 @@ class _MatchScreenState extends State<MatchScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Expanded(
-                  child: FlareActor(
-                    "assets/images/components/roulette.flr",
-                    alignment: Alignment.center,
-                    fit: BoxFit.fitHeight,
-                    animation: isAnimating ? _currentAnimation : null,
-                    callback: (string){
-                      isAnimating = false;
-                      debugPrint(string);
-                    },
-                  )),
-              FlatButton(
-                child: Text('Rolling'),
-                onPressed: () => setState((){
-                  _currentAnimation = 'rolling';
-                  isAnimating = true;
-                }),
+              Card(
+                child:Container(
+                  width: ScreenUtil.width*0.8,
+                  child: Stack(
+                    // mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Positioned(
+                        left: ScreenUtil.width*0.3,
+                        child: Container(
+                          height: ScreenUtil.width*0.28,
+                          child: FlareActor(
+                            "assets/images/components/magnet.flr",
+                            alignment:Alignment.center,
+                            fit: BoxFit.fitHeight,
+                            animation: 'Move',
+                          ),
+                        ),
+                      ),
+                      ListTile(
+                        title: Text("상대 추천"),)
+                    ],
+                  ),
+                ),
               ),
-              FlatButton(
-                child: Text('darting'),
-                onPressed: () => setState((){
-                  _currentAnimation = 'darting';
-                  isAnimating = true;
-                }),
-              )
+              Card(
+                child:Container(
+                  width: ScreenUtil.width*0.8,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Container(
+                        height: ScreenUtil.width*0.28,
+                        child: FlareActor(
+                          "assets/images/components/magnet.flr",
+                          alignment:Alignment.center,
+                          fit: BoxFit.fitHeight,
+                          animation: 'Move',
+                        ),
+                      ),
+                      ListTile(
+                        title: Text("상대 추천"),)
+                    ],
+                  ),
+                ),
+              ),
+              Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                child: Container(
+                  width: ScreenUtil.width*0.8,
+                  child: Row(
+                    // mainAxisSize: MainAxisSize.min,
+                    // mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Container(
+                        padding: EdgeInsets.only(left: 20.0),
+                        child: Text("랜덤 추천")
+                      ),
+                      Expanded(
+                        child: Container(
+                          height: ScreenUtil.width*0.2,
+                          // width: ScreenUtil.width*0.8,
+                          child: FlareActor(
+                            "assets/images/components/roulette dart.flr",
+                            alignment: Alignment.center,
+                            fit: BoxFit.fitHeight,
+                            animation: 'rolling lr',
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ],
           ),
         )
@@ -93,9 +127,9 @@ class _MatchScreenState extends State<MatchScreen> {
 //              width: ScreenUtil.width * .8,
 //              height: ScreenUtil.width * .8,
 //            ),
-////            SizedBox(
-////              height: ScreenUtil.height * 0.001,
-////            ),
+//            SizedBox(
+//              height: ScreenUtil.height * 0.001,
+//            ),
 //            Row(
 //              mainAxisAlignment: MainAxisAlignment.center,
 //              children: <Widget>[
