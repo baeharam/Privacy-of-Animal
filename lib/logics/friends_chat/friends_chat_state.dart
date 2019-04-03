@@ -11,6 +11,10 @@ class FriendsChatState extends BlocState {
   final bool isNotificationToggleSucceeded;
   final bool isNotificationToggleFalied;
 
+  final bool isChatFetchLoading;
+  final bool isChatFetchSucceeded;
+  final bool isChatFetchFailed;
+
   FriendsChatState({
     this.isInitial: false,
     this.isSendSucceeded: false,
@@ -20,7 +24,11 @@ class FriendsChatState extends BlocState {
     this.isMessageReceived: false,
 
     this.isNotificationToggleSucceeded: false,
-    this.isNotificationToggleFalied: false
+    this.isNotificationToggleFalied: false,
+
+    this.isChatFetchLoading: false,
+    this.isChatFetchSucceeded: false,
+    this.isChatFetchFailed: false
   });
 
   factory FriendsChatState.initial() => FriendsChatState(isInitial: true);
@@ -30,6 +38,10 @@ class FriendsChatState extends BlocState {
 
   factory FriendsChatState.myMessage() => FriendsChatState(isMyMessage: true);
   factory FriendsChatState.messageReceived() => FriendsChatState(isMessageReceived: true);
+
+  factory FriendsChatState.chatFetchLoading() => FriendsChatState(isChatFetchLoading: true);
+  factory FriendsChatState.chatFetchSucceeded() => FriendsChatState(isChatFetchSucceeded: true);
+  factory FriendsChatState.chatFetchFailed() => FriendsChatState(isChatFetchFailed: true);
 
   factory FriendsChatState.notificationToggleSucceeded() 
     => FriendsChatState(isNotificationToggleSucceeded: true);

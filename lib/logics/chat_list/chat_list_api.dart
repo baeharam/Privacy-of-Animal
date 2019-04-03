@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/models/chat_list_model.dart';
+import 'package:privacy_of_animal/models/user_model.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
 
@@ -15,8 +16,19 @@ class ChatListAPI {
   }
 
   /// [채팅 추가]
-  void addChatHistory(ChatListModel chat) {
-    sl.get<CurrentUser>().chatListHistory[chat.chatRoomID] = chat;
+  void addChatHistory(UserModel otherUser, String chatRoomID, List<DocumentChange> chatList) {
+
+    ChatListModel chatListModel = new ChatListModel();
+
+    DocumentSnapshot chatListSnapshot = chatList[0].document;
+    chatListModel.chatRoomID = chatRoomID;
+    chatListModel.nickName = otherUser.fakeProfileModel.nickName;
+    chatListModel.user = otherUser;
+    chatListModel.profileImage = otherUser.fakeProfileModel.animalImage;
+    chatListModel.lastMessage = chatListSnapshot.data[firestoreChatContentField];
+    chatListModel.lastTimestamp = chatListSnapshot.data[firestoreChatTimestampField];
+
+    sl.get<CurrentUser>().chatListHistory[otherUser.uid] = chatListModel;
   }
 
   /// [채팅 삭제]

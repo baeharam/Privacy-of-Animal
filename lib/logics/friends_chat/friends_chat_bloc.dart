@@ -17,6 +17,17 @@ class FriendsChatBloc extends BlocEventStateBase<FriendsChatEvent,FriendsChatSta
       yield FriendsChatState();
     }
 
+    if(event is FriendsChatEvnetFirstChatFetch) {
+      try {
+        yield FriendsChatState.chatFetchLoading();
+        await _api.fetchFirstChat(event.otherUserUID, event.chat);
+        yield FriendsChatState.chatFetchSucceeded();
+      } catch(exception) {
+        print("채팅 데이터 가져오기 실패: ${exception.toString()}");
+        yield FriendsChatState.chatFetchFailed();
+      }
+    }
+
     if(event is FriendsChatEventMessageRecieved) {
       _api.updateChatHistory(event.otherUserUID, event.snapshot);
       yield FriendsChatState.messageReceived();

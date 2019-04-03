@@ -43,3 +43,9 @@ class FriendsChatEventNotification extends FriendsChatEvent {
   final String chatRoomID;
   FriendsChatEventNotification({@required this.chatRoomID});
 }
+
+class FriendsChatEvnetFirstChatFetch extends FriendsChatEvent {
+  final String otherUserUID;
+  final List<DocumentSnapshot> chat;
+  FriendsChatEvnetFirstChatFetch({@required this.otherUserUID, @required this.chat});
+}

@@ -112,18 +112,12 @@ class FriendsBloc extends BlocEventStateBase<FriendsEvent,FriendsState>
     if(event is FriendsEventBlockFromLocal) {
       try {
         yield FriendsState.friendsBlockLoading();
-        _api.blockFriendsForLocal(event.userToBlock);
         await _api.blockFriendsForServer(event.userToBlock);
         yield FriendsState.friendsBlockSucceeded();
       } catch(exception) {
         debugPrint('친구차단하기 실패: ${exception.toString()}');
         yield FriendsState.friendsBlockFailed();
       }
-    }
-
-    if(event is FriendsEventBlockFromServer) {
-      _api.blockFriendsForLocal(event.userToBlock);
-      yield FriendsState.friendsBlockSucceeded();
     }
 
     /// [친구 수락]
@@ -139,18 +133,12 @@ class FriendsBloc extends BlocEventStateBase<FriendsEvent,FriendsState>
       }
     }
 
-    if(event is FriendsEventAcceptFromServer) {
-      _api.acceptFriendsForLocal(event.userToAccept);
-      yield FriendsState.friendsAcceptSucceeded();
-    }
-
     /// [친구신청 삭제]
     /// 서버와 로컬에서 전부 삭제
     if(event is FriendsEventRejectFromLocal) {
       try {
         yield FriendsState.friendsRejectLoading();
         await _api.rejectFriendsForServer(event.userToReject);
-        _api.rejectFriendsForLocal(event.userToReject);
         yield FriendsState.friendsRejectSucceeded();
       } catch(exception) {
         debugPrint('친구삭제하기 실패: ${exception.toString()}');

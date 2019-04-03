@@ -256,7 +256,7 @@ class ServerAPI {
 
     String chatRoomID = await _getChatRoomID(otherUser.uid);
     Timestamp outTimestamp = await _getChatRoomOutTimestamp(chatRoomID);
-    _isFirstChatHistoryFetch[chatRoomID] ??= true;
+    _isFirstChatHistoryFetch[otherUser.uid] ??= true;
 
     _chatRoomListServer[otherUser.uid] = Observable(
       _firestore
@@ -269,11 +269,9 @@ class ServerAPI {
     );
 
     _chatRoomListSubscriptions[otherUser.uid] = _chatRoomListServer[otherUser.uid].listen((snapshot){
-      if(snapshot.documents.isNotEmpty) {
-        _updateChatListHistory(otherUser, chatRoomID, snapshot);
-      }
       if(snapshot.documentChanges.isNotEmpty) {
-        _updateChatHistory(otherUser, chatRoomID, snapshot);
+        _updateChatHistory(otherUser.uid, snapshot);
+        _updateChatListHistory(otherUser, chatRoomID, snapshot);
       }
     });
   }
@@ -286,23 +284,22 @@ class ServerAPI {
     _chatRoomListServer.remove(otherUserUID);
   }
 
-  void _updateChatHistory(UserModel otherUser, String chatRoomID, QuerySnapshot snapshot) {
-    debugPrint('Call _updateChatHistory($otherUser,$chatRoomID,$snapshot)');
+  void _updateChatHistory(String otherUserUID, QuerySnapshot snapshot) {
+    debugPrint('Call _updateChatHistory($otherUserUID,$snapshot)');
 
     String from = snapshot.documentChanges[0].document.data[firestoreChatFromField];
-    if(_isFirstChatHistoryFetch[chatRoomID] || from==otherUser.uid) {
+
+    if(_isFirstChatHistoryFetch[otherUserUID]) {
+      _isFirstChatHistoryFetch[otherUserUID] = false;
+      _friendsChatBloc.emitEvent(FriendsChatEvnetFirstChatFetch(
+        otherUserUID: otherUserUID,
+        chat: snapshot.documents
+      ));
+    } else if(from!=sl.get<CurrentUser>().uid) {
       _friendsChatBloc.emitEvent(FriendsChatEventMessageRecieved(
         snapshot: snapshot,
-        otherUserUID: otherUser.uid
+        otherUserUID: otherUserUID
       ));
-      if(!_isFirstChatHistoryFetch[chatRoomID] 
-        && sl.get<CurrentUser>().chatRoomNotification[chatRoomID]
-        && chatRoomID!=sl.get<CurrentUser>().currentChatRoomID){
-          /// TODO 새로운 채팅 알림
-      }
-      if(_isFirstChatHistoryFetch[chatRoomID]) {
-        _isFirstChatHistoryFetch[chatRoomID] = false;
-      }
     }
   }
 
@@ -315,15 +312,10 @@ class ServerAPI {
   void _updateChatListHistory(UserModel otherUser, String chatRoomID, QuerySnapshot snapshot) {
     debugPrint('Call _updateChatListHistory($otherUser,$chatRoomID,$snapshot)');
 
-    _chatListBloc.emitEvent(ChatListEventNew(newMessage: 
-      ChatListModel(
-        chatRoomID: chatRoomID,
-        profileImage: otherUser.fakeProfileModel.animalImage,
-        nickName: otherUser.fakeProfileModel.nickName,
-        lastTimestamp: snapshot.documents[0].data[firestoreChatTimestampField],
-        lastMessage: snapshot.documents[0].data[firestoreChatContentField],
-        user: otherUser
-      )
+    _chatListBloc.emitEvent(ChatListEventNew(
+      newMessages: snapshot.documentChanges,
+      otherUser: otherUser,
+      chatRoomID: chatRoomID
     ));
   }
 
