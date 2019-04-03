@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/database_helper.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
@@ -29,9 +30,40 @@ class FriendsAPI {
     sl.get<CurrentUser>().friendsNotification = value;
   }
 
+  /// [처음 친구 업데이트]
+  Future<void> fetchFirstFriends(List<DocumentSnapshot> friendsList) async {
+    debugPrint("Call fetchFirstFriends");
+
+    for(DocumentSnapshot friends in friendsList) {
+      DocumentSnapshot friendsSnapshot = await sl.get<FirebaseAPI>().getFirestore()
+        .collection(firestoreUsersCollection)
+        .document(friends.documentID)
+        .get();
+      UserModel friendsUserModel = UserModel.fromSnapshot(snapshot: friendsSnapshot);
+      sl.get<CurrentUser>().friendsList.add(friendsUserModel);
+    }
+  }
+
+  /// [처음 친구신청 업데이트]
+  Future<void> fetchFirstRequest(List<DocumentSnapshot> requestList) async {
+    debugPrint("Call fetchFirstRequest");
+
+    for(DocumentSnapshot request in requestList) {
+      DocumentSnapshot requestSnapshot = await sl.get<FirebaseAPI>().getFirestore()
+        .collection(firestoreUsersCollection)
+        .document(request.documentID)
+        .get();
+      UserModel requestUserModel = UserModel.fromSnapshot(snapshot: requestSnapshot);
+      sl.get<CurrentUser>().requestFromList.add(requestUserModel);
+    }
+  }
+
   /// [친구 증가]
   Future<void> fetchIncreasedFriends(List<DocumentChange> newFriendsList) async {
+    debugPrint("Call fetchIncreasedFriends");
+
     for(DocumentChange newFriends in newFriendsList) {
+      debugPrint("${newFriends.document.documentID}, IsAccepted: ${newFriends.document.data[firestoreFriendsAccepted]}");
       DocumentSnapshot newFriendsSnapshot = await sl.get<FirebaseAPI>().getFirestore()
         .collection(firestoreUsersCollection)
         .document(newFriends.document.documentID)
@@ -39,11 +71,15 @@ class FriendsAPI {
       UserModel newFriendsUserModel =UserModel.fromSnapshot(snapshot: newFriendsSnapshot);
       sl.get<CurrentUser>().friendsList.add(newFriendsUserModel);
       _updateOtherProfileFriends(newFriendsUserModel.uid);
-      _notifyingFriends ??=newFriendsUserModel;
+      if(newFriends.document.data[firestoreFriendsAccepted]) {
+        _notifyingFriends ??= newFriendsUserModel;
+      }
     }
   }
 
   void _updateOtherProfileFriends(String otherUserUID) {
+    debugPrint("Call _updateOtherProfileFriends");
+
     if(otherUserUID == sl.get<CurrentUser>().currentProfileUID) {
       sl.get<SameMatchBloc>().emitEvent(SameMatchEventRefreshFriends());
       sl.get<OtherProfileBloc>().emitEvent(OtherProfileEventRefreshFriends());
@@ -51,14 +87,18 @@ class FriendsAPI {
   }
 
   void notifyNewFriends() {
-    if(sl.get<CurrentUser>().uid!=_notifyingFriends.uid &&
-       sl.get<CurrentUser>().friendsNotification) {
+    debugPrint("Call notifyNewFriends");
+
+    if(_notifyingFriends!=null && sl.get<CurrentUser>().friendsNotification) {
       sl.get<NotificationHelper>().showFriendsNotification(_notifyingFriends.fakeProfileModel.nickName);
+      _notifyingFriends = null;
     }
   }
 
   /// [친구 감소]
   Future<void> fetchDecreasedFriends(List<DocumentChange> deletedFriendsList) async {
+    debugPrint("Call fetchDecreasedFriends");
+
     for(DocumentChange deletedFriends in deletedFriendsList) {
       String deletedFriendsUID = deletedFriends.document.documentID;
       sl.get<CurrentUser>().friendsList.removeWhere((friendsModel) => friendsModel.uid==deletedFriendsUID);
@@ -68,6 +108,8 @@ class FriendsAPI {
 
   /// [받은 친구신청 증가]
   Future<void> fetchIncreasedRequestFrom(List<DocumentChange> newRequestFromList) async {
+    debugPrint("Call fetchIncreasedRequestFrom");
+
     for(DocumentChange newRequestFrom in newRequestFromList) {
       DocumentSnapshot newRequestFromSnapshot = await sl.get<FirebaseAPI>().getFirestore()
         .collection(firestoreUsersCollection)
@@ -81,6 +123,8 @@ class FriendsAPI {
   }
 
   void _updateOtherProfileRequest(String otherUserUID) {
+    debugPrint("Call _updateOtherProfileRequest");
+
     if(otherUserUID == sl.get<CurrentUser>().currentProfileUID) {
       sl.get<SameMatchBloc>().emitEvent(SameMatchEventRefreshRequestFrom());
       sl.get<OtherProfileBloc>().emitEvent(OtherProfileEventRefreshRequestFrom());
@@ -88,13 +132,18 @@ class FriendsAPI {
   }
 
   void notifyNewRequestFrom() {
-    if(sl.get<CurrentUser>().friendsNotification) {
+    debugPrint("Call notifyNewRequestFrom");
+
+    if(sl.get<CurrentUser>().friendsNotification && _notifyingRequestFrom!=null) {
       sl.get<NotificationHelper>().showRequestNotification(_notifyingRequestFrom.fakeProfileModel.nickName);
+      _notifyingRequestFrom = null;
     }
   }
 
   /// [친구신청 감소]
   Future<void> fetchDecreasedRequestFrom(List<DocumentChange> deletedRequestFromList) async {
+    debugPrint("Call fetchDecreasedRequestFrom");
+
     for(DocumentChange deletedRequestFrom in deletedRequestFromList) {
       String deletedRequestFromUID = deletedRequestFrom.document.documentID;
       sl.get<CurrentUser>().requestFromList.removeWhere((requestFromModel) => requestFromModel.uid==deletedRequestFromUID);
@@ -105,6 +154,7 @@ class FriendsAPI {
 
   /// [서버에서 친구 차단]
   Future<void> blockFriendsForServer(UserModel userToBlock) async {
+    debugPrint("Call blockFriendsForServer");
 
     DocumentReference myselfDoc = sl.get<FirebaseAPI>().getFirestore()
       .collection(firestoreUsersCollection)
@@ -146,6 +196,8 @@ class FriendsAPI {
 
   /// [로컬에서 친구 차단]
   void blockFriendsForLocal(UserModel userToBlock) {
+    debugPrint("Call blockFriendsForLocal");
+
     sl.get<CurrentUser>().friendsList.remove(userToBlock);
     sl.get<CurrentUser>().chatHistory.remove(userToBlock.uid);
     sl.get<CurrentUser>().chatListHistory.remove(userToBlock.uid);
@@ -154,6 +206,7 @@ class FriendsAPI {
 
   /// [서버에서 친구신청 수락]
   Future<void> acceptFriendsForServer(UserModel requestFromingUser) async {
+    debugPrint("Call acceptFriendsForServer");
 
     String currentUser = _uid;
 
@@ -202,6 +255,8 @@ class FriendsAPI {
 
   /// [로컬에서 친구신청 수락]
   Future<void> acceptFriendsForLocal(UserModel requestFromingUser) async{
+    debugPrint("Call acceptFriendsForLocal");
+
     SharedPreferences prefs = await sl.get<DatabaseHelper>().sharedPreferences;
     prefs.setBool(requestFromingUser.uid+chatNotification, true);
 
@@ -213,6 +268,8 @@ class FriendsAPI {
 
   /// [서버에서 친구신청 삭제]
   Future<void> rejectFriendsForServer(UserModel userToReject) async {
+    debugPrint("Call rejectFriendsForServer");
+
     DocumentReference doc = sl.get<FirebaseAPI>().getFirestore()
       .collection(firestoreUsersCollection)
       .document(_uid)
@@ -225,11 +282,15 @@ class FriendsAPI {
 
   /// [로컬에서 친구신청 삭제]
   void rejectFriendsForLocal(UserModel userToReject) {
+    debugPrint("Call rejectFriendsForLocal");
+
     sl.get<CurrentUser>().requestFromList.remove(userToReject);
   }
 
   /// [친구와 대화]
   Future<String> chatWithFriends(String userToChat) async {
+    debugPrint("Call chatWithFriends");
+
     String currentUser = _uid;
 
     QuerySnapshot snapshot = await sl.get<FirebaseAPI>().getFirestore()

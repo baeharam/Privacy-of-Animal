@@ -167,16 +167,14 @@ class ServerAPI {
             UserModel user = UserModel.fromSnapshot(snapshot: userSnapshot);
             await _connectChatRoom(otherUser: user);
           }
-          _friendsBloc.emitEvent(
-            FriendsEventFriendsIncreased(friends: snapshot.documentChanges)
-          );
+          _friendsBloc.emitEvent(FriendsEventFriendsIncreased(friends: snapshot.documentChanges));
         } 
         // 처음
         else {
           debugPrint('Initial Friends, Not Empty!!');
 
           _isFirstFriendsFetch = false;
-          _friendsBloc.emitEvent(FriendsEventFriendsIncreased(friends: snapshot.documentChanges));
+          _friendsBloc.emitEvent(FriendsEventFirstFriendsFetch(friends: snapshot.documents));
         }
       } else {
         debugPrint('Initial Friends, Empty!!');
@@ -231,7 +229,7 @@ class ServerAPI {
 
           _isFirstRequestFetch = false;
           _friendsBloc.emitEvent(
-            FriendsEventRequestIncreased(request: snapshot.documentChanges)
+            FriendsEventFirstRequestFetch(request: snapshot.documents)
           );
         }
       } 
@@ -240,7 +238,6 @@ class ServerAPI {
         debugPrint('Initial Requests, Empty!!');
 
         _isFirstRequestFetch = false;
-        _friendsBloc.emitEvent(FriendsEventRequestIncreased(request: snapshot.documentChanges));
       }
     });
   }

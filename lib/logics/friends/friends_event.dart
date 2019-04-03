@@ -7,6 +7,16 @@ abstract class FriendsEvent extends BlocEvent {}
 
 class FriendsEventStateClear extends FriendsEvent {}
 
+class FriendsEventFirstFriendsFetch extends FriendsEvent {
+  final List<DocumentSnapshot> friends;
+  FriendsEventFirstFriendsFetch({@required this.friends}); 
+}
+
+class FriendsEventFirstRequestFetch extends FriendsEvent {
+  final List<DocumentSnapshot> request;
+  FriendsEventFirstRequestFetch({@required this.request}); 
+}
+
 class FriendsEventFriendsIncreased extends FriendsEvent {
   final List<DocumentChange> friends;
   FriendsEventFriendsIncreased({@required this.friends});
