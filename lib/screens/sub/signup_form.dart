@@ -85,7 +85,6 @@ class _SignUpFormState extends State<SignUpForm> {
       physics: ScrollPhysics(),
       child: Container(
         width: ScreenUtil.width/1.3,
-        height: ScreenUtil.height*1.3,
         padding: EdgeInsets.only(bottom: 20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
