@@ -13,6 +13,7 @@ class ChatListAPI {
   /// [채팅 삭제]
   void deleteChatHistory(String user) {
     sl.get<CurrentUser>().chatListHistory.remove(user);
+    sl.get<CurrentUser>().chatHistory.remove(user);
   }
 
   /// [채팅 추가]

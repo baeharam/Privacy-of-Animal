@@ -218,17 +218,19 @@ class _FriendsChatScreenState extends State<FriendsChatScreen> {
               )
             ],
           ),
-          Container(
-            child: Text(
-              chat.content,
-              style: TextStyle(color: Colors.white),
+          Flexible(
+            child: Container(
+              child: Text(
+                chat.content,
+                style: TextStyle(color: Colors.white),
+              ),
+              padding: EdgeInsets.fromLTRB(15.0,10.0,15.0,10.0),
+              decoration: BoxDecoration(
+                color: Colors.black,
+                borderRadius: BorderRadius.circular(8.0)
+              ),
+              margin: EdgeInsets.only(left: 10.0)
             ),
-            padding: EdgeInsets.fromLTRB(15.0,10.0,15.0,10.0),
-            decoration: BoxDecoration(
-              color: Colors.black,
-              borderRadius: BorderRadius.circular(8.0)
-            ),
-            margin: EdgeInsets.only(left: 10.0)
           ),
           _isLastLeft(index) ?
           Container(
