@@ -15,9 +15,9 @@ class FriendsChatAPI {
     debugPrint("Call fetchFirstChat");
 
     sl.get<CurrentUser>().chatHistory[otherUserUID] ??= List<ChatModel>();
-
-    ChatModel chatModel = new ChatModel();
+    
     for(DocumentSnapshot chat in chatList) {
+      ChatModel chatModel = new ChatModel();
       chatModel.from = chat.data[firestoreChatFromField];
       chatModel.to = chat.data[firestoreChatToField];
       chatModel.content = chat.data[firestoreChatContentField];

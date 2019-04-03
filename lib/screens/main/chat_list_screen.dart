@@ -117,7 +117,14 @@ class _ChatListScreenState extends State<ChatListScreen> {
                             ],
                           ),
                           SizedBox(height: 10.0),
-                          Text(chatListModel.lastMessage)
+                          Container(
+                            width: ScreenUtil.width*0.5,
+                            child: Text(
+                              chatListModel.lastMessage,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          )
                         ],
                       ),
                       Spacer(),
