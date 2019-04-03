@@ -10,10 +10,10 @@ class ChatListModel {
   UserModel user;
 
   ChatListModel({
-    this.chatRoomID,
-    this.profileImage,
-    this.nickName,
-    this.lastMessage,
+    this.chatRoomID: '',
+    this.profileImage: '',
+    this.nickName: '',
+    this.lastMessage: '',
     this.lastTimestamp,
     this.user
   });

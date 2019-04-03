@@ -295,7 +295,7 @@ class ServerAPI {
         otherUserUID: otherUserUID,
         chat: snapshot.documents
       ));
-    } else if(from!=sl.get<CurrentUser>().uid) {
+    } else if(from==otherUserUID) {
       _friendsChatBloc.emitEvent(FriendsChatEventMessageRecieved(
         snapshot: snapshot,
         otherUserUID: otherUserUID

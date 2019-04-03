@@ -271,6 +271,9 @@ class FriendsAPI {
   Future<String> chatWithFriends(String userToChat) async {
     debugPrint("Call chatWithFriends");
 
+    sl.get<CurrentUser>().chatListHistory[userToChat] ??= ChatListModel();
+    sl.get<CurrentUser>().chatHistory[userToChat] ??= List<ChatModel>();
+
     if(sl.get<CurrentUser>().chatListHistory[userToChat].chatRoomID.isEmpty) {
       QuerySnapshot chatRoomSnapshot = await sl.get<FirebaseAPI>().getFirestore()
         .collection(firestoreFriendsMessageCollection)
