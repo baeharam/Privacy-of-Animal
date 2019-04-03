@@ -51,7 +51,8 @@ class FriendsAPI {
   }
 
   void notifyNewFriends() {
-    if(sl.get<CurrentUser>().friendsNotification) {
+    if(sl.get<CurrentUser>().uid!=_notifyingFriends.uid &&
+       sl.get<CurrentUser>().friendsNotification) {
       sl.get<NotificationHelper>().showFriendsNotification(_notifyingFriends.fakeProfileModel.nickName);
     }
   }
