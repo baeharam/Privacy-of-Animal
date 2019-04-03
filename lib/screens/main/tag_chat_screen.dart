@@ -68,7 +68,9 @@ class _TagChatScreenState extends State<TagChatScreen> {
             }
             if(state.isUserChatFinished && chatWidgets.length<maxChatNum) {
               chatWidgets.add(TagChatUser(message: state.userChat));
-              _tagChatBloc.emitEvent(TagChatEventStateClear());
+              if(!state.isProcessFinished) {
+                _tagChatBloc.emitEvent(TagChatEventStateClear());
+              }
             }
             if(state.isSubmitSucceeded) {
               StreamNavigator.pushReplacementNamed(context, routePhotoDecision);
