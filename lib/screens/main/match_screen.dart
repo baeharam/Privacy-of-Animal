@@ -8,6 +8,7 @@ import 'package:privacy_of_animal/resources/constants.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:flare_flutter/flare_actor.dart';
+import 'package:path_drawing/path_drawing.dart';
 
 
 class MatchScreen extends StatefulWidget {
@@ -37,83 +38,70 @@ class _MatchScreenState extends State<MatchScreen> {
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
+            // mainAxisSize: MainAxisSize.min,
             children: [
-              Card(
-                child:Container(
-                  width: ScreenUtil.width*0.8,
-                  child: Stack(
-                    // mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Positioned(
-                        left: ScreenUtil.width*0.3,
-                        child: Container(
-                          height: ScreenUtil.width*0.28,
-                          child: FlareActor(
-                            "assets/images/components/magnet.flr",
-                            alignment:Alignment.center,
-                            fit: BoxFit.fitHeight,
-                            animation: 'Move',
-                          ),
-                        ),
-                      ),
-                      ListTile(
-                        title: Text("상대 추천"),)
-                    ],
-                  ),
-                ),
+              // Card(
+              //   child: Container(
+              //     width: ScreenUtil.width*0.8,
+              //     child: Row(
+              //       mainAxisSize: MainAxisSize.min,
+              //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //       children: <Widget>[
+              //         Container(
+              //           decoration: BoxDecoration(
+              //             borderRadius: BorderRadius.circular(20.0),
+              //             color: primaryBeige
+              //           ),
+              //           height: ScreenUtil.width*0.20,
+              //           width: ScreenUtil.width*0.5,
+              //           child: FlareActor(
+              //             "assets/images/components/magnet.flr",
+              //             alignment:Alignment.center,
+              //             fit: BoxFit.fitWidth,
+              //             animation: 'Move',
+              //           ),
+              //         ),
+              //         Container(
+              //           width: ScreenUtil.width*0.2,
+              //           child: Text("상대추천"),
+              //         )
+              //       ],
+              //     ),
+              //   )
+              // ),
+              Image(
+                width: ScreenUtil.width*0.4,
+                height: ScreenUtil.height*0.3,
+                image: AssetImage('assets/images/components/icon.png'),
+                fit: BoxFit.fitWidth,
               ),
-              Card(
-                child:Container(
-                  width: ScreenUtil.width*0.8,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Container(
-                        height: ScreenUtil.width*0.28,
-                        child: FlareActor(
-                          "assets/images/components/magnet.flr",
-                          alignment:Alignment.center,
-                          fit: BoxFit.fitHeight,
-                          animation: 'Move',
-                        ),
-                      ),
-                      ListTile(
-                        title: Text("상대 추천"),)
-                    ],
-                  ),
+              
+              GestureDetector(
+                child: MatchingButton(
+                  title: "당신의 관심사로 상대추천",
+                  animation: 'Move',
+                  icon: "assets/images/components/magnet.flr",
+                  baseColor: primaryGreen,
+                  roundColor: primaryBeige,
                 ),
+                onTap: () {
+                  sl.get<SameMatchBloc>().emitEvent(SameMatchEventFindUser());
+                  Navigator.pushNamed(context, routeSameMatch);
+                },
               ),
-              Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
+              GestureDetector(
+                child: MatchingButton(
+                  title: "랜덤 추천",
+                  animation: "darting rl",
+                  icon: "assets/images/components/roulette dart.flr",
+                  baseColor: primaryPink,
+                  roundColor: primaryBeige,
                 ),
-                child: Container(
-                  width: ScreenUtil.width*0.8,
-                  child: Row(
-                    // mainAxisSize: MainAxisSize.min,
-                    // mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Container(
-                        padding: EdgeInsets.only(left: 20.0),
-                        child: Text("랜덤 추천")
-                      ),
-                      Expanded(
-                        child: Container(
-                          height: ScreenUtil.width*0.2,
-                          // width: ScreenUtil.width*0.8,
-                          child: FlareActor(
-                            "assets/images/components/roulette dart.flr",
-                            alignment: Alignment.center,
-                            fit: BoxFit.fitHeight,
-                            animation: 'rolling lr',
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+                onTap: () {
+                  sl.get<RandomLoadingBloc>().emitEvent(RandomLoadingEventMatchStart());
+                  Navigator.pushNamed(context, routeRandomLoading);
+                },
+              )
             ],
           ),
         )
@@ -233,6 +221,78 @@ class _MatchScreenState extends State<MatchScreen> {
   }
 }
 
+class MatchingButton extends StatelessWidget {
+  const MatchingButton({
+    Key key,
+    this.animation,
+    this.icon,
+    this.title,
+    this.baseColor,
+    this.roundColor
+  }) : super(key: key);
+
+  final String title;
+  final String icon;
+  final String animation;
+  final Color baseColor;
+  final Color roundColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: ScreenUtil.width*0.9,
+      height: ScreenUtil.height*0.2,
+      child: Stack(
+        children: <Widget>[
+          Positioned(
+            left: ScreenUtil.width*0.1,
+            top: ScreenUtil.height*0.03,
+              child: Container(
+                width: ScreenUtil.width*0.75,
+                height: ScreenUtil.height*0.14,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8.0),
+                  color: baseColor
+                ),
+                child: Center(
+                  child: Text(
+                    title,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14.0
+                    ),
+                  ),
+                ),
+              ),
+          ),
+          Positioned(
+            top: ScreenUtil.height*0.1-ScreenUtil.width*0.11,
+            child: Container(
+            height: ScreenUtil.width*0.22,
+            width: ScreenUtil.width*0.22,
+              decoration: BoxDecoration(
+                color: roundColor,
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: Colors.white,
+                width: 4.0
+              )
+            ),
+              child: FlareActor(
+                icon,
+                alignment:Alignment.center,
+                fit: BoxFit.fitWidth,
+                animation: animation,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class ExplainWidget extends StatelessWidget {
 
   final String content;
@@ -307,5 +367,85 @@ class TagTitleForm extends StatelessWidget {
         }
       ),
     );
+  }
+}
+
+class DashPathBorder extends Border {
+  DashPathBorder({
+    @required this.dashArray,
+    BorderSide top = BorderSide.none,
+    BorderSide left = BorderSide.none,
+    BorderSide right = BorderSide.none,
+    BorderSide bottom = BorderSide.none,
+  }) : super(
+          top: top,
+          left: left,
+          right: right,
+          bottom: bottom,
+        );
+
+  factory DashPathBorder.all({
+    BorderSide borderSide = const BorderSide(),
+    @required CircularIntervalList<double> dashArray,
+  }) {
+    return DashPathBorder(
+      dashArray: dashArray,
+      top: borderSide,
+      right: borderSide,
+      left: borderSide,
+      bottom: borderSide,
+    );
+  }
+  final CircularIntervalList<double> dashArray;
+
+  @override
+  void paint(
+    Canvas canvas,
+    Rect rect, {
+    TextDirection textDirection,
+    BoxShape shape = BoxShape.rectangle,
+    BorderRadius borderRadius,
+  }) {
+    if (isUniform) {
+      switch (top.style) {
+        case BorderStyle.none:
+          return;
+        case BorderStyle.solid:
+          switch (shape) {
+            case BoxShape.circle:
+              assert(borderRadius == null,
+                  'A borderRadius can only be given for rectangular boxes.');
+              canvas.drawPath(
+                dashPath(Path()..addOval(rect), dashArray: dashArray),
+                top.toPaint(),
+              );
+              break;
+            case BoxShape.rectangle:
+              if (borderRadius != null) {
+                final RRect rrect =
+                    RRect.fromRectAndRadius(rect, borderRadius.topLeft);
+                canvas.drawPath(
+                  dashPath(Path()..addRRect(rrect), dashArray: dashArray),
+                  top.toPaint(),
+                );
+                return;
+              }
+              canvas.drawPath(
+                dashPath(Path()..addRect(rect), dashArray: dashArray),
+                top.toPaint(),
+              );
+
+              break;
+          }
+          return;
+      }
+    }
+
+    assert(borderRadius == null,
+        'A borderRadius can only be given for uniform borders.');
+    assert(shape == BoxShape.rectangle,
+        'A border can only be drawn as a circle if it is uniform.');
+
+    // TODO(dnfield): implement when borders are not uniform.
   }
 }

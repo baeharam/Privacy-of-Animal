@@ -31,6 +31,7 @@ dependencies:
   path: ^1.6.2
   intl: ^0.15.7
   flutter_local_notifications: ^0.5.1+2
+  path_drawing: ^0.4.0
   flare_flutter:
   flare_dart:
 
@@ -64,6 +65,8 @@ flutter:
     - assets/images/components/roulette.flr
     - assets/images/components/magnet.flr
     - assets/images/components/roulette dart.flr
+    - assets/images/components/magnet.png
+    - assets/images/components/Dart_red.png
     - assets/images/tags/art.png
     - assets/images/tags/book.png
     - assets/images/tags/cartoon.png
