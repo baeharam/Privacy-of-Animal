@@ -25,6 +25,8 @@ class CurrentUser {
   Map<String,bool> chatRoomNotification;
   String currentChatRoomID;
 
+  void clear() => CurrentUser();
+
   CurrentUser() {
     uid = '';
 

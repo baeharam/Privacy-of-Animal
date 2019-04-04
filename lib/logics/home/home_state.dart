@@ -10,6 +10,7 @@ class HomeState extends BlocState {
   final bool isProfileClicked;
 
   final bool isDataFetchLoading;
+  final bool isDataFetchSucceeded;
   final bool isDataFetchFailed;
 
   final int activeIndex;
@@ -23,6 +24,7 @@ class HomeState extends BlocState {
     this.isProfileClicked: false,
 
     this.isDataFetchLoading: false,
+    this.isDataFetchSucceeded: false,
     this.isDataFetchFailed: false,
 
     this.activeIndex: 0
@@ -31,6 +33,7 @@ class HomeState extends BlocState {
   factory HomeState.initial() => HomeState(isInitial: true);
 
   factory HomeState.fetchLoading() => HomeState(isDataFetchLoading: true);
+  factory HomeState.fetchSucceeded() => HomeState(isDataFetchSucceeded: true);
   factory HomeState.fetchFailed() => HomeState(isDataFetchFailed: true);
 
   factory HomeState.match(int index) {

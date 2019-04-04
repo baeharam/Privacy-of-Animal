@@ -11,6 +11,7 @@ class SettingAPI {
     await sl.get<ServerAPI>().disconnectFriendsList();
     await sl.get<ServerAPI>().disconnectRequestFromList();
     await sl.get<FirebaseAPI>().getAuth().signOut();
+    sl.get<CurrentUser>().clear();
   }
 
   Future<void> deleteAllInfoOfUser() async {

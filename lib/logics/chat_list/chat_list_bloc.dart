@@ -32,7 +32,7 @@ class ChatListBloc extends BlocEventStateBase<ChatListEvent,ChatListState> {
     }
     
     if(event is ChatListEventNew) {
-      _api.addChatHistory(event.newMessage);
+      _api.addChatHistory(event.otherUser,event.chatRoomID,event.newMessages);
       yield ChatListState.newMessage();
     }
     if(event is ChatListEventStateClear) {

@@ -9,6 +9,7 @@ import 'package:privacy_of_animal/resources/resources.dart';
 import 'package:privacy_of_animal/screens/main/friends_chat_screen.dart';
 import 'package:privacy_of_animal/screens/main/other_profile_screen.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
+import 'package:privacy_of_animal/utils/stream_snackbar.dart';
 
 class ChatListScreen extends StatefulWidget {
   @override
@@ -17,8 +18,8 @@ class ChatListScreen extends StatefulWidget {
 
 class _ChatListScreenState extends State<ChatListScreen> {
 
-  final ChatListBloc chatListBloc = sl.get<ChatListBloc>();
-  List<ChatListModel> chatList = List<ChatListModel>();
+  final ChatListBloc _chatListBloc = sl.get<ChatListBloc>();
+  List<ChatListModel> _chatList = List<ChatListModel>();
 
   @override
   void initState() {
@@ -42,19 +43,26 @@ class _ChatListScreenState extends State<ChatListScreen> {
         backgroundColor: primaryBlue,
       ),
       body: BlocBuilder(
-        bloc: chatListBloc,
+        bloc: _chatListBloc,
         builder: (context, ChatListState state){
           if(state.isInitial || state.isNewMessage || state.isDeleteSucceeded) {
-            chatList = sl.get<CurrentUser>().chatListHistory.values.toList();
+            _chatList = sl.get<CurrentUser>().chatListHistory.values.toList();
           }
-          if(chatList.isEmpty) {
+          if(_chatList.isEmpty) {
             return Center(child: Text('아직 대화기록이 없습니다.'));
+          }
+          if(state.isDeleteLoading) {
+            return Center(child: CircularProgressIndicator());
+          }
+          if(state.isDeleteFailed) {
+            streamSnackbar(context, "채팅을 지우는데 실패했습니다.");
+            _chatListBloc.emitEvent(ChatListEventStateClear());
           }
           return ListView.builder(
             padding: EdgeInsets.all(10.0),
-            itemCount: chatList.length,
+            itemCount: _chatList.length,
             itemBuilder: (context,index) {
-              return _buildChatRoom(chatList[index]);
+              return _buildChatRoom(_chatList[index]);
             }
           );
         }
@@ -117,7 +125,14 @@ class _ChatListScreenState extends State<ChatListScreen> {
                             ],
                           ),
                           SizedBox(height: 10.0),
-                          Text(chatListModel.lastMessage)
+                          Container(
+                            width: ScreenUtil.width*0.5,
+                            child: Text(
+                              chatListModel.lastMessage,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          )
                         ],
                       ),
                       Spacer(),
@@ -145,7 +160,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
           ],
         )
       ),
-      onDismissed: (direction) {chatListBloc.emitEvent(ChatListEventDeleteChatRoom(
+      onDismissed: (direction) {_chatListBloc.emitEvent(ChatListEventDeleteChatRoom(
         chatRoomID: chatListModel.chatRoomID,
         friends: chatListModel.user.uid
       ));},

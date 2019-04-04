@@ -6,7 +6,6 @@ import 'package:privacy_of_animal/resources/constants.dart';
 import 'package:privacy_of_animal/screens/main/screen.dart';
 import 'package:privacy_of_animal/utils/back_button_dialog.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
-import 'package:privacy_of_animal/widgets/progress_indicator.dart';
 
 class HomeDecision extends StatefulWidget {
   @override
@@ -16,7 +15,7 @@ class HomeDecision extends StatefulWidget {
 class _HomeDecisionState extends State<HomeDecision> {
 
   final HomeBloc _homeBloc = sl.get<HomeBloc>();
-  final List<Widget> _homePage = [MatchScreen(),ChatListScreen(),FriendsScreen(),ProfileScreen()];
+  List<Widget> _homePage;
 
   @override
   void initState() {
@@ -34,13 +33,20 @@ class _HomeDecisionState extends State<HomeDecision> {
         if(state.isDataFetchFailed) {
           return Center(child: Text('데이터 로딩에 실패했습니다.'));
         }
-        if(state.isDataFetchLoading) {
+
+        if(state.isDataFetchSucceeded) {
+          _homePage = [MatchScreen(),ChatListScreen(),FriendsScreen(),ProfileScreen()];
+          _homeBloc.emitEvent(HomeEventNavigate(index: TAB.PROFILE.index));
+        }
+
+        if(state.isDataFetchLoading || state.isDataFetchSucceeded) {
           return Container(
             color: Colors.white,
             alignment: Alignment.center,
             child: CircularProgressIndicator()
           );
         }
+
 
         return WillPopScope(
           onWillPop: () => BackButtonAction.terminateApp(context),
