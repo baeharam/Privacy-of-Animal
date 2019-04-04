@@ -445,7 +445,5 @@ class DashPathBorder extends Border {
         'A borderRadius can only be given for uniform borders.');
     assert(shape == BoxShape.rectangle,
         'A border can only be drawn as a circle if it is uniform.');
-
-    // TODO(dnfield): implement when borders are not uniform.
   }
 }
