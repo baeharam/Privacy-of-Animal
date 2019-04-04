@@ -31,9 +31,8 @@ dependencies:
   path: ^1.6.2
   intl: ^0.15.7
   flutter_local_notifications: ^0.5.1+2
-  path_drawing: ^0.4.0
-  flare_flutter:
-  flare_dart:
+  flare_flutter: ^1.3.6
+  flare_dart: ^1.3.4
 
 
 
