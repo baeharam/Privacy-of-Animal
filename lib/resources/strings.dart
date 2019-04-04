@@ -146,6 +146,38 @@ const String snakeAnimal = 'snake';
 const String tigerAnimal = 'tiger';
 const String whaleAnimal = 'whale';
 const String zebraAnimal = 'zebra';
+const String alpacaAnimal = 'alpaca';
+const String antelopeAnimal = 'antelope';
+const String armadilloAnimal = 'armadillo';
+const String baboonAnimal = 'baboon';
+const String beagleAnimal = 'beagle';
+const String brownbearAnimal = 'brownbear';
+const String bulldogAnimal = 'bulldog';
+const String catfishAnimal = 'catfish';
+const String dachshundAnimal = 'dachshund';
+const String donkeyAnimal = 'donkey';
+const String elephantsealAnimal = 'elephantseal';
+const String eurasinalynxAnimal = 'eurasinalynx';
+const String gazelleAnimal = 'gazelle';
+const String giraffeAnimal = 'giraffe';
+const String gooseAnimal = 'goose';
+const String hammerheadsharkAnimal = 'hammerheadshark';
+const String kangarroAnimal = 'kangarro';
+const String lemurmonkeyAnimal = 'lemurmonkey';
+const String meerkatAnimal = 'meerkat';
+const String otterAnimal = 'otter';
+const String polarbearAnimal = 'polarbear';
+const String polarfoxAnimal = 'polorfox';
+const String quokkaAnimal = 'quokka';
+const String skunkAnimal = 'skunk';
+const String slothAnimal = 'sloth';
+const String snowrabbitAnimal = 'snowrabbit';
+const String squirrelAnimal = 'squirrel';
+const String swanAnimal = 'swan';
+const String toadAnimal = 'toad';
+const String weaselAnimal = 'weasel';
+const String wolfAnimal = 'wolf';
+
 
 
 // Cloud Firestore 컬렉션 이름
