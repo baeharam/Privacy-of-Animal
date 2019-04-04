@@ -4,7 +4,7 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
-import 'package:privacy_of_animal/logics/server_api.dart';
+import 'package:privacy_of_animal/logics/server/server.dart';
 import 'package:privacy_of_animal/models/same_match_model.dart';
 import 'package:privacy_of_animal/models/user_model.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
@@ -19,13 +19,13 @@ class SameMatchAPI {
 
   void connectToServer(String otherUserUID) {
     if(!_isInSameMatchScreen) {
-      sl.get<ServerAPI>().connectRequestToStream(otherUserUID: otherUserUID);
+      sl.get<ServerRequestAPI>().connectRequestToStream(otherUserUID: otherUserUID);
     }
   }
 
   Future<void> disconnectToServer() async{
     if(!_isInSameMatchScreen) {
-      await sl.get<ServerAPI>().disconnectRequestToStream();
+      await sl.get<ServerRequestAPI>().disconnectRequestToStream();
     }
   }
 

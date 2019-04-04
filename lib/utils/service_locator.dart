@@ -14,7 +14,7 @@ import 'package:privacy_of_animal/logics/profile/profile_bloc.dart';
 import 'package:privacy_of_animal/logics/random_chat/random_chat.dart';
 import 'package:privacy_of_animal/logics/random_loading/random_loading_bloc.dart';
 import 'package:privacy_of_animal/logics/same_match/same_match_bloc.dart';
-import 'package:privacy_of_animal/logics/server_api.dart';
+import 'package:privacy_of_animal/logics/server/server.dart';
 import 'package:privacy_of_animal/logics/setting/setting_bloc.dart';
 import 'package:privacy_of_animal/logics/notification_helper.dart';
 import 'package:privacy_of_animal/logics/signup/signup_bloc.dart';
@@ -31,7 +31,9 @@ void setup() {
   sl.registerLazySingleton<InitializeAPI>(()=> InitializeAPI());
   sl.registerLazySingleton<DatabaseHelper>(() => DatabaseHelper());
   sl.registerLazySingleton<FirebaseAPI>(() => FirebaseAPI());
-  sl.registerLazySingleton<ServerAPI>(() => ServerAPI());
+  sl.registerLazySingleton<ServerFriendsAPI>(() => ServerFriendsAPI());
+  sl.registerLazySingleton<ServerRequestAPI>(() => ServerRequestAPI());
+  sl.registerLazySingleton<ServerChatAPI>(() => ServerChatAPI());
   sl.registerLazySingleton<NotificationHelper>(() => NotificationHelper());
   
   sl.registerLazySingleton<LoginBloc>(()=> LoginBloc());

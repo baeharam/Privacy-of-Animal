@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/database_helper.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
-import 'package:privacy_of_animal/logics/server_api.dart';
+import 'package:privacy_of_animal/logics/server/server.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -44,8 +44,8 @@ class HomeAPI {
   Future<void> fetchFriendsData() async {
     if(!isFriendsDataFetched) {
       await _setFriendsNotification(uid);
-      await sl.get<ServerAPI>().connectFriendsList();
-      await sl.get<ServerAPI>().connectRequestFromList();
+      await sl.get<ServerFriendsAPI>().connectFriendsList();
+      await sl.get<ServerRequestAPI>().connectRequestFromList();
 
       isFriendsDataFetched = true;
     }
@@ -54,7 +54,7 @@ class HomeAPI {
   Future<void> fetchChatRoomListData() async {
     if(!isChatRoomListDataFetched) {
       await _setChatRoomNotification();
-      await sl.get<ServerAPI>().connectAllChatRoom();
+      await sl.get<ServerChatAPI>().connectAllChatRoom();
 
       isChatRoomListDataFetched = true;
     }
