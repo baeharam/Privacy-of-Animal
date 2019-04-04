@@ -91,6 +91,7 @@ class ServerChatAPI {
     _chatRoomListServer.remove(otherUserUID);
   }
 
+  /// [채팅내용 업데이트]
   void _updateChatHistory(String otherUserUID, QuerySnapshot snapshot) {
     debugPrint('Call _updateChatHistory($otherUserUID,$snapshot)');
 
@@ -110,6 +111,7 @@ class ServerChatAPI {
     }
   }
 
+  /// [채팅 리스트 업데이트]
   void _updateChatListHistory(UserModel otherUser, String chatRoomID, QuerySnapshot snapshot) {
     debugPrint('Call _updateChatListHistory($otherUser,$chatRoomID,$snapshot)');
 
@@ -120,6 +122,7 @@ class ServerChatAPI {
     ));
   }
 
+  /// [채팅방 ID 가져오기]
   Future<String> _getChatRoomID(String otherUserUID) async {
     debugPrint('Call _getChatRoomID($otherUserUID)');
 
@@ -136,6 +139,7 @@ class ServerChatAPI {
     return friendsChatSnapshot.documents[0].documentID;
   }
 
+  /// [채팅방 가장 마지막에 나간 시간 가져오기]
   Future<Timestamp> _getChatRoomOutTimestamp(String chatRoomID) async {
     debugPrint('Call _getChatRoomOutTimestamp($chatRoomID)');
 

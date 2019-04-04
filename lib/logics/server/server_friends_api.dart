@@ -5,7 +5,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:privacy_of_animal/logics/chat_list/chat_list.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
-import 'package:privacy_of_animal/logics/database_helper.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/logics/friends/friends.dart';
 import 'package:privacy_of_animal/logics/other_profile/other_profile.dart';
@@ -15,7 +14,6 @@ import 'package:privacy_of_animal/models/user_model.dart';
 import 'package:privacy_of_animal/resources/resources.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ServerFriendsAPI {
   static bool _isFirstFriendsFetch = true;
@@ -63,7 +61,6 @@ class ServerFriendsAPI {
 
             String blockedUserUID = decreasedChange.document.documentID;
             await _serverChatListAPI.disconnectChatRoom(otherUserUID: blockedUserUID);
-            await _deleteChatRoomNotification(blockedUserUID);
 
             sl.get<ChatListBloc>().emitEvent(ChatListEventRefresh());
             UserModel otherUser = UserModel.fromSnapshot(snapshot: await _getUserInfo(blockedUserUID));
@@ -108,12 +105,14 @@ class ServerFriendsAPI {
     await _friendsSubscription.cancel();
   }
 
+  /// [친구 맞나 확인]
   bool _isFriends(UserModel otherUser) {
     debugPrint('Call _isFriends($otherUser)');
 
     return sl.get<CurrentUser>().friendsList.contains(otherUser);
   }
 
+  /// [사용자 정보 가져오기]
   Future<DocumentSnapshot> _getUserInfo(String otherUserUID) async {
     debugPrint('Call _getUserInfo($otherUserUID)');
 
@@ -122,12 +121,5 @@ class ServerFriendsAPI {
       .collection(firestoreUsersCollection)
       .document(otherUserUID)
       .get();
-  }
-
-  Future<void> _deleteChatRoomNotification(String otherUserUID) async {
-    debugPrint('Call _deleteChatRoomNotification($otherUserUID)');
-
-    SharedPreferences prefs = await sl.get<DatabaseHelper>().sharedPreferences;
-    await prefs.remove(otherUserUID+chatNotification);
   }
 }

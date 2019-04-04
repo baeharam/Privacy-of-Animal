@@ -106,7 +106,7 @@ class FriendsAPI {
         .collection(firestoreUsersCollection)
         .document(deletedFriendsUID).get();
       UserModel deletedFriendsUserModel = UserModel.fromSnapshot(snapshot: deletedFriendsSnapshot);
-      _decreaseLocalFriends(deletedFriendsUserModel);
+      await _decreaseLocalFriends(deletedFriendsUserModel);
       _updateOtherProfileFriends(deletedFriendsUID);
     }
   }
@@ -288,8 +288,11 @@ class FriendsAPI {
   }
 
   /// [로컬에서 친구 감소]
-  void _decreaseLocalFriends(UserModel userToBlock) {
+  Future<void> _decreaseLocalFriends(UserModel userToBlock) async{
     debugPrint("Call decreaseLocalFriends");
+
+    SharedPreferences prefs = await sl.get<DatabaseHelper>().sharedPreferences;
+    prefs.remove(userToBlock.uid+chatNotification);
 
     sl.get<CurrentUser>().friendsList.removeWhere((friends) => friends.uid==userToBlock.uid);
     sl.get<CurrentUser>().chatHistory.remove(userToBlock.uid);
