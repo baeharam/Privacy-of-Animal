@@ -34,44 +34,46 @@ class _MatchScreenState extends State<MatchScreen> {
         backgroundColor: primaryBlue
       ),
         body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            // mainAxisSize: MainAxisSize.min,
-            children: [
-              Image(
-                width: ScreenUtil.width*0.4,
-                height: ScreenUtil.height*0.3,
-                image: AssetImage('assets/images/components/icon.png'),
-                fit: BoxFit.fitWidth,
-              ),
-              
-              GestureDetector(
-                child: MatchingButton(
-                  title: "당신의 관심사로 상대추천",
-                  animation: 'Move',
-                  icon: "assets/images/components/magnet.flr",
-                  baseColor: primaryGreen,
-                  roundColor: primaryBeige,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              // mainAxisSize: MainAxisSize.min,
+              children: [
+                Image(
+                  width: ScreenUtil.width*0.4,
+                  height: ScreenUtil.height*0.3,
+                  image: AssetImage('assets/images/components/icon.png'),
+                  fit: BoxFit.fitWidth,
                 ),
-                onTap: () {
-                  sl.get<SameMatchBloc>().emitEvent(SameMatchEventFindUser());
-                  Navigator.pushNamed(context, routeSameMatch);
-                },
-              ),
-              GestureDetector(
-                child: MatchingButton(
-                  title: "랜덤 추천",
-                  animation: "darting rl",
-                  icon: "assets/images/components/roulette dart.flr",
-                  baseColor: primaryPink,
-                  roundColor: primaryBeige,
+                
+                GestureDetector(
+                  child: MatchingButton(
+                    title: "당신의 관심사로 상대추천",
+                    animation: 'Move',
+                    icon: "assets/images/components/magnet.flr",
+                    baseColor: primaryGreen,
+                    roundColor: primaryBeige,
+                  ),
+                  onTap: () {
+                    sl.get<SameMatchBloc>().emitEvent(SameMatchEventFindUser());
+                    Navigator.pushNamed(context, routeSameMatch);
+                  },
                 ),
-                onTap: () {
-                  sl.get<RandomLoadingBloc>().emitEvent(RandomLoadingEventMatchStart());
-                  Navigator.pushNamed(context, routeRandomLoading);
-                },
-              )
-            ],
+                GestureDetector(
+                  child: MatchingButton(
+                    title: "랜덤 추천",
+                    animation: "darting rl",
+                    icon: "assets/images/components/roulette dart.flr",
+                    baseColor: primaryPink,
+                    roundColor: primaryBeige,
+                  ),
+                  onTap: () {
+                    sl.get<RandomLoadingBloc>().emitEvent(RandomLoadingEventMatchStart());
+                    Navigator.pushNamed(context, routeRandomLoading);
+                  },
+                )
+              ],
+            ),
           ),
         )
     );
