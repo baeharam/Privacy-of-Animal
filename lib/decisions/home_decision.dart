@@ -39,7 +39,7 @@ class _HomeDecisionState extends State<HomeDecision> {
           _homeBloc.emitEvent(HomeEventNavigate(index: TAB.PROFILE.index));
         }
 
-        if(state.isDataFetchLoading || state.isDataFetchSucceeded) {
+        if(state.isDataFetchLoading) {
           return Container(
             color: Colors.white,
             alignment: Alignment.center,

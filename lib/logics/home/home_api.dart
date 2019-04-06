@@ -17,6 +17,12 @@ class HomeAPI {
   SharedPreferences prefs;
   String uid;
 
+  static void resetForLogout() {
+    isProfileDataFetched = false;
+    isFriendsDataFetched = false;
+    isChatRoomListDataFetched = false;
+  }
+
   Future<void> _apiInitialization() async {
     db = await sl.get<DatabaseHelper>().database;
     prefs = await sl.get<DatabaseHelper>().sharedPreferences;
