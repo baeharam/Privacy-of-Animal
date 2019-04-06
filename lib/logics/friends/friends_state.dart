@@ -113,7 +113,7 @@ class FriendsState extends BlocState {
   
   factory FriendsState.friendsRefreshLoading() => FriendsState(isFriendsRefreshLoading: true);
   factory FriendsState.friendsIncreased() => FriendsState(isFriendsIncreased: true);
-  factory FriendsState.friendsDecreased() => FriendsState(isFriendsIncreased: true);
+  factory FriendsState.friendsDecreased() => FriendsState(isFriendsDecreased: true);
   factory FriendsState.friendsRefreshFailed() => FriendsState(isFriendsRefreshFailed: true);
 
   factory FriendsState.requestRefreshLoading() => FriendsState(isRequestRefreshLoading: true);

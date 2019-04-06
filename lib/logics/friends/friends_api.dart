@@ -208,6 +208,9 @@ class FriendsAPI {
   Future<void> acceptFriendsForServer(UserModel requestFromingUser) async {
     debugPrint("Call acceptFriendsForServer");
 
+    // 먼저 친구신청란에서 지워야 함
+    sl.get<CurrentUser>().requestFromList.remove(requestFromingUser);
+
     String currentUser = _uid;
 
     DocumentReference myselfDoc = sl.get<FirebaseAPI>().getFirestore()
@@ -309,7 +312,6 @@ class FriendsAPI {
     SharedPreferences prefs = await sl.get<DatabaseHelper>().sharedPreferences;
     prefs.setBool(newFriends.uid+chatNotification, true);
 
-    sl.get<CurrentUser>().requestFromList.remove(newFriends);
     sl.get<CurrentUser>().friendsList.add(newFriends);
     sl.get<CurrentUser>().chatHistory[newFriends.uid] = [];
     sl.get<CurrentUser>().chatListHistory[newFriends.uid] = ChatListModel();

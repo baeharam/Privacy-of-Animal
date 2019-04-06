@@ -91,9 +91,12 @@ class SameMatchAPI {
     Map<String,List<List<String>>> matchedTags = Map<String,List<List<String>>>();
     for(DocumentSnapshot user in users.documents) {
       QuerySnapshot friendsRequestSnapshot = await sl.get<FirebaseAPI>().getFirestore()
-        .collection(firestoreUsersCollection).document(user.documentID)
-        .collection(firestoreFriendsSubCollection).where(uidCol, isEqualTo: currentUser.uid)
-        .where(firestoreFriendsField, isEqualTo: false).getDocuments();
+        .collection(firestoreUsersCollection)
+        .document(user.documentID)
+        .collection(firestoreFriendsSubCollection)
+        .where(uidCol, isEqualTo: currentUser.uid)
+        .where(firestoreFriendsField, isEqualTo: false)
+        .getDocuments();
 
       /// [제외하는 경우]
       /// [1. 친구]
