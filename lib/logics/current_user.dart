@@ -17,6 +17,7 @@ class CurrentUser {
   Map<String,List<ChatModel>> chatHistory;
   List<UserModel> friendsList;
   List<UserModel> requestFromList;
+  int newFriendsNum;
 
   String currentProfileUID;
   bool isRequestTo;
@@ -32,7 +33,8 @@ class CurrentUser {
 
     realProfileModel = RealProfileModel();
     tagListModel = TagListModel(tagTitleList: [], tagDetailList: []);
-    fakeProfileModel =FakeProfileModel();
+    fakeProfileModel = FakeProfileModel();
+    newFriendsNum = 0;
 
     chatListHistory = Map<String,ChatListModel>();
     chatHistory = Map<String,List<ChatModel>>();

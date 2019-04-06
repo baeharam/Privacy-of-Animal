@@ -63,6 +63,8 @@ class FriendsAPI {
   Future<void> fetchIncreasedFriends(List<DocumentChange> newFriendsList) async {
     debugPrint("Call fetchIncreasedFriends");
 
+    _setNewFriendsNum(newFriendsList.length);
+
     for(DocumentChange newFriends in newFriendsList) {
       debugPrint("${newFriends.document.documentID}, IsAccepted: ${newFriends.document.data[firestoreFriendsAccepted]}");
       DocumentSnapshot newFriendsSnapshot = await sl.get<FirebaseAPI>().getFirestore()
@@ -76,6 +78,10 @@ class FriendsAPI {
         _notifyingFriends ??= newFriendsUserModel;
       }
     }
+  }
+
+  void _setNewFriendsNum(int num) {
+    sl.get<CurrentUser>().newFriendsNum = num;
   }
 
   void _updateOtherProfileFriends(String otherUserUID) {
