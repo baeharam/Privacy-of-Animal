@@ -26,9 +26,7 @@ class CurrentUser {
   Map<String,bool> chatRoomNotification;
   String currentChatRoomID;
 
-  void clear() => CurrentUser();
-
-  CurrentUser() {
+  void clear() {
     uid = '';
 
     realProfileModel = RealProfileModel();
@@ -49,4 +47,6 @@ class CurrentUser {
     chatRoomNotification = Map<String,bool>();
     currentChatRoomID = '';
   }
+
+  CurrentUser() { clear(); }
 }
