@@ -41,7 +41,7 @@ class FriendsAPI {
         .document(friends.documentID)
         .get();
       UserModel friendsUserModel = UserModel.fromSnapshot(snapshot: friendsSnapshot);
-      sl.get<CurrentUser>().friendsList.add(friendsUserModel);
+      _increaseLocalFriends(friendsUserModel);
     }
   }
 
@@ -55,7 +55,7 @@ class FriendsAPI {
         .document(request.documentID)
         .get();
       UserModel requestUserModel = UserModel.fromSnapshot(snapshot: requestSnapshot);
-      sl.get<CurrentUser>().requestFromList.add(requestUserModel);
+      _increaseLocalRequest(requestUserModel);
     }
   }
 
@@ -320,7 +320,6 @@ class FriendsAPI {
 
     sl.get<CurrentUser>().friendsList.add(newFriends);
     sl.get<CurrentUser>().chatHistory[newFriends.uid] = [];
-    sl.get<CurrentUser>().chatListHistory[newFriends.uid] = ChatListModel();
     sl.get<CurrentUser>().chatRoomNotification[newFriends.uid] = true;
   } 
 
