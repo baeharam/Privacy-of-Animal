@@ -37,5 +37,9 @@ class HomeBloc extends BlocEventStateBase<HomeEvent,HomeState> {
         yield HomeState.fetchFailed();
       }
     }
+
+    if(event is HomeEventDeactivateFlags) {
+      _api.deactivateFlags();
+    }
   }
 }

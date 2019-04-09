@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/database_helper.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
@@ -17,13 +18,17 @@ class HomeAPI {
   SharedPreferences prefs;
   String uid;
 
-  static void resetForLogout() {
+  void deactivateFlags() {
+    debugPrint('Call resetForLogout()');
+
     isProfileDataFetched = false;
     isFriendsDataFetched = false;
     isChatRoomListDataFetched = false;
   }
 
   Future<void> _apiInitialization() async {
+    debugPrint('Call _apiInitialization()');
+
     db = await sl.get<DatabaseHelper>().database;
     prefs = await sl.get<DatabaseHelper>().sharedPreferences;
     uid = sl.get<CurrentUser>().uid;
@@ -31,6 +36,8 @@ class HomeAPI {
 
   Future<void> fetchProfileData() async {
     if(!isProfileDataFetched) {
+      debugPrint('Call fetchProfileData()');
+
       await _apiInitialization();
       await _checkDBAndCallFirestore();
 
@@ -49,6 +56,8 @@ class HomeAPI {
 
   Future<void> fetchFriendsData() async {
     if(!isFriendsDataFetched) {
+      debugPrint('Call fetchFriendsData()');
+
       await _setFriendsNotification(uid);
       await sl.get<ServerFriendsAPI>().connectFriendsList();
       await sl.get<ServerRequestAPI>().connectRequestFromList();
@@ -59,6 +68,8 @@ class HomeAPI {
 
   Future<void> fetchChatRoomListData() async {
     if(!isChatRoomListDataFetched) {
+      debugPrint('Call fetchChatRoomListData()');
+
       await _setChatRoomNotification();
       await sl.get<ServerChatAPI>().connectAllChatRoom();
 

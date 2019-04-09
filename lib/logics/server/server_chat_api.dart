@@ -26,6 +26,10 @@ class ServerChatAPI {
     _chatRoomListSubscriptions = Map<String, StreamSubscription<QuerySnapshot>>();
   }
 
+  void deactivateFlags() {
+    _isFirstChatHistoryFetch.clear();
+  }
+
   /// [로그인 → 모든 채팅방 연결]
   Future<void> connectAllChatRoom() async {
     debugPrint('Call connectAllChatRoom()');

@@ -12,3 +12,5 @@ class HomeEventNavigate extends HomeEvent{
 }
 
 class HomeEventFetchAll extends HomeEvent {}
+
+class HomeEventDeactivateFlags extends HomeEvent {}

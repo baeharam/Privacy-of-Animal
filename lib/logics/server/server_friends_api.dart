@@ -28,6 +28,9 @@ class ServerFriendsAPI {
     _friendsSubscription = _friendsServer.listen((_){});
   }
 
+  void deactivateFlags() {
+    _isFirstFriendsFetch = true;
+  }
   
 
   /// [로그인 → 친구목록 연결]
@@ -68,9 +71,7 @@ class ServerFriendsAPI {
               sl.get<FriendsBloc>().emitEvent(FriendsEventBlockFromServer(userToBlock: otherUser));
             }
           }
-          sl.get<FriendsBloc>().emitEvent(
-            FriendsEventFriendsDecreased(friends: snapshot.documentChanges)
-          );
+          sl.get<FriendsBloc>().emitEvent(FriendsEventFriendsDecreased(friends: snapshot.documentChanges));
         } 
         // 친구 증가
         else if(!_isFirstFriendsFetch){
