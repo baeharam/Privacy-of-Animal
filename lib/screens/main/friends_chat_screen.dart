@@ -73,7 +73,7 @@ class _FriendsChatScreenState extends State<FriendsChatScreen> {
                 ? Icon(Icons.notifications)
                 : Icon(Icons.notifications_off),
                 onPressed: () => friendsChatBloc.emitEvent(FriendsChatEventNotification(
-                  chatRoomID: widget.chatRoomID
+                  otherUserUID: widget.receiver.uid
                 )),
               );
             }

@@ -258,7 +258,6 @@ const String isFaceAnalyzed = 'is_face_analyzed';
 
 // SharedPreferences 알림 key 값
 const String friendsNotification = 'friends_notification';
-const String chatNotification = 'chat_notification';
 
 // 로컬 DB 이름
 const String userDB = 'user.db';

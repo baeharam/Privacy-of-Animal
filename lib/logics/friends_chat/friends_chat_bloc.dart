@@ -50,7 +50,7 @@ class FriendsChatBloc extends BlocEventStateBase<FriendsChatEvent,FriendsChatSta
 
     if(event is FriendsChatEventNotification) {
       try {
-        await _api.setChatRoomNotification(event.chatRoomID);
+        await _api.setChatRoomNotification(event.otherUserUID);
         yield FriendsChatState.notificationToggleSucceeded();
       } catch(exception) {
         print("채팅방 알림설정 실패: ${exception.toString()}");

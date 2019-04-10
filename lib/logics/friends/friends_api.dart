@@ -301,7 +301,7 @@ class FriendsAPI {
     debugPrint("친구 감소했을 때 로컬에서 업데이트");
 
     SharedPreferences prefs = await sl.get<DatabaseHelper>().sharedPreferences;
-    prefs.remove(userToBlock.uid+chatNotification);
+    prefs.remove(userToBlock.uid);
 
     sl.get<CurrentUser>().friendsList.removeWhere((friends) => friends.uid==userToBlock.uid);
     sl.get<CurrentUser>().chatHistory.remove(userToBlock.uid);
@@ -314,7 +314,7 @@ class FriendsAPI {
     debugPrint("친구 증가했을 때 로컬에서 업데이트");
 
     SharedPreferences prefs = await sl.get<DatabaseHelper>().sharedPreferences;
-    prefs.setBool(newFriends.uid+chatNotification, true);
+    prefs.setBool(newFriends.uid, true);
 
     sl.get<CurrentUser>().friendsList.add(newFriends);
     sl.get<CurrentUser>().chatHistory[newFriends.uid] = [];
