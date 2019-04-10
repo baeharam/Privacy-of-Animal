@@ -165,6 +165,7 @@ class _FriendsChatScreenState extends State<FriendsChatScreen> {
     if(chat.from == sl.get<CurrentUser>().uid){
       return Row(
         mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: <Widget>[
           _isLastRight(index) ?
           Container(
@@ -176,19 +177,24 @@ class _FriendsChatScreenState extends State<FriendsChatScreen> {
             ),
           ) : Container(),
           Flexible(
-            child: Container(
-              child: Text(
-                chat.content,
-                style: TextStyle(
-                  color: Colors.white
+            child: Column(
+              children: <Widget>[
+                SizedBox(height: 5.0),
+                Container(
+                  child: Text(
+                    chat.content,
+                    style: TextStyle(
+                      color: Colors.white
+                    ),
+                  ),
+                  padding: EdgeInsets.fromLTRB(15.0,10.0,15.0,10.0),
+                  decoration: BoxDecoration(
+                    color: Colors.black,
+                    borderRadius: BorderRadius.circular(3.0)
+                  ),
+                  margin: EdgeInsets.only(right: 10.0),
                 ),
-              ),
-              padding: EdgeInsets.fromLTRB(15.0,10.0,15.0,10.0),
-              decoration: BoxDecoration(
-                color: Colors.grey,
-                borderRadius: BorderRadius.circular(3.0)
-              ),
-              margin: EdgeInsets.only(bottom: 10.0, right: 10.0),
+              ],
             ),
           ),
         ],
@@ -197,39 +203,48 @@ class _FriendsChatScreenState extends State<FriendsChatScreen> {
     } else {
       return Row(
         mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: <Widget>[
-          Column(
-            children: <Widget>[
-              GestureDetector(
-                child: CircleAvatar(
-                  backgroundImage: _isFirstLeft(index)
-                  ? AssetImage(widget.receiver.fakeProfileModel.animalImage)
-                  : null,
-                  backgroundColor: Colors.transparent,
-                ),
-                onTap: () => Navigator.push(context, MaterialPageRoute(
-                  builder: (context) => OtherProfileScreen(user: widget.receiver)
-                )),
-              ),
-              Text(
-                _isFirstLeft(index) ? 
-                widget.receiver.fakeProfileModel.nickName
-                :''
-              )
-            ],
-          ),
+          _isFirstLeft(index) ?
+          Container(
+            padding: const EdgeInsets.only(bottom: 10.0),
+            child: GestureDetector(
+            child: CircleAvatar(
+              backgroundImage: AssetImage(widget.receiver.fakeProfileModel.animalImage),
+              backgroundColor: Colors.transparent,
+            ),
+            onTap: () => Navigator.push(context, MaterialPageRoute(
+              builder: (context) => OtherProfileScreen(user: widget.receiver)
+            )),
+          )) : Container(width: 40.0),
           Flexible(
-            child: Container(
-              child: Text(
-                chat.content,
-                style: TextStyle(color: Colors.white),
-              ),
-              padding: EdgeInsets.fromLTRB(15.0,10.0,15.0,10.0),
-              decoration: BoxDecoration(
-                color: Colors.black,
-                borderRadius: BorderRadius.circular(8.0)
-              ),
-              margin: EdgeInsets.only(left: 10.0)
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                _isFirstLeft(index) ?
+                Container(
+                  padding: const EdgeInsets.only(left: 10.0,bottom: 3.0),
+                  child: Text(
+                    widget.receiver.fakeProfileModel.nickName,
+                    style: TextStyle(
+                      color: Colors.black,
+                    ),
+                  )
+                )
+                : Container(height: 5.0),
+                Container(
+                  child: Text(
+                    chat.content,
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  padding: EdgeInsets.fromLTRB(15.0,10.0,15.0,10.0),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.6),
+                    borderRadius: BorderRadius.circular(8.0)
+                  ),
+                  margin: EdgeInsets.only(left: 10.0)
+                ),
+              ],
             ),
           ),
           _isLastLeft(index) ?
