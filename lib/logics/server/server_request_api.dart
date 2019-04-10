@@ -28,7 +28,7 @@ class ServerRequestAPI {
 
   /// [매칭화면 → 이미 친구신청 했는지 확인 스트림 연결]
   void connectRequestToStream({@required String otherUserUID}) {
-    debugPrint('Call connectRequestToStream($otherUserUID)');
+    debugPrint('$otherUserUID에게 친구신청하는지 확인하기 위한 연결');
 
     Stream<QuerySnapshot> requestStreamTo = 
       sl.get<FirebaseAPI>().getFirestore()
@@ -48,14 +48,14 @@ class ServerRequestAPI {
   }
   /// [매칭화면 → 이미 친구신청 했는지 확인 스트림 취소]
   Future<void> disconnectRequestToStream() async{
-    debugPrint('Call disconnectRequestToStream()');
+    debugPrint('친구신청했는지 확인하는 연결 취소');
 
     await _requestToSubscription.cancel();
   }
 
   /// [로그인 → 친구신청목록 연결]
   Future<void> connectRequestFromList() async {
-    debugPrint('Call connectRequestFromList()');
+    debugPrint('친구신청 목록 연결');
 
     _requestFromServer = Observable(
       sl.get<FirebaseAPI>().getFirestore()
@@ -71,7 +71,7 @@ class ServerRequestAPI {
         // 친구신청 증가
         if(sl.get<CurrentUser>().requestFromList.length < snapshot.documents.length
           && !_isFirstRequestFetch) {
-            debugPrint('Requests are increased!!');
+            debugPrint('친구신청 증가!!');
 
             sl.get<FriendsBloc>().emitEvent(
               FriendsEventRequestIncreased(request: snapshot.documentChanges)
@@ -79,7 +79,7 @@ class ServerRequestAPI {
           } 
         // 친구신청 감소
         else if(!_isFirstRequestFetch){
-          debugPrint('Requests are Decreased!!');
+          debugPrint('친구신청 감소!!');
 
           sl.get<FriendsBloc>().emitEvent(
             FriendsEventRequestDecreased(request: snapshot.documentChanges)
@@ -87,7 +87,7 @@ class ServerRequestAPI {
         }
         // 처음
         else {
-          debugPrint('Initial Requests, Not Empty!!');
+          debugPrint('처음, 친구신청 있음');
 
           _isFirstRequestFetch = false;
           sl.get<FriendsBloc>().emitEvent(
@@ -97,7 +97,7 @@ class ServerRequestAPI {
       } 
       // 처음
       else {
-        debugPrint('Initial Requests, Empty!!');
+        debugPrint('처음, 친구신청 없음');
 
         _isFirstRequestFetch = false;
       }
@@ -106,7 +106,7 @@ class ServerRequestAPI {
 
   /// [로그아웃 → 친구신청목록 해제]
   Future<void> disconnectRequestFromList() async {
-    debugPrint('Call disconnectRequestFromList()');
+    debugPrint('친구신청 목록 해제');
 
     await _requestFromSubscription.cancel();
   }

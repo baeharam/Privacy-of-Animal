@@ -27,7 +27,7 @@ class HomeAPI {
   }
 
   Future<void> _apiInitialization() async {
-    debugPrint('Call _apiInitialization()');
+    debugPrint('HomeAPI 초기화');
 
     db = await sl.get<DatabaseHelper>().database;
     prefs = await sl.get<DatabaseHelper>().sharedPreferences;
@@ -36,7 +36,7 @@ class HomeAPI {
 
   Future<void> fetchProfileData() async {
     if(!isProfileDataFetched) {
-      debugPrint('Call fetchProfileData()');
+      debugPrint('프로필 데이터 가져오기');
 
       await _apiInitialization();
       await _checkDBAndCallFirestore();
@@ -56,7 +56,7 @@ class HomeAPI {
 
   Future<void> fetchFriendsData() async {
     if(!isFriendsDataFetched) {
-      debugPrint('Call fetchFriendsData()');
+      debugPrint('친구, 친구신청 데이터 가져오기');
 
       await _setFriendsNotification(uid);
       await sl.get<ServerFriendsAPI>().connectFriendsList();
@@ -68,7 +68,7 @@ class HomeAPI {
 
   Future<void> fetchChatRoomListData() async {
     if(!isChatRoomListDataFetched) {
-      debugPrint('Call fetchChatRoomListData()');
+      debugPrint('채팅 리스트 데이터 가져오기');
 
       await _setChatRoomNotification();
       await sl.get<ServerChatAPI>().connectAllChatRoom();

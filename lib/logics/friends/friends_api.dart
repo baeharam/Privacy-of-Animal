@@ -307,8 +307,6 @@ class FriendsAPI {
     sl.get<CurrentUser>().chatHistory.remove(userToBlock.uid);
     sl.get<CurrentUser>().chatListHistory.remove(userToBlock.uid);
     sl.get<CurrentUser>().chatRoomNotification.remove(userToBlock.uid);
-
-    print(sl.get<CurrentUser>().chatListHistory);
   }
 
   /// [로컬에서 친구 증가]

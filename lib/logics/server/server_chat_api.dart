@@ -1,4 +1,3 @@
-
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -32,7 +31,7 @@ class ServerChatAPI {
 
   /// [로그인 → 모든 채팅방 연결]
   Future<void> connectAllChatRoom() async {
-    debugPrint('Call connectAllChatRoom()');
+    debugPrint('모든 채팅방 연결');
 
     QuerySnapshot friendsListSnapshot = 
       await _firestore
@@ -54,7 +53,7 @@ class ServerChatAPI {
 
   /// [로그아웃 → 모든 채팅방 해제]
   Future<void> disconnectAllChatRoom() async {
-    debugPrint('Call disconnectAllChatRoom()');
+    debugPrint('모든 채팅방 해제');
 
     sl.get<CurrentUser>().friendsList.map((friends) async{
       await disconnectChatRoom(otherUserUID: friends.uid);
@@ -63,7 +62,7 @@ class ServerChatAPI {
 
   /// [친구수락 → 채팅방 연결]
   Future<void> connectChatRoom({@required UserModel otherUser}) async{
-    debugPrint('Call _connectChatRoom($otherUser)');
+    debugPrint('${otherUser.uid}의 채팅방 연결');
 
     String chatRoomID = await _getChatRoomID(otherUser.uid);
     Timestamp outTimestamp = await _getChatRoomOutTimestamp(chatRoomID);
@@ -89,7 +88,7 @@ class ServerChatAPI {
 
   /// [친구차단 → 채팅방 해제]
   Future<void> disconnectChatRoom({@required String otherUserUID}) async{
-    debugPrint('Call disconnectChatRoom($otherUserUID)');
+    debugPrint('$otherUserUID의 채팅방 해제');
 
     await _chatRoomListSubscriptions[otherUserUID].cancel();
     _chatRoomListServer.remove(otherUserUID);
@@ -97,7 +96,7 @@ class ServerChatAPI {
 
   /// [채팅내용 업데이트]
   void _updateChatHistory(String otherUserUID, QuerySnapshot snapshot) {
-    debugPrint('Call _updateChatHistory($otherUserUID,$snapshot)');
+    debugPrint('$otherUserUID와의 채팅 내용 업데이트');
 
     String from = snapshot.documentChanges[0].document.data[firestoreChatFromField];
 
@@ -117,7 +116,7 @@ class ServerChatAPI {
 
   /// [채팅 리스트 업데이트]
   void _updateChatListHistory(UserModel otherUser, String chatRoomID, QuerySnapshot snapshot) {
-    debugPrint('Call _updateChatListHistory($otherUser,$chatRoomID,$snapshot)');
+    debugPrint('${otherUser.uid}와의 채팅 리스트 업데이트');
 
     sl.get<ChatListBloc>().emitEvent(ChatListEventNew(
       newMessages: snapshot.documentChanges,
@@ -128,7 +127,7 @@ class ServerChatAPI {
 
   /// [채팅방 ID 가져오기]
   Future<String> _getChatRoomID(String otherUserUID) async {
-    debugPrint('Call _getChatRoomID($otherUserUID)');
+    debugPrint('$otherUserUID와의 채팅방 ID가져오기');
 
     QuerySnapshot friendsChatSnapshot = 
       await _firestore
@@ -145,7 +144,7 @@ class ServerChatAPI {
 
   /// [채팅방 가장 마지막에 나간 시간 가져오기]
   Future<Timestamp> _getChatRoomOutTimestamp(String chatRoomID) async {
-    debugPrint('Call _getChatRoomOutTimestamp($chatRoomID)');
+    debugPrint('가장 마지막에 나간 시간 가져오기');
 
     DocumentSnapshot doc = 
       await _firestore
