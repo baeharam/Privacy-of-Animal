@@ -9,10 +9,12 @@ class FriendsChatEventStateClear extends FriendsChatEvent {}
 
 class FriendsChatEventMessageRecieved extends FriendsChatEvent {
   final String otherUserUID;
+  final String nickName;
   final QuerySnapshot snapshot;
 
   FriendsChatEventMessageRecieved({
     @required this.otherUserUID,
+    @required this.nickName,
     @required this.snapshot
   });
 }

@@ -161,7 +161,7 @@ class _FriendsChatScreenState extends State<FriendsChatScreen> {
   }
 
   Widget _buildMessage(int index, ChatModel chat) {
-    // 내가 보내는 메시지
+    /// [내가 보내는 메시지]
     if(chat.from == sl.get<CurrentUser>().uid){
       return Row(
         mainAxisAlignment: MainAxisAlignment.end,
@@ -193,7 +193,7 @@ class _FriendsChatScreenState extends State<FriendsChatScreen> {
           ),
         ],
       );
-      // 상대방이 보내는 메시지
+      /// [상대방이 보내는 메시지]
     } else {
       return Row(
         mainAxisAlignment: MainAxisAlignment.start,

@@ -119,7 +119,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
                                 style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),
                               ),
                               SizedBox(width: 10.0),
-                              sl.get<CurrentUser>().chatRoomNotification[chatListModel.chatRoomID]
+                              sl.get<CurrentUser>().chatRoomNotification[chatListModel.user.uid]
                               ? Icon(Icons.notifications,color: Colors.grey)
                               : Icon(Icons.notifications_off,color: Colors.grey)
                             ],

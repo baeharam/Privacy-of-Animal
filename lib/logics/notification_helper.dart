@@ -36,6 +36,7 @@ class NotificationHelper {
     );
   }
 
+  /// [상대방이 채팅을 보냈을 시 알림]
   Future<void> showChatNotification(String nickName, String content) async {
     var android =AndroidNotificationDetails(
       'Chat Notification ID',
@@ -52,7 +53,7 @@ class NotificationHelper {
     );
   }
 
-  // 상대방이 친구신청을 수락했을 시 알림
+  /// [상대방이 친구신청을 수락했을 시 알림]
   Future<void> showFriendsNotification(String nickName) async {
     var android =AndroidNotificationDetails(
       'Friends Notification ID',
@@ -69,7 +70,7 @@ class NotificationHelper {
     );
   }
 
-  // 상대방이 친구 신청 보냈을 시 알림
+  /// [상대방이 친구 신청 보냈을 시 알림]
   Future<void> showRequestNotification(String nickName) async {
     var android =AndroidNotificationDetails(
       'FriendsRequest Notification ID',

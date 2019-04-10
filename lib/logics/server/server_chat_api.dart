@@ -80,8 +80,10 @@ class ServerChatAPI {
 
     _chatRoomListSubscriptions[otherUser.uid] = _chatRoomListServer[otherUser.uid].listen((snapshot){
       if(snapshot.documentChanges.isNotEmpty) {
-        _updateChatHistory(otherUser.uid, snapshot);
+        _updateChatHistory(otherUser, snapshot);
         _updateChatListHistory(otherUser, chatRoomID, snapshot);
+      } else {
+        _isFirstChatHistoryFetch[otherUser.uid] = false;
       }
     });
   }
@@ -95,21 +97,22 @@ class ServerChatAPI {
   }
 
   /// [채팅내용 업데이트]
-  void _updateChatHistory(String otherUserUID, QuerySnapshot snapshot) {
-    debugPrint('$otherUserUID와의 채팅 내용 업데이트');
+  void _updateChatHistory(UserModel otherUser, QuerySnapshot snapshot) {
+    debugPrint('${otherUser.uid}와의 채팅 내용 업데이트');
 
     String from = snapshot.documentChanges[0].document.data[firestoreChatFromField];
 
-    if(_isFirstChatHistoryFetch[otherUserUID]) {
-      _isFirstChatHistoryFetch[otherUserUID] = false;
+    if(_isFirstChatHistoryFetch[otherUser.uid]) {
+      _isFirstChatHistoryFetch[otherUser.uid] = false;
       sl.get<FriendsChatBloc>().emitEvent(FriendsChatEvnetFirstChatFetch(
-        otherUserUID: otherUserUID,
+        otherUserUID: otherUser.uid,
         chat: snapshot.documents
       ));
-    } else if(from==otherUserUID) {
+    } else if(from==otherUser.uid) {
       sl.get<FriendsChatBloc>().emitEvent(FriendsChatEventMessageRecieved(
         snapshot: snapshot,
-        otherUserUID: otherUserUID
+        otherUserUID: otherUser.uid,
+        nickName: otherUser.fakeProfileModel.nickName
       ));
     }
   }

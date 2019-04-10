@@ -278,7 +278,7 @@ class FriendsAPI {
 
   /// [친구와 대화]
   Future<String> chatWithFriends(String userToChat) async {
-    debugPrint("Call chatWithFriends");
+    debugPrint("친구와 대화");
 
     sl.get<CurrentUser>().chatListHistory[userToChat] ??= ChatListModel();
     sl.get<CurrentUser>().chatHistory[userToChat] ??= List<ChatModel>();

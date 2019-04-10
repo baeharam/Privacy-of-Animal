@@ -29,7 +29,7 @@ class FriendsChatBloc extends BlocEventStateBase<FriendsChatEvent,FriendsChatSta
     }
 
     if(event is FriendsChatEventMessageRecieved) {
-      _api.updateChatHistory(event.otherUserUID, event.snapshot);
+      _api.updateChatHistory(event.otherUserUID, event.nickName, event.snapshot);
       yield FriendsChatState.messageReceived();
     }
 

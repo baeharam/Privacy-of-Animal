@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/database_helper.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
+import 'package:privacy_of_animal/logics/notification_helper.dart';
 import 'package:privacy_of_animal/models/chat_model.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
@@ -12,13 +13,11 @@ class FriendsChatAPI {
 
     /// [처음 채팅 업데이트]
   Future<void> fetchFirstChat(String otherUserUID, List<DocumentSnapshot> chatList) async {
-    debugPrint("Call fetchFirstChat");
+    debugPrint("처음 채팅 업데이트");
 
     sl.get<CurrentUser>().chatHistory[otherUserUID] ??= List<ChatModel>();
     
     for(DocumentSnapshot chat in chatList) {
-      if(chat.data[firestoreChatFromField]==sl.get<CurrentUser>().uid) continue;
-
       ChatModel chatModel = new ChatModel();
       chatModel.from = chat.data[firestoreChatFromField];
       chatModel.to = chat.data[firestoreChatToField];
@@ -34,13 +33,17 @@ class FriendsChatAPI {
   }
 
   /// [상대방에게 채팅 왔을 때 업데이트]
-  void updateChatHistory(String otherUserUID, QuerySnapshot snapshot) {
+  void updateChatHistory(String otherUserUID, String nickName, QuerySnapshot snapshot) {
     sl.get<CurrentUser>().chatHistory[otherUserUID] ??= List<ChatModel>();
 
     for(DocumentChange chatData in snapshot.documentChanges) {
       sl.get<CurrentUser>().chatHistory[otherUserUID].insert(0,ChatModel.fromSnapshot(
         snapshot: chatData.document
       ));
+      if(sl.get<CurrentUser>().chatRoomNotification[otherUserUID]) {
+        sl.get<NotificationHelper>().showChatNotification(nickName, 
+          chatData.document.data[firestoreChatContentField]);
+      }
     }
   }
 
