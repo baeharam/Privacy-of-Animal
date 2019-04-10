@@ -61,7 +61,7 @@ class _MatchScreenState extends State<MatchScreen> {
                 ),
                 GestureDetector(
                   child: MatchingButton(
-                    title: "랜덤 추천",
+                    title: "랜덤 매칭",
                     animation: "darting rl",
                     icon: "assets/images/components/roulette dart.flr",
                     baseColor: primaryPink,
@@ -113,13 +113,15 @@ class MatchingButton extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8.0),
                   color: baseColor
                 ),
-                child: Center(
+                child: Container(
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.only(left: 10.0),
                   child: Text(
                     title,
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
-                      fontSize: 14.0
+                      fontSize: 18.0
                     ),
                   ),
                 ),
