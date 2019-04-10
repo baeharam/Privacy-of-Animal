@@ -5,13 +5,17 @@ import 'package:privacy_of_animal/models/user_model.dart';
 class RandomLoadingState extends BlocState {
   
   final bool isInitial;
+
   final bool isChatRoomMadeSucceeded;
   final bool isChatRoomMadeFailed;
+
   final bool isMatchLoading;
   final bool isMatchSucceeded;
   final bool isMatchFailed;
+
   final bool isCancelSucceeded;
   final bool isCancelFailed;
+
   final bool isGetRoomIDFailed;
   final bool isReceiverDataFetchFailed;
 
@@ -20,13 +24,17 @@ class RandomLoadingState extends BlocState {
 
   RandomLoadingState({
     this.isInitial: false,
+
     this.isChatRoomMadeSucceeded: false,
     this.isChatRoomMadeFailed: false,
+
     this.isMatchLoading: false,
     this.isMatchSucceeded: false,
     this.isMatchFailed: false,
+
     this.isCancelSucceeded: false,
     this.isCancelFailed: false,
+
     this.isGetRoomIDFailed: false,
     this.isReceiverDataFetchFailed: false,
 
@@ -35,25 +43,13 @@ class RandomLoadingState extends BlocState {
   });
 
   // 초기상태
-  factory RandomLoadingState.initial() {
-    return RandomLoadingState(
-      isInitial: true
-    );
-  }
+  factory RandomLoadingState.initial() => RandomLoadingState(isInitial: true);
 
   /// 채팅방 ID 받아오기 [실패]
-  factory RandomLoadingState.getRoomIDFailed() {
-    return RandomLoadingState(
-      isGetRoomIDFailed: true
-    );
-  }
+  factory RandomLoadingState.getRoomIDFailed() => RandomLoadingState(isGetRoomIDFailed: true);
 
   /// 상대방 데이터 받아오기 [실패]
-  factory RandomLoadingState.receiverDataFetchFailed() {
-    return RandomLoadingState(
-      isReceiverDataFetchFailed: true
-    );
-  }
+  factory RandomLoadingState.receiverDataFetchFailed() => RandomLoadingState(isReceiverDataFetchFailed: true);
 
   /// 채팅방 만들기 [성공]
   factory RandomLoadingState.chatRoomMadeSucceeded({@required chatRoomID}) {
@@ -64,19 +60,10 @@ class RandomLoadingState extends BlocState {
   }
 
   /// 채팅방 만들기 [실패]
-  factory RandomLoadingState.chatRoomMadeFailed() {
-    return RandomLoadingState(
-      isChatRoomMadeFailed: true
-    );
-  }
+  factory RandomLoadingState.chatRoomMadeFailed() => RandomLoadingState(isChatRoomMadeFailed: true);
 
   /// 매칭 [로딩]
-  factory RandomLoadingState.matchLoading() {
-    return RandomLoadingState(
-      isMatchLoading: true
-    );
-  }
-
+  factory RandomLoadingState.matchLoading() => RandomLoadingState(isMatchLoading: true);
   /// 매칭 [성공]
   factory RandomLoadingState.matchSucceeded({@required chatRoomID, @required receiver}) {
     return RandomLoadingState(
@@ -85,25 +72,11 @@ class RandomLoadingState extends BlocState {
       receiver: receiver
     );
   }
-
   /// 매칭 [실패]
-  factory RandomLoadingState.matchFailed() {
-    return RandomLoadingState(
-      isMatchFailed: true
-    );
-  }
+  factory RandomLoadingState.matchFailed() => RandomLoadingState(isMatchFailed: true);
 
   /// 취소 [성공]
-  factory RandomLoadingState.cancelSucceeded() {
-    return RandomLoadingState(
-      isCancelSucceeded: true
-    );
-  }
-
+  factory RandomLoadingState.cancelSucceeded() => RandomLoadingState(isCancelSucceeded: true);
   /// 취소 [실패]
-  factory RandomLoadingState.cancelFailed() {
-    return RandomLoadingState(
-      isCancelFailed: true
-    );
-  }
+  factory RandomLoadingState.cancelFailed() => RandomLoadingState(isCancelFailed: true);
 }

@@ -6,6 +6,7 @@ import 'package:privacy_of_animal/logics/chat_list/chat_list.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/logics/friends_chat/friends_chat.dart';
+import 'package:privacy_of_animal/logics/random_chat/random_chat.dart';
 import 'package:privacy_of_animal/models/user_model.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
@@ -18,6 +19,8 @@ class ServerChatAPI {
   Map<String, Observable<QuerySnapshot>> _chatRoomListServer;
   Map<String, StreamSubscription<QuerySnapshot>> _chatRoomListSubscriptions;
 
+  
+
   final Firestore _firestore = sl.get<FirebaseAPI>().getFirestore();
 
   ServerChatAPI() {
@@ -28,6 +31,8 @@ class ServerChatAPI {
   void deactivateFlags() {
     _isFirstChatHistoryFetch.clear();
   }
+
+  
 
   /// [로그인 → 모든 채팅방 연결]
   Future<void> connectAllChatRoom() async {

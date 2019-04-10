@@ -17,16 +17,23 @@ class RandomChatBloc extends BlocEventStateBase<RandomChatEvent,RandomChatState>
       yield RandomChatState();
     }
 
+    if(event is RandomChatEventConnect) {
+      _api.connectRandomChat(event.chatRoomID,event.otherUserUID);
+    }
+
+    if(event is RandomChatEventDisconnect) {
+      await _api.disconnectRandomChat();
+    }
+
+    if(event is RandomChatEventMessageReceived) {
+      await _api.processChatSnapshot(event.chatSnapshot);
+      yield RandomChatState.messageReceived();
+    }
+
     if(event is RandomChatEventMessageSend){
       try {
-        DateTime timestamp = DateTime.now();
-        yield RandomChatState.showMessageFirst(event.content, timestamp);
-        await _api.sendMessage(
-          event.content, 
-          event.receiver, 
-          event.chatRoomID,
-          timestamp
-        );
+        _api.addChatDirectly(event.chatModel.to, event.chatModel);
+        await _api.sendMessage(event.chatModel.content,event.chatModel.to,event.chatRoomID);
         yield RandomChatState.sendMessageSucceeded();
       } catch(exception) {
         print('메시지 전송 실패\n${exception.toString()}');
@@ -36,6 +43,7 @@ class RandomChatBloc extends BlocEventStateBase<RandomChatEvent,RandomChatState>
 
     if(event is RandomChatEventOut) {
       try {
+        await _api.disconnectRandomChat();
         await _api.getOutChatRoom(event.chatRoomID);
         yield RandomChatState.getOutSucceeded();
       } catch(exception) {

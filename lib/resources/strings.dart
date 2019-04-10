@@ -182,7 +182,6 @@ const String wolfAnimal = 'wolf';
 
 // Cloud Firestore 컬렉션 이름
 const String firestoreUsersCollection = 'users';
-const String firestoreRandomChatCollection = 'random_chat';
 const String firestoreDeletedUserListCollection = 'deleted_user_list';
 const String firestoreRandomMessageCollection = 'random_messages';
 const String firestoreFriendsMessageCollection = friendsMessagesTable;

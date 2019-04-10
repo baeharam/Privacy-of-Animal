@@ -16,10 +16,11 @@ class RandomLoadingBloc extends BlocEventStateBase<RandomLoadingEvent,RandomLoad
   Stream<RandomLoadingState> eventHandler(RandomLoadingEvent event, RandomLoadingState currentState) async*{
     
     if(event is RandomLoadingEventStateClear) {
-      yield RandomLoadingState.initial();
+      yield RandomLoadingState();
     }
 
     if(event is RandomLoadingEventMatchStart){
+      _api.connectLoading();
       try {
         _chatRoomID = await _api.getRoomID();
         if(_chatRoomID.isEmpty) {
@@ -31,6 +32,7 @@ class RandomLoadingBloc extends BlocEventStateBase<RandomLoadingEvent,RandomLoad
             yield RandomLoadingState.chatRoomMadeFailed();
           }
         } else {
+          await _api.disconnectLoading();
           try {
             UserModel user = await _api.enterRoomAndGetUser(_chatRoomID);
             yield RandomLoadingState.matchSucceeded(
@@ -49,6 +51,7 @@ class RandomLoadingBloc extends BlocEventStateBase<RandomLoadingEvent,RandomLoad
     }
 
     if(event is RandomLoadingEventUserEntered) {
+      await _api.disconnectLoading();
       try {
         UserModel userData = await _api.fetchUserData(event.receiver);
         yield RandomLoadingState.matchSucceeded(
@@ -62,6 +65,7 @@ class RandomLoadingBloc extends BlocEventStateBase<RandomLoadingEvent,RandomLoad
     }
 
     if(event is RandomLoadingEventCancel) {
+      await _api.disconnectLoading();
       try {
         await _api.deleteMadeChatRoom();
         yield RandomLoadingState.cancelSucceeded();

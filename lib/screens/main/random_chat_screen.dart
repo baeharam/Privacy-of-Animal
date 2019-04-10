@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state_builder.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
-import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/logics/random_chat/random_chat.dart';
 import 'package:privacy_of_animal/logics/random_loading/random_loading.dart';
 import 'package:privacy_of_animal/models/chat_model.dart';
@@ -28,37 +27,41 @@ class RandomChatScreen extends StatefulWidget {
 
 class _RandomChatScreenState extends State<RandomChatScreen> {
 
-  final ScrollController scrollController = ScrollController();
-  final TextEditingController messageController = TextEditingController();
-  final FocusNode messageFocusNode = FocusNode();
-  final GlobalKey<ScaffoldState> scaffoldKey =GlobalKey<ScaffoldState>();
+  final ScrollController _scrollController = ScrollController();
+  final TextEditingController _messageController = TextEditingController();
+  final FocusNode _messageFocusNode = FocusNode();
+  final GlobalKey<ScaffoldState> _scaffoldKey =GlobalKey<ScaffoldState>();
 
-  final RandomChatBloc randomChatBloc = sl.get<RandomChatBloc>();
-  final RandomLoadingBloc randomLoadingBloc = sl.get<RandomLoadingBloc>();
+  final RandomChatBloc _randomChatBloc = sl.get<RandomChatBloc>();
+  final RandomLoadingBloc _randomLoadingBloc = sl.get<RandomLoadingBloc>();
 
-  // Cloud Firestore에서 불러와서 저장.
-  List<ChatModel> messages = List<ChatModel>();
-  bool isReceiverOut = false;
+  List<ChatModel> _messages = List<ChatModel>();
+  bool _isReceiverOut = false;
 
   @override
   void initState() {
     super.initState();
     initializeDateFormatting();
-    randomChatBloc.emitEvent(RandomChatEventStateClear());
+    _randomChatBloc.emitEvent(RandomChatEventConnect(
+      chatRoomID: widget.chatRoomID,
+      otherUserUID: widget.receiver.uid
+    ));
   }
 
   @override
   void dispose() {
     super.dispose();
-    messageController.dispose();
-    messageFocusNode.dispose();
-    scrollController.dispose();
+    _messageController.dispose();
+    _messageFocusNode.dispose();
+    _scrollController.dispose();
+    sl.get<CurrentUser>().randomChat.clear();
+    _randomChatBloc.emitEvent(RandomChatEventDisconnect());
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: scaffoldKey,
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text(
           '채팅',
@@ -74,8 +77,8 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
           IconButton(
             icon: Icon(Icons.refresh),
             onPressed: () {
-              randomChatBloc.emitEvent(RandomChatEventOut(chatRoomID: widget.chatRoomID));
-              randomLoadingBloc.emitEvent(RandomLoadingEventMatchStart());
+              _randomChatBloc.emitEvent(RandomChatEventOut(chatRoomID: widget.chatRoomID));
+              _randomLoadingBloc.emitEvent(RandomLoadingEventMatchStart());
               Navigator.pushReplacementNamed(context, routeRandomLoading);
             },
           )
@@ -83,8 +86,8 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
       ),
       body: WillPopScope(
         onWillPop: () { 
-          if(isReceiverOut) {
-            randomChatBloc.emitEvent(RandomChatEventOut(chatRoomID: widget.chatRoomID));
+          if(_isReceiverOut) {
+            _randomChatBloc.emitEvent(RandomChatEventOut(chatRoomID: widget.chatRoomID));
             return Future.value(true);
           } else {
             return BackButtonAction.dialogChatExit(context, widget.chatRoomID);
@@ -98,60 +101,30 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
             ),
             Flexible(
               child: BlocBuilder(
-                bloc: randomChatBloc,
+                bloc: _randomChatBloc,
                 builder: (blocContext, RandomChatState state){
-                  return StreamBuilder(
-                    stream: sl.get<FirebaseAPI>().getFirestore()
-                      .collection(firestoreRandomMessageCollection)
-                      .document(widget.chatRoomID)
-                      .collection(widget.chatRoomID)
-                      .orderBy(firestoreChatTimestampField,descending: true)
-                      .snapshots(),
-                    builder: (context, AsyncSnapshot<QuerySnapshot> snapshot){
-                      if(snapshot.hasData){
-                        snapshot.data.documents.map((documentSnapshot){
-                          messages.add(ChatModel.fromSnapshot(snapshot: documentSnapshot));
-                        });
-                      }
-                      return ListView.builder(
-                        padding: EdgeInsets.all(10.0),
-                        itemBuilder: (context,index) {
-                          print('message:'+ messages.length.toString());
-                          if(index==messages.length){
-                            return state.sendingMessage.isNotEmpty ?
-                            _buildMyMessage(index, state.sendingMessage, state.sendingTimestamp)
-                            : Container();
-                          }
-                          return _buildMessage(index,messages[index]);
-                        },
-                        itemCount: messages.length+1  ,
-                        reverse: true,
-                        controller: scrollController,
-                      );
-                    }
+                  if(state.isMessageReceived) {
+                    _messages = sl.get<CurrentUser>().randomChat;
+                  }
+                  return ListView.builder(
+                    padding: EdgeInsets.all(10.0),
+                    itemBuilder: (context,index) => _buildMessage(index,_messages[index]),
+                    itemCount: _messages.length,
+                    reverse: true,
+                    controller: _scrollController,
                   );
                 }
               ),
             ),
-            StreamBuilder(
-              stream: sl.get<FirebaseAPI>().getFirestore()
-                  .collection(firestoreRandomMessageCollection)
-                  .document(widget.chatRoomID)
-                  .snapshots(),
-              builder: (context, snapshot){
-                if(snapshot.hasData && snapshot.data.data!=null && snapshot.data.data[firestoreChatOutField]){
-                  randomChatBloc.emitEvent(RandomChatEventFinished());
-                  isReceiverOut = true;
-                  return Text('상대방이 나갔습니다.');
-                }
-                return Container();
-              },
-            ),
             BlocBuilder(
-              bloc: randomChatBloc,
+              bloc: _randomChatBloc,
               builder: (context, RandomChatState state){
                 if(state.isChatFinished){
-                  return Container(padding: const EdgeInsets.only(bottom: 10.0),);
+                  _isReceiverOut = true;
+                  return Container(
+                    padding: const EdgeInsets.only(bottom: 10.0),
+                    child: Text('상대방이 나갔습니다.'),
+                  );
                 }
                 return Row(
                   children: <Widget>[
@@ -164,8 +137,8 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
                             hintText: '메시지를 입력하세요.',
                             hintStyle: TextStyle(color: Colors.grey)
                           ),
-                          controller: messageController,
-                          focusNode: messageFocusNode,
+                          controller: _messageController,
+                          focusNode: _messageFocusNode,
                         ),
                       ),
                     ),
@@ -175,19 +148,23 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
                         child: IconButton(
                           icon: Icon(Icons.send),
                           onPressed: () {
-                            if(messageController.text.isEmpty) {
-                              scaffoldKey.currentState.showSnackBar(SnackBar(
+                            if(_messageController.text.isEmpty) {
+                              _scaffoldKey.currentState.showSnackBar(SnackBar(
                                 content: Text('메시지를 입력하세요.'),
                                 duration: const Duration(milliseconds: 100),
                               ));
                             } else {
-                              randomChatBloc.emitEvent(
+                              _randomChatBloc.emitEvent(
                               RandomChatEventMessageSend(
-                                content: messageController.text,
-                                receiver: widget.receiver.uid,
+                                chatModel: ChatModel(
+                                  from: sl.get<CurrentUser>().uid,
+                                  to: widget.receiver.uid,
+                                  content: _messageController.text,
+                                  timeStamp: Timestamp.fromDate(DateTime.now())
+                                ),
                                 chatRoomID: widget.chatRoomID
                               ));
-                              messageController.clear();
+                              _messageController.clear();
                             }
                           },
                           color: Colors.black,
@@ -204,115 +181,98 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
     );
   }
 
-  Widget _buildMyMessage(int index, String content, DateTime timestamp) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        _isLastRight(index) ?
-        Container(
-          margin: EdgeInsets.only(right: 10.0),
-          child: Text(
-            DateFormat('kk:mm','ko')
-              .format(DateTime.fromMillisecondsSinceEpoch(
-                timestamp.millisecondsSinceEpoch)),
-              style: TextStyle(color: Colors.grey,fontSize: 12.0),
-          ),
-        ) : Container(),
-        Container(
-          child: Text(
-            content,
-            style: TextStyle(
-              color: Colors.white
-            ),
-          ),
-          padding: EdgeInsets.fromLTRB(15.0,10.0,15.0,10.0),
-          decoration: BoxDecoration(
-            color: Colors.grey,
-            borderRadius: BorderRadius.circular(3.0)
-          ),
-          margin: EdgeInsets.only(bottom: 10.0, right: 10.0),
-        ),
-      ],
-    );
-  }
-
   Widget _buildMessage(int index, ChatModel chat) {
-
-    // 내가 보내는 메시지
+    /// [내가 보내는 메시지]
     if(chat.from == sl.get<CurrentUser>().uid){
       return Row(
         mainAxisAlignment: MainAxisAlignment.end,
-        children: [
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: <Widget>[
           _isLastRight(index) ?
           Container(
-            margin: EdgeInsets.only(right: 10.0),
+            margin: EdgeInsets.only(right: 10.0,bottom: 5.0),
             child: Text(
               DateFormat('kk:mm','ko')
                 .format(DateTime.fromMillisecondsSinceEpoch(chat.timeStamp.millisecondsSinceEpoch)),
                 style: TextStyle(color: Colors.grey,fontSize: 12.0),
             ),
           ) : Container(),
-          Container(
-            child: Text(
-              chat.content,
-              style: TextStyle(
-                color: Colors.white
-              ),
+          Flexible(
+            child: Column(
+              children: <Widget>[
+                SizedBox(height: 5.0),
+                Container(
+                  child: Text(
+                    chat.content,
+                    style: TextStyle(
+                      color: Colors.white
+                    ),
+                  ),
+                  padding: EdgeInsets.fromLTRB(15.0,10.0,15.0,10.0),
+                  decoration: BoxDecoration(
+                    color: Colors.black,
+                    borderRadius: BorderRadius.circular(3.0)
+                  ),
+                  margin: _isLastRight(index) ? const EdgeInsets.only(right: 10.0,bottom: 5.0)
+                    : const EdgeInsets.only(right: 10.0),
+                ),
+              ],
             ),
-            padding: EdgeInsets.fromLTRB(15.0,10.0,15.0,10.0),
-            decoration: BoxDecoration(
-              color: Colors.grey,
-              borderRadius: BorderRadius.circular(3.0)
-            ),
-            margin: EdgeInsets.only(bottom: 10.0, right: 10.0),
           ),
         ],
       );
-      // 상대방이 보내는 메시지
+      /// [상대방이 보내는 메시지]
     } else {
       return Row(
         mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: <Widget>[
+          _isFirstLeft(index) ?
           Column(
-            children: <Widget>[
-              GestureDetector(
+            children: [
+              Text(
+                widget.receiver.fakeProfileModel.nickName,
+                style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.w600
+                ),
+              ),
+              SizedBox(height: 5.0),
+              Container(
+                padding: const EdgeInsets.only(bottom: 10.0),
+                child: GestureDetector(
                 child: CircleAvatar(
-                  backgroundImage: _isFirstLeft(index)
-                  ? AssetImage(widget.receiver.fakeProfileModel.animalImage)
-                  : null,
+                  backgroundImage: AssetImage(widget.receiver.fakeProfileModel.animalImage),
                   backgroundColor: Colors.transparent,
                 ),
                 onTap: () => Navigator.push(context, MaterialPageRoute(
                   builder: (context) => OtherProfileScreen(user: widget.receiver)
                 )),
+              ))
+            ]
+          ) : Container(width: 40.0),
+          Flexible(
+            child: Container(
+              child: Text(
+                chat.content,
+                style: TextStyle(color: Colors.white),
               ),
-              Text(
-                _isFirstLeft(index) ? 
-                widget.receiver.fakeProfileModel.nickName
-                :''
-              )
-            ],
-          ),
-          Container(
-            child: Text(
-              chat.content,
-              style: TextStyle(color: Colors.white),
+              padding: EdgeInsets.fromLTRB(15.0,10.0,15.0,10.0),
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.6),
+                borderRadius: BorderRadius.circular(8.0)
+              ),
+              margin: EdgeInsets.only(left: 10.0,bottom: 5.0)
             ),
-            padding: EdgeInsets.fromLTRB(15.0,10.0,15.0,10.0),
-            decoration: BoxDecoration(
-              color: Colors.black,
-              borderRadius: BorderRadius.circular(8.0)
-            ),
-            margin: EdgeInsets.only(left: 10.0)
           ),
           _isLastLeft(index) ?
           Container(
-            margin: EdgeInsets.only(left: 10.0,top: 15.0),
-            child: Text(
-              DateFormat('kk:mm','ko')
-                .format(DateTime.fromMillisecondsSinceEpoch(chat.timeStamp.millisecondsSinceEpoch)),
-                style: TextStyle(color: Colors.grey,fontSize: 12.0),
-            ),
+          margin: EdgeInsets.only(left: 10.0,bottom: 5.0),
+          child: Text(
+            DateFormat('kk:mm','ko')
+              .format(DateTime.fromMillisecondsSinceEpoch(chat.timeStamp.millisecondsSinceEpoch)),
+              style: TextStyle(color: Colors.grey,fontSize: 12.0),
+          ),
           ) : Container()
         ],
       );
@@ -320,8 +280,8 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
   }
 
   bool _isFirstLeft(int index) {
-    if((index<messages.length-1 && messages!=null && messages[index+1].from!= messages[index].from)
-     || index == messages.length-1) {
+    if((index<_messages.length-1 && _messages!=null && _messages[index+1].from == sl.get<CurrentUser>().uid)
+     || (index == _messages.length-1)) {
        return true;
      } else {
        return false;
@@ -329,7 +289,7 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
   }
 
   bool _isLastLeft(int index) {
-    if((index>0 && messages!=null && messages[index-1].from == sl.get<CurrentUser>().uid) 
+    if((index>0 && _messages!=null && _messages[index-1].from == sl.get<CurrentUser>().uid) 
       || index==0){
         return true;
     } else {
@@ -338,7 +298,7 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
   }
 
   bool _isLastRight(int index) {
-    if((index>0 && messages!=null && messages[index-1].to == sl.get<CurrentUser>().uid) 
+    if((index>0 && _messages!=null && _messages[index-1].to == sl.get<CurrentUser>().uid) 
       || index==0){
         return true;
     } else {

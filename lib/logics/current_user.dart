@@ -26,6 +26,8 @@ class CurrentUser {
   Map<String,bool> chatRoomNotification;
   String currentChatRoomID;
 
+  List<ChatModel> randomChat;
+
   void clear() {
     uid = '';
 
@@ -46,6 +48,8 @@ class CurrentUser {
     friendsNotification = false;
     chatRoomNotification = Map<String,bool>();
     currentChatRoomID = '';
+
+    randomChat = List<ChatModel>();
   }
 
   CurrentUser() { clear(); }
