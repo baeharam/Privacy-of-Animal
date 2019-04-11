@@ -86,6 +86,7 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
       ),
       body: WillPopScope(
         onWillPop: () { 
+          _randomLoadingBloc.emitEvent(RandomLoadingEventStateClear());
           if(_isReceiverOut) {
             _randomChatBloc.emitEvent(RandomChatEventOut(chatRoomID: widget.chatRoomID));
             return Future.value(true);

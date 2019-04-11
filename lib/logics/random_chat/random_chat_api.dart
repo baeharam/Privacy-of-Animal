@@ -56,15 +56,17 @@ class RandomChatAPI {
     DocumentSnapshot doc = await sl.get<FirebaseAPI>().getFirestore()
       .collection(firestoreRandomMessageCollection)
       .document(chatRoomID).get();
-    await sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async{
-      QuerySnapshot forDelete = 
-        await doc.reference.collection(doc.documentID)
-        .getDocuments();
-      for(DocumentSnapshot document in forDelete.documents) {
-        await tx.delete(document.reference);
-      }
-      await tx.delete(doc.reference);
-    });
+    QuerySnapshot forDelete = await doc.reference.collection(doc.documentID)
+      .getDocuments();
+    
+    WriteBatch batch = sl.get<FirebaseAPI>().getFirestore().batch();
+
+    for(DocumentSnapshot document in forDelete.documents) {
+      batch.delete(document.reference);
+    }
+    batch.delete(doc.reference);
+    
+    await batch.commit();
   }
 
   /// [메시지 보내기]

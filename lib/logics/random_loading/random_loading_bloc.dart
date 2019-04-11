@@ -20,19 +20,18 @@ class RandomLoadingBloc extends BlocEventStateBase<RandomLoadingEvent,RandomLoad
     }
 
     if(event is RandomLoadingEventMatchStart){
-      _api.connectLoading();
       try {
         _chatRoomID = await _api.getRoomID();
         if(_chatRoomID.isEmpty) {
           try {
             _chatRoomID = await _api.makeChatRoom();
+            _api.connectLoading();
             yield RandomLoadingState.chatRoomMadeSucceeded(chatRoomID: _chatRoomID);
           } catch(exception) {
             print('채팅방 만들기 실패\n${exception.toString()}');
             yield RandomLoadingState.chatRoomMadeFailed();
           }
         } else {
-          await _api.disconnectLoading();
           try {
             UserModel user = await _api.enterRoomAndGetUser(_chatRoomID);
             yield RandomLoadingState.matchSucceeded(

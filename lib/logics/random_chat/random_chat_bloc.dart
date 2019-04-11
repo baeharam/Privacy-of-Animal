@@ -43,7 +43,6 @@ class RandomChatBloc extends BlocEventStateBase<RandomChatEvent,RandomChatState>
 
     if(event is RandomChatEventOut) {
       try {
-        await _api.disconnectRandomChat();
         await _api.getOutChatRoom(event.chatRoomID);
         yield RandomChatState.getOutSucceeded();
       } catch(exception) {
