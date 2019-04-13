@@ -28,7 +28,6 @@ class RandomLoadingAPI {
       debugPrint('대기중인 방 없음...');
       return '';
     }
-    debugPrint(querySnapshot.documents[0].documentID);
     debugPrint('대기중인 방 찾음!');
     Random random = Random();
     DocumentSnapshot document = querySnapshot.documents[random.nextInt(querySnapshot.documents.length)];

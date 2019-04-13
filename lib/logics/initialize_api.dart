@@ -17,7 +17,10 @@ class InitializeAPI {
         projectID: projectID
       )
     );
-    await Firestore.instance.settings(timestampsInSnapshotsEnabled: true);
+    await Firestore.instance.settings(
+      timestampsInSnapshotsEnabled: true,
+      persistenceEnabled: false
+    );
   }
 
   // 상수값 초기화
