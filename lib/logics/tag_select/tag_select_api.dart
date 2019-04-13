@@ -25,7 +25,7 @@ class TagSelectAPI {
     String uid = await sl.get<FirebaseAPI>().user;
     try{
       SharedPreferences prefs = await sl.get<DatabaseHelper>().sharedPreferences;
-      prefs.setBool(uid+isTagSelected, true);
+      await prefs.setBool(uid+isTagSelected, true);
       await _storeTagsIntoFirestore(uid);
       await _storeTagsIntoLocalDB(uid);
     }catch(exception){

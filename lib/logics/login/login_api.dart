@@ -61,9 +61,9 @@ class LoginAPI {
     bool faceAnalyzeFlag = prefs.getBool(uid+isFaceAnalyzed);
     if(tagSelectFlag==null || tagChatFlag==null || faceAnalyzeFlag==null){
       DocumentSnapshot document = await sl.get<FirebaseAPI>().getFirestore().collection(firestoreUsersCollection).document(uid).get();
-      prefs.setBool(uid+isTagSelected, document[firestoreIsTagSelectedField]);
-      prefs.setBool(uid+firestoreIsTagChattedField, document[firestoreIsTagChattedField]);
-      prefs.setBool(uid+firestoreIsFaceAnalyzedField, document[firestoreIsFaceAnalyzedField]);
+      await prefs.setBool(uid+isTagSelected, document[firestoreIsTagSelectedField]);
+      await prefs.setBool(uid+firestoreIsTagChattedField, document[firestoreIsTagChattedField]);
+      await prefs.setBool(uid+firestoreIsFaceAnalyzedField, document[firestoreIsFaceAnalyzedField]);
     }
   }
 }

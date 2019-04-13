@@ -50,10 +50,15 @@ class FriendsChatAPI {
 
   /// [친구 알림 설정]
   Future<void> setChatRoomNotification(String otherUserUID) async {
+    bool original = sl.get<CurrentUser>().chatRoomNotification[otherUserUID];
+    debugPrint('$otherUserUID의 채팅 알림을 $original에서');
+
     SharedPreferences prefs = await sl.get<DatabaseHelper>().sharedPreferences;
-    bool value = !sl.get<CurrentUser>().chatRoomNotification[otherUserUID];
-    prefs.setBool(otherUserUID, value);
+    bool value = !original;
+    await prefs.setBool(otherUserUID, value);
     sl.get<CurrentUser>().chatRoomNotification[otherUserUID] = value;
+
+    debugPrint('$value로 변경!');
   }
   
   /// [채팅 보내기]

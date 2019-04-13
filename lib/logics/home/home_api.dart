@@ -19,7 +19,7 @@ class HomeAPI {
   String uid;
 
   void deactivateFlags() {
-    debugPrint('Call resetForLogout()');
+    debugPrint('HomeAPI 플래그 초기화');
 
     isProfileDataFetched = false;
     isFriendsDataFetched = false;
@@ -115,7 +115,7 @@ class HomeAPI {
 
   Future<void> _setFriendsNotification(String uid) async{
     if(prefs.getBool(uid+friendsNotification)==null){
-      prefs.setBool(uid+friendsNotification, false);
+      await prefs.setBool(uid+friendsNotification, false);
       sl.get<CurrentUser>().friendsNotification = false;
     } else {
       sl.get<CurrentUser>().friendsNotification = prefs.getBool(uid+friendsNotification);
@@ -136,8 +136,8 @@ class HomeAPI {
         }
       });
       if(prefs.getBool(friendsUID)==null) {
-        prefs.setBool(friendsUID, false);
-        sl.get<CurrentUser>().chatRoomNotification[friendsUID] = false;
+        await prefs.setBool(friendsUID, true);
+        sl.get<CurrentUser>().chatRoomNotification[friendsUID] = true;
       } else {
         sl.get<CurrentUser>().chatRoomNotification[friendsUID] = prefs.getBool(friendsUID);
       }

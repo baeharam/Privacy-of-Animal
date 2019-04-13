@@ -47,7 +47,7 @@ class PhotoAPI {
 
     // SharedPreferences 업데이트
     SharedPreferences prefs = await sl.get<DatabaseHelper>().sharedPreferences;
-    prefs.setBool(uid+isFaceAnalyzed,true);
+    await prefs.setBool(uid+isFaceAnalyzed,true);
 
     int now = DateTime.now().millisecondsSinceEpoch;
 

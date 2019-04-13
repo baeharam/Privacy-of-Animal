@@ -27,7 +27,7 @@ class FriendsAPI {
   Future<void> setFriendsNotification() async {
     SharedPreferences prefs = await sl.get<DatabaseHelper>().sharedPreferences;
     bool value = !sl.get<CurrentUser>().friendsNotification;
-    prefs.setBool(_uid+friendsNotification, value);
+    await prefs.setBool(_uid+friendsNotification, value);
     sl.get<CurrentUser>().friendsNotification = value;
   }
 
@@ -314,7 +314,7 @@ class FriendsAPI {
     debugPrint("친구 증가했을 때 로컬에서 업데이트");
 
     SharedPreferences prefs = await sl.get<DatabaseHelper>().sharedPreferences;
-    prefs.setBool(newFriends.uid, true);
+    await prefs.setBool(newFriends.uid, true);
 
     sl.get<CurrentUser>().friendsList.add(newFriends);
     sl.get<CurrentUser>().chatHistory[newFriends.uid] = [];

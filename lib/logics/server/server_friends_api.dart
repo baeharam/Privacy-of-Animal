@@ -99,7 +99,7 @@ class ServerFriendsAPI {
 
   /// [로그아웃 → 친구목록 해제]
   Future<void> disconnectFriendsList() async {
-    debugPrint('Call disconnectFriendsList()');
+    debugPrint('친구 목록 해제');
 
     await _friendsSubscription.cancel();
   }
