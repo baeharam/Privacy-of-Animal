@@ -125,15 +125,21 @@ class HomeAPI {
   Future<void> _setChatRoomNotification() async{
     QuerySnapshot chatRoomsSnapshot = await sl.get<FirebaseAPI>().getFirestore()
       .collection(firestoreFriendsMessageCollection)
+      .where('$firestoreChatUsersField.${sl.get<CurrentUser>().uid}',isEqualTo: true)
       .getDocuments();
     
     for(DocumentSnapshot chatRoomSnapshot in chatRoomsSnapshot.documents) {
-      String chatRoomID = chatRoomSnapshot.documentID;
-      if(prefs.getBool(chatRoomID)==null) {
-        prefs.setBool(chatRoomID, false);
-        sl.get<CurrentUser>().chatRoomNotification[chatRoomID] = false;
+      String friendsUID = '';
+      (chatRoomSnapshot.data[firestoreChatUsersField] as Map).forEach((key,value){
+        if(key != sl.get<CurrentUser>().uid){
+          friendsUID = key;
+        }
+      });
+      if(prefs.getBool(friendsUID)==null) {
+        prefs.setBool(friendsUID, false);
+        sl.get<CurrentUser>().chatRoomNotification[friendsUID] = false;
       } else {
-        sl.get<CurrentUser>().chatRoomNotification[chatRoomID] = prefs.getBool(chatRoomID);
+        sl.get<CurrentUser>().chatRoomNotification[friendsUID] = prefs.getBool(friendsUID);
       }
     }
   }
