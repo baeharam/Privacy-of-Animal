@@ -178,6 +178,10 @@ const String toadAnimal = 'toad';
 const String weaselAnimal = 'weasel';
 const String wolfAnimal = 'wolf';
 
+// Notification Payload 이름
+const String notificationFriendsPayload = 'friends_payload';
+const String notificationRequestPayload = 'request_payload';
+const String notificationChatPayload = 'chat_payload';
 
 
 // Cloud Firestore 컬렉션 이름

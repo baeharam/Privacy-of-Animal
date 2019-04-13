@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:privacy_of_animal/logics/home/home.dart';
+import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:privacy_of_animal/utils/stream_navigator.dart';
 
@@ -26,11 +27,15 @@ class NotificationHelper {
 
   // Notification 눌렀을 때 나오는 메시지
   Future<void> _onSelectNotification(String payload) async {
+
+    int navigationIndex = payload==notificationFriendsPayload || payload==notificationRequestPayload
+      ? TAB.FRIENDS.index : TAB.CHAT.index;
+
     showDialog(
       context: _context,
       builder: (context) {
         StreamNavigator.pop(context);
-        sl.get<HomeBloc>().emitEvent(HomeEventNavigate(index: 2));
+        sl.get<HomeBloc>().emitEvent(HomeEventNavigate(index: navigationIndex));
         return Container();
       }
     );
@@ -49,7 +54,7 @@ class NotificationHelper {
 
     await _flutterLocalNotificationsPlugin.show(
       0, nickName,content,platform,
-      payload: '채팅'
+      payload: notificationChatPayload
     );
   }
 
@@ -66,7 +71,7 @@ class NotificationHelper {
 
     await _flutterLocalNotificationsPlugin.show(
       0, '친구','$nickName 님이 친구신청을 수락하였습니다.',platform,
-      payload: '친구'
+      payload: notificationFriendsPayload
     );
   }
 
@@ -83,7 +88,7 @@ class NotificationHelper {
 
     await _flutterLocalNotificationsPlugin.show(
       0, '친구 신청','$nickName 님으로부터 친구신청이 왔습니다.',platform,
-      payload: '친구 신청 알림'
+      payload: notificationRequestPayload
     );
   }
 }

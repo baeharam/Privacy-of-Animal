@@ -47,8 +47,8 @@ class _FriendsChatScreenState extends State<FriendsChatScreen> {
     super.dispose();
   }
 
-  void _initCurrentChatRoomID() => sl.get<CurrentUser>().currentChatRoomID = widget.chatRoomID;
-  void _disposeCurrentChatRoomID() => sl.get<CurrentUser>().currentChatRoomID = '';
+  void _initCurrentChatRoomID() => sl.get<CurrentUser>().currentChatUID = widget.receiver.uid;
+  void _disposeCurrentChatRoomID() => sl.get<CurrentUser>().currentChatUID = '';
 
   
 

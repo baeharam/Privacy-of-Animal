@@ -24,7 +24,7 @@ class CurrentUser {
 
   bool friendsNotification;
   Map<String,bool> chatRoomNotification;
-  String currentChatRoomID;
+  String currentChatUID;
 
   List<ChatModel> randomChat;
 
@@ -47,7 +47,7 @@ class CurrentUser {
 
     friendsNotification = false;
     chatRoomNotification = Map<String,bool>();
-    currentChatRoomID = '';
+    currentChatUID = '';
 
     randomChat = List<ChatModel>();
   }

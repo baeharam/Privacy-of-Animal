@@ -40,7 +40,8 @@ class FriendsChatAPI {
       sl.get<CurrentUser>().chatHistory[otherUserUID].insert(0,ChatModel.fromSnapshot(
         snapshot: chatData.document
       ));
-      if(sl.get<CurrentUser>().chatRoomNotification[otherUserUID]) {
+      if(sl.get<CurrentUser>().chatRoomNotification[otherUserUID] &&
+        sl.get<CurrentUser>().currentChatUID != otherUserUID) {
         sl.get<NotificationHelper>().showChatNotification(nickName, 
           chatData.document.data[firestoreChatContentField]);
       }
