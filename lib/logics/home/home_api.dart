@@ -123,22 +123,24 @@ class HomeAPI {
   }
 
   Future<void> _setChatRoomNotification() async{
+    debugPrint('채팅 알림 설정');
+
     QuerySnapshot chatRoomsSnapshot = await sl.get<FirebaseAPI>().getFirestore()
-      .collection(firestoreFriendsMessageCollection)
-      .where('$firestoreChatUsersField.${sl.get<CurrentUser>().uid}',isEqualTo: true)
+      .collection(firestoreUsersCollection)
+      .document(sl.get<CurrentUser>().uid)
+      .collection(firestoreFriendsSubCollection)
       .getDocuments();
     
     for(DocumentSnapshot chatRoomSnapshot in chatRoomsSnapshot.documents) {
-      String friendsUID = '';
-      (chatRoomSnapshot.data[firestoreChatUsersField] as Map).forEach((key,value){
-        if(key != sl.get<CurrentUser>().uid){
-          friendsUID = key;
-        }
-      });
+      String friendsUID = chatRoomSnapshot.documentID;
       if(prefs.getBool(friendsUID)==null) {
+        debugPrint('$friendsUID와의 채팅알림은 null');
+
         await prefs.setBool(friendsUID, true);
         sl.get<CurrentUser>().chatRoomNotification[friendsUID] = true;
       } else {
+        debugPrint('$friendsUID와의 채팅알림은 ${prefs.getBool(friendsUID)}');
+
         sl.get<CurrentUser>().chatRoomNotification[friendsUID] = prefs.getBool(friendsUID);
       }
     }
