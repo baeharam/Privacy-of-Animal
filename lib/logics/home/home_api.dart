@@ -66,9 +66,9 @@ class HomeAPI {
     }
   }
 
-  Future<void> fetchChatRoomListData() async {
+  Future<void> fetchChatData() async {
     if(!isChatRoomListDataFetched) {
-      debugPrint('채팅 리스트 데이터 가져오기');
+      debugPrint('채팅 데이터 가져오기');
 
       await _setChatRoomNotification();
       await sl.get<ServerChatAPI>().connectAllChatRoom();

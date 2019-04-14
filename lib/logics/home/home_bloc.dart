@@ -30,7 +30,7 @@ class HomeBloc extends BlocEventStateBase<HomeEvent,HomeState> {
       try {
         await _api.fetchProfileData();
         await _api.fetchFriendsData();
-        await _api.fetchChatRoomListData();
+        await _api.fetchChatData();
         yield HomeState.fetchSucceeded();
       } catch(exception) {
         print("데이터 가져오기 에러: ${exception.toString()}");

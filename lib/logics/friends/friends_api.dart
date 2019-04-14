@@ -314,7 +314,7 @@ class FriendsAPI {
 
   /// [로컬에서 친구 증가]
   Future<void> _increaseLocalFriends(UserModel newFriends) async{
-    debugPrint("친구 증가했을 때 로컬에서 업데이트");
+    debugPrint("처음 혹은 친구 증가했을 때 로컬에서 업데이트");
 
     SharedPreferences prefs = await sl.get<DatabaseHelper>().sharedPreferences;
     await prefs.setBool(newFriends.uid, true);
@@ -334,7 +334,7 @@ class FriendsAPI {
 
   /// [로컬에서 친구신청 증가]
   void _increaseLocalRequest(UserModel requestingUser) {
-    debugPrint("친구신청 증가했을 때 로컬에서 업데이트");
+    debugPrint("처음 혹은 친구신청 증가했을 때 로컬에서 업데이트");
 
     sl.get<CurrentUser>().requestFromList.add(requestingUser);
   }
