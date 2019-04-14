@@ -25,9 +25,8 @@ class ServerFriendsAPI {
     _friendsSubscription = _friendsServer.listen((_){});
   }
 
-  void deactivateFlags() {
-    _isFirstFriendsFetch = true;
-  }
+  /// [플래그 비활성화]
+  void deactivateFlags() => _isFirstFriendsFetch = true;
   
 
   /// [로그인 → 친구목록 연결]
@@ -53,7 +52,7 @@ class ServerFriendsAPI {
             sl.get<OtherProfileBloc>().emitEvent(OtherProfileEventRefreshLoading());
           }
         
-        // 친구 감소
+        /// [친구 감소]
         if(beforeFriendsNum >= snapshot.documents.length && !_isFirstFriendsFetch) {
           debugPrint('친구 감소!!');
 
@@ -69,7 +68,7 @@ class ServerFriendsAPI {
           }
           sl.get<FriendsBloc>().emitEvent(FriendsEventFriendsDecreased(friends: snapshot.documentChanges));
         } 
-        // 친구 증가
+        /// [친구 증가]
         else if(!_isFirstFriendsFetch){
           debugPrint('친구 증가!!');
 
@@ -80,7 +79,7 @@ class ServerFriendsAPI {
           }
           sl.get<FriendsBloc>().emitEvent(FriendsEventFriendsIncreased(friends: snapshot.documentChanges));
         } 
-        // 처음
+        /// [처음]
         else {
           debugPrint('처음, 친구 있음');
 

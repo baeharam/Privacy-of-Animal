@@ -68,7 +68,7 @@ class ServerRequestAPI {
     _requestFromSubscription = _requestFromServer.listen((snapshot) async{
       if(snapshot.documentChanges.isNotEmpty) {
 
-        // 친구신청 증가
+        /// [친구신청 증가]
         if(sl.get<CurrentUser>().requestFromList.length < snapshot.documents.length
           && !_isFirstRequestFetch) {
             debugPrint('친구신청 증가!!');
@@ -77,7 +77,7 @@ class ServerRequestAPI {
               FriendsEventRequestIncreased(request: snapshot.documentChanges)
             );
           } 
-        // 친구신청 감소
+        /// [친구신청 감소]
         else if(!_isFirstRequestFetch){
           debugPrint('친구신청 감소!!');
 
@@ -85,7 +85,7 @@ class ServerRequestAPI {
             FriendsEventRequestDecreased(request: snapshot.documentChanges)
           );
         }
-        // 처음
+        /// [처음]
         else {
           debugPrint('처음, 친구신청 있음');
 
@@ -95,7 +95,7 @@ class ServerRequestAPI {
           );
         }
       } 
-      // 처음
+      /// [처음]
       else {
         debugPrint('처음, 친구신청 없음');
 

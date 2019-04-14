@@ -26,6 +26,8 @@ class FriendsAPI {
 
   /// [친구 알림 설정]
   Future<void> setFriendsNotification() async {
+    debugPrint('친구 알림 설정');
+
     SharedPreferences prefs = await sl.get<DatabaseHelper>().sharedPreferences;
     bool value = !sl.get<CurrentUser>().friendsNotification;
     await prefs.setBool(_uid+friendsNotification, value);
@@ -67,21 +69,23 @@ class FriendsAPI {
     _setNewFriendsNum(newFriendsList.length);
 
     for(DocumentChange newFriends in newFriendsList) {
-      debugPrint("${newFriends.document.documentID}, IsAccepted: ${newFriends.document.data[firestoreFriendsAccepted]}");
-      DocumentSnapshot newFriendsSnapshot = await sl.get<FirebaseAPI>().getFirestore()
-        .collection(firestoreUsersCollection)
-        .document(newFriends.document.documentID)
-        .get();
-      UserModel newFriendsUserModel =UserModel.fromSnapshot(snapshot: newFriendsSnapshot);
+      bool isAccepted = newFriends.document.data[firestoreFriendsAccepted];
+      debugPrint("${newFriends.document.documentID}, 친구신청 받았는가? : $isAccepted");
+      
+      DocumentSnapshot newFriendsSnapshot = await sl.get<FirebaseAPI>().
+        getUserSnapshot(newFriends.document.documentID);
+      UserModel newFriendsUserModel = UserModel.fromSnapshot(snapshot: newFriendsSnapshot);
       _increaseLocalFriends(newFriendsUserModel);
       _updateOtherProfileFriends(newFriendsUserModel.uid);
-      if(newFriends.document.data[firestoreFriendsAccepted]) {
+      if(isAccepted) {
         _notifyingFriends ??= newFriendsUserModel;
       }
     }
   }
 
   void _setNewFriendsNum(int num) {
+    debugPrint('새로운 친구 수 갱신');
+
     sl.get<CurrentUser>().newFriendsNum = num;
   }
 
@@ -109,9 +113,8 @@ class FriendsAPI {
 
     for(DocumentChange deletedFriends in deletedFriendsList) {
       String deletedFriendsUID = deletedFriends.document.documentID;
-      DocumentSnapshot deletedFriendsSnapshot = await sl.get<FirebaseAPI>().getFirestore()
-        .collection(firestoreUsersCollection)
-        .document(deletedFriendsUID).get();
+      DocumentSnapshot deletedFriendsSnapshot = await sl.get<FirebaseAPI>()
+        .getUserSnapshot(deletedFriendsUID);
       UserModel deletedFriendsUserModel = UserModel.fromSnapshot(snapshot: deletedFriendsSnapshot);
       await _decreaseLocalFriends(deletedFriendsUserModel);
       _updateOtherProfileFriends(deletedFriendsUID);
@@ -123,10 +126,8 @@ class FriendsAPI {
     debugPrint("친구신청 증가했을 때 데이터 가져오기");
 
     for(DocumentChange newRequestFrom in newRequestFromList) {
-      DocumentSnapshot newRequestFromSnapshot = await sl.get<FirebaseAPI>().getFirestore()
-        .collection(firestoreUsersCollection)
-        .document(newRequestFrom.document.documentID)
-        .get();
+      DocumentSnapshot newRequestFromSnapshot = await sl.get<FirebaseAPI>()
+        .getUserSnapshot(newRequestFrom.document.documentID);
       UserModel newRequestFromUserModel =UserModel.fromSnapshot(snapshot: newRequestFromSnapshot);
       _increaseLocalRequest(newRequestFromUserModel);
       _updateOtherProfileRequest(newRequestFromUserModel.uid);

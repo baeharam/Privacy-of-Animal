@@ -18,27 +18,21 @@ class ServerChatAPI {
   Map<String, Observable<QuerySnapshot>> _chatRoomListServer;
   Map<String, StreamSubscription<QuerySnapshot>> _chatRoomListSubscriptions;
 
-  
-
-  final Firestore _firestore = sl.get<FirebaseAPI>().getFirestore();
-
   ServerChatAPI() {
     _chatRoomListServer = Map<String, Observable<QuerySnapshot>>();
     _chatRoomListSubscriptions = Map<String, StreamSubscription<QuerySnapshot>>();
   }
 
-  void deactivateFlags() {
-    _isFirstChatHistoryFetch.clear();
-  }
+  /// [플래그 비활성화]
+  void deactivateFlags() => _isFirstChatHistoryFetch.clear();
 
-  
 
   /// [로그인 → 모든 채팅방 연결]
   Future<void> connectAllChatRoom() async {
     debugPrint('모든 채팅방 연결');
 
     QuerySnapshot friendsListSnapshot = 
-      await _firestore
+      await sl.get<FirebaseAPI>().getFirestore()
       .collection(firestoreUsersCollection)
       .document(sl.get<CurrentUser>().uid)
       .collection(firestoreFriendsSubCollection)
@@ -47,10 +41,7 @@ class ServerChatAPI {
 
     for(DocumentSnapshot friends in friendsListSnapshot.documents) {
       DocumentSnapshot friendsInfoSnapshot = 
-        await _firestore
-        .collection(firestoreUsersCollection)
-        .document(friends.documentID)
-        .get();
+        await sl.get<FirebaseAPI>().getUserSnapshot(friends.documentID);
       await connectChatRoom(otherUser: UserModel.fromSnapshot(snapshot: friendsInfoSnapshot));
     }
   }
@@ -73,7 +64,7 @@ class ServerChatAPI {
     _isFirstChatHistoryFetch[otherUser.uid] ??= true;
 
     _chatRoomListServer[otherUser.uid] = Observable(
-      _firestore
+      sl.get<FirebaseAPI>().getFirestore()
       .collection(firestoreFriendsMessageCollection)
       .document(chatRoomID)
       .collection(chatRoomID)
@@ -137,7 +128,7 @@ class ServerChatAPI {
     debugPrint('$otherUserUID와의 채팅방 ID가져오기');
 
     QuerySnapshot friendsChatSnapshot = 
-      await _firestore
+      await sl.get<FirebaseAPI>().getFirestore()
       .collection(firestoreFriendsMessageCollection)
       .where('$firestoreChatUsersField.${sl.get<CurrentUser>().uid}', isEqualTo: true)
       .where('$firestoreChatUsersField.$otherUserUID', isEqualTo: true)
@@ -154,7 +145,7 @@ class ServerChatAPI {
     debugPrint('가장 마지막에 나간 시간 가져오기');
 
     DocumentSnapshot doc = 
-      await _firestore
+      await sl.get<FirebaseAPI>().getFirestore()
       .collection(firestoreFriendsMessageCollection)
       .document(chatRoomID)
       .get();
