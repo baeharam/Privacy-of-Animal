@@ -29,7 +29,7 @@ class ServerChatAPI {
 
   /// [로그인 → 모든 채팅방 연결]
   Future<void> connectAllChatRoom() async {
-    debugPrint('모든 채팅방 연결');
+    debugPrint('[채팅] 모든 채팅방 연결');
 
     QuerySnapshot friendsListSnapshot = 
       await sl.get<FirebaseAPI>().getFirestore()
@@ -48,7 +48,7 @@ class ServerChatAPI {
 
   /// [로그아웃 → 모든 채팅방 해제]
   Future<void> disconnectAllChatRoom() async {
-    debugPrint('모든 채팅방 해제');
+    debugPrint('[채팅] 모든 채팅방 해제');
 
     sl.get<CurrentUser>().friendsList.map((friends) async{
       await disconnectChatRoom(otherUserUID: friends.uid);
@@ -57,10 +57,10 @@ class ServerChatAPI {
 
   /// [친구수락 → 채팅방 연결]
   Future<void> connectChatRoom({@required UserModel otherUser}) async{
-    debugPrint('${otherUser.uid}의 채팅방 연결');
+    debugPrint('[채팅] ${otherUser.uid}의 채팅방 연결');
 
     String chatRoomID = await _getChatRoomID(otherUser.uid);
-    Timestamp outTimestamp = await _getChatRoomOutTimestamp(chatRoomID);
+    Timestamp outTimestamp = await _getChatRoomOutTimestamp(otherUser.uid);
     _isFirstChatHistoryFetch[otherUser.uid] ??= true;
 
     _chatRoomListServer[otherUser.uid] = Observable(
@@ -85,7 +85,7 @@ class ServerChatAPI {
 
   /// [친구차단 → 채팅방 해제]
   Future<void> disconnectChatRoom({@required String otherUserUID}) async{
-    debugPrint('$otherUserUID의 채팅방 해제');
+    debugPrint('[채팅] $otherUserUID의 채팅방 해제');
 
     await _chatRoomListSubscriptions[otherUserUID].cancel();
     _chatRoomListServer.remove(otherUserUID);
@@ -93,7 +93,6 @@ class ServerChatAPI {
 
   /// [채팅내용 업데이트]
   void _updateChatHistory(UserModel otherUser, QuerySnapshot snapshot) {
-    debugPrint('${otherUser.uid}와의 채팅 내용 업데이트');
 
     String from = snapshot.documentChanges[0].document.data[firestoreChatFromField];
 
@@ -114,7 +113,7 @@ class ServerChatAPI {
 
   /// [채팅 리스트 업데이트]
   void _updateChatListHistory(UserModel otherUser, String chatRoomID, QuerySnapshot snapshot) {
-    debugPrint('${otherUser.uid}와의 채팅 리스트 업데이트');
+    debugPrint('[채팅] ${otherUser.uid}와의 채팅 리스트 업데이트');
 
     sl.get<ChatListBloc>().emitEvent(ChatListEventNew(
       newMessages: snapshot.documentChanges,
@@ -125,7 +124,7 @@ class ServerChatAPI {
 
   /// [채팅방 ID 가져오기]
   Future<String> _getChatRoomID(String otherUserUID) async {
-    debugPrint('$otherUserUID와의 채팅방 ID가져오기');
+    debugPrint('[채팅] $otherUserUID와의 채팅방 ID가져오기');
 
     QuerySnapshot friendsChatSnapshot = 
       await sl.get<FirebaseAPI>().getFirestore()
@@ -135,20 +134,22 @@ class ServerChatAPI {
       .limit(1)
       .getDocuments();
 
-    assert(friendsChatSnapshot.documents.isNotEmpty, "에러! 친구끼리의 채팅이 없음");
+    assert(friendsChatSnapshot.documents.isNotEmpty, "[채팅] 에러! 친구끼리의 채팅이 없음");
     
     return friendsChatSnapshot.documents[0].documentID;
   }
 
   /// [채팅방 가장 마지막에 나간 시간 가져오기]
-  Future<Timestamp> _getChatRoomOutTimestamp(String chatRoomID) async {
-    debugPrint('가장 마지막에 나간 시간 가져오기');
+  Future<Timestamp> _getChatRoomOutTimestamp(String otherUserUID) async {
+    debugPrint('[채팅] $otherUserUID와의 채팅방에서 나간 시간 가져오기');
 
-    DocumentSnapshot doc = 
+    QuerySnapshot doc = 
       await sl.get<FirebaseAPI>().getFirestore()
       .collection(firestoreFriendsMessageCollection)
-      .document(chatRoomID)
-      .get();
-    return doc.data[firestoreChatOutField][sl.get<CurrentUser>().uid];
+      .where('$firestoreChatUsersField.${sl.get<CurrentUser>().uid}',isEqualTo: true)
+      .where('$firestoreChatUsersField.$otherUserUID',isEqualTo: true)
+      .limit(1)
+      .getDocuments();
+    return doc.documents[0].data[firestoreChatOutField][sl.get<CurrentUser>().uid];
   }
 }

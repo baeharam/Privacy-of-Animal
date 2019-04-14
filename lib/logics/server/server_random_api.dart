@@ -28,7 +28,7 @@ class ServerRandomAPI {
 
   /// [랜덤 매칭, 채팅방 만들고 기다리는 연결 ]
   void connectRandomLoading() {
-    debugPrint('랜덤 매칭, 채팅방 만들고 기다리는 연결');
+    debugPrint('[랜덤] 채팅방 만들고 기다리는 연결');
 
     Stream<QuerySnapshot> snapshot = sl.get<FirebaseAPI>().getFirestore()
         .collection(firestoreRandomMessageCollection)
@@ -40,7 +40,7 @@ class ServerRandomAPI {
 
     _randomLoadingSubscription = _randomLoadingServer.listen((snapshot){
       if(snapshot.documents.isNotEmpty){
-        debugPrint('상대방 들어옴!');
+        debugPrint('[랜덤] 상대방 들어옴!');
 
         String receiver = '';
         (snapshot.documents[0].data[firestoreChatUsersField] as Map).forEach((key,value){
@@ -58,14 +58,14 @@ class ServerRandomAPI {
 
   /// [랜덤 매칭, 채팅방 만들고 기다리는 연결 해제]
   Future<void> disconnectRandomLoading() async {
-    debugPrint('랜덤 매칭, 채팅방 만들고 기다리는 연결 해제');
+    debugPrint('[랜덤] 채팅방 만들고 기다리는 연결 해제');
 
     await _randomLoadingSubscription.cancel();
   }
 
   /// [랜덤 매칭 성공할시 연결]
   void connectRandomChat(String chatRoomID) {
-    debugPrint('랜덤채팅 연결');
+    debugPrint('[랜덤] 채팅 연결');
 
     _randomChatServer = Observable(
       sl.get<FirebaseAPI>().getFirestore()
@@ -87,14 +87,14 @@ class ServerRandomAPI {
 
   /// [랜덤매칭에서 나갈시 연결 해제]
   Future<void> disconnectRandomChat() async {
-    debugPrint('랜덤채팅 연결 해제');
+    debugPrint('[랜덤] 채팅 연결 해제');
 
     await _randomChatSubscription.cancel();
   }
 
   /// [랜덤채팅에서 나가는지 확인하는 연결]
   void connectRandomChatOut(String otherUserUID) {
-    debugPrint('랜덤채팅에서 나가는지 확인하는 연결');
+    debugPrint('[랜덤] 채팅에서 나가는지 확인하는 연결');
 
     _randomChatOutServer = Observable(
       sl.get<FirebaseAPI>().getFirestore()
@@ -114,7 +114,7 @@ class ServerRandomAPI {
 
   /// [랜덤채팅에서 나가는지 확인하는 연결 해제]
   Future<void> disconnectRandomChatOut() async {
-    debugPrint('랜덤채팅에서 나가는지 확인하는 연결 해제');
+    debugPrint('[랜덤] 채팅에서 나가는지 확인하는 연결 해제');
 
     await _randomChatOutSubscription.cancel();
   }

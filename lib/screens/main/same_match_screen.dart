@@ -24,7 +24,7 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
   @override
   void dispose() {
     sl.get<CurrentUser>().currentProfileUID = '';
-    _sameMatchBloc.emitEvent(SameMatchEventDisconnectToServer());
+    _sameMatchBloc.emitEvent(SameMatchEventDisconnectToServer(otherUserUID: _sameMatchModel.userInfo.uid));
     super.dispose();
   }
 
@@ -64,7 +64,8 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
           IconButton(
             icon: Icon(Icons.refresh),
             onPressed: () {
-              _sameMatchBloc.emitEvent(SameMatchEventDisconnectToServer());
+              _sameMatchBloc.emitEvent(SameMatchEventDisconnectToServer(
+                otherUserUID: _sameMatchModel.userInfo.uid));
               _sameMatchBloc.emitEvent(SameMatchEventFindUser());
             }
           )

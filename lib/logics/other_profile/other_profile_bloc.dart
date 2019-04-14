@@ -34,7 +34,7 @@ class OtherProfileBloc extends BlocEventStateBase<OtherProfileEvent,OtherProfile
     }
 
     if(event is OtherProfileEventDisconnectToServer) {
-      await _api.disconnectToServer();
+      await _api.disconnectToServer(event.otherUserUID);
     }
 
     if(event is OtherProfileEventGetOut) {

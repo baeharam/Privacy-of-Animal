@@ -36,7 +36,7 @@ class SameMatchBloc extends BlocEventStateBase<SameMatchEvent,SameMatchState>
     }
 
     if(event is SameMatchEventDisconnectToServer) {
-      await _api.disconnectToServer();
+      await _api.disconnectToServer(event.otherUserUID);
     }
 
     if(event is SameMatchEventEnterOtherProfileScreen) {

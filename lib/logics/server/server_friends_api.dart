@@ -31,7 +31,7 @@ class ServerFriendsAPI {
 
   /// [로그인 → 친구목록 연결]
   Future<void> connectFriendsList() async {
-    debugPrint('친구목록 연결');
+    debugPrint('[친구] 친구목록 스트림 연결');
 
     _friendsServer = Observable(
       sl.get<FirebaseAPI>().getFirestore()
@@ -54,7 +54,7 @@ class ServerFriendsAPI {
         
         /// [친구 감소]
         if(beforeFriendsNum >= snapshot.documents.length && !_isFirstFriendsFetch) {
-          debugPrint('친구 감소!!');
+          debugPrint('[친구] 친구 감소!!');
 
           for(DocumentChange decreasedChange in snapshot.documentChanges) {
 
@@ -70,7 +70,7 @@ class ServerFriendsAPI {
         } 
         /// [친구 증가]
         else if(!_isFirstFriendsFetch){
-          debugPrint('친구 증가!!');
+          debugPrint('[친구] 친구 증가!!');
 
           for(DocumentChange increasedChange in snapshot.documentChanges) {
             DocumentSnapshot userSnapshot = await _getUserInfo(increasedChange.document.data[firestoreFriendsUID]);
@@ -81,13 +81,13 @@ class ServerFriendsAPI {
         } 
         /// [처음]
         else {
-          debugPrint('처음, 친구 있음');
+          debugPrint('[친구] 처음, 친구 있음');
 
           _isFirstFriendsFetch = false;
           sl.get<FriendsBloc>().emitEvent(FriendsEventFirstFriendsFetch(friends: snapshot.documents));
         }
       } else {
-        debugPrint('처음, 친구 없음');
+        debugPrint('[친구] 처음, 친구 없음');
         
         _isFirstFriendsFetch = false;
       }
@@ -96,14 +96,14 @@ class ServerFriendsAPI {
 
   /// [로그아웃 → 친구목록 해제]
   Future<void> disconnectFriendsList() async {
-    debugPrint('친구 목록 해제');
+    debugPrint('[친구] 친구 목록 해제');
 
     await _friendsSubscription.cancel();
   }
 
   /// [친구 맞나 확인]
   bool _isFriends(UserModel otherUser) {
-    debugPrint('친구인지 확인');
+    debugPrint('[친구] 친구인지 확인');
 
     return sl.get<CurrentUser>().friendsList.where((user)
       => user.uid==otherUser.uid).isNotEmpty; 
@@ -111,7 +111,7 @@ class ServerFriendsAPI {
 
   /// [사용자 정보 가져오기]
   Future<DocumentSnapshot> _getUserInfo(String otherUserUID) async {
-    debugPrint('$otherUserUID의 정보 가져오기');
+    debugPrint('[친구] $otherUserUID의 정보 가져오기');
 
     return 
       await sl.get<FirebaseAPI>().getFirestore()

@@ -24,6 +24,9 @@ class OtherProfileEventConnectToServer extends OtherProfileEvent {
   final String otherUserUID;
   OtherProfileEventConnectToServer({@required this.otherUserUID});
 }
-class OtherProfileEventDisconnectToServer extends OtherProfileEvent {}
+class OtherProfileEventDisconnectToServer extends OtherProfileEvent {
+  final String otherUserUID;
+  OtherProfileEventDisconnectToServer({@required this.otherUserUID});
+}
 
 class OtherProfileEventGetOut extends OtherProfileEvent {}

@@ -12,7 +12,7 @@ import 'package:privacy_of_animal/resources/strings.dart';
 
 class SameMatchAPI {
 
-  bool _isInSameMatchScreen = false;
+  static bool _isInSameMatchScreen = false;
 
   void enterOtherProfileScreen() => _isInSameMatchScreen = true;
   void getOutOtherProfileScreen() => _isInSameMatchScreen = false;
@@ -23,9 +23,9 @@ class SameMatchAPI {
     }
   }
 
-  Future<void> disconnectToServer() async{
+  Future<void> disconnectToServer(String otherUserUID) async{
     if(!_isInSameMatchScreen) {
-      await sl.get<ServerRequestAPI>().disconnectRequestToStream();
+      await sl.get<ServerRequestAPI>().disconnectRequestToStream(otherUserUID: otherUserUID);
     }
   }
 

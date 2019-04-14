@@ -13,7 +13,7 @@ class FriendsChatAPI {
 
     /// [처음 채팅 업데이트]
   Future<void> fetchFirstChat(String otherUserUID, List<DocumentSnapshot> chatList) async {
-    debugPrint("처음 채팅 업데이트");
+    debugPrint("[채팅] $otherUserUID와의 처음 채팅 업데이트");
 
     sl.get<CurrentUser>().chatHistory[otherUserUID] ??= List<ChatModel>();
     
@@ -29,11 +29,15 @@ class FriendsChatAPI {
 
   /// [내가 채팅 보냈을 때 업데이트]
   void addChatDirectly(String otherUserUID, ChatModel chat) {
+    debugPrint('[채팅] $otherUserUID에게 채팅 보낼 때 로컬에 바로 업데이트');
+
     sl.get<CurrentUser>().chatHistory[otherUserUID].insert(0,chat);
   }
 
   /// [상대방에게 채팅 왔을 때 업데이트]
   void updateChatHistory(String otherUserUID, String nickName, QuerySnapshot snapshot) {
+    debugPrint('[채팅] $otherUserUID에게 채팅 왔을 때 채팅 업데이트');
+
     sl.get<CurrentUser>().chatHistory[otherUserUID] ??= List<ChatModel>();
 
     for(DocumentChange chatData in snapshot.documentChanges) {
@@ -51,18 +55,18 @@ class FriendsChatAPI {
   /// [친구 알림 설정]
   Future<void> setChatRoomNotification(String otherUserUID) async {
     bool original = sl.get<CurrentUser>().chatRoomNotification[otherUserUID];
-    debugPrint('$otherUserUID의 채팅 알림을 $original에서');
+    debugPrint('[채팅] $otherUserUID의 채팅 알림을 $original에서 ${!original}로 변경');
 
     SharedPreferences prefs = await sl.get<DatabaseHelper>().sharedPreferences;
     bool value = !original;
     await prefs.setBool(otherUserUID, value);
     sl.get<CurrentUser>().chatRoomNotification[otherUserUID] = value;
-
-    debugPrint('$value로 변경!');
   }
   
   /// [채팅 보내기]
   Future<void> sendMessage(String content,String receiver,String chatRoomID) async {
+    debugPrint('[채팅] $receiver에게 채팅전송: $content');
+
     DocumentSnapshot flagDoc = await sl.get<FirebaseAPI>().getFirestore()
       .collection(firestoreFriendsMessageCollection)
       .document(chatRoomID)

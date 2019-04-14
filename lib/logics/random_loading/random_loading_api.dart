@@ -17,7 +17,7 @@ class RandomLoadingAPI {
   // 현재 대기중인 방 중에 랜덤으로 찾기
   // 대기중인 방이 없으면 빈 문자열 리턴
   Future<String> getRoomID() async {
-    debugPrint('대기중인 방 찾는 중...');
+    debugPrint('[랜덤] 대기중인 방 찾는 중...');
 
     QuerySnapshot querySnapshot
       = await sl.get<FirebaseAPI>().getFirestore()
@@ -25,10 +25,10 @@ class RandomLoadingAPI {
         .where(firestoreChatBeginField,isEqualTo: false)
         .getDocuments();
     if(querySnapshot.documents.isEmpty) {
-      debugPrint('대기중인 방 없음...');
+      debugPrint('[랜덤] 대기중인 방 없음...');
       return '';
     }
-    debugPrint('대기중인 방 찾음!');
+    debugPrint('[랜덤] 대기중인 방 찾음!');
     Random random = Random();
     DocumentSnapshot document = querySnapshot.documents[random.nextInt(querySnapshot.documents.length)];
     return document.documentID;
@@ -36,7 +36,7 @@ class RandomLoadingAPI {
 
   // 대기중인 방이 없으면 방을 만들어야 됨
   Future<String> makeChatRoom() async {
-    debugPrint('방 생성...');
+    debugPrint('[랜덤] 방 생성...');
 
     CollectionReference col = sl.get<FirebaseAPI>().getFirestore()
       .collection(firestoreRandomMessageCollection);
@@ -55,7 +55,7 @@ class RandomLoadingAPI {
 
   // 대기중인 방이 있으면 그곳에 들어가서 flag 값을 true로 변경
   Future<UserModel> enterRoomAndGetUser(String chatRoomID) async {
-    debugPrint('방 입장!');
+    debugPrint('[랜덤] 방 입장!');
 
     DocumentReference document = sl.get<FirebaseAPI>().getFirestore()
       .collection(firestoreRandomMessageCollection)
@@ -81,7 +81,7 @@ class RandomLoadingAPI {
 
   // 사용자가 들어오면 해당 사용자에 대한 정보를 받아와야 함
   Future<UserModel> fetchUserData(String uid) async {
-    debugPrint('사용자 정보 가져오기');
+    debugPrint('[랜덤] 사용자 정보 가져오기');
 
     DocumentSnapshot snapshot = await sl.get<FirebaseAPI>().getFirestore()
       .collection(firestoreUsersCollection)
@@ -92,7 +92,7 @@ class RandomLoadingAPI {
 
   // 만든 채팅방 삭제
   Future<void> deleteMadeChatRoom() async {
-    debugPrint('만든 채팅방 삭제!');
+    debugPrint('[랜덤] 만든 채팅방 삭제!');
 
     QuerySnapshot snapshot = await sl.get<FirebaseAPI>().getFirestore()
       .collection(firestoreRandomMessageCollection)

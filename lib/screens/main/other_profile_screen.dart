@@ -43,7 +43,7 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
   @override
   void dispose() {
     super.dispose();
-    _otherProfileBloc.emitEvent(OtherProfileEventDisconnectToServer());
+    _otherProfileBloc.emitEvent(OtherProfileEventDisconnectToServer(otherUserUID: widget.user.uid));
     _otherProfileBloc.emitEvent(OtherProfileEventGetOut());
   }
 

@@ -28,6 +28,9 @@ class SameMatchEventConnectToServer extends SameMatchEvent {
   final String otherUserUID;
   SameMatchEventConnectToServer({@required this.otherUserUID});
 }
-class SameMatchEventDisconnectToServer extends SameMatchEvent {}
+class SameMatchEventDisconnectToServer extends SameMatchEvent {
+  final String otherUserUID;
+  SameMatchEventDisconnectToServer({@required this.otherUserUID});
+}
 
 class SameMatchEventEnterOtherProfileScreen extends SameMatchEvent {}

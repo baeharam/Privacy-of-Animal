@@ -19,7 +19,7 @@ class HomeAPI {
   String uid;
 
   void deactivateFlags() {
-    debugPrint('HomeAPI 플래그 초기화');
+    debugPrint('[홈] HomeAPI 플래그 초기화');
 
     isProfileDataFetched = false;
     isFriendsDataFetched = false;
@@ -27,7 +27,7 @@ class HomeAPI {
   }
 
   Future<void> _apiInitialization() async {
-    debugPrint('HomeAPI 초기화');
+    debugPrint('[홈] HomeAPI 초기화');
 
     db = await sl.get<DatabaseHelper>().database;
     prefs = await sl.get<DatabaseHelper>().sharedPreferences;
@@ -36,7 +36,7 @@ class HomeAPI {
 
   Future<void> fetchProfileData() async {
     if(!isProfileDataFetched) {
-      debugPrint('프로필 데이터 가져오기');
+      debugPrint('[홈] 프로필 데이터 가져오기');
 
       await _apiInitialization();
       await _checkDBAndCallFirestore();
@@ -56,7 +56,7 @@ class HomeAPI {
 
   Future<void> fetchFriendsData() async {
     if(!isFriendsDataFetched) {
-      debugPrint('친구, 친구신청 데이터 가져오기');
+      debugPrint('[홈] 친구/친구신청 데이터 가져오기');
 
       await _setFriendsNotification(uid);
       await sl.get<ServerFriendsAPI>().connectFriendsList();
@@ -68,7 +68,7 @@ class HomeAPI {
 
   Future<void> fetchChatData() async {
     if(!isChatRoomListDataFetched) {
-      debugPrint('채팅 데이터 가져오기');
+      debugPrint('[홈] 채팅 데이터 가져오기');
 
       await _setChatRoomNotification();
       await sl.get<ServerChatAPI>().connectAllChatRoom();
@@ -123,7 +123,7 @@ class HomeAPI {
   }
 
   Future<void> _setChatRoomNotification() async{
-    debugPrint('채팅 알림 설정');
+    debugPrint('[홈] 채팅 알림 설정');
 
     QuerySnapshot chatRoomsSnapshot = await sl.get<FirebaseAPI>().getFirestore()
       .collection(firestoreUsersCollection)
@@ -134,13 +134,9 @@ class HomeAPI {
     for(DocumentSnapshot chatRoomSnapshot in chatRoomsSnapshot.documents) {
       String friendsUID = chatRoomSnapshot.documentID;
       if(prefs.getBool(friendsUID)==null) {
-        debugPrint('$friendsUID와의 채팅알림은 null');
-
         await prefs.setBool(friendsUID, true);
         sl.get<CurrentUser>().chatRoomNotification[friendsUID] = true;
       } else {
-        debugPrint('$friendsUID와의 채팅알림은 ${prefs.getBool(friendsUID)}');
-
         sl.get<CurrentUser>().chatRoomNotification[friendsUID] = prefs.getBool(friendsUID);
       }
     }
