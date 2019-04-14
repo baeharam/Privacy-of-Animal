@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'package:privacy_of_animal/logics/chat_list/chat_list.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/database_helper.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
@@ -307,6 +308,7 @@ class FriendsAPI {
     sl.get<CurrentUser>().chatHistory.remove(userToBlock.uid);
     sl.get<CurrentUser>().chatListHistory.remove(userToBlock.uid);
     sl.get<CurrentUser>().chatRoomNotification.remove(userToBlock.uid);
+    sl.get<ChatListBloc>().emitEvent(ChatListEventRefresh());
   }
 
   /// [로컬에서 친구 증가]

@@ -3,7 +3,6 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
-import 'package:privacy_of_animal/logics/chat_list/chat_list.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/logics/friends/friends.dart';
@@ -63,7 +62,6 @@ class ServerFriendsAPI {
             String blockedUserUID = decreasedChange.document.documentID;
             await sl.get<ServerChatAPI>().disconnectChatRoom(otherUserUID: blockedUserUID);
 
-            sl.get<ChatListBloc>().emitEvent(ChatListEventRefresh());
             UserModel otherUser = UserModel.fromSnapshot(snapshot: await _getUserInfo(blockedUserUID));
             if(_isFriends(otherUser)) {
               sl.get<FriendsBloc>().emitEvent(FriendsEventBlockFromServer(userToBlock: otherUser));
