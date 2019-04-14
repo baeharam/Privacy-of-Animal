@@ -22,6 +22,13 @@ class FirebaseAPI {
     return result;
   }
 
+  Future<DocumentSnapshot> getUserSnapshot(String uid) async {
+    return await getFirestore()
+    .collection(firestoreUsersCollection)
+    .document(uid)
+    .get();
+  }
+
   Future<void> deleteUserAccount(String uid) async {
     CollectionReference col = getFirestore().collection(firestoreDeletedUserListCollection);
     DocumentReference doc = col.document(uid);
