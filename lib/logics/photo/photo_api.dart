@@ -74,7 +74,12 @@ class PhotoAPI {
 
   Future<void> storeProfile() async {
     await _storeProfileIntoFirestore();
-    await _storeProfileIntoLocalDB();
+    if(await _checkLocalDB()) {
+      await _updateProfileIntoLocalDB();
+    }
+    else {
+      await _storeProfileIntoLocalDB();
+    }
   }
 
   Future<void> _storeProfileIntoFirestore() async {
@@ -125,6 +130,30 @@ class PhotoAPI {
       '"${fakeProfileModel.celebrity}",'
       '"${fakeProfileModel.celebrityConfidence}")'
     );
+  }
+
+  Future<void> _updateProfileIntoLocalDB() async {
+    Database db = await sl.get<DatabaseHelper>().database;
+    FakeProfileModel fakeProfileModel = sl.get<CurrentUser>().fakeProfileModel;
+    await db.update(fakeProfileTable, {
+      fakeGenderCol: fakeProfileModel.gender,
+      fakeGenderConfidenceCol: fakeProfileModel.genderConfidence,
+      fakeAgeCol: fakeProfileModel.age,
+      fakeAgeConfidenceCol: fakeProfileModel.ageConfidence,
+      fakeEmotionCol: fakeProfileModel.emotion,
+      fakeEmotionConfidenceCol: fakeProfileModel.emotionConfidence,
+      animalNameCol: fakeProfileModel.animalName,
+      animalImageCol: fakeProfileModel.animalImage,
+      animalConfidenceCol: fakeProfileModel.animalConfidence,
+      celebrityCol: fakeProfileModel.celebrity,
+      celebrityConfidenceCol: fakeProfileModel.celebrityConfidence
+    }, where: '$uidCol="${sl.get<CurrentUser>().uid}"');
+  }
+
+  Future<bool> _checkLocalDB() async {
+    Database db = await sl.get<DatabaseHelper>().database;
+    var result = await db.query(fakeProfileTable,where: '$uidCol="${sl.get<CurrentUser>().uid}"');
+    return result.isNotEmpty;
   }
 
   // 카카오 얼굴인식

@@ -145,6 +145,7 @@ class HomeAPI {
   // 로컬 DB체크한 후에 없으면 서버에서 가져옴
   Future<void> _checkDBAndCallFirestore() async {
     List tags = await db.rawQuery('SELECT * FROM $tagTable WHERE $uidCol="${sl.get<CurrentUser>().uid}"');
+    print(tags);
     if(tags.length==0){
       await _fetchTagsFromFirestore();
     }
