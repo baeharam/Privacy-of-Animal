@@ -44,7 +44,7 @@ class FriendsAPI {
         .document(friends.documentID)
         .get();
       UserModel friendsUserModel = UserModel.fromSnapshot(snapshot: friendsSnapshot);
-      _increaseLocalFriends(friendsUserModel);
+      await _increaseLocalFriends(friendsUserModel);
     }
   }
 
@@ -75,7 +75,7 @@ class FriendsAPI {
       DocumentSnapshot newFriendsSnapshot = await sl.get<FirebaseAPI>().
         getUserSnapshot(newFriends.document.documentID);
       UserModel newFriendsUserModel = UserModel.fromSnapshot(snapshot: newFriendsSnapshot);
-      _increaseLocalFriends(newFriendsUserModel);
+      await _increaseLocalFriends(newFriendsUserModel);
       _updateOtherProfileFriends(newFriendsUserModel.uid);
       if(isAccepted) {
         _notifyingFriends ??= newFriendsUserModel;
@@ -217,7 +217,7 @@ class FriendsAPI {
     debugPrint("[친구] 서버에서 친구 수락");
 
     // 먼저 친구신청란에서 지워야 함
-    sl.get<CurrentUser>().requestFromList.remove(requestFromingUser);
+    sl.get<CurrentUser>().requestFromList.removeWhere((user) => user.uid == requestFromingUser.uid);
 
     String currentUser = _uid;
 

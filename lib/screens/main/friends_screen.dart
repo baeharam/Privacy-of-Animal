@@ -76,7 +76,7 @@ class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProvider
                             color: Colors.red,
                             shape: BoxShape.circle
                           ),
-                          child: Text(sl.get<CurrentUser>().friendsList.length.toString())
+                          child: Text(sl.get<CurrentUser>().newFriendsNum.toString())
                         );
                       }
                       return Container();
