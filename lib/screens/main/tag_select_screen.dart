@@ -90,8 +90,8 @@ class _TagSelectScreenState extends State<TagSelectScreen> {
                               height: ScreenUtil.width/3.5
                             ),
                             Container(
-                              width: ScreenUtil.width/3.5-10.0,
-                              height: ScreenUtil.width/3.5-10.0,
+                              width: ScreenUtil.width/3.5-5.0,
+                              height: ScreenUtil.width/3.5-5.0,
                               decoration: BoxDecoration(
                                 color: isActivateList[index] ? Colors.black.withOpacity(0.5) : Colors.transparent,
                                 shape: BoxShape.circle
