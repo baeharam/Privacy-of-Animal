@@ -16,13 +16,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class FriendsAPI {
 
-  String _uid;
   UserModel _notifyingFriends, _notifyingRequestFrom;
-  
-  FriendsAPI() {
-    _uid = sl.get<CurrentUser>().uid;
-    assert(_uid!=null, '[친구] 사용자 UID 초기화 실패');
-  } 
 
   /// [친구 알림 설정]
   Future<void> setFriendsNotification() async {
@@ -30,7 +24,7 @@ class FriendsAPI {
 
     SharedPreferences prefs = await sl.get<DatabaseHelper>().sharedPreferences;
     bool value = !sl.get<CurrentUser>().friendsNotification;
-    await prefs.setBool(_uid+friendsNotification, value);
+    await prefs.setBool(sl.get<CurrentUser>().uid+friendsNotification, value);
     sl.get<CurrentUser>().friendsNotification = value;
   }
 
@@ -176,7 +170,7 @@ class FriendsAPI {
 
     DocumentReference myselfDoc = sl.get<FirebaseAPI>().getFirestore()
       .collection(firestoreUsersCollection)
-      .document(_uid)
+      .document(sl.get<CurrentUser>().uid)
       .collection(firestoreFriendsSubCollection)
       .document(userToBlock.uid);
 
@@ -184,11 +178,11 @@ class FriendsAPI {
       .collection(firestoreUsersCollection)
       .document(userToBlock.uid)
       .collection(firestoreFriendsSubCollection)
-      .document(_uid);
+      .document(sl.get<CurrentUser>().uid);
       
     QuerySnapshot chatRoomSnapshot = await sl.get<FirebaseAPI>().getFirestore()
       .collection(firestoreFriendsMessageCollection)
-      .where('$firestoreChatUsersField.$_uid', isEqualTo: true)
+      .where('$firestoreChatUsersField.$sl.get<CurrentUser>().uid', isEqualTo: true)
       .where('$firestoreChatUsersField.${userToBlock.uid}', isEqualTo: true)
       .getDocuments();
 
@@ -219,7 +213,7 @@ class FriendsAPI {
     // 먼저 친구신청란에서 지워야 함
     sl.get<CurrentUser>().requestFromList.removeWhere((user) => user.uid == requestFromingUser.uid);
 
-    String currentUser = _uid;
+    String currentUser = sl.get<CurrentUser>().uid;
 
     DocumentReference myselfDoc = sl.get<FirebaseAPI>().getFirestore()
       .collection(firestoreUsersCollection)
@@ -270,7 +264,7 @@ class FriendsAPI {
 
     DocumentReference doc = sl.get<FirebaseAPI>().getFirestore()
       .collection(firestoreUsersCollection)
-      .document(_uid)
+      .document(sl.get<CurrentUser>().uid)
       .collection(firestoreFriendsSubCollection)
       .document(userToReject.uid);
     await sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async{
