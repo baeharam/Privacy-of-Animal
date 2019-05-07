@@ -109,7 +109,7 @@ class _FriendsChatScreenState extends State<FriendsChatScreen> {
                 child: Container(
                   padding: const EdgeInsets.all(10.0),
                   child: TextField(
-                    style: TextStyle(color: primaryGreen, fontSize: 15.0),
+                    style: TextStyle(color: Colors.black, fontSize: 15.0),
                     decoration: InputDecoration.collapsed(
                       hintText: '메시지를 입력하세요.',
                       hintStyle: TextStyle(color: Colors.grey)
