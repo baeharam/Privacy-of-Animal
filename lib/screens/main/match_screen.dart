@@ -68,7 +68,6 @@ class _MatchScreenState extends State<MatchScreen> {
                     roundColor: primaryBeige,
                   ),
                   onTap: () {
-                    sl.get<RandomLoadingBloc>().emitEvent(RandomLoadingEventMatchStart());
                     Navigator.pushNamed(context, routeRandomLoading);
                   },
                 )

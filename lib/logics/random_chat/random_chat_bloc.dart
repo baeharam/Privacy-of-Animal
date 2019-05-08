@@ -51,6 +51,16 @@ class RandomChatBloc extends BlocEventStateBase<RandomChatEvent,RandomChatState>
       }
     }
 
+    if(event is RandomChatEventRestart) {
+      try {
+        await _api.getOutChatRoom(event.chatRoomID);
+        yield RandomChatState.restartSucceeded();
+      } catch(exception) {
+        print('채팅방 갱신 실패\n${exception.toString()}');
+        yield RandomChatState.restartFailed();
+      }
+    }
+
     if(event is RandomChatEventFinished) {
       yield RandomChatState.chatFinished();
     }

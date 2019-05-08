@@ -30,9 +30,10 @@ class ServerRandomAPI {
   void connectRandomLoading() {
     debugPrint('[랜덤] 채팅방 만들고 기다리는 연결');
 
-    Stream<QuerySnapshot> snapshot = sl.get<FirebaseAPI>().getFirestore()
+    Stream<QuerySnapshot> snapshot = Firestore.instance
         .collection(firestoreRandomMessageCollection)
         .where(firestoreChatBeginField,isEqualTo: true)
+        .where(firestoreChatOutField, isEqualTo: false)
         .where('$firestoreChatUsersField.${sl.get<CurrentUser>().uid}',isEqualTo: true)
         .snapshots();
 
@@ -41,6 +42,7 @@ class ServerRandomAPI {
     _randomLoadingSubscription = _randomLoadingServer.listen((snapshot){
       if(snapshot.documents.isNotEmpty){
         debugPrint('[랜덤] 상대방 들어옴!');
+        debugPrint(snapshot.documents[0].documentID);
 
         String receiver = '';
         (snapshot.documents[0].data[firestoreChatUsersField] as Map).forEach((key,value){

@@ -13,6 +13,7 @@ import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:privacy_of_animal/utils/stream_navigator.dart';
 
 class RandomChatScreen extends StatefulWidget {
 
@@ -41,6 +42,7 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
   @override
   void initState() {
     super.initState();
+    _randomChatBloc.emitEvent(RandomChatEventStateClear());
     initializeDateFormatting();
     _randomChatBloc.emitEvent(RandomChatEventConnect(
       chatRoomID: widget.chatRoomID,
@@ -76,17 +78,13 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
         actions: [
           IconButton(
             icon: Icon(Icons.refresh),
-            onPressed: () {
-              _randomChatBloc.emitEvent(RandomChatEventOut(chatRoomID: widget.chatRoomID));
-              _randomLoadingBloc.emitEvent(RandomLoadingEventMatchStart());
-              Navigator.pushReplacementNamed(context, routeRandomLoading);
-            },
+            onPressed: () =>
+              _randomChatBloc.emitEvent(RandomChatEventRestart(chatRoomID: widget.chatRoomID)),
           )
         ],
       ),
       body: WillPopScope(
         onWillPop: () { 
-          _randomLoadingBloc.emitEvent(RandomLoadingEventStateClear());
           if(_isReceiverOut) {
             _randomChatBloc.emitEvent(RandomChatEventOut(chatRoomID: widget.chatRoomID));
             return Future.value(true);
@@ -107,6 +105,18 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
                   if(state.isMessageReceived) {
                     _messages = sl.get<CurrentUser>().randomChat;
                   }
+                  if(state.isGetOutSucceeded) {
+                    if(!_isReceiverOut) {
+                      StreamNavigator.pop(context);
+                      StreamNavigator.pop(context);
+                    } else {
+                      StreamNavigator.pop(context);
+                    }
+                  }
+                  if(state.isRestartSucceeded) {
+                    StreamNavigator.pushReplacementNamed(context, routeRandomLoading);
+                  }
+
                   return ListView.builder(
                     padding: EdgeInsets.all(10.0),
                     itemBuilder: (context,index) => _buildMessage(index,_messages[index]),

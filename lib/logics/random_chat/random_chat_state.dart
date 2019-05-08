@@ -13,6 +13,9 @@ class RandomChatState extends BlocState {
 
   final bool isMessageReceived;
 
+  final bool isRestartSucceeded;
+  final bool isRestartFailed;
+
   RandomChatState({
     this.isInitial:false,
 
@@ -25,6 +28,9 @@ class RandomChatState extends BlocState {
     this.isChatFinished: false,
 
     this.isMessageReceived: false,
+
+    this.isRestartSucceeded: false,
+    this.isRestartFailed: false
   });
 
   factory RandomChatState.initial() => RandomChatState(isInitial: true);
@@ -38,4 +44,7 @@ class RandomChatState extends BlocState {
   factory RandomChatState.chatFinished() => RandomChatState(isChatFinished: true);
 
   factory RandomChatState.messageReceived() => RandomChatState(isMessageReceived: true);
+
+  factory RandomChatState.restartSucceeded() => RandomChatState(isRestartSucceeded: true);
+  factory RandomChatState.restartFailed() => RandomChatState(isRestartFailed: true);
 }

@@ -103,8 +103,6 @@ class BackButtonAction {
         DialogButton(
           onPressed: (){
             randomChatBloc.emitEvent(RandomChatEventOut(chatRoomID: chatRoomID));
-            Navigator.pop(context);
-            Navigator.pop(context);
           },
           child: Text(
             '예',

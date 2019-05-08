@@ -43,7 +43,7 @@ class RandomChatAPI {
 
     DocumentSnapshot snapshot = await doc.get();
     if(snapshot.data[firestoreChatOutField]==false) {
-      sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async{
+      await sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async{
         await tx.update(doc, {firestoreChatOutField: true});
       });
     } else {

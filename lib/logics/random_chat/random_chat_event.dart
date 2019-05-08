@@ -19,9 +19,13 @@ class RandomChatEventDisconnect extends RandomChatEvent {}
 class RandomChatEventOut extends RandomChatEvent {
   final String chatRoomID;
 
-  RandomChatEventOut({
-    @required this.chatRoomID
-  });
+  RandomChatEventOut({@required this.chatRoomID});
+}
+
+class RandomChatEventRestart extends RandomChatEvent {
+  final String chatRoomID;
+
+  RandomChatEventRestart({@required this.chatRoomID});
 }
 
 class RandomChatEventMessageReceived extends RandomChatEvent {

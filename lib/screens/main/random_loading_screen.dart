@@ -16,6 +16,18 @@ class _RandomLoadingScreenState extends State<RandomLoadingScreen> {
   bool _isChatRoomMaker = false;
 
   @override
+  void initState() {
+    super.initState();
+    _randomLoadingBloc.emitEvent(RandomLoadingEventMatchStart());
+  }
+
+  @override
+  void dispose() {
+    _randomLoadingBloc.emitEvent(RandomLoadingEventStateClear());
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
