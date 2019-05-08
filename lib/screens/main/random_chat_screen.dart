@@ -1,13 +1,12 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state_builder.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
 import 'package:privacy_of_animal/logics/random_chat/random_chat.dart';
-import 'package:privacy_of_animal/logics/random_loading/random_loading.dart';
 import 'package:privacy_of_animal/models/chat_model.dart';
 import 'package:privacy_of_animal/models/user_model.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/screens/main/other_profile_screen.dart';
+import 'package:privacy_of_animal/screens/sub/random_chat_input.dart';
 import 'package:privacy_of_animal/utils/back_button_dialog.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
@@ -29,32 +28,28 @@ class RandomChatScreen extends StatefulWidget {
 class _RandomChatScreenState extends State<RandomChatScreen> {
 
   final ScrollController _scrollController = ScrollController();
-  final TextEditingController _messageController = TextEditingController();
-  final FocusNode _messageFocusNode = FocusNode();
-  final GlobalKey<ScaffoldState> _scaffoldKey =GlobalKey<ScaffoldState>();
-
   final RandomChatBloc _randomChatBloc = sl.get<RandomChatBloc>();
-  final RandomLoadingBloc _randomLoadingBloc = sl.get<RandomLoadingBloc>();
 
-  List<ChatModel> _messages = List<ChatModel>();
-  bool _isReceiverOut = false;
+  List<ChatModel> _messages;
+  bool _isReceiverOut;
 
   @override
   void initState() {
     super.initState();
     _randomChatBloc.emitEvent(RandomChatEventStateClear());
-    initializeDateFormatting();
     _randomChatBloc.emitEvent(RandomChatEventConnect(
       chatRoomID: widget.chatRoomID,
       otherUserUID: widget.receiver.uid
     ));
+
+    initializeDateFormatting();
+    _messages = List<ChatModel>();
+    _isReceiverOut = false;
   }
 
   @override
   void dispose() {
     super.dispose();
-    _messageController.dispose();
-    _messageFocusNode.dispose();
     _scrollController.dispose();
     sl.get<CurrentUser>().randomChat.clear();
     _randomChatBloc.emitEvent(RandomChatEventDisconnect());
@@ -63,7 +58,6 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey,
       appBar: AppBar(
         title: Text(
           '채팅',
@@ -102,6 +96,9 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
               child: BlocBuilder(
                 bloc: _randomChatBloc,
                 builder: (blocContext, RandomChatState state){
+                  if(state.isChatFinished) {
+                    _isReceiverOut = true;
+                  }
                   if(state.isMessageReceived) {
                     _messages = sl.get<CurrentUser>().randomChat;
                   }
@@ -116,7 +113,6 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
                   if(state.isRestartSucceeded) {
                     StreamNavigator.pushReplacementNamed(context, routeRandomLoading);
                   }
-
                   return ListView.builder(
                     padding: EdgeInsets.all(10.0),
                     itemBuilder: (context,index) => _buildMessage(index,_messages[index]),
@@ -127,64 +123,9 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
                 }
               ),
             ),
-            BlocBuilder(
-              bloc: _randomChatBloc,
-              builder: (context, RandomChatState state){
-                if(state.isChatFinished){
-                  _isReceiverOut = true;
-                  return Container(
-                    padding: const EdgeInsets.only(bottom: 10.0),
-                    child: Text('상대방이 나갔습니다.'),
-                  );
-                }
-                return Row(
-                  children: <Widget>[
-                    Flexible(
-                      child: Container(
-                        padding: const EdgeInsets.all(10.0),
-                        child: TextField(
-                          style: TextStyle(color: primaryGreen, fontSize: 15.0),
-                          decoration: InputDecoration.collapsed(
-                            hintText: '메시지를 입력하세요.',
-                            hintStyle: TextStyle(color: Colors.grey)
-                          ),
-                          controller: _messageController,
-                          focusNode: _messageFocusNode,
-                        ),
-                      ),
-                    ),
-                    Material(
-                      child: Container(
-                        margin: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: IconButton(
-                          icon: Icon(Icons.send),
-                          onPressed: () {
-                            if(_messageController.text.isEmpty) {
-                              _scaffoldKey.currentState.showSnackBar(SnackBar(
-                                content: Text('메시지를 입력하세요.'),
-                                duration: const Duration(milliseconds: 100),
-                              ));
-                            } else {
-                              _randomChatBloc.emitEvent(
-                              RandomChatEventMessageSend(
-                                chatModel: ChatModel(
-                                  from: sl.get<CurrentUser>().uid,
-                                  to: widget.receiver.uid,
-                                  content: _messageController.text,
-                                  timeStamp: Timestamp.fromDate(DateTime.now())
-                                ),
-                                chatRoomID: widget.chatRoomID
-                              ));
-                              _messageController.clear();
-                            }
-                          },
-                          color: Colors.black,
-                        ),
-                      ),
-                    )
-                  ],
-                ); 
-              }
+            RandomChatInput(
+              receiverUID: widget.receiver.uid,
+              chatRoomID: widget.chatRoomID
             ),
           ],
         ),
