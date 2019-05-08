@@ -13,7 +13,9 @@ void streamDialogEditTag(BuildContext context, int tagIndex, List<String> dropDo
 
   final ValidationBloc validationBloc = sl.get<ValidationBloc>();
   final TagEditBloc tagEditBloc = sl.get<TagEditBloc>();
-  final TextEditingController tagController = TextEditingController();
+  final TextEditingController tagController = TextEditingController(
+    text: sl.get<CurrentUser>().tagListModel.tagDetailList[tagIndex]
+  );
   String selectedTag = sl.get<CurrentUser>().tagListModel.tagTitleList[tagIndex];
 
   WidgetsBinding.instance.addPostFrameCallback((_){
@@ -61,11 +63,14 @@ void streamDialogEditTag(BuildContext context, int tagIndex, List<String> dropDo
       ),
       buttons: [
         DialogButton(
-          onPressed: () {tagEditBloc.emitEvent(
-              TagEditEventSubmit(tagTitle: selectedTag, tagDetail: tagController.text, tagIndex: tagIndex)
-            );
-            FocusScope.of(context).requestFocus(FocusNode());
-            Navigator.pop(context);
+          onPressed: () {
+            if(tagController.text.isNotEmpty) {
+              tagEditBloc.emitEvent(
+                TagEditEventSubmit(tagTitle: selectedTag, tagDetail: tagController.text, tagIndex: tagIndex)
+              );
+              FocusScope.of(context).requestFocus(FocusNode());
+              Navigator.pop(context);
+            }
           },
           child: Text(
             '수정',

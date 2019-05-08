@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
-import 'package:privacy_of_animal/logics/random_loading/random_loading.dart';
 import 'package:privacy_of_animal/logics/same_match/same_match.dart';
 import 'package:privacy_of_animal/models/tag_list_model.dart';
 import 'package:privacy_of_animal/resources/colors.dart';

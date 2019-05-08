@@ -11,7 +11,7 @@ class TagEditBloc extends BlocEventStateBase<TagEditEvent,TagEditState> {
   @override
   Stream<TagEditState> eventHandler(TagEditEvent event, TagEditState currentState) async*{
 
-    if(event is TagEventInitial){
+    if(event is TagEventStateClear){
       yield TagEditState.initial();
     }
 

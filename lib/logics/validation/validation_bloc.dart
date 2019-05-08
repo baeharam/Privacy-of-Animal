@@ -49,6 +49,7 @@ class ValidationBloc extends Object
   Stream<bool> get loginValid => Observable.combineLatest2(email,password, (e,p) => true);
   Stream<bool> get signUpValid => 
     Observable.combineLatest7(email,password,name,age,job,gender,nickName, (e,p,n,a,j,g,nn) => true);
+  
 
   @override
   void dispose() {
