@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state_builder.dart';
-import 'package:privacy_of_animal/logics/current_user.dart';
+import 'package:privacy_of_animal/logics/global/current_user.dart';
 import 'package:privacy_of_animal/logics/random_chat/random_chat.dart';
 import 'package:privacy_of_animal/models/chat_model.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';

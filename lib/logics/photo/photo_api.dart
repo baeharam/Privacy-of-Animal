@@ -4,9 +4,9 @@ import 'dart:math';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:privacy_of_animal/logics/current_user.dart';
-import 'package:privacy_of_animal/logics/database_api.dart';
-import 'package:privacy_of_animal/logics/firebase_api.dart';
+import 'package:privacy_of_animal/logics/global/current_user.dart';
+import 'package:privacy_of_animal/logics/global/database_api.dart';
+import 'package:privacy_of_animal/logics/global/firebase_api.dart';
 import 'package:privacy_of_animal/models/animal_model.dart';
 import 'package:privacy_of_animal/models/fake_profile_model.dart';
 import 'package:privacy_of_animal/models/kakao_ml_model.dart';

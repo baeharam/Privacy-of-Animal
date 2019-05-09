@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:privacy_of_animal/logics/initialize_api.dart';
+import 'package:privacy_of_animal/logics/global/initialize_api.dart';
 import 'package:privacy_of_animal/resources/routes.dart';
 import 'package:privacy_of_animal/screens/intro/intro_screen.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state_builder.dart';
-import 'package:privacy_of_animal/logics/current_user.dart';
+import 'package:privacy_of_animal/logics/global/current_user.dart';
 import 'package:privacy_of_animal/logics/find_password/find_password.dart';
 import 'package:privacy_of_animal/logics/tag_edit/tag_edit.dart';
 import 'package:privacy_of_animal/logics/validation/validation_bloc.dart';
