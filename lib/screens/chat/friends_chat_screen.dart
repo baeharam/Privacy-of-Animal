@@ -6,7 +6,7 @@ import 'package:privacy_of_animal/logics/friends_chat/friends_chat.dart';
 import 'package:privacy_of_animal/models/chat_model.dart';
 import 'package:privacy_of_animal/models/user_model.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
-import 'package:privacy_of_animal/screens/chat/friends_chat_builder.dart';
+import 'package:privacy_of_animal/screens/chat/chat_builder.dart';
 import 'package:privacy_of_animal/utils/bloc_snackbar.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -33,6 +33,7 @@ class _FriendsChatScreenState extends State<FriendsChatScreen> {
   @override
   void initState() {
     super.initState();
+    friendsChatBloc.emitEvent(FriendsChatEventStateClear());
     initializeDateFormatting();
     sl.get<CurrentUser>().initCurrentChatUID(widget.receiver.uid);
   }
@@ -42,6 +43,7 @@ class _FriendsChatScreenState extends State<FriendsChatScreen> {
     messageController.dispose();
     scrollController.dispose();
     sl.get<CurrentUser>().disposeCurrentChatUID();
+    friendsChatBloc.emitEvent(FriendsChatEventStateClear());
     super.dispose();
   }
 
@@ -52,6 +54,8 @@ class _FriendsChatScreenState extends State<FriendsChatScreen> {
       context: context,
       receiver: widget.receiver
     );
+
+    assert(_chatBuilder!=null);
 
     return Scaffold(
       appBar: AppBar(
