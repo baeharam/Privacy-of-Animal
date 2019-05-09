@@ -53,4 +53,7 @@ class CurrentUser {
   }
 
   CurrentUser() { clear(); }
+
+  void initCurrentChatUID(String receiverUID) => currentChatUID = receiverUID;
+  void disposeCurrentChatUID() => currentChatUID = '';
 }

@@ -3,18 +3,14 @@ import 'package:privacy_of_animal/logics/global/current_user.dart';
 import 'package:privacy_of_animal/resources/colors.dart';
 import 'package:privacy_of_animal/resources/constants.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
+import 'package:privacy_of_animal/screens/analyze/analyze_result_text.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:privacy_of_animal/utils/bloc_navigator.dart';
 import 'package:privacy_of_animal/widgets/arc_background2.dart';
 import 'package:privacy_of_animal/widgets/primary_button.dart';
 
-class AnalyzeResultScreen extends StatefulWidget {
-  @override
-  _AnalyzeResultScreenState createState() => _AnalyzeResultScreenState();
-}
-
-class _AnalyzeResultScreenState extends State<AnalyzeResultScreen> {
+class AnalyzeResultScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -126,57 +122,6 @@ class _AnalyzeResultScreenState extends State<AnalyzeResultScreen> {
             ],
           )
         ]
-      ),
-    );
-  }
-}
-
-class ResultText extends StatelessWidget {
-
-  final String title;
-  final String value;
-  final String confidence;
-
-  ResultText({
-    @required this.title,
-    @required this.value,
-    @required this.confidence
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(left: ScreenUtil.width/8,right: ScreenUtil.width/8),
-      child: Row(
-        children: <Widget>[
-          Text(
-            title,
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 20.0,
-              fontWeight: FontWeight.bold
-            )
-          ),
-          SizedBox(width: ScreenUtil.width/10),
-          Expanded(
-            child: Text(
-              value,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 20.0,
-                fontWeight: FontWeight.bold
-              )
-            ),
-          ),
-          Text(
-            '$confidence%',
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 20.0,
-              fontWeight: FontWeight.bold
-            )
-          )
-        ],
       ),
     );
   }
