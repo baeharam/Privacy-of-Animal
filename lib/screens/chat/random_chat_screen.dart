@@ -47,7 +47,7 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
   void dispose() {
     super.dispose();
     _scrollController.dispose();
-    sl.get<CurrentUser>().randomChat.clear();
+    sl.get<CurrentUser>().clearRandomChat();
     _randomChatBloc.emitEvent(RandomChatEventDisconnect());
     _randomChatBloc.emitEvent(RandomChatEventStateClear());
   }
