@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
-import 'package:privacy_of_animal/logics/database_helper.dart';
+import 'package:privacy_of_animal/logics/database_api.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
-import 'package:privacy_of_animal/logics/notification_helper.dart';
+import 'package:privacy_of_animal/logics/notification_api.dart';
 import 'package:privacy_of_animal/models/chat_model.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
@@ -46,7 +46,7 @@ class FriendsChatAPI {
       ));
       if(sl.get<CurrentUser>().chatRoomNotification[otherUserUID] &&
         sl.get<CurrentUser>().currentChatUID != otherUserUID) {
-        sl.get<NotificationHelper>().showChatNotification(nickName, 
+        sl.get<NotificationAPI>().showChatNotification(nickName, 
           chatData.document.data[firestoreChatContentField]);
       }
     }
@@ -57,7 +57,7 @@ class FriendsChatAPI {
     bool original = sl.get<CurrentUser>().chatRoomNotification[otherUserUID];
     debugPrint('[채팅] $otherUserUID의 채팅 알림을 $original에서 ${!original}로 변경');
 
-    SharedPreferences prefs = await sl.get<DatabaseHelper>().sharedPreferences;
+    SharedPreferences prefs = await sl.get<DatabaseAPI>().sharedPreferences;
     bool value = !original;
     await prefs.setBool(otherUserUID, value);
     sl.get<CurrentUser>().chatRoomNotification[otherUserUID] = value;

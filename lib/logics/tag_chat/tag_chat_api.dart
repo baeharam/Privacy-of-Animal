@@ -1,5 +1,5 @@
 import 'package:privacy_of_animal/logics/current_user.dart';
-import 'package:privacy_of_animal/logics/database_helper.dart';
+import 'package:privacy_of_animal/logics/database_api.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
@@ -20,7 +20,7 @@ class TagChatAPI {
   Future<void> storeTagDetail() async {
     await _storeTagDetailIntoFirestore();
     await _storeTagDetailIntoLocalDB();
-    SharedPreferences sharedPreferences = await sl.get<DatabaseHelper>().sharedPreferences;
+    SharedPreferences sharedPreferences = await sl.get<DatabaseAPI>().sharedPreferences;
     sharedPreferences.setBool(sl.get<CurrentUser>().uid+isTagChatted, true);
   }
 
@@ -45,7 +45,7 @@ class TagChatAPI {
 
   // 로컬 DB에 태그 상세 저장
   Future<void> _storeTagDetailIntoLocalDB() async {
-    Database db = await sl.get<DatabaseHelper>().database;
+    Database db = await sl.get<DatabaseAPI>().database;
     await db.rawUpdate(
       'UPDATE $tagTable SET $tagDetail1Col=?,$tagDetail2Col=?,$tagDetail3Col=?,$tagDetail4Col=?,$tagDetail5Col=? '
       'WHERE $uidCol="${sl.get<CurrentUser>().uid}"',
@@ -57,8 +57,8 @@ class TagChatAPI {
   // 로컬 DB에서 가져와서 세팅.
   Future<void> checkLoaclDBandFetch() async {
     if(sl.get<CurrentUser>().tagListModel.tagTitleList.length!=5) {
-      Database db = await sl.get<DatabaseHelper>().database;
-      db = await sl.get<DatabaseHelper>().database;
+      Database db = await sl.get<DatabaseAPI>().database;
+      db = await sl.get<DatabaseAPI>().database;
 
       List<Map<String,dynamic>> queryResult = 
       await db.rawQuery('SELECT * FROM $tagTable WHERE $uidCol="${sl.get<CurrentUser>().uid}"');

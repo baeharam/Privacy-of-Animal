@@ -1,7 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:privacy_of_animal/logics/chat_list/chat_list_bloc.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
-import 'package:privacy_of_animal/logics/database_helper.dart';
+import 'package:privacy_of_animal/logics/database_api.dart';
 import 'package:privacy_of_animal/logics/find_password/find_password_bloc.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/logics/other_profile/other_profile_bloc.dart';
@@ -17,7 +17,7 @@ import 'package:privacy_of_animal/logics/same_match/same_match_bloc.dart';
 import 'package:privacy_of_animal/logics/server/server.dart';
 import 'package:privacy_of_animal/logics/server/server_random_api.dart';
 import 'package:privacy_of_animal/logics/setting/setting_bloc.dart';
-import 'package:privacy_of_animal/logics/notification_helper.dart';
+import 'package:privacy_of_animal/logics/notification_api.dart';
 import 'package:privacy_of_animal/logics/signup/signup_bloc.dart';
 import 'package:privacy_of_animal/logics/tag_chat/tag_chat_bloc.dart';
 import 'package:privacy_of_animal/logics/tag_edit/tag_edit_bloc.dart';
@@ -30,13 +30,13 @@ GetIt sl = GetIt();
 void setup() {
   sl.registerSingleton(CurrentUser());
   sl.registerLazySingleton<InitializeAPI>(()=> InitializeAPI());
-  sl.registerLazySingleton<DatabaseHelper>(() => DatabaseHelper());
+  sl.registerLazySingleton<DatabaseAPI>(() => DatabaseAPI());
   sl.registerLazySingleton<FirebaseAPI>(() => FirebaseAPI());
   sl.registerLazySingleton<ServerFriendsAPI>(() => ServerFriendsAPI());
   sl.registerLazySingleton<ServerRequestAPI>(() => ServerRequestAPI());
   sl.registerLazySingleton<ServerChatAPI>(() => ServerChatAPI());
   sl.registerLazySingleton<ServerRandomAPI>(() => ServerRandomAPI());
-  sl.registerLazySingleton<NotificationHelper>(() => NotificationHelper());
+  sl.registerLazySingleton<NotificationAPI>(() => NotificationAPI());
   
   sl.registerLazySingleton<LoginBloc>(()=> LoginBloc());
   sl.registerLazySingleton<SignUpBloc>(()=> SignUpBloc());

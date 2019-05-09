@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
-import 'package:privacy_of_animal/logics/database_helper.dart';
+import 'package:privacy_of_animal/logics/database_api.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/resources/constants.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
@@ -24,7 +24,7 @@ class TagSelectAPI {
     _storeTagsIntoCurrentUser(selectedTagList);
     String uid = await sl.get<FirebaseAPI>().user;
     try{
-      SharedPreferences prefs = await sl.get<DatabaseHelper>().sharedPreferences;
+      SharedPreferences prefs = await sl.get<DatabaseAPI>().sharedPreferences;
       await prefs.setBool(uid+isTagSelected, true);
       await _storeTagsIntoFirestore(uid);
       await _storeTagsIntoLocalDB(uid);
@@ -56,7 +56,7 @@ class TagSelectAPI {
   // 로컬 DB에 태그 이름 저장
   Future<void> _storeTagsIntoLocalDB(String uid) async {
     List<String> tags = sl.get<CurrentUser>().tagListModel.tagTitleList;
-    Database db = await sl.get<DatabaseHelper>().database;
+    Database db = await sl.get<DatabaseAPI>().database;
     await db.rawInsert(
       'INSERT INTO $tagTable($uidCol,$tagName1Col,$tagName2Col,$tagName3Col,$tagName4Col,$tagName5Col) '
       'VALUES("$uid","${tags[0]}","${tags[1]}","${tags[2]}","${tags[3]}","${tags[4]}")'

@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
-import 'package:privacy_of_animal/logics/database_helper.dart';
+import 'package:privacy_of_animal/logics/database_api.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -54,7 +54,7 @@ class LoginAPI {
   // 상태에 따라 보여지는 화면이 다르기 때문에 SharedPreferences 값 설정해주어야 함
   Future<void> _setLoginFlags() async {
     uid = await sl.get<FirebaseAPI>().user;
-    prefs = await sl.get<DatabaseHelper>().sharedPreferences;
+    prefs = await sl.get<DatabaseAPI>().sharedPreferences;
 
     bool tagSelectFlag = prefs.getBool(uid+isTagSelected);
     bool tagChatFlag = prefs.getBool(uid+isTagChatted);

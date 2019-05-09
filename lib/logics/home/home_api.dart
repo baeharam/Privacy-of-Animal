@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
-import 'package:privacy_of_animal/logics/database_helper.dart';
+import 'package:privacy_of_animal/logics/database_api.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/logics/server/server.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
@@ -29,8 +29,8 @@ class HomeAPI {
   Future<void> _apiInitialization() async {
     debugPrint('[홈] HomeAPI 초기화');
 
-    db = await sl.get<DatabaseHelper>().database;
-    prefs = await sl.get<DatabaseHelper>().sharedPreferences;
+    db = await sl.get<DatabaseAPI>().database;
+    prefs = await sl.get<DatabaseAPI>().sharedPreferences;
     uid = sl.get<CurrentUser>().uid;
   }
 

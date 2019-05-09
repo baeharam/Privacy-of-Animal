@@ -5,7 +5,7 @@ import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:privacy_of_animal/utils/bloc_navigator.dart';
 
-class NotificationHelper {
+class NotificationAPI {
   FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin;
   BuildContext _context;
 

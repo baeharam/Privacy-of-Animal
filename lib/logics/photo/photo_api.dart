@@ -5,7 +5,7 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
-import 'package:privacy_of_animal/logics/database_helper.dart';
+import 'package:privacy_of_animal/logics/database_api.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/models/animal_model.dart';
 import 'package:privacy_of_animal/models/fake_profile_model.dart';
@@ -46,7 +46,7 @@ class PhotoAPI {
     String uid = sl.get<CurrentUser>().uid;
 
     // SharedPreferences 업데이트
-    SharedPreferences prefs = await sl.get<DatabaseHelper>().sharedPreferences;
+    SharedPreferences prefs = await sl.get<DatabaseAPI>().sharedPreferences;
     await prefs.setBool(uid+isFaceAnalyzed,true);
 
     int now = DateTime.now().millisecondsSinceEpoch;
@@ -62,7 +62,7 @@ class PhotoAPI {
     },merge: true);
 
     // 로컬 DB 업데이트
-    Database db = await sl.get<DatabaseHelper>().database;
+    Database db = await sl.get<DatabaseAPI>().database;
     await db.rawUpdate(
       'UPDATE $fakeProfileTable SET $analyzedTimeCol=? WHERE $uidCol="${sl.get<CurrentUser>().uid}"',
       ['$now']
@@ -109,7 +109,7 @@ class PhotoAPI {
     DocumentSnapshot doc = 
     await sl.get<FirebaseAPI>().getFirestore().collection(firestoreUsersCollection).document(sl.get<CurrentUser>().uid).get();
     String nickName = doc[firestoreFakeProfileField][firestoreNickNameField];
-    Database db = await sl.get<DatabaseHelper>().database;
+    Database db = await sl.get<DatabaseAPI>().database;
     FakeProfileModel fakeProfileModel = sl.get<CurrentUser>().fakeProfileModel;
     await db.rawInsert(
       'INSERT INTO $fakeProfileTable'
@@ -133,7 +133,7 @@ class PhotoAPI {
   }
 
   Future<void> _updateProfileIntoLocalDB() async {
-    Database db = await sl.get<DatabaseHelper>().database;
+    Database db = await sl.get<DatabaseAPI>().database;
     FakeProfileModel fakeProfileModel = sl.get<CurrentUser>().fakeProfileModel;
     await db.update(fakeProfileTable, {
       fakeGenderCol: fakeProfileModel.gender,
@@ -151,7 +151,7 @@ class PhotoAPI {
   }
 
   Future<bool> _checkLocalDB() async {
-    Database db = await sl.get<DatabaseHelper>().database;
+    Database db = await sl.get<DatabaseAPI>().database;
     var result = await db.query(fakeProfileTable,where: '$uidCol="${sl.get<CurrentUser>().uid}"');
     return result.isNotEmpty;
   }

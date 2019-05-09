@@ -1,7 +1,7 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
-import 'package:privacy_of_animal/logics/database_helper.dart';
+import 'package:privacy_of_animal/logics/database_api.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/resources/resources.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
@@ -43,7 +43,7 @@ class TagEditAPI {
 
   // 로컬 DB 값 수정
   Future<void> editTagOfLocalDB(String tagTitle, String tagDetail, int index) async {
-    Database db = await sl.get<DatabaseHelper>().database;
+    Database db = await sl.get<DatabaseAPI>().database;
     await db.rawUpdate(
       'UPDATE $tagTable SET ${tagTitleList[index]}=?, ${tagDetailList[index]}=? '
       'WHERE $uidCol="${sl.get<CurrentUser>().uid}"',

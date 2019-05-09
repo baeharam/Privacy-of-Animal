@@ -2,9 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:privacy_of_animal/logics/chat_list/chat_list.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
-import 'package:privacy_of_animal/logics/database_helper.dart';
+import 'package:privacy_of_animal/logics/database_api.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
-import 'package:privacy_of_animal/logics/notification_helper.dart';
+import 'package:privacy_of_animal/logics/notification_api.dart';
 import 'package:privacy_of_animal/logics/other_profile/other_profile.dart';
 import 'package:privacy_of_animal/logics/same_match/same_match.dart';
 import 'package:privacy_of_animal/models/chat_list_model.dart';
@@ -22,7 +22,7 @@ class FriendsAPI {
   Future<void> setFriendsNotification() async {
     debugPrint('[친구] 친구 알림 설정');
 
-    SharedPreferences prefs = await sl.get<DatabaseHelper>().sharedPreferences;
+    SharedPreferences prefs = await sl.get<DatabaseAPI>().sharedPreferences;
     bool value = !sl.get<CurrentUser>().friendsNotification;
     await prefs.setBool(sl.get<CurrentUser>().uid+friendsNotification, value);
     sl.get<CurrentUser>().friendsNotification = value;
@@ -96,7 +96,7 @@ class FriendsAPI {
     if(_notifyingFriends!=null && sl.get<CurrentUser>().friendsNotification) {
       debugPrint("[친구] 새로운 친구 알림");
 
-      sl.get<NotificationHelper>().showFriendsNotification(_notifyingFriends.fakeProfileModel.nickName);
+      sl.get<NotificationAPI>().showFriendsNotification(_notifyingFriends.fakeProfileModel.nickName);
       _notifyingFriends = null;
     }
   }
@@ -142,7 +142,7 @@ class FriendsAPI {
     if(sl.get<CurrentUser>().friendsNotification && _notifyingRequestFrom!=null) {
       debugPrint("[친구] 새로운 친구신청 알림");
 
-      sl.get<NotificationHelper>().showRequestNotification(_notifyingRequestFrom.fakeProfileModel.nickName);
+      sl.get<NotificationAPI>().showRequestNotification(_notifyingRequestFrom.fakeProfileModel.nickName);
       _notifyingRequestFrom = null;
     }
   }
@@ -296,7 +296,7 @@ class FriendsAPI {
   Future<void> _decreaseLocalFriends(UserModel userToBlock) async{
     debugPrint("[친구] 친구 감소했을 때 로컬에서 업데이트");
 
-    SharedPreferences prefs = await sl.get<DatabaseHelper>().sharedPreferences;
+    SharedPreferences prefs = await sl.get<DatabaseAPI>().sharedPreferences;
     prefs.remove(userToBlock.uid);
 
     sl.get<CurrentUser>().friendsList.removeWhere((friends) => friends.uid==userToBlock.uid);
@@ -310,7 +310,7 @@ class FriendsAPI {
   Future<void> _increaseLocalFriends(UserModel newFriends) async{
     debugPrint("[친구] 처음 혹은 친구 증가했을 때 로컬에서 업데이트");
 
-    SharedPreferences prefs = await sl.get<DatabaseHelper>().sharedPreferences;
+    SharedPreferences prefs = await sl.get<DatabaseAPI>().sharedPreferences;
     await prefs.setBool(newFriends.uid, true);
 
     sl.get<CurrentUser>().friendsList.add(newFriends);

@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:privacy_of_animal/logics/current_user.dart';
-import 'package:privacy_of_animal/logics/database_helper.dart';
+import 'package:privacy_of_animal/logics/database_api.dart';
 import 'package:privacy_of_animal/logics/firebase_api.dart';
 import 'package:privacy_of_animal/models/signup_model.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
@@ -60,7 +60,7 @@ class SignUpAPI {
 
   // 로컬에 저장
   Future<void> registerProfileIntoLocalDB(SignUpModel data) async {
-    Database db = await sl.get<DatabaseHelper>().database;
+    Database db = await sl.get<DatabaseAPI>().database;
     db.rawInsert(
       'INSERT INTO $realProfileTable($uidCol,$nameCol,$ageCol,$jobCol,$genderCol) '
       'VALUES("${sl.get<CurrentUser>().uid}",'

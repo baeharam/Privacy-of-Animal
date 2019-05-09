@@ -6,16 +6,16 @@ import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
-class DatabaseHelper {
-  static DatabaseHelper _databaseHelper;
+class DatabaseAPI {
+  static DatabaseAPI _databaseHelper;
   static Database _database;
   static SharedPreferences _sharedPreferences;
 
-  DatabaseHelper._createInstance();
+  DatabaseAPI._createInstance();
 
-  factory DatabaseHelper() {
+  factory DatabaseAPI() {
     if(_databaseHelper == null){
-      _databaseHelper = DatabaseHelper._createInstance();
+      _databaseHelper = DatabaseAPI._createInstance();
     }
     return _databaseHelper;
   }
