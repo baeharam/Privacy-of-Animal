@@ -3,7 +3,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:privacy_of_animal/logics/home/home.dart';
 import 'package:privacy_of_animal/resources/strings.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
-import 'package:privacy_of_animal/utils/stream_navigator.dart';
+import 'package:privacy_of_animal/utils/bloc_navigator.dart';
 
 class NotificationHelper {
   FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin;
@@ -34,7 +34,7 @@ class NotificationHelper {
     showDialog(
       context: _context,
       builder: (context) {
-        StreamNavigator.pop(context);
+        BlocNavigator.pop(context);
         sl.get<HomeBloc>().emitEvent(HomeEventNavigate(index: navigationIndex));
         return Container();
       }

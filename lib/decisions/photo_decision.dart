@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_helpers.dart';
 import 'package:privacy_of_animal/logics/photo/photo.dart';
-import 'package:privacy_of_animal/screens/main/analyze_result_screen.dart';
-import 'package:privacy_of_animal/screens/main/screen.dart';
+import 'package:privacy_of_animal/screens/analyze/analyze_result_screen.dart';
+import 'package:privacy_of_animal/screens/analyze/photo_screen.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 
 

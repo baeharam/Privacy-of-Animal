@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_helpers.dart';
 import 'package:privacy_of_animal/logics/random_chat/random_chat.dart';
-import 'package:privacy_of_animal/screens/main/random_loading_screen.dart';
+import 'package:privacy_of_animal/screens/chat/random_loading_screen.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 
 

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:privacy_of_animal/decisions/decision.dart';
 import 'package:privacy_of_animal/resources/resources.dart';
-import 'package:privacy_of_animal/screens/main/screen.dart';
+import 'package:privacy_of_animal/screens/screens.dart';
 
 
 Map<String, WidgetBuilder> routes =  {
