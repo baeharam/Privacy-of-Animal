@@ -15,7 +15,7 @@ class FriendsBloc extends BlocEventStateBase<FriendsEvent,FriendsState>
   Stream<FriendsState> eventHandler(FriendsEvent event, FriendsState currentState) async*{
 
     if(event is FriendsEventStateClear) {
-      yield FriendsState();
+      yield FriendsState.initial();
     }
 
     if(event is FriendsEventFirstFriendsFetch) {

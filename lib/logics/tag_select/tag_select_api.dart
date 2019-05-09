@@ -40,7 +40,7 @@ class TagSelectAPI {
     await sl.get<FirebaseAPI>().getFirestore().runTransaction((tx) async{
         CollectionReference collectionReference = sl.get<FirebaseAPI>().getFirestore().collection(firestoreUsersCollection);
         DocumentReference reference = collectionReference.document(uid);
-        await reference.updateData({
+        await tx.update(reference,{
           firestoreIsTagSelectedField: true,
           firestoreTagField: {
             firestoreTagTitle1Field: sl.get<CurrentUser>().tagListModel.tagTitleList[0],

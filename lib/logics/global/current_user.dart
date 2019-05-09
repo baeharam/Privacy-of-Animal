@@ -60,4 +60,18 @@ class CurrentUser {
 
   // random_chat
   void clearRandomChat() => randomChat.clear();
+
+  // friends
+  void clearNewFriendsNum() => newFriendsNum = 0;
+  bool isThereNewFriends() => newFriendsNum > 0;
+
+  // other_profile
+  void initCurrentProfileUID(String profileUID) => currentProfileUID = profileUID;
+  void disposeCurrentProfileUID() => currentProfileUID = '';
+
+  // match
+  bool isAlreadyFriends(UserModel user) => 
+    friendsList.where((friends) => friends.uid==user.uid).isNotEmpty;
+  bool isAlreadyRequestFrom(UserModel user) =>
+    requestFromList.where((request) => request.uid==user.uid).isNotEmpty;
 }

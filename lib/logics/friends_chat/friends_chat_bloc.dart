@@ -14,7 +14,7 @@ class FriendsChatBloc extends BlocEventStateBase<FriendsChatEvent,FriendsChatSta
   Stream<FriendsChatState> eventHandler(FriendsChatEvent event, FriendsChatState currentState) async*{
 
     if(event is FriendsChatEventStateClear) {
-      yield FriendsChatState();
+      yield FriendsChatState.initial();
     }
 
     if(event is FriendsChatEvnetFirstChatFetch) {

@@ -12,7 +12,7 @@ class ChatListBloc extends BlocEventStateBase<ChatListEvent,ChatListState> {
   Stream<ChatListState> eventHandler(ChatListEvent event, ChatListState currentState) async*{
 
     if(event is ChatListEventStateClear) {
-      yield ChatListState();
+      yield ChatListState.initial();
     }
 
     if(event is ChatListEventRefresh) {
@@ -34,9 +34,6 @@ class ChatListBloc extends BlocEventStateBase<ChatListEvent,ChatListState> {
     if(event is ChatListEventNew) {
       _api.addChatHistory(event.otherUser,event.chatRoomID,event.newMessages);
       yield ChatListState.newMessage();
-    }
-    if(event is ChatListEventStateClear) {
-      yield ChatListState.initial();
     }
   }
 }

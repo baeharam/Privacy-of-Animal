@@ -13,7 +13,7 @@ class OtherProfileBloc extends BlocEventStateBase<OtherProfileEvent,OtherProfile
   Stream<OtherProfileState> eventHandler(OtherProfileEvent event, OtherProfileState currentState) async*{
 
     if(event is OtherProfileEventStateClear) {
-      yield OtherProfileState();
+      yield OtherProfileState.initial();
     }
 
     if(event is OtherProfileEventRefreshLoading) {

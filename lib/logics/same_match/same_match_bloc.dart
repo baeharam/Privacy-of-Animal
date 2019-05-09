@@ -15,7 +15,7 @@ class SameMatchBloc extends BlocEventStateBase<SameMatchEvent,SameMatchState>
   Stream<SameMatchState> eventHandler(SameMatchEvent event, SameMatchState currentState) async*{
 
     if(event is SameMatchEventStateClear) {
-      yield SameMatchState();
+      yield SameMatchState.initial();
     }
 
     if(event is SameMatchEventRefreshLoading) {

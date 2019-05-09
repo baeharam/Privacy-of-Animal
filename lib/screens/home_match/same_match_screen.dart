@@ -5,8 +5,12 @@ import 'package:privacy_of_animal/logics/global/current_user.dart';
 import 'package:privacy_of_animal/logics/same_match/same_match.dart';
 import 'package:privacy_of_animal/models/same_match_model.dart';
 import 'package:privacy_of_animal/resources/resources.dart';
+import 'package:privacy_of_animal/screens/home_match/same_match_button.dart';
+import 'package:privacy_of_animal/screens/home_match/same_match_fakeprofile.dart';
+import 'package:privacy_of_animal/screens/home_match/same_match_loading.dart';
+import 'package:privacy_of_animal/screens/home_match/same_match_tag.dart';
 import 'package:privacy_of_animal/screens/other_profile/other_profile_screen.dart';
-import 'package:privacy_of_animal/screens/home_match/same_match_sub.dart';
+import 'package:privacy_of_animal/utils/bloc_navigator.dart';
 import 'package:privacy_of_animal/utils/profile_hero.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 import 'package:privacy_of_animal/utils/bloc_snackbar.dart';
@@ -22,29 +26,20 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
   SameMatchModel _sameMatchModel;
 
   @override
+  void initState() {
+    super.initState();
+    _sameMatchBloc.emitEvent(SameMatchEventStateClear());
+  }
+
+  @override
   void dispose() {
-    sl.get<CurrentUser>().currentProfileUID = '';
-    _sameMatchBloc.emitEvent(SameMatchEventDisconnectToServer(otherUserUID: _sameMatchModel.userInfo.uid));
+    sl.get<CurrentUser>().disposeCurrentProfileUID();
+    _sameMatchBloc.emitEvent(
+      SameMatchEventDisconnectToServer(otherUserUID: _sameMatchModel.userInfo.uid)
+    );
+    _sameMatchBloc.emitEvent(SameMatchEventStateClear());
     super.dispose();
   }
-
-  void _viewOtherProfile() {
-    WidgetsBinding.instance.addPostFrameCallback((_){
-      Navigator.push(context, MaterialPageRoute(
-        builder: (context) => OtherProfileScreen(user:_sameMatchModel.userInfo)
-      ));
-    });
-  }
-
-  bool _isAlreadyFriends() => sl.get<CurrentUser>().friendsList.where((user)
-    => user.uid==_sameMatchModel.userInfo.uid
-  ).isNotEmpty;
-  bool _isAlreadyRequestFrom() => sl.get<CurrentUser>().requestFromList.where((user)
-    => user.uid==_sameMatchModel.userInfo.uid
-  ).isNotEmpty;
-  bool _isAlreadyRequestTo() => sl.get<CurrentUser>().isRequestTo;
-
-  
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +82,7 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
               _sameMatchModel = state.sameMatchModel;
               _sameMatchBloc.emitEvent(SameMatchEventConnectToServer(
                   otherUserUID: _sameMatchModel.userInfo.uid));
-              sl.get<CurrentUser>().currentProfileUID = _sameMatchModel.userInfo.uid;
+              sl.get<CurrentUser>().initCurrentProfileUID(_sameMatchModel.userInfo.uid);
             }
           }
           return Container(
@@ -175,18 +170,20 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
                       title: '★ 프로필 보기',
                       onPressed: () {
                         _sameMatchBloc.emitEvent(SameMatchEventEnterOtherProfileScreen());
-                        _viewOtherProfile();
+                        BlocNavigator.pushWithRoute(
+                          context, OtherProfileScreen(user:_sameMatchModel.userInfo));
                       }
                     ),
                     SizedBox(width: 15.0),
                     BlocBuilder(
                       bloc: _sameMatchBloc,
                       builder: (context,SameMatchState state){  
-                        if(_isAlreadyFriends() || _isAlreadyRequestFrom()){
+                        if(sl.get<CurrentUser>().isAlreadyFriends(_sameMatchModel.userInfo) 
+                          || sl.get<CurrentUser>().isAlreadyRequestFrom(_sameMatchModel.userInfo)){
                           return Padding(
                             padding: EdgeInsets.only(top: 10.0),
                             child: Text(
-                              _isAlreadyFriends()
+                              sl.get<CurrentUser>().isAlreadyFriends(_sameMatchModel.userInfo)
                               ? '이미 친구입니다.'
                               : '친구신청을 받았습니다.',
                               style: TextStyle(
@@ -202,7 +199,7 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
                           return CircularProgressIndicator();
                         }
 
-                        if(_isAlreadyRequestTo()) {
+                        if(sl.get<CurrentUser>().isRequestTo) {
                           return SameMatchButton(
                             color: primaryGreen,
                             title: '친구 신청취소',
@@ -213,7 +210,6 @@ class _SameMatchScreenState extends State<SameMatchScreen> {
                         }
                         if(state.isRequestFailed) {
                           BlocSnackbar.show(context, '친구신청에 실패했습니다.');
-                          _sameMatchBloc.emitEvent(SameMatchEventStateClear());
                         }
                         return SameMatchButton( 
                           color: primaryBlue,

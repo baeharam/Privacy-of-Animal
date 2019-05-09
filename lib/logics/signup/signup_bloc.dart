@@ -12,7 +12,7 @@ class SignUpBloc extends BlocEventStateBase<SignUpEvent,SignUpState> {
   Stream<SignUpState> eventHandler(SignUpEvent event, SignUpState currentState) async*{
 
     if(event is SignUpEventStateClear){
-      yield SignUpState();
+      yield SignUpState.initial();
     }
 
     if(event is SignUpEventAgeSelect){

@@ -13,26 +13,25 @@ class FriendsScreen extends StatefulWidget {
   _FriendsScreenState createState() => _FriendsScreenState();
 }
 
-class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProviderStateMixin{
-
+class _FriendsScreenState extends State<FriendsScreen>
+    with SingleTickerProviderStateMixin {
   final FriendsBloc _friendsBloc = sl.get<FriendsBloc>();
   TabController _tabController;
 
   @override
   void initState() {
     super.initState();
+    _friendsBloc.emitEvent(FriendsEventStateClear());
     _tabController = TabController(length: 2, vsync: this);
   }
 
   @override
   void dispose() {
     _tabController.dispose();
+    sl.get<CurrentUser>().clearNewFriendsNum();
     _friendsBloc.emitEvent(FriendsEventStateClear());
-    sl.get<CurrentUser>().newFriendsNum = 0;
     super.dispose();
   }
-
-  
 
   @override
   Widget build(BuildContext context) {
@@ -44,63 +43,65 @@ class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProvider
           backgroundColor: primaryBlue,
           actions: [
             BlocBuilder(
-              bloc: _friendsBloc,
-              builder: (context, FriendsState state){
-                if(state.isFriendsNotificationToggleFailed) {
-                  _friendsBloc.emitEvent(FriendsEventStateClear());
-                  BlocSnackbar.show(context, '알림 설정에 실패하였습니다.');
-                }
-                return IconButton(
-                  icon: Icon(sl.get<CurrentUser>().friendsNotification
-                    ? Icons.notifications
-                    : Icons.notifications_off),
-                  onPressed: () => _friendsBloc.emitEvent(FriendsEventFriendsNotification())
-                );
-              }
-            )
+                bloc: _friendsBloc,
+                builder: (context, FriendsState state) {
+                  if (state.isFriendsNotificationToggleFailed) {
+                    _friendsBloc.emitEvent(FriendsEventStateClear());
+                    BlocSnackbar.show(context, '알림 설정에 실패하였습니다.');
+                  }
+                  return IconButton(
+                      icon: Icon(sl.get<CurrentUser>().friendsNotification
+                          ? Icons.notifications
+                          : Icons.notifications_off),
+                      onPressed: () => _friendsBloc
+                          .emitEvent(FriendsEventFriendsNotification()));
+                })
           ],
           bottom: TabBar(
             tabs: [
-              Tab(child: Row(
+              Tab(
+                  child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text('친구'),
                   SizedBox(width: 10.0),
                   BlocBuilder(
-                    bloc: _friendsBloc,
-                    builder: (context, FriendsState state){
-                      if(state.isFriendsIncreased && sl.get<CurrentUser>().newFriendsNum>0) {
-                        return Container(
-                          padding: EdgeInsets.all(8.0),
-                          decoration: BoxDecoration(
-                            color: Colors.red,
-                            shape: BoxShape.circle
-                          ),
-                          child: Text(sl.get<CurrentUser>().newFriendsNum.toString())
-                        );
-                      }
-                      return Container();
-                    }
-                  )
+                      bloc: _friendsBloc,
+                      builder: (context, FriendsState state) {
+                        if (state.isFriendsIncreased && 
+                            sl.get<CurrentUser>().isThereNewFriends()) {
+                          return Container(
+                              padding: EdgeInsets.all(8.0),
+                              decoration: BoxDecoration(
+                                  color: Colors.red, shape: BoxShape.circle),
+                              child: Text(sl
+                                  .get<CurrentUser>()
+                                  .newFriendsNum
+                                  .toString()));
+                        }
+                        return Container();
+                      })
                 ],
               )),
-              Tab(child: Row(
+              Tab(
+                  child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text('친구신청'),
                   SizedBox(width: 10.0),
                   BlocBuilder(
                     bloc: _friendsBloc,
-                    builder: (context, FriendsState state){
-                      if(sl.get<CurrentUser>().requestFromList.isNotEmpty) {
+                    builder: (context, FriendsState state) {
+                      if (sl.get<CurrentUser>().requestFromList.isNotEmpty) {
                         return Container(
-                          padding: EdgeInsets.all(8.0),
-                          decoration: BoxDecoration(
-                            color: Colors.red,
-                            shape: BoxShape.circle
-                          ),
-                          child: Text(sl.get<CurrentUser>().requestFromList.length.toString())
-                        );
+                            padding: EdgeInsets.all(8.0),
+                            decoration: BoxDecoration(
+                                color: Colors.red, shape: BoxShape.circle),
+                            child: Text(sl
+                                .get<CurrentUser>()
+                                .requestFromList
+                                .length
+                                .toString()));
                       }
                       return Container();
                     },
@@ -110,10 +111,7 @@ class _FriendsScreenState extends State<FriendsScreen> with SingleTickerProvider
             ],
             indicatorColor: Colors.white,
             labelColor: Colors.white,
-            labelStyle: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 20.0
-            ),
+            labelStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
             unselectedLabelColor: Colors.white.withOpacity(0.2),
             controller: _tabController,
           ),

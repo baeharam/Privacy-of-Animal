@@ -16,7 +16,7 @@ class RandomLoadingBloc extends BlocEventStateBase<RandomLoadingEvent,RandomLoad
   Stream<RandomLoadingState> eventHandler(RandomLoadingEvent event, RandomLoadingState currentState) async*{
     
     if(event is RandomLoadingEventStateClear) {
-      yield RandomLoadingState();
+      yield RandomLoadingState.initial();
     }
 
     if(event is RandomLoadingEventMatchStart){
