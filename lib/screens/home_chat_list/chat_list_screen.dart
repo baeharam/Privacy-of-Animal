@@ -3,7 +3,6 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:privacy_of_animal/bloc_helpers/bloc_event_state_builder.dart';
 import 'package:privacy_of_animal/logics/chat_list/chat_list.dart';
 import 'package:privacy_of_animal/logics/global/current_user.dart';
-import 'package:privacy_of_animal/models/chat_list_model.dart';
 import 'package:privacy_of_animal/resources/resources.dart';
 import 'package:privacy_of_animal/screens/home_chat_list/chat_list_item.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
@@ -17,7 +16,6 @@ class ChatListScreen extends StatefulWidget {
 class _ChatListScreenState extends State<ChatListScreen> {
 
   final ChatListBloc _chatListBloc = sl.get<ChatListBloc>();
-  List<ChatListModel> _chatList;
 
   @override
   void initState() {
@@ -50,10 +48,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
       body: BlocBuilder(
         bloc: _chatListBloc,
         builder: (context, ChatListState state){
-          if(state.isInitial || state.isNewMessage || state.isDeleteSucceeded) {
-            _chatList = sl.get<CurrentUser>().chatListHistory.values.toList();
-          }
-          if(_chatList.isEmpty) {
+          if(sl.get<CurrentUser>().isChatListEmpty()){
             return Center(child: Text('아직 대화기록이 없습니다.'));
           }
           if(state.isDeleteLoading) {
@@ -61,15 +56,13 @@ class _ChatListScreenState extends State<ChatListScreen> {
           }
           if(state.isDeleteFailed) {
             BlocSnackbar.show(context, "채팅을 지우는데 실패했습니다.");
+            _chatListBloc.emitEvent(ChatListEventStateClear());
           }
-
-          assert(_chatList != null);
-
           return ListView.builder(
             padding: EdgeInsets.all(10.0),
-            itemCount: _chatList.length,
+            itemCount: sl.get<CurrentUser>().chatListLength,
             itemBuilder: (context,index) {
-              return ChatListItem(chatListModel: _chatList[index]);
+              return ChatListItem(chatListModel: sl.get<CurrentUser>().getChatListModel(index));
             }
           );
         }

@@ -54,6 +54,12 @@ class CurrentUser {
 
   CurrentUser() { clear(); }
 
+  // chat_list
+  bool isChatListEmpty() => chatListHistory.values.isEmpty;
+  int get chatListLength => chatListHistory.values.length;
+  ChatListModel getChatListModel(int index) 
+    => (chatListHistory.values as List<ChatListModel>)[index];
+
   // friends_chat
   void initCurrentChatUID(String receiverUID) => currentChatUID = receiverUID;
   void disposeCurrentChatUID() => currentChatUID = '';
@@ -64,6 +70,7 @@ class CurrentUser {
   // friends
   void clearNewFriendsNum() => newFriendsNum = 0;
   bool isThereNewFriends() => newFriendsNum > 0;
+  bool isFriendsEmpty() => friendsList.isEmpty;
 
   // other_profile
   void initCurrentProfileUID(String profileUID) => currentProfileUID = profileUID;
