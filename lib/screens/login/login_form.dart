@@ -112,6 +112,7 @@ class _LoginFormState extends State<LoginForm> {
           SizedBox(height: ScreenUtil.height/10),
           StreamBuilder<bool>(
             stream: validationBloc.loginValid,
+            initialData: true,
             builder: (BuildContext context, AsyncSnapshot<bool> snapshot){
               return PrimaryButton(
                 text: '로그인',
