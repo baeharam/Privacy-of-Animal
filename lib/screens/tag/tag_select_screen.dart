@@ -21,8 +21,15 @@ class _TagSelectScreenState extends State<TagSelectScreen> {
   ScrollController scrollController = ScrollController();
 
   @override
+  void initState() {
+    super.initState();
+    _tagBloc.emitEvent(TagSelectEventStateClear());
+  }
+
+  @override
   void dispose() {
     scrollController.dispose();
+    _tagBloc.emitEvent(TagSelectEventStateClear());
     super.dispose();
   }
 
@@ -127,7 +134,6 @@ class _TagSelectScreenState extends State<TagSelectScreen> {
                 builder: (_, TagSelectState state){
                   if(state.isTagCompleted){
                     BlocNavigator.pushReplacementNamed(context, routeTagChat);
-                    _tagBloc.emitEvent(TagSelectEventStateClear());
                   }
                   if(state.isTagLoading){
                     return CustomProgressIndicator();

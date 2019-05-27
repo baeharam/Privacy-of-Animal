@@ -24,6 +24,7 @@ class _TagChatScreenState extends State<TagChatScreen> {
   final TagChatBloc _tagChatBloc = sl.get<TagChatBloc>();
   final ScrollController _scrollController = ScrollController();
   List<Widget> chatWidgets = [];
+  String formerMessgae = "";
 
   @override
   void dispose() {
@@ -57,7 +58,10 @@ class _TagChatScreenState extends State<TagChatScreen> {
               _tagChatBloc.emitEvent(TagChatEventBeginChat());
             }
             if(state.isIntroChat) {
-              chatWidgets.add(TagChatNPC(isBegin: state.isIntroChatBegin, message: state.introChat));
+              if(state.introChat != formerMessgae){
+                chatWidgets.add(TagChatNPC(isBegin: state.isIntroChatBegin, message: state.introChat));
+                formerMessgae = state.introChat;
+              }
               if(state.isIntroChatEnd) {
                 _tagChatBloc.emitEvent(TagChatEventStateClear());
               }
