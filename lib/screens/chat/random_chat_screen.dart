@@ -56,7 +56,8 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
 
     _chatBuilder ??= ChatBuilder(
       context: context,
-      receiver: widget.receiver
+      receiver: widget.receiver,
+      type: ChatType.RANDOM
     );
 
     assert(_chatBuilder!=null);

@@ -1,19 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:privacy_of_animal/logics/global/current_user.dart';
+import 'package:privacy_of_animal/models/chat_model.dart';
 import 'package:privacy_of_animal/models/user_model.dart';
 import 'package:privacy_of_animal/screens/other_profile/other_profile_screen.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 
+enum ChatType {
+  RANDOM,
+  FRIENDS
+}
+
 class ChatBuilder {
-  UserModel receiver;
-  BuildContext context;
+  final UserModel receiver;
+  final BuildContext context;
+  final ChatType type;
 
   ChatBuilder({
     @required this.receiver,
-    @required this.context
+    @required this.context,
+    @required this.type
   }) : assert(receiver!=null),
-       assert(context!=null);
+       assert(context!=null),
+       assert(type!=null);
 
   Widget _buildMine(int index) {
     return Row(
@@ -26,7 +35,7 @@ class ChatBuilder {
           child: Text(
             DateFormat('kk:mm','ko')
               .format(DateTime.fromMillisecondsSinceEpoch(
-                  sl.get<CurrentUser>().randomChat[index].timeStamp.millisecondsSinceEpoch)),
+                  _getChatModel(index).timeStamp.millisecondsSinceEpoch)),
               style: TextStyle(color: Colors.grey,fontSize: 12.0),
           ),
         ) : Container(),
@@ -36,7 +45,7 @@ class ChatBuilder {
               SizedBox(height: 5.0),
               Container(
                 child: Text(
-                  sl.get<CurrentUser>().randomChat[index].content,
+                  _getChatModel(index).content,
                   style: TextStyle(
                     color: Colors.white
                   ),
@@ -57,6 +66,7 @@ class ChatBuilder {
   }
 
   Widget _buildYours(int index) {
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.end,
@@ -88,7 +98,7 @@ class ChatBuilder {
         Flexible(
           child: Container(
             child: Text(
-              sl.get<CurrentUser>().randomChat[index].content,
+              _getChatModel(index).content,
               style: TextStyle(color: Colors.white),
             ),
             padding: EdgeInsets.fromLTRB(15.0,10.0,15.0,10.0),
@@ -104,7 +114,7 @@ class ChatBuilder {
         margin: EdgeInsets.only(left: 10.0,bottom: 5.0),
         child: Text(
           DateFormat('kk:mm','ko')
-            .format(DateTime.fromMillisecondsSinceEpoch(sl.get<CurrentUser>().randomChat[index].timeStamp.millisecondsSinceEpoch)),
+            .format(DateTime.fromMillisecondsSinceEpoch(_getChatModel(index).timeStamp.millisecondsSinceEpoch)),
             style: TextStyle(color: Colors.grey,fontSize: 12.0),
         ),
         ) : Container()
@@ -113,7 +123,7 @@ class ChatBuilder {
   }
 
   Widget buildMessage(int index) {
-    if(sl.get<CurrentUser>().randomChat[index].from == sl.get<CurrentUser>().uid){
+    if(_getChatModel(index).from == sl.get<CurrentUser>().uid){
       return _buildMine(index);
     } else {
       return _buildYours(index);
@@ -121,8 +131,10 @@ class ChatBuilder {
   }
 
   bool _isFirstLeft(int index) {
-    if((index<sl.get<CurrentUser>().randomChat.length-1 && sl.get<CurrentUser>().randomChat!=null && sl.get<CurrentUser>().randomChat[index+1].from == sl.get<CurrentUser>().uid)
-     || (index == sl.get<CurrentUser>().randomChat.length-1)) {
+    if((index < _getChatList().length-1 && 
+      _getChatList() != null && 
+      _getChatList()[index+1].from == sl.get<CurrentUser>().uid)
+     || (index == _getChatList().length-1)) {
        return true;
      } else {
        return false;
@@ -130,7 +142,8 @@ class ChatBuilder {
   }
 
   bool _isLastLeft(int index) {
-    if((index>0 && sl.get<CurrentUser>().randomChat!=null && sl.get<CurrentUser>().randomChat[index-1].from == sl.get<CurrentUser>().uid) 
+    if((index>0 && _getChatList() != null && 
+    _getChatList()[index-1].from == sl.get<CurrentUser>().uid) 
       || index==0){
         return true;
     } else {
@@ -139,11 +152,22 @@ class ChatBuilder {
   }
 
   bool _isLastRight(int index) {
-    if((index>0 && sl.get<CurrentUser>().randomChat!=null && sl.get<CurrentUser>().randomChat[index-1].to == sl.get<CurrentUser>().uid) 
+    if((index>0 && _getChatList() != null && 
+    _getChatList()[index-1].to == sl.get<CurrentUser>().uid) 
       || index==0){
         return true;
     } else {
       return false;
     }
   }
+
+  List<ChatModel> _getChatList()
+    => type==ChatType.RANDOM
+      ? sl.get<CurrentUser>().randomChat
+      : sl.get<CurrentUser>().chatHistory[receiver.uid];
+
+  ChatModel _getChatModel(int index)
+    => type==ChatType.RANDOM
+      ? sl.get<CurrentUser>().randomChat[index]
+      : sl.get<CurrentUser>().chatHistory[receiver.uid][index];
 }

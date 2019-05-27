@@ -51,6 +51,7 @@ class _FriendsChatScreenState extends State<FriendsChatScreen> {
   Widget build(BuildContext context) {
 
     _chatBuilder ??= ChatBuilder(
+      type: ChatType.FRIENDS,
       context: context,
       receiver: widget.receiver
     );
