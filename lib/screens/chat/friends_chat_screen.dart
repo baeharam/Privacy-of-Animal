@@ -91,14 +91,11 @@ class _FriendsChatScreenState extends State<FriendsChatScreen> {
             child: BlocBuilder(
               bloc: friendsChatBloc,
               builder: (context, FriendsChatState state){
-                if(state.isMessageReceived || state.isInitial ){
-                  _chatBuilder.messages = sl.get<CurrentUser>().chatHistory[widget.receiver.uid];
-                }
                 return ListView.builder(
                   padding: EdgeInsets.all(10.0),
                   itemBuilder: (context,index) => 
                     _chatBuilder.buildMessage(index),
-                  itemCount: _chatBuilder.messageLength,
+                  itemCount: sl.get<CurrentUser>().getFriendsChatLength(widget.receiver.uid),
                   reverse: true,
                   controller: scrollController,
                 );

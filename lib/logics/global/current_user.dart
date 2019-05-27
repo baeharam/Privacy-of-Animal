@@ -64,9 +64,11 @@ class CurrentUser {
   // friends_chat
   void initCurrentChatUID(String receiverUID) => currentChatUID = receiverUID;
   void disposeCurrentChatUID() => currentChatUID = '';
+  int getFriendsChatLength(String uid) => chatHistory[uid].length;
 
   // random_chat
   void clearRandomChat() => randomChat.clear();
+  int get randomChatLength => randomChat.length;
 
   // friends
   void clearNewFriendsNum() => newFriendsNum = 0;

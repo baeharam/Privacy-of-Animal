@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:privacy_of_animal/logics/global/current_user.dart';
-import 'package:privacy_of_animal/models/chat_model.dart';
 import 'package:privacy_of_animal/models/user_model.dart';
 import 'package:privacy_of_animal/screens/other_profile/other_profile_screen.dart';
 import 'package:privacy_of_animal/utils/service_locator.dart';
 
 class ChatBuilder {
-
-  List<ChatModel> _messages;
   UserModel receiver;
   BuildContext context;
 
@@ -17,9 +14,6 @@ class ChatBuilder {
     @required this.context
   }) : assert(receiver!=null),
        assert(context!=null);
-
-  set messages(List<ChatModel> messages) => _messages = messages;
-  int get messageLength => _messages.length;
 
   Widget _buildMine(int index) {
     return Row(
@@ -31,7 +25,8 @@ class ChatBuilder {
           margin: EdgeInsets.only(right: 10.0,bottom: 5.0),
           child: Text(
             DateFormat('kk:mm','ko')
-              .format(DateTime.fromMillisecondsSinceEpoch(_messages[index].timeStamp.millisecondsSinceEpoch)),
+              .format(DateTime.fromMillisecondsSinceEpoch(
+                  sl.get<CurrentUser>().randomChat[index].timeStamp.millisecondsSinceEpoch)),
               style: TextStyle(color: Colors.grey,fontSize: 12.0),
           ),
         ) : Container(),
@@ -41,7 +36,7 @@ class ChatBuilder {
               SizedBox(height: 5.0),
               Container(
                 child: Text(
-                  _messages[index].content,
+                  sl.get<CurrentUser>().randomChat[index].content,
                   style: TextStyle(
                     color: Colors.white
                   ),
@@ -93,7 +88,7 @@ class ChatBuilder {
         Flexible(
           child: Container(
             child: Text(
-              _messages[index].content,
+              sl.get<CurrentUser>().randomChat[index].content,
               style: TextStyle(color: Colors.white),
             ),
             padding: EdgeInsets.fromLTRB(15.0,10.0,15.0,10.0),
@@ -109,7 +104,7 @@ class ChatBuilder {
         margin: EdgeInsets.only(left: 10.0,bottom: 5.0),
         child: Text(
           DateFormat('kk:mm','ko')
-            .format(DateTime.fromMillisecondsSinceEpoch(_messages[index].timeStamp.millisecondsSinceEpoch)),
+            .format(DateTime.fromMillisecondsSinceEpoch(sl.get<CurrentUser>().randomChat[index].timeStamp.millisecondsSinceEpoch)),
             style: TextStyle(color: Colors.grey,fontSize: 12.0),
         ),
         ) : Container()
@@ -118,7 +113,7 @@ class ChatBuilder {
   }
 
   Widget buildMessage(int index) {
-    if(_messages[index].from == sl.get<CurrentUser>().uid){
+    if(sl.get<CurrentUser>().randomChat[index].from == sl.get<CurrentUser>().uid){
       return _buildMine(index);
     } else {
       return _buildYours(index);
@@ -126,8 +121,8 @@ class ChatBuilder {
   }
 
   bool _isFirstLeft(int index) {
-    if((index<_messages.length-1 && _messages!=null && _messages[index+1].from == sl.get<CurrentUser>().uid)
-     || (index == _messages.length-1)) {
+    if((index<sl.get<CurrentUser>().randomChat.length-1 && sl.get<CurrentUser>().randomChat!=null && sl.get<CurrentUser>().randomChat[index+1].from == sl.get<CurrentUser>().uid)
+     || (index == sl.get<CurrentUser>().randomChat.length-1)) {
        return true;
      } else {
        return false;
@@ -135,7 +130,7 @@ class ChatBuilder {
   }
 
   bool _isLastLeft(int index) {
-    if((index>0 && _messages!=null && _messages[index-1].from == sl.get<CurrentUser>().uid) 
+    if((index>0 && sl.get<CurrentUser>().randomChat!=null && sl.get<CurrentUser>().randomChat[index-1].from == sl.get<CurrentUser>().uid) 
       || index==0){
         return true;
     } else {
@@ -144,7 +139,7 @@ class ChatBuilder {
   }
 
   bool _isLastRight(int index) {
-    if((index>0 && _messages!=null && _messages[index-1].to == sl.get<CurrentUser>().uid) 
+    if((index>0 && sl.get<CurrentUser>().randomChat!=null && sl.get<CurrentUser>().randomChat[index-1].to == sl.get<CurrentUser>().uid) 
       || index==0){
         return true;
     } else {

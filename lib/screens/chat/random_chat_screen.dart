@@ -39,7 +39,6 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
       chatRoomID: widget.chatRoomID,
       otherUserUID: widget.receiver.uid
     ));
-
     initializeDateFormatting();
   }
 
@@ -104,9 +103,6 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
                   if(state.isChatFinished) {
                     _isReceiverOut = true;
                   }
-                  if(state.isMessageReceived) {
-                    _chatBuilder.messages = sl.get<CurrentUser>().randomChat;
-                  }
                   if(state.isGetOutSucceeded) {
                     if(!_isReceiverOut) {
                       BlocNavigator.pop(context);
@@ -121,7 +117,7 @@ class _RandomChatScreenState extends State<RandomChatScreen> {
                   return ListView.builder(
                     padding: EdgeInsets.all(10.0),
                     itemBuilder: (context,index) => _chatBuilder.buildMessage(index),
-                    itemCount: _chatBuilder.messageLength,
+                    itemCount: sl.get<CurrentUser>().randomChat.length,
                     reverse: true,
                     controller: _scrollController,
                   );
