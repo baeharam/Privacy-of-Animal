@@ -127,6 +127,7 @@ class _TagSelectScreenState extends State<TagSelectScreen> {
                 builder: (_, TagSelectState state){
                   if(state.isTagCompleted){
                     BlocNavigator.pushReplacementNamed(context, routeTagChat);
+                    _tagBloc.emitEvent(TagSelectEventStateClear());
                   }
                   if(state.isTagLoading){
                     return CustomProgressIndicator();
