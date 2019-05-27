@@ -56,9 +56,10 @@ class CurrentUser {
 
   // chat_list
   bool isChatListEmpty() => chatListHistory.values.isEmpty;
-  int get chatListLength => chatListHistory.values.length;
+  int get chatListLength 
+    => chatListHistory.values.where((chatListModel) => chatListModel.lastMessage.isNotEmpty).length;
   ChatListModel getChatListModel(int index) 
-    => (chatListHistory.values as List<ChatListModel>)[index];
+    => chatListHistory.values.toList()[index];
 
   // friends_chat
   void initCurrentChatUID(String receiverUID) => currentChatUID = receiverUID;
