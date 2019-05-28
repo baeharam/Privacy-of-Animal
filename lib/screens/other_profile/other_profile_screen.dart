@@ -5,6 +5,7 @@ import 'package:privacy_of_animal/logics/global/current_user.dart';
 import 'package:privacy_of_animal/logics/other_profile/other_profile.dart';
 import 'package:privacy_of_animal/models/user_model.dart';
 import 'package:privacy_of_animal/resources/resources.dart';
+import 'package:privacy_of_animal/screens/home_profile/profile_real_part.dart';
 import 'package:privacy_of_animal/screens/other_profile/other_profile_sub.dart';
 import 'package:privacy_of_animal/screens/home_match/same_match_button.dart';
 import 'package:privacy_of_animal/utils/profile_hero.dart';
@@ -183,16 +184,25 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
                       children: <Widget>[
                         Padding(
                           padding: EdgeInsets.only(bottom: 10.0),
-                          child: Text(
-                            '실제프로필',
-                            style: primaryTextStyle,
+                          child: Row(
+                            children: <Widget>[
+                              Text(
+                                '실제프로필',
+                                style: primaryTextStyle,
+                              ),
+                              Spacer(),
+                              Text(
+                                '사진은 공개되지 않습니다.',
+                                style: TextStyle(
+                                  color: primaryBlue,
+                                  fontWeight: FontWeight.bold
+                                ),
+                              )
+                            ],
                           ),
                         ),
                         SizedBox(height: 10.0),
-                        OtherProfileRealForm(title: '이름',detail: widget.user.realProfileModel.name),
-                        OtherProfileRealForm(title: '성별',detail: widget.user.realProfileModel.gender),
-                        OtherProfileRealForm(title: '나이',detail: widget.user.realProfileModel.age),
-                        OtherProfileRealForm(title: '직업',detail: widget.user.realProfileModel.job)
+                        ProfileRealPart(realProfileModel: widget.user.realProfileModel)
                       ],
                     );
                   } else {

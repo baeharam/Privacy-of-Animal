@@ -60,22 +60,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.only(bottom: 10.0),
-                        child: Text(
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 10.0),
+                    child: Row(
+                      children: <Widget>[
+                        Text(
                           '실제프로필',
                           style: primaryTextStyle,
                         ),
-                      )
-                    ],
+                        Spacer(),
+                        Text(
+                          '사진은 공개되지 않습니다.',
+                          style: TextStyle(
+                            color: primaryBlue,
+                            fontWeight: FontWeight.bold
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                   SizedBox(height: 10.0),
-                  ProfileRealPart(title: '이름',detail: _user.realProfileModel.name),
-                  ProfileRealPart(title: '성별',detail: _user.realProfileModel.gender),
-                  ProfileRealPart(title: '나이',detail: _user.realProfileModel.age),
-                  ProfileRealPart(title: '직업',detail: _user.realProfileModel.job)
+                  ProfileRealPart(realProfileModel: _user.realProfileModel)
                 ],
               )
             ),
