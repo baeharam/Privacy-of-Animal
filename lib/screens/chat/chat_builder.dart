@@ -94,7 +94,7 @@ class ChatBuilder {
               )),
             ))
           ]
-        ) : Container(width: 40.0),
+        ) : Container(width: receiver.fakeProfileModel.nickName.length*15.0),
         Flexible(
           child: Container(
             child: Text(
