@@ -24,6 +24,17 @@ class RandomLoadingAPI {
         .collection(firestoreRandomMessageCollection)
         .where(firestoreChatBeginField,isEqualTo: false)
         .getDocuments();
+
+    DocumentSnapshot removeDoc;
+    for(DocumentSnapshot document in querySnapshot.documents) {
+      if(sl.get<CurrentUser>().friendsList
+        .where((user)=>document.data[firestoreChatUsersField][user.uid]==true).isNotEmpty){
+          removeDoc = document;
+        }
+    }
+    if(removeDoc!=null){
+      querySnapshot.documents.removeWhere((doc) => doc.documentID==removeDoc.documentID);
+    }
     if(querySnapshot.documents.isEmpty) {
       debugPrint('[랜덤] 대기중인 방 없음...');
       return '';
