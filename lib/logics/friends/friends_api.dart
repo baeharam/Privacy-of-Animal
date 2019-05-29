@@ -38,7 +38,7 @@ class FriendsAPI {
         .document(friends.documentID)
         .get();
       UserModel friendsUserModel = UserModel.fromSnapshot(snapshot: friendsSnapshot);
-      await _increaseLocalFriends(friendsUserModel);
+      await _increaseLocalFriends(friendsUserModel,isFirst: true);
     }
   }
 
@@ -69,7 +69,7 @@ class FriendsAPI {
       DocumentSnapshot newFriendsSnapshot = await sl.get<FirebaseAPI>().
         getUserSnapshot(newFriends.document.documentID);
       UserModel newFriendsUserModel = UserModel.fromSnapshot(snapshot: newFriendsSnapshot);
-      await _increaseLocalFriends(newFriendsUserModel);
+      await _increaseLocalFriends(newFriendsUserModel,isFirst: false);
       _updateOtherProfileFriends(newFriendsUserModel.uid);
       if(isAccepted) {
         _notifyingFriends ??= newFriendsUserModel;
@@ -307,15 +307,15 @@ class FriendsAPI {
   }
 
   /// [로컬에서 친구 증가]
-  Future<void> _increaseLocalFriends(UserModel newFriends) async{
+  Future<void> _increaseLocalFriends(UserModel newFriends, {bool isFirst}) async{
     debugPrint("[친구] 처음 혹은 친구 증가했을 때 로컬에서 업데이트");
-
-    SharedPreferences prefs = await sl.get<DatabaseAPI>().sharedPreferences;
-    await prefs.setBool(newFriends.uid, true);
-
+    if(!isFirst) {
+      SharedPreferences prefs = await sl.get<DatabaseAPI>().sharedPreferences;
+      await prefs.setBool(newFriends.uid, true);
+      sl.get<CurrentUser>().chatRoomNotification[newFriends.uid] = true;
+    }
     sl.get<CurrentUser>().friendsList.add(newFriends);
     sl.get<CurrentUser>().chatHistory[newFriends.uid] = [];
-    sl.get<CurrentUser>().chatRoomNotification[newFriends.uid] = true;
   } 
 
   /// [로컬에서 친구신청 감소]

@@ -70,8 +70,8 @@ class HomeAPI {
     if(!isChatRoomListDataFetched) {
       debugPrint('[홈] 채팅 데이터 가져오기');
 
-      await _setChatRoomNotification();
       await sl.get<ServerChatAPI>().connectAllChatRoom();
+      await _setChatRoomNotification();
 
       isChatRoomListDataFetched = true;
     }
