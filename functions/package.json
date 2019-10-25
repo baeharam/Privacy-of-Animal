@@ -14,8 +14,12 @@
     "firebase-functions": "^2.2.0"
   },
   "devDependencies": {
-    "eslint": "^5.12.0",
-    "eslint-plugin-promise": "^4.0.1"
+    "eslint": "^5.16.0",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-utils": "^1.4.3",
+    "js-yaml": "^3.13.1",
+    "lodash": "^4.17.15",
+    "lodash.merge": "^4.6.2"
   },
   "private": true
 }
